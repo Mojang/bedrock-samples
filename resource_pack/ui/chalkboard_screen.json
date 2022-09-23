@@ -1,0 +1,118 @@
+/********************************************************
+*   (c) Mojang. All rights reserved                     *
+*   (c) Microsoft. All rights reserved.                 *
+*********************************************************/
+
+{
+  "namespace": "chalkboard",
+  //---------------------------------------------------------------------------
+  // Controls
+  //---------------------------------------------------------------------------
+  "text_edit_control@common.multiline_text_edit_box": {
+    "anchor_from": "top_middle", // the parent
+    "anchor_to": "top_middle", // this control
+    "constrain_to_rect": false,
+    "layer": 5,
+    "$text_edit_binding_name": "#text_box_item_name",
+    "property_bag": {
+      "#property_field": "#item_name"
+    }
+  },
+
+  "locked_toggle@edu_common.slider_toggle": {
+    "$toggle_state_binding_name": "#locked",
+    "$toggle_enabled_binding_name": "#lock_visible",
+    "$toggle_name": "locked_toggle",
+    "offset": [ 0, "-8px" ]
+  },
+
+  "locked_label@edu_common.dark_label": {
+    "text": "#text",
+    "bindings": [
+      {
+        "binding_name": "#lock_label_text",
+        "binding_name_override": "#text"
+      }
+    ]
+  },
+
+  "lock_control": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", 16 ],
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "controls": [
+      { "toggle@chalkboard.locked_toggle": {} },
+      {
+        "pad_wrap@common.empty_panel": {
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "label@chalkboard.locked_label": {
+                "offset": [ 2, 3 ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#lock_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  // -----------------------------------------------
+  //
+  //    screen
+  //
+  // -----------------------------------------------
+  "gamepad_helpers": {
+    "type": "panel",
+    "layer": 2,
+    "controls": [
+      {
+        "gamepad_helper_a@common.gamepad_helper_a": {
+          "anchor_from": "bottom_right",
+          "anchor_to": "bottom_right"
+        }
+      }
+    ]
+  },
+
+  "chalkboard_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ],
+    "$screen_content": "chalkboard.chalkboard_root"
+  },
+
+  "chalkboard_root@common_dialogs.main_panel_no_buttons": {
+    "size": "$text_panel_size",
+    "$title_panel": "common_dialogs.standard_title_label",
+    "$text_name": "$chalkboard_name",
+    "$child_control": "chalkboard.chalkboard_content",
+    "$custom_background": "dialog_background_opaque"
+  },
+
+  "chalkboard_content": {
+    "type": "panel",
+    "controls": [
+      { "gamepad_helpers@chalkboard.gamepad_helpers": {} },
+      {
+        "edit_box@chalkboard.text_edit_control": {
+          "size": "$text_box_size",
+          "max_length": "$max_input_length"
+        }
+      },
+      { "locked_toggle@chalkboard.lock_control": {} }
+    ]
+  }
+}

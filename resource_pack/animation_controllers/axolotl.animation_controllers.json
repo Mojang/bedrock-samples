@@ -1,0 +1,63 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.axolotl.general": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "animations": [
+            {
+              "play_dead": "query.is_playing_dead"
+            },
+            {
+              "swim_angle": "variable.moving && query.is_in_water && !query.is_on_ground"
+            }
+          ]
+        }
+      }
+    },
+    "controller.animation.axolotl.move": {
+      "initial_state": "idle",
+      "states": {
+        "idle": {
+          "animations": [
+            {
+              "idle_float": "query.is_in_water && !query.is_on_ground && !query.is_playing_dead"
+            },
+            {
+              "idle_floor": "!query.is_in_water"
+            },
+            {
+              "idle_floor_water": "query.is_in_water && query.is_on_ground"
+            },
+            "look_at_target"
+          ],
+          "transitions": [
+            {
+              "moving": "variable.moving && !query.is_playing_dead"
+            }
+          ]
+        },
+        "moving": {
+          "animations": [
+            {
+              "swim": "query.is_in_water && !query.is_on_ground"
+            },
+            {
+              "walk_floor": "!query.is_in_water"
+            },
+            {
+              "walk_floor_water": "query.is_in_water && query.is_on_ground"
+            },
+            "look_at_target"
+          ],
+          "transitions": [
+            {
+              "idle": "!variable.moving || query.is_playing_dead"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

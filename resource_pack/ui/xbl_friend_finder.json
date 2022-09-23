@@ -1,0 +1,290 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "xbl_friend_finder",
+
+  "message_label": {
+    "type": "label",
+    "text": "$message_binding_name",
+    "max_size": [ "100% - 4px", 20 ],
+    "shadow": false,
+    "offset": [ 0, 6 ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "color": "$dark_button_default_text_color",
+    "layer": 3,
+    "$message_binding_name|default": "",
+    "bindings": [
+      {
+        "binding_name": "$message_binding_name",
+        "binding_type": "global"
+      }
+    ]
+  },
+
+  "text_edit_panel": {
+    "type": "panel",
+    "size": [ "100%", 20 ],
+    "controls": [
+      {
+        "text_edit_box@common.text_edit_box": {
+          "$text_box_name": "gamertag_search_box",
+          "$place_holder_text": "xbox.friendfinder.enterGamertag",
+          "$text_edit_box_label_anchor_point": "left_middle",
+          "$text_edit_box_label_offset": [ 2, 0 ],
+          "$text_edit_box_label_size": [ "100% - 6px", 10 ],
+          "max_length": 16,
+          "layer": 1,
+          "size": [ "100%", 20 ],
+          "property_bag": {
+            "#property_field": "#gamertag"
+          },
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.menu_select",
+              "handle_select": true,
+              "handle_deselect": false,
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "button.menu_select",
+              "handle_select": true,
+              "handle_deselect": true,
+              "mapping_type": "focused"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "button.search",
+              "handle_select": false,
+              "handle_deselect": true,
+              "mapping_type": "focused"
+            },
+            {
+              "from_button_id": "button.menu_cancel",
+              "to_button_id": "button.menu_cancel",
+              "handle_select": false,
+              "handle_deselect": true,
+              "mapping_type": "global"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "progress_loading": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+
+    "$hide_failure_text|default": false,
+    "$use_sibling_scope|default": true,
+    "$baseLayer|default": 2,
+
+    "controls": [
+      {
+        "progress_loading_outline@common_store.banner_fill": {
+          "bindings": [
+            {
+              "binding_name": "#progress_loading_visibility",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
+            }
+          ]
+        }
+      },
+      {
+        "stack_panel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "controls": [
+            {
+              "centerer_0": {
+                "type": "panel",
+                "size": [ "100%", "100%c" ],
+                "controls": [
+                  {
+                    "network_failure_text": {
+                      "type": "label",
+                      "layer": "($baseLayer + 1)",
+                      "color": "$body_text_color",
+                      "text_alignment": "center",
+                      "ignored": "$hide_failure_text",
+                      "size": [ "100%-4px", "default" ],
+                      "text": "network.thirdparty.findfriends.failed",
+                      "alpha": 0,
+                      "anims": [
+                        "@common_store.failure_text_wait_animation"
+                      ],
+                      "bindings": [
+                        {
+                          "binding_name": "#should_display_no_internet_warning",
+                          "binding_name_override": "#visible",
+                          "binding_condition": "always"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "centerer_1": {
+                "type": "panel",
+                "size": [ "100%", "100%c" ],
+                "controls": [
+                  {
+                    "progress_loading_bars@common_store.progress_loading_bars": {
+                      "layer": "($baseLayer + 1)",
+                      "bindings": [
+                        {
+                          "binding_name": "#search_in_progress",
+                          "binding_name_override": "#visible",
+                          "binding_condition": "always"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "main_panel": {
+    "type": "stack_panel",
+    "size": [ "100% - 4px", "100%c" ],
+    "controls": [
+      {
+        "padding_0": {
+          "type": "panel",
+          "size": [ "100%", 2 ]
+        }
+      },
+      {
+        "find_friends_label": {
+          "type": "label",
+          "size": [ "100%", 10 ],
+          "color": "$body_text_color",
+          "layer": 1,
+          "text": "xbox.friendfinder.findFriends"
+        }
+      },
+      {
+        "padding_1": {
+          "type": "panel",
+          "size": [ "100%", 2 ]
+        }
+      },
+      {
+        "text_edit_panel@xbl_friend_finder.text_edit_panel": {}
+      },
+      {
+        "padding_2": {
+          "type": "panel",
+          "size": [ "100%", 6 ]
+        }
+      },
+      {
+        "searching_profile_panel": {
+          "type": "image",
+          "texture": "textures/ui/mainbanners",
+          "size": [ "100%", 45 ],
+          "controls": [
+            {
+              "searching_label@xbl_friend_finder.message_label": {
+                "$message_binding_name": "#friend_finder_text"
+              }
+            },
+            {
+              "progress_loading@xbl_friend_finder.progress_loading": {
+                "layer": 100 // Make this on top
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#message_panel_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "padding_3": {
+          "type": "panel",
+          "size": [ "100%", 6 ]
+        }
+      }
+    ]
+  },
+
+  "gamepad_helpers": {
+    "type": "panel",
+    "layer": 2,
+    "controls": [
+      {
+        "gamepad_helper_a@common.gamepad_helper_a": {
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ "-10%", "-5%" ]
+        }
+      },
+      {
+        "gamepad_helper_b@common.gamepad_helper_b": {
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ "10%", "-5%" ]
+        }
+      }
+    ]
+  },
+
+  // -----------------------------------------------
+  //
+  //    screen
+  //
+  // -----------------------------------------------
+  "xbl_friend_finder@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ],
+    "$screen_content": "xbl_friend_finder.xbl_friend_finder_screen_content"
+  },
+
+  "xbl_friend_finder_screen_content": {
+    "type": "panel",
+    "controls": [
+      { "gamepad_helpers@xbl_friend_finder.gamepad_helpers": {} },
+      {
+        "dialog@xbl_friend_finder.dialog": {
+          "layer": 1
+        }
+      }
+    ]
+  },
+
+  "dialog@common_dialogs.form_fitting_main_panel_no_buttons": {
+    "size": [ 250, "100%c" ],
+    "offset": [ 0, "-20%" ],
+    "$child_control": "xbl_friend_finder.main_panel",
+    "$text_name": "xbox.profile.addFriend",
+    "variables": [
+      {
+        "requires": "($nx_os or $is_ps4)",
+        "$text_name": "networkWorld.find_cross_platform_friends"
+      }
+    ]
+  }
+}

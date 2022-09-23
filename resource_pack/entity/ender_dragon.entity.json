@@ -1,0 +1,271 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:ender_dragon",
+      "materials": {
+        "default": "ender_dragon",
+        "beam_material": "entity_beam",
+        "death_material": "entity_beam_additive",
+        "dissolve_0": "entity_dissolve_layer0.skinning",
+        "dissolve_1": "entity_dissolve_layer1.skinning"
+      },
+      "textures": {
+        "default": "textures/entity/dragon/dragon",
+        "exploding": "textures/entity/dragon/dragon_exploding",
+        "beam": "textures/entity/endercrystal/endercrystal_beam"
+      },
+      "geometry": {
+        "default": "geometry.dragon"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.flap_time = query.wing_flap_position * 360.0;",
+          "variable.base_rotation = Math.sin(variable.flap_time - 57.3) + 57.3;",
+          "variable.rotation_factor = (variable.base_rotation * variable.base_rotation + variable.base_rotation * 114.6) * 2.87;",
+          "variable.base_rotation_translate = Math.sin(variable.flap_time - 57.3) + 1.0;",
+          "variable.rotation_factor_translate = (variable.base_rotation_translate * variable.base_rotation_translate + variable.base_rotation_translate * 2.0) * 0.05;",
+          "variable.pre_rotation_raw = Math.mod(v.historical_frame_5.rot_y - v.historical_frame_10.rot_y + 180.0, 360.0);",
+          "variable.pre_rotation = variable.pre_rotation_raw < 0.0 ? variable.pre_rotation_raw + 180.0 : variable.pre_rotation_raw - 180.0;",
+          "variable.piece_rotation_raw = Math.mod(v.historical_frame_5.rot_y + (variable.pre_rotation / 2.0) + 180.0, 360.0);",
+          "variable.piece_rotation = variable.piece_rotation_raw < 0.0 ? variable.piece_rotation_raw + 180.0 : variable.piece_rotation_raw - 180.0;",
+          "variable.rotationScale = 1.5;",
+          "variable.death_effect_duration = 200.0;",
+          "variable.death_alpha = (1.0 - (query.death_ticks + query.frame_alpha) / variable.death_effect_duration) * 2.0 + 0.3;",
+
+          "variable.pitch = -(math.min_angle(v.historical_frame_5.pos_y - v.historical_frame_10.pos_y)) * 10.0;",
+          "variable.roll = math.min_angle(v.historical_frame_5.rot_y - v.historical_frame_10.rot_y) * variable.rotationScale;",
+          "variable.clamped_pitch = math.clamp(variable.pitch, -30, 30);",
+          "variable.clamped_roll = math.clamp(variable.roll, -45, 45);",
+
+          "variable.neck_distance = 10.0;",
+          "variable.neck_1_rotation_x = Math.cos(variable.flap_time) * 8.6 + (query.is_sitting ? 0.0 : (v.historical_frame_5.pos_y - v.historical_frame_6.pos_y)) * variable.rotationScale * 5.0;",
+          "variable.neck_1_rotation_y_raw = Math.mod((v.historical_frame_5.rot_y - v.historical_frame_6.rot_y) + 180.0, 360.0);",
+          "variable.neck_1_rotation_y = (variable.neck_1_rotation_y_raw < 0.0 ? (variable.neck_1_rotation_y_raw + 180.0) : (variable.neck_1_rotation_y_raw - 180.0)) * variable.rotationScale;",
+          "variable.neck_1_rotation_z_raw = Math.mod((v.historical_frame_5.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.neck_1_rotation_z = -(variable.neck_1_rotation_z_raw < 0.0 ? (variable.neck_1_rotation_z_raw + 180.0) : (variable.neck_1_rotation_z_raw - 180.0))  * variable.rotationScale;",
+
+          "variable.neck_1_position_x = 0.0;",
+          "variable.neck_1_position_y = -20.0;",
+          "variable.neck_1_position_z = -12.0;",
+
+          "variable.neck_2_rotation_x = Math.cos(25.79 + variable.flap_time) * 8.6 + (query.is_sitting ? 1.0 : (v.historical_frame_4.pos_y - v.historical_frame_6.pos_y)) * variable.rotationScale * 5.0;",
+          "variable.neck_2_rotation_y_raw = Math.mod((v.historical_frame_4.rot_y - v.historical_frame_6.rot_y) + 180.0, 360.0);",
+          "variable.neck_2_rotation_y = (variable.neck_2_rotation_y_raw < 0.0 ? (variable.neck_2_rotation_y_raw + 180.0) : (variable.neck_2_rotation_y_raw - 180.0)) * variable.rotationScale;",
+          "variable.neck_2_rotation_z_raw = Math.mod((v.historical_frame_4.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.neck_2_rotation_z = -(variable.neck_2_rotation_z_raw < 0.0 ? (variable.neck_2_rotation_z_raw + 180.0) : (variable.neck_2_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.neck_2_position_x = variable.neck_1_position_x - Math.sin(variable.neck_1_rotation_y) * Math.cos(variable.neck_1_rotation_x) * variable.neck_distance;",
+          "variable.neck_2_position_y = variable.neck_1_position_y - Math.sin(variable.neck_1_rotation_x) * variable.neck_distance;",
+          "variable.neck_2_position_z = variable.neck_1_position_z - Math.cos(variable.neck_1_rotation_y) * Math.cos(variable.neck_1_rotation_x) * variable.neck_distance;",
+
+          "variable.neck_3_rotation_x = Math.cos(51.57 + variable.flap_time) * 8.6 + (query.is_sitting ? 2.0 : (v.historical_frame_3.pos_y - v.historical_frame_6.pos_y)) * variable.rotationScale * 5.0;",
+          "variable.neck_3_rotation_y_raw = Math.mod((v.historical_frame_3.rot_y - v.historical_frame_6.rot_y + 180.0), 360.0);",
+          "variable.neck_3_rotation_y = (variable.neck_3_rotation_y_raw < 0.0 ? (variable.neck_3_rotation_y_raw + 180.0) : (variable.neck_3_rotation_y_raw - 180.0)) * variable.rotationScale;",
+          "variable.neck_3_rotation_z_raw = Math.mod((v.historical_frame_3.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.neck_3_rotation_z = -(variable.neck_3_rotation_z_raw < 0.0 ? (variable.neck_3_rotation_z_raw + 180.0) : (variable.neck_3_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.neck_3_position_x = variable.neck_2_position_x - Math.sin(variable.neck_2_rotation_y) * Math.cos(variable.neck_2_rotation_x) * variable.neck_distance;",
+          "variable.neck_3_position_y = variable.neck_2_position_y - Math.sin(variable.neck_2_rotation_x) * variable.neck_distance;",
+          "variable.neck_3_position_z = variable.neck_2_position_z - Math.cos(variable.neck_2_rotation_y) * Math.cos(variable.neck_2_rotation_x) * variable.neck_distance;",
+
+          "variable.neck_4_rotation_x = Math.cos(77.36 + variable.flap_time) * 8.6 + (query.is_sitting ? 3.0 : (v.historical_frame_2.pos_y - v.historical_frame_6.pos_y)) * variable.rotationScale * 5.0;",
+          "variable.neck_4_rotation_y_raw = Math.mod((v.historical_frame_2.rot_y - v.historical_frame_6.rot_y + 180.0), 360.0);",
+          "variable.neck_4_rotation_y = (variable.neck_4_rotation_y_raw < 0.0 ? (variable.neck_4_rotation_y_raw + 180.0) : (variable.neck_4_rotation_y_raw - 180.0)) * variable.rotationScale;",
+          "variable.neck_4_rotation_z_raw = Math.mod((v.historical_frame_2.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.neck_4_rotation_z = -(variable.neck_4_rotation_z_raw < 0.0 ? (variable.neck_4_rotation_z_raw + 180.0) : (variable.neck_4_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.neck_4_position_x = variable.neck_3_position_x - Math.sin(variable.neck_3_rotation_y) * Math.cos(variable.neck_3_rotation_x) * variable.neck_distance;",
+          "variable.neck_4_position_y = variable.neck_3_position_y - Math.sin(variable.neck_3_rotation_x) * variable.neck_distance;",
+          "variable.neck_4_position_z = variable.neck_3_position_z - Math.cos(variable.neck_3_rotation_y) * Math.cos(variable.neck_3_rotation_x) * variable.neck_distance;",
+
+          "variable.neck_5_rotation_x = Math.cos(103.14 + variable.flap_time) * 8.6 + (query.is_sitting ? 4.0 : (v.historical_frame_1.pos_y - v.historical_frame_6.pos_y)) * variable.rotationScale * 5.0;",
+          "variable.neck_5_rotation_y_raw = Math.mod((v.historical_frame_1.rot_y - v.historical_frame_6.rot_y) + 180.0, 360.0);",
+          "variable.neck_5_rotation_y = (variable.neck_5_rotation_y_raw < 0.0 ? (variable.neck_5_rotation_y_raw + 180.0) : (variable.neck_5_rotation_y_raw - 180.0)) * variable.rotationScale;",
+          "variable.neck_5_rotation_z_raw = Math.mod((v.historical_frame_1.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.neck_5_rotation_z = -(variable.neck_5_rotation_z_raw < 0.0 ? (variable.neck_5_rotation_z_raw + 180.0) : (variable.neck_5_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.neck_5_position_x = variable.neck_4_position_x - Math.sin(variable.neck_4_rotation_y) * Math.cos(variable.neck_4_rotation_x) * variable.neck_distance;",
+          "variable.neck_5_position_y = variable.neck_4_position_y - Math.sin(variable.neck_4_rotation_x) * variable.neck_distance;",
+          "variable.neck_5_position_z = variable.neck_4_position_z - Math.cos(variable.neck_4_rotation_y) * Math.cos(variable.neck_4_rotation_x) * variable.neck_distance;",
+
+          "variable.head_rotation_x_raw = Math.mod((query.is_sitting ? 6.0 : 0.0) + 180.0, 360.0);",
+          "variable.head_rotation_x = (variable.head_rotation_x_raw < 0.0 ? (variable.head_rotation_x_raw + 180.0) : (variable.head_rotation_x_raw - 180.0)) * variable.rotationScale * 5.0;",
+          "variable.head_rotation_y_raw = Math.mod((v.historical_frame_0.rot_y - v.historical_frame_6.rot_y) + 180.0, 360.0);",
+          "variable.head_rotation_y = (variable.head_rotation_y_raw < 0.0 ? (variable.head_rotation_y_raw + 180.0) : (variable.head_rotation_y_raw - 180.0));",
+          "variable.head_rotation_z_raw = Math.mod((v.historical_frame_0.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.head_rotation_z = -(variable.head_rotation_z_raw < 0.0 ? (variable.head_rotation_z_raw + 180.0) : (variable.head_rotation_z_raw - 180.0));",
+
+          "variable.head_position_x = variable.neck_5_position_x - Math.sin(variable.neck_5_rotation_y) * Math.cos(variable.neck_5_rotation_x) * variable.neck_distance;",
+          "variable.head_position_y = variable.neck_5_position_y - Math.sin(variable.neck_5_rotation_x) * variable.neck_distance;",
+          "variable.head_position_z = variable.neck_5_position_z - Math.cos(variable.neck_5_rotation_y) * Math.cos(variable.neck_5_rotation_x) * variable.neck_distance;",
+
+          "variable.tail_distance = 10.0;",
+          "variable.tail_rotation_y = 180.0;",
+          "variable.tail_rotation_x = Math.sin(variable.flap_time) * 2.86;",
+
+          "variable.tail_1_rotation_x = variable.tail_rotation_x + (v.historical_frame_12.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_1_rotation_y_raw = Math.mod((v.historical_frame_12.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_1_rotation_y = (variable.tail_1_rotation_y_raw < 0.0 ? (variable.tail_1_rotation_y_raw + 180.0) : (variable.tail_1_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_1_rotation_z_raw = Math.mod((v.historical_frame_12.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_1_rotation_z = -(variable.tail_1_rotation_z_raw < 0.0 ? (variable.tail_1_rotation_z_raw + 180.0) : (variable.tail_1_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_1_position_x = 0.0;",
+          "variable.tail_1_position_y = -10.0;",
+          "variable.tail_1_position_z = 60.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(25.78 + variable.flap_time) * 2.86;",
+
+          "variable.tail_2_rotation_x = variable.tail_rotation_x + (v.historical_frame_13.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_2_rotation_y_raw = Math.mod((v.historical_frame_13.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_2_rotation_y = (variable.tail_2_rotation_y_raw < 0.0 ? (variable.tail_2_rotation_y_raw + 180.0) : (variable.tail_2_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_2_rotation_z_raw = Math.mod((v.historical_frame_13.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_2_rotation_z = -(variable.tail_2_rotation_z_raw < 0.0 ? (variable.tail_2_rotation_z_raw + 180.0) : (variable.tail_2_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_2_position_x = variable.tail_1_position_x - Math.sin(variable.tail_1_rotation_y) * Math.cos(variable.tail_1_rotation_x) * 10.0;",
+          "variable.tail_2_position_y = variable.tail_1_position_y - Math.sin(variable.tail_1_rotation_x) * variable.tail_distance;",
+          "variable.tail_2_position_z = variable.tail_1_position_z - Math.cos(variable.tail_1_rotation_y) * Math.cos(variable.tail_1_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(51.56 + variable.flap_time) * 2.86;",
+
+          "variable.tail_3_rotation_x = variable.tail_rotation_x + (v.historical_frame_14.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_3_rotation_y_raw = Math.mod((v.historical_frame_14.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_3_rotation_y = (variable.tail_3_rotation_y_raw < 0.0 ? (variable.tail_3_rotation_y_raw + 180.0) : (variable.tail_3_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_3_rotation_z_raw = Math.mod((v.historical_frame_14.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_3_rotation_z = -(variable.tail_3_rotation_z_raw < 0.0 ? (variable.tail_3_rotation_z_raw + 180.0) : (variable.tail_3_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_3_position_x = variable.tail_2_position_x - Math.sin(variable.tail_2_rotation_y) * Math.cos(variable.tail_2_rotation_x) * 10.0;",
+          "variable.tail_3_position_y = variable.tail_2_position_y - Math.sin(variable.tail_2_rotation_x) * variable.tail_distance;",
+          "variable.tail_3_position_z = variable.tail_2_position_z - Math.cos(variable.tail_2_rotation_y) * Math.cos(variable.tail_2_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(77.35 + variable.flap_time) * 2.86;",
+
+          "variable.tail_4_rotation_x = variable.tail_rotation_x + (v.historical_frame_15.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_4_rotation_y_raw = Math.mod((v.historical_frame_15.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_4_rotation_y = (variable.tail_4_rotation_y_raw < 0.0 ? (variable.tail_4_rotation_y_raw + 180.0) : (variable.tail_4_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_4_rotation_z_raw = Math.mod((v.historical_frame_15.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_4_rotation_z = -(variable.tail_4_rotation_z_raw < 0.0 ? (variable.tail_4_rotation_z_raw + 180.0) : (variable.tail_4_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_4_position_x = variable.tail_3_position_x - Math.sin(variable.tail_3_rotation_y) * Math.cos(variable.tail_3_rotation_x) * 10.0;",
+          "variable.tail_4_position_y = variable.tail_3_position_y - Math.sin(variable.tail_3_rotation_x) * variable.tail_distance;",
+          "variable.tail_4_position_z = variable.tail_3_position_z - Math.cos(variable.tail_3_rotation_y) * Math.cos(variable.tail_3_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(103.13 + variable.flap_time) * 2.86;",
+
+          "variable.tail_5_rotation_x = variable.tail_rotation_x + (v.historical_frame_16.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_5_rotation_y_raw = Math.mod((v.historical_frame_16.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_5_rotation_y = (variable.tail_5_rotation_y_raw < 0.0 ? (variable.tail_5_rotation_y_raw + 180.0) : (variable.tail_5_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_5_rotation_z_raw = Math.mod((v.historical_frame_16.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_5_rotation_z = -(variable.tail_5_rotation_z_raw < 0.0 ? (variable.tail_5_rotation_z_raw + 180.0) : (variable.tail_5_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_5_position_x = variable.tail_4_position_x - Math.sin(variable.tail_4_rotation_y) * Math.cos(variable.tail_4_rotation_x) * 10.0;",
+          "variable.tail_5_position_y = variable.tail_4_position_y - Math.sin(variable.tail_4_rotation_x) * variable.tail_distance;",
+          "variable.tail_5_position_z = variable.tail_4_position_z - Math.cos(variable.tail_4_rotation_y) * Math.cos(variable.tail_4_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(128.92 + variable.flap_time) * 2.86;",
+
+          "variable.tail_6_rotation_x = variable.tail_rotation_x + (v.historical_frame_17.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_6_rotation_y_raw = Math.mod((v.historical_frame_17.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_6_rotation_y = (variable.tail_6_rotation_y_raw < 0.0 ? (variable.tail_6_rotation_y_raw + 180.0) : (variable.tail_6_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_6_rotation_z_raw = Math.mod((v.historical_frame_17.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_6_rotation_z = -(variable.tail_6_rotation_z_raw < 0.0 ? (variable.tail_6_rotation_z_raw + 180.0) : (variable.tail_6_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_6_position_x = variable.tail_5_position_x - Math.sin(variable.tail_5_rotation_y) * Math.cos(variable.tail_5_rotation_x) * 10.0;",
+          "variable.tail_6_position_y = variable.tail_5_position_y - Math.sin(variable.tail_5_rotation_x) * variable.tail_distance;",
+          "variable.tail_6_position_z = variable.tail_5_position_z - Math.cos(variable.tail_5_rotation_y) * Math.cos(variable.tail_5_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(154.70 + variable.flap_time) * 2.86;",
+
+          "variable.tail_7_rotation_x = variable.tail_rotation_x + (v.historical_frame_18.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_7_rotation_y_raw = Math.mod((v.historical_frame_18.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_7_rotation_y = (variable.tail_7_rotation_y_raw < 0.0 ? (variable.tail_7_rotation_y_raw + 180.0) : (variable.tail_7_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_7_rotation_z_raw = Math.mod((v.historical_frame_18.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_7_rotation_z = -(variable.tail_7_rotation_z_raw < 0.0 ? (variable.tail_7_rotation_z_raw + 180.0) : (variable.tail_7_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_7_position_x = variable.tail_6_position_x - Math.sin(variable.tail_6_rotation_y) * Math.cos(variable.tail_6_rotation_x) * 10.0;",
+          "variable.tail_7_position_y = variable.tail_6_position_y - Math.sin(variable.tail_6_rotation_x) * variable.tail_distance;",
+          "variable.tail_7_position_z = variable.tail_6_position_z - Math.cos(variable.tail_6_rotation_y) * Math.cos(variable.tail_6_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(180.48 + variable.flap_time) * 2.86;",
+
+          "variable.tail_8_rotation_x = variable.tail_rotation_x + (v.historical_frame_19.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_8_rotation_y_raw = Math.mod((v.historical_frame_19.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_8_rotation_y = (variable.tail_8_rotation_y_raw < 0.0 ? (variable.tail_8_rotation_y_raw + 180.0) : (variable.tail_8_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_8_rotation_z_raw = Math.mod((v.historical_frame_19.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_8_rotation_z = -(variable.tail_8_rotation_z_raw < 0.0 ? (variable.tail_8_rotation_z_raw + 180.0) : (variable.tail_8_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_8_position_x = variable.tail_7_position_x - Math.sin(variable.tail_7_rotation_y) * Math.cos(variable.tail_7_rotation_x) * 10.0;",
+          "variable.tail_8_position_y = variable.tail_7_position_y - Math.sin(variable.tail_7_rotation_x) * variable.tail_distance;",
+          "variable.tail_8_position_z = variable.tail_7_position_z - Math.cos(variable.tail_7_rotation_y) * Math.cos(variable.tail_7_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(206.26 + variable.flap_time) * 2.86;",
+
+          "variable.tail_9_rotation_x = variable.tail_rotation_x + (v.historical_frame_20.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_9_rotation_y_raw = Math.mod((v.historical_frame_20.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_9_rotation_y = (variable.tail_9_rotation_y_raw < 0.0 ? (variable.tail_9_rotation_y_raw + 180.0) : (variable.tail_9_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_9_rotation_z_raw = Math.mod((v.historical_frame_20.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_9_rotation_z = -(variable.tail_9_rotation_z_raw < 0.0 ? (variable.tail_9_rotation_z_raw + 180.0) : (variable.tail_9_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_9_position_x = variable.tail_8_position_x - Math.sin(variable.tail_8_rotation_y) * Math.cos(variable.tail_8_rotation_x) * 10.0;",
+          "variable.tail_9_position_y = variable.tail_8_position_y - Math.sin(variable.tail_8_rotation_x) * variable.tail_distance;",
+          "variable.tail_9_position_z = variable.tail_8_position_z - Math.cos(variable.tail_8_rotation_y) * Math.cos(variable.tail_8_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(232.05 + variable.flap_time) * 2.86;",
+
+          "variable.tail_10_rotation_x = variable.tail_rotation_x + (v.historical_frame_21.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_10_rotation_y_raw = Math.mod((v.historical_frame_21.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_10_rotation_y = (variable.tail_10_rotation_y_raw < 0.0 ? (variable.tail_10_rotation_y_raw + 180.0) : (variable.tail_10_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_10_rotation_z_raw = Math.mod((v.historical_frame_21.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_10_rotation_z = -(variable.tail_10_rotation_z_raw < 0.0 ? (variable.tail_10_rotation_z_raw + 180.0) : (variable.tail_10_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_10_position_x = variable.tail_9_position_x - Math.sin(variable.tail_9_rotation_y) * Math.cos(variable.tail_9_rotation_x) * 10.0;",
+          "variable.tail_10_position_y = variable.tail_9_position_y - Math.sin(variable.tail_9_rotation_x) * variable.tail_distance;",
+          "variable.tail_10_position_z = variable.tail_9_position_z - Math.cos(variable.tail_9_rotation_y) * Math.cos(variable.tail_9_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(257.83 + variable.flap_time) * 2.86;",
+
+          "variable.tail_11_rotation_x = variable.tail_rotation_x + (v.historical_frame_22.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_11_rotation_y_raw = Math.mod((v.historical_frame_22.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_11_rotation_y = (variable.tail_11_rotation_y_raw < 0.0 ? (variable.tail_11_rotation_y_raw + 180.0) : (variable.tail_11_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_11_rotation_z_raw = Math.mod((v.historical_frame_22.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_11_rotation_z = -(variable.tail_11_rotation_z_raw < 0.0 ? (variable.tail_11_rotation_z_raw + 180.0) : (variable.tail_11_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_11_position_x = variable.tail_10_position_x - Math.sin(variable.tail_10_rotation_y) * Math.cos(variable.tail_10_rotation_x) * 10.0;",
+          "variable.tail_11_position_y = variable.tail_10_position_y - Math.sin(variable.tail_10_rotation_x) * variable.tail_distance;",
+          "variable.tail_11_position_z = variable.tail_10_position_z - Math.cos(variable.tail_10_rotation_y) * Math.cos(variable.tail_10_rotation_x) * 10.0;",
+
+          "variable.tail_rotation_x = variable.tail_rotation_x + Math.sin(283.61 + variable.flap_time) * 2.86;",
+
+          "variable.tail_12_rotation_x = variable.tail_rotation_x + (v.historical_frame_23.pos_y - v.historical_frame_11.pos_y) * variable.rotationScale * 5.0;",
+          "variable.tail_12_rotation_y_raw = Math.mod((v.historical_frame_23.rot_y - v.historical_frame_11.rot_y) + 180.0, 360.0);",
+          "variable.tail_12_rotation_y = (variable.tail_12_rotation_y_raw < 0.0 ? (variable.tail_12_rotation_y_raw + 180.0) : (variable.tail_12_rotation_y_raw - 180.0)) * variable.rotationScale + variable.tail_rotation_y;",
+          "variable.tail_12_rotation_z_raw = Math.mod((v.historical_frame_23.rot_y - variable.piece_rotation) + 180.0, 360.0);",
+          "variable.tail_12_rotation_z = -(variable.tail_12_rotation_z_raw < 0.0 ? (variable.tail_12_rotation_z_raw + 180.0) : (variable.tail_12_rotation_z_raw - 180.0)) * variable.rotationScale;",
+
+          "variable.tail_12_position_x = variable.tail_11_position_x - Math.sin(variable.tail_11_rotation_y) * Math.cos(variable.tail_11_rotation_x) * 10.0;",
+          "variable.tail_12_position_y = variable.tail_11_position_y - Math.sin(variable.tail_11_rotation_x) * variable.tail_distance;",
+          "variable.tail_12_position_z = variable.tail_11_position_z - Math.cos(variable.tail_11_rotation_y) * Math.cos(variable.tail_11_rotation_x) * 10.0;"
+        ],
+        "animate": [
+          "setup",
+          "jaw_movement",
+          "neck_head_movement",
+          "wings_limbs_movement",
+          "tail_movement"
+        ]
+      },
+      "animations": {
+        "setup": "animation.ender_dragon.setup",
+        "jaw_movement": "animation.ender_dragon.jaw_movement",
+        "neck_head_movement": "animation.ender_dragon.neck_head_movement",
+        "wings_limbs_movement": "animation.ender_dragon.wings_limbs_movement",
+        "tail_movement": "animation.ender_dragon.tail_movement"
+      },
+      "render_controllers": [
+        { "controller.render.ender_dragon_death_pre_pass": "query.death_ticks > 1.0" },
+        { "controller.render.ender_dragon_death_main_pass": "query.death_ticks > 1.0" },
+        { "controller.render.ender_dragon_default": "query.death_ticks <= 1.0" }
+      ]
+    }
+  }
+}

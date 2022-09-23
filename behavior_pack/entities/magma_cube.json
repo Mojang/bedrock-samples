@@ -1,0 +1,245 @@
+{
+  "format_version": "1.18.20",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:magma_cube",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+
+    "component_groups": {
+      "minecraft:slime_large": {
+        "minecraft:variant": {
+          "value": 4
+        },
+        "minecraft:collision_box": {
+          "width": 2.08,
+          "height": 2.08
+        },
+        "minecraft:health": {
+          "value": 16,
+          "max": 16
+        },
+        "minecraft:movement": {
+          "value": 0.75
+        },
+        "minecraft:attack": {
+          "damage": 6
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/magma_cube.json"
+        }
+      },
+
+      "minecraft:slime_medium": {
+        "minecraft:variant": {
+          "value": 2
+        },
+        "minecraft:collision_box": {
+          "width": 1.04,
+          "height": 1.02
+        },
+        "minecraft:health": {
+          "value": 4,
+          "max": 4
+        },
+        "minecraft:movement": {
+          "value": 0.66
+        },
+        "minecraft:attack": {
+          "damage": 4
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/magma_cube.json"
+        }
+      },
+
+      "minecraft:slime_small": {
+        "minecraft:variant": {
+          "value": 1
+        },
+        "minecraft:collision_box": {
+          "width": 0.52,
+          "height": 0.52
+        },
+        "minecraft:health": {
+          "value": 1,
+          "max": 1
+        },
+        "minecraft:movement": {
+          "value": 0.6
+        },
+        "minecraft:attack": {
+          "damage": 3
+        }
+      },
+
+      "minecraft:slime_calm": {
+        "minecraft:movement.jump": {
+          "jump_delay": [ 2.0, 6.0 ]
+        }
+      },
+      "minecraft:slime_aggressive": {
+        "minecraft:movement.jump": {
+          "jump_delay": [ 0.667, 2.0 ]
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:experience_reward": {
+        "on_death": "query.last_hit_by_player ? query.variant : 0"
+      },
+      "minecraft:type_family": {
+        "family": [ "magmacube", "monster", "mob" ]
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0,
+        "breathes_lava": true
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:fire_immune": {
+      },
+      "minecraft:burns_in_daylight": false,
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "fall",
+          "deals_damage": false
+        }
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "avoid_water": true
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:movement.jump": {
+        "jump_delay": [ 2.0, 6.0 ]
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:on_target_acquired": {
+        "event": "minecraft:become_aggressive",
+        "target": "self"
+      },
+      "minecraft:on_target_escape": {
+        "event": "minecraft:become_calm",
+        "target": "self"
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:behavior.slime_float": {
+        "priority": 1,
+        "jump_chance_percentage": 0.8,
+        "speed_multiplier": 1.2
+      },
+      "minecraft:behavior.slime_attack": {
+        "priority": 3
+      },
+      "minecraft:behavior.slime_random_direction": {
+        "priority": 4,
+        "add_random_time_range": 3,
+        "turn_range": 360,
+        "min_change_direction_time": 2.0
+      },
+      "minecraft:behavior.slime_keep_on_jumping": {
+        "priority": 5,
+        "speed_multiplier": 1.0
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "entity_types": [
+          {
+            "filters": {
+              "any_of": [
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "player"
+                },
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "irongolem"
+                }
+              ]
+            },
+            "max_dist": 16
+          }
+        ],
+        "must_see": true
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      }
+    },
+
+    "events": {
+      "minecraft:entity_spawned": {
+        "randomize": [
+          {
+            "weight": 1,
+            "trigger": "spawn_small"
+          },
+          {
+            "weight": 1,
+            "trigger": "spawn_medium"
+          },
+          {
+            "weight": 1,
+            "trigger": "spawn_large"
+          }
+        ]
+      },
+      "spawn_small": {
+        "add": {
+          "component_groups": [
+            "minecraft:slime_small",
+            "minecraft:slime_calm"
+          ]
+        }
+      },
+      "spawn_medium": {
+        "add": {
+          "component_groups": [
+            "minecraft:slime_medium",
+            "minecraft:slime_calm"
+          ]
+        }
+      },
+      "spawn_large": {
+        "add": {
+          "component_groups": [
+            "minecraft:slime_large",
+            "minecraft:slime_calm"
+          ]
+        }
+      },
+      "minecraft:become_calm": {
+        "add": {
+          "component_groups": [
+            "minecraft:slime_calm"
+          ]
+        }
+      },
+      "minecraft:become_aggressive": {
+        "add": {
+          "component_groups": [
+            "minecraft:slime_aggressive"
+          ]
+        }
+      }
+    }
+  }
+}

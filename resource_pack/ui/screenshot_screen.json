@@ -1,0 +1,179 @@
+{
+  "namespace": "screenshot",
+
+  //--------------------------------------------------------------------------------
+  // Animations
+  //--------------------------------------------------------------------------------
+
+  "anim_screenshot_flash": {
+    "anim_type": "alpha",
+    "easing": "in_expo",
+    "duration": 1.5,
+    "from": 1.0,
+    "to": 0
+  },
+
+  //--------------------------------------------------------------------------------
+  // Common Controls
+  //--------------------------------------------------------------------------------
+
+  "new_post_share_post": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "white_banner@feed_common.white_banner": {} },
+      {
+        "share_text_box@feed_common.share_text_box": {
+          "$text_box_name": "#caption_text_box",
+          "bindings": [
+            {
+              "binding_name": "#caption_text_box"
+            }
+          ]
+        }
+      },
+      {
+        "share_button@feed_common.share_button": {
+          "$pressed_button_name": "button.share_screenshot",
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle"
+        }
+      }
+    ]
+  },
+
+  "new_post_dialog_header": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "new_post_header_text@feed_common.new_post_header_text": {} },
+      {
+        "close_button@common.close_button": {
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "offset": [ -1, 1 ],
+          "bindings": [
+            {
+              "binding_name": "(not #is_using_gamepad)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "screenshot_flash_image": {
+    "type": "image",
+    "size": [ "100%", "100%" ],
+    "layer": 6,
+    "texture": "textures/ui/White",
+    "alpha": "@screenshot.anim_screenshot_flash"
+  },
+
+  "screenshot_image": {
+    "type": "image",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "bindings": [
+      {
+        "binding_name": "#screenshot_texture",
+        "binding_name_override": "#texture"
+      },
+      {
+        "binding_name": "#screenshot_texture_source",
+        "binding_name_override": "#texture_file_system"
+      }
+    ]
+  },
+  
+  "content_panel": {
+    "type": "panel",
+    "size": [ 300, 225 ],
+    "controls": [      
+      { "popup_dialog_bg@feed_common.popup_dialog_bg": {} },
+      {
+        "popup_content": {
+          "type": "panel",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "layer": 1,
+          "size": ["100%", "100%"],
+          "controls": [
+            {
+              "new_post_dialog_header@screenshot.new_post_dialog_header": {
+                "size": [ "100%", "10%" ]
+              }
+            },
+            {
+              "new_post_share_post@screenshot.new_post_share_post": {
+                "size": [ "100%", "15%" ],
+                "offset": [ 0, "10%" ]
+              }
+            },
+            {
+              "screenshot_image@screenshot.screenshot_image": {
+                "size": [ "100%", "75%" ],
+                "offset": [ 0, "25%" ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "screenshot_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_up",
+        "to_button_id": "button.menu_up",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_down",
+        "to_button_id": "button.menu_down",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_left",
+        "to_button_id": "button.menu_left",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_right",
+        "to_button_id": "button.menu_right",
+        "mapping_type": "global",
+        "scope": "view"
+      }
+    ],
+    "$default_text_color": "$light_button_default_text_color",
+    "$screen_content": "screenshot.screenshot_screen_content"
+  },
+
+  "screenshot_screen_content@common.common_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "transparent_background@feed_common.transparent_background": {}
+      },
+      { "screenshot_flash@screenshot.screenshot_flash_image": {} },
+      {
+        "gamepad_helpers@feed_common.gamepad_helpers": {}
+      },
+      {
+        "content_panel@screenshot.content_panel": {}
+      }
+    ]
+  }
+}

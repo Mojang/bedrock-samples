@@ -1,0 +1,213 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:guardian",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+
+    "component_groups": {
+      "minecraft:guardian_aggressive": {
+        "minecraft:behavior.nearest_attackable_target": {
+          "priority": 1,
+          "entity_types": [
+            {
+              "filters": {  
+                "any_of": [
+                  { "test" :  "is_family", "subject" : "other", "value" :  "player"},
+                  { "test" :  "is_family", "subject" : "other", "value" :  "squid"},
+                  { "test" :  "is_family", "subject" : "other", "value" :  "axolotl"}
+                ] 
+              },
+              "max_dist": 16
+            }
+          ],
+          "attack_interval_min": 1.0,
+          "must_see": true
+        },
+        "minecraft:target_nearby_sensor": {
+          "inside_range": 3.0,
+          "outside_range": 4.0,
+          "on_inside_range": {
+            "event": "minecraft:target_too_close",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.guardian_attack": {
+          "priority": 4
+        }
+      },
+
+      "minecraft:guardian_passive": {
+        "minecraft:timer": {
+          "time": [ 1, 3 ],
+          "looping": false,
+          "time_down_event": {
+            "event": "minecraft:target_far_enough",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.avoid_mob_type": {
+          "priority": 1,
+          "entity_types": [
+            {
+              "filters": {"test" :  "is_family", "subject" : "other", "value" :  "player"},
+              "max_dist": 8,
+              "walk_speed_multiplier": 1,
+              "sprint_speed_multiplier": 1
+            }
+          ]
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:experience_reward": {
+        "on_death": "query.last_hit_by_player ? 10 : 0"
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:collision_box": {
+        "width": 0.85,
+        "height": 0.85
+      },
+      "minecraft:health": {
+        "value": 30,
+        "max": 30
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:movement": {
+        "value": 0.12
+      },
+      "minecraft:underwater_movement": {
+        "value": 0.12
+      },
+      "minecraft:attack": {
+        "damage": 5
+      },
+      "minecraft:follow_range": {
+        "value": 16,
+        "max": 16
+      },
+      "minecraft:navigation.generic": {
+        "is_amphibious": true,
+        "can_path_over_water": false,
+        "can_swim": true,
+        "can_walk": false,
+        "can_breach": true
+      },
+      "minecraft:movement.sway": {
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:breathable": {
+        "breathes_water": true
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/guardian.json"
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:home": {
+        "restriction_radius": 16
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 1,
+        "entity_types": [
+          {
+            "filters": {  
+              "any_of": [
+                { "test" :  "is_family", "subject" : "other", "value" :  "player"},
+                { "test" :  "is_family", "subject" : "other", "value" :  "squid"},
+                { "test" :  "is_family", "subject" : "other", "value" :  "axolotl"}
+              ] 
+            },
+            "max_dist": 16
+          }
+        ],
+        "attack_interval_min": 1.0,
+        "must_see": true
+      },
+      "minecraft:target_nearby_sensor": {
+        "inside_range": 3.0,
+        "outside_range": 4.0,
+        "on_inside_range": {
+          "event": "minecraft:target_too_close",
+          "target": "self"
+        }
+      },
+      "minecraft:behavior.guardian_attack": {
+        "priority": 4
+      },
+     "minecraft:behavior.move_towards_home_restriction": {
+        "priority": 5,
+        "speed_multiplier": 1.0
+      },
+      "minecraft:behavior.random_swim": {
+        "priority": 7,
+        "speed_multiplier": 1.0,
+        "interval": 80,
+        "avoid_surface": false
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "look_distance": 12.0,
+        "probability": 0.01
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:type_family": {
+        "family": [ "guardian", "monster", "mob" ]
+      },
+	    "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      }
+    },
+
+    "events": {
+      "minecraft:target_too_close": {
+        "remove": {
+          "component_groups": [
+            "minecraft:guardian_aggressive"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:guardian_passive"
+          ]
+        }
+      },
+      "minecraft:target_far_enough": {
+        "remove": {
+          "component_groups": [
+            "minecraft:guardian_passive"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:guardian_aggressive"
+          ]
+        }
+      }
+    }
+  }
+}

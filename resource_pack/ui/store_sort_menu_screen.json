@@ -1,0 +1,268 @@
+{
+  "namespace": "sort_menu",
+
+  "sort_menu_toggle_panel": {
+    "type": "panel",
+    "size": [ "100%", 30 ],
+    "controls": [
+      {
+        "sort_menu_toggle_panel": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "$is_relevance_toggle|default": false,
+          "variables": [
+            {
+              "requires": "$is_relevance_toggle",
+              "$content_toggle_label": "store.search.sort_menu.Default"
+            },
+            {
+              "requires": "(not $is_relevance_toggle)",
+              "$content_toggle_label": "#sort_toggle_label"
+            }
+          ],
+          "$checked_toggle_icon": "textures/ui/radio_on",
+          "$checked_hover_toggle_icon": "textures/ui/radio_on_hover",
+          "$unchecked_toggle_icon": "textures/ui/radio_off",
+          "$unchecked_hover_toggle_icon": "textures/ui/radio_off_hover",
+          "controls": [
+            {
+              "sort_menu_toggle@common_store.filter_sort_toggle": {
+                "$ignore_content_toggle_image": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  //The first button on the filter menu that has the X to close the menu
+  "sort_menu_first_button_content_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", 30 ],
+    "controls": [
+      {
+        "left_padding": {
+          "type": "panel",
+          "size": [ 4, "100%" ]
+        }
+      },
+      {
+        "centered_sort_logo_icon": {
+          "type": "panel",
+          "size": [ 21, "100%" ],
+          "controls": [
+            {
+              "sort_logo_icon@common_store.sort_button_content_panel": {}
+            }
+          ]
+        }
+      },
+      {
+        "logo_padding_labels": {
+          "type": "panel",
+          "size": [ 4, "100%" ]
+        }
+      },
+      {
+        "labels_stack_panel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            {
+              "top_padding": {
+                "type": "panel",
+                "size": [ "100%", "fill" ]
+              }
+            },
+            {
+              "sort_const_word_top": {
+                "type": "label",
+                "text": "store.search.sort_menu.sortConstWord",
+                "color": "$text_color",
+                "size": [ "100%", 10 ]
+              }
+            },
+            {
+              "middle_padding": {
+                "type": "panel",
+                "size": [ "100%", 1 ]
+              }
+            },
+            {
+              "current_sort_value_label_bottom": {
+                "type": "label",
+                "text": "#sort_type_text",
+                "color": "$text_color",
+                "alpha": 0.7,
+                "size": [ "100%", 10 ],
+                "bindings": [
+                  {
+                    "binding_name": "#sort_type_text"
+                  }
+                ]
+              }
+            },
+            {
+              "bottom_padding": {
+                "type": "panel",
+                "size": [ "100%", "fill" ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "labels_padding_x_image": {
+          "type": "panel",
+          "size": [ "fill", "100%" ]
+        }
+      },
+      {
+        "x_image_panel": {
+          "type": "panel",
+          "size": [ 15, "100%" ],
+          "controls": [
+            {
+              "x_image": {
+                "type": "image",
+                "size": [ 15, 15 ],
+                "layer": 2,
+                "texture": "textures/ui/close_button_default_light",
+                "color": "$text_color"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "sort_menu_toggles": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "anchor_to": "top_right",
+    "anchor_from": "top_right",
+    "$filter_sort_prefix": "sort_menu",
+    "controls": [
+      {
+        "relevance_toggle_panel": {
+          "type": "panel",
+          "size": [ "100%", 30 ],
+          "controls": [
+            {
+              "relevance_toggle@sort_menu.sort_menu_toggle_panel": {
+                "size": [ "100% - 16px", 30 ],
+                "anchor_from": "right_middle",
+                "anchor_to": "right_middle",
+                "$is_relevance_toggle": true,
+                "$filter_sort_prefix": "sort_relevance"
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#relevance_toggle_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "sort_toggle_grid@common_store.filter_sort_grid_panel": {
+          "$filter_sort_prefix": "sort_menu",
+          "$filter_sort_grid_size": [ "100% - 16px", "100%c" ]
+        }
+      }
+    ]
+  },
+
+  //Menu that pops up when you click on the sort menu...
+  "sort_menu_show": {
+    "type": "stack_panel", //stacks panels together
+    "orientation": "vertical",
+    "size": [ "100%", "100%" ],
+    "layer": 2,
+    "controls": [
+      {
+        "1st_button_centering_panel": {
+          "type": "panel",
+          "size": [ "100%", 30 ],
+          "controls": [
+            {
+              "first_button_main@common_buttons.light_content_button": {
+                "type": "button",
+                "size": [ "100%", "100%" ],
+                "anchor_from": "top_right",
+                "anchor_to": "top_right",
+                "$button_content": "sort_menu.sort_menu_first_button_content_panel",
+                "$pressed_button_name": "button.close_sort_menu",
+                "$secondary_text_color": "$place_holder_text_color"
+              }
+            }
+          ]
+        }
+      },
+      //Sorting options radio button instances
+      {
+        "sort_scrolling_content_panel@common_store.filter_sort_submenu_scrolling_panel_section": {
+          "$filter_sort_scrolling_panel_size": [ "100%", "100%" ],
+          "$scrolling_content": "sort_menu.sort_menu_toggles"
+        }
+      }
+    ]
+  },
+
+  //main sort menu content panel, it's half of the current screen size on the X axis
+  "sort_menu_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "40%", "100%" ],
+    "anchor_to": "top_right",
+    "anchor_from": "top_right",
+    "visible": false,
+    "layer": 2,
+    "controls": [
+      {
+        // added to align with search bar
+        "top_padding": {
+          "type": "panel",
+          "size": [ "100%", 4 ]
+        }
+      },
+      {
+        "sort_menu_show@sort_menu.sort_menu_show": {}
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#sort_menu_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  //main panel holding the background and the sort menu itself
+  "sort_menu_screen_content@common.modal_area_panel_base": {
+    "layer": 100,
+    "$menu_cancel_button_id": "button.close_sort_menu",
+    "$close_bg_exit_button_name": "button.close_sort_menu",
+    "controls": [
+      {
+        "sort_menu_main@sort_menu.sort_menu_panel": {}
+      },
+      {
+        "sort_menu_background@common_store.close_bg_panel": {}
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#sort_screen_visible",
+        "binding_name_override": "#modal"
+      }
+    ]
+  }
+}

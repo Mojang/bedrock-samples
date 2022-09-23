@@ -1,0 +1,189 @@
+{
+  "namespace": "content_log_history",
+
+  "clipboard_icon": {
+    "layer": 1,
+    "type": "image",
+    "texture": "textures/ui/copy",
+    "size": [ 13, 14 ]
+  },
+
+  "clipboard_icon_wrapper": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100% - 2px", "100% - 2px" ],
+    "controls": [
+      {
+        "stack_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "controls": [
+            {
+              "icon_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  {
+                    "icon@content_log_history.clipboard_icon": {
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "offset": {
+                "type": "panel",
+                "size": [ 4, "100%" ]
+              }
+            },
+            {
+              "label_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  {
+                    "label": {
+                      "type": "label",
+                      "text": "contentlog.history.copyToClipboard",
+                      "color": "$text_color"
+                    }
+                  }
+                ]
+              }
+              
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "clipboard_button@common_buttons.light_content_button": {
+    "size": [ 30, 30 ],
+    "$pressed_button_name": "button.copy_to_clipboard",
+    "$button_content": "content_log_history.clipboard_icon_wrapper"
+  },
+
+  "content_log_message": {
+    "type": "label",
+    "color": "$chat_text_color",
+    "localize": false,
+    "size": [ "100%", "default" ],
+    "text": "#text",
+    "font_type": "smooth",
+    "line_padding": 1,
+    "font_scale_factor": 1,
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_name": "#content_log_text",
+        "binding_name_override": "#text",
+        "binding_collection_name": "content_log_message"
+      }
+    ]
+  },
+
+  "content_log_message_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "content_log_message@content_log_history.content_log_message": {
+        }
+      }
+    ]
+  },
+
+  "content_log_message_panel_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%cm" ],
+    "controls": [
+      {
+        "content_log_message_panel@content_log_history.content_log_message_panel": {
+        }
+      }
+    ]
+  },
+
+  "messages_stack_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "$scrolling_content_anchor_from": "bottom_left",
+    "$scrolling_content_anchor_to": "bottom_left",
+    "collection_name": "content_log_message",
+    "size": [ "100%", "default" ],
+    "factory": {
+      "name": "messages_factory",
+      "control_name": "content_log_message@content_log_history.content_log_message_panel"
+    },
+    "bindings": [
+      {
+        "binding_name": "#messages_size",
+        "binding_type": "global",
+        "binding_name_override": "#collection_length"
+      }
+    ]
+  },
+
+  "messages_scrolling_panel@common.scrolling_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "offset": [ 2, -27 ],
+    "$scrolling_content": "content_log_history.messages_stack_panel",
+    "$scroll_size": [ 5, "100%-4px" ],
+    "$jump_to_bottom_on_update": true,
+    "$show_background": false,
+    "$always_handle_scrolling": true
+
+  },
+
+  "main_stack_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      {
+        "messages_scrolling_panel@content_log_history.messages_scrolling_panel": {
+        }
+      }
+    ]
+  },
+
+  "content_log_history_panel": {
+    "type": "panel",
+    // If we don't support the clipboard, we shouldn't show the clipboard button
+    // Use the no buttons dialog in this case.
+    "$dialog_control|default": "common_dialogs.main_panel_no_buttons",
+    "variables": [
+      {
+        "requires": "$supports_clipboard_set",
+        "$dialog_control": "common_dialogs.main_panel_one_button"
+      }
+    ],
+
+    "controls": [
+      {
+        "content_log_history_dialog@$dialog_control": {
+          "$text_name": "contentlog.history.title",
+          "$child_control": "content_log_history.main_stack_panel",
+          "$button_panel": "content_log_history.clipboard_button",
+          "size": [ "100%", "100%" ]
+        }
+      }
+    ]
+  },
+
+  "content_log_history_screen@common.base_screen": {
+    "$screen_content": "content_log_history.content_log_history_panel",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ]
+  }
+}

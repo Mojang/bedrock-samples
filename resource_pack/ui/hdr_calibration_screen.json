@@ -1,0 +1,247 @@
+/********************************************************
+*   (c) Mojang. All rights reserved                      *
+*   (c) Microsoft. All rights reserved.                  *
+*********************************************************/
+
+{
+  "namespace": "hdr_calibration",
+
+
+  "stack_panel_centering_panel": {
+    "type": "panel",
+    "$control_name|default": "common.empty_panel",
+    "controls": [
+      {
+        "child@$control_name": {
+          "anchor_from": "center",
+          "anchor_to": "center"
+        }
+      }
+    ]
+  },
+
+  "image_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "33.3333% - 10.66667px", "100%c" ],
+    "$image_label|default": "",
+    "controls": [
+      {
+        "centering_panel": {
+          "type": "panel",
+          "size": [ "100%", 30 ],
+          "controls": [
+            {
+              "image_label": {
+                "type": "label",
+                "size": [ "default", "default" ],
+                "max_size": [ "100%", "100%" ],
+                "text": "$image_label",
+                "color": "$body_text_color"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "image": {
+          "type": "image",
+          "texture": "$texture_name",
+          "size": [ "100%", "100%x" ]
+        }
+      }
+    ]
+  },
+
+  "horizontal_padding": {
+    "type": "panel",
+    "size": [ 16, 0 ]
+  },
+
+  "image_stack": {
+    "type": "stack_panel",
+    "size": "$image_panel_size",
+    "orientation": "horizontal",
+    "controls": [
+      {
+        "not_visible_image@hdr_calibration.image_panel": {
+          "$image_label": "options.brightness.notVisible",
+          "$texture_name": "textures/ui/not_visible_creeper"
+        }
+      },
+      {
+        "padding_0@hdr_calibration.horizontal_padding": {}
+      },
+      {
+        "barely_visible_image@hdr_calibration.image_panel": {
+          "$image_label": "options.brightness.barelyVisible",
+          "$texture_name": "textures/ui/barely_visible_creeper"
+        }
+      },
+      {
+        "padding_1@hdr_calibration.horizontal_padding": {}
+      },
+      {
+        "easily_visible_image@hdr_calibration.image_panel": {
+          "$image_label": "options.brightness.easilyVisible",
+          "$texture_name": "textures/ui/easily_visible_creeper"
+        }
+      }
+    ]
+  },
+
+  "message_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "message_label": {
+          "size": [ "default", "default" ],
+          "max_size": [ "100%", "100%" ],
+          "type": "label",
+          "color": "$body_text_color",
+          "text": "options.adjustBrightness"
+        }
+      }
+    ]
+  },
+
+  "calibration_slider": {
+    "type": "stack_panel",
+    "size": [ "50%", "100%c" ],
+    "$slider_header": "options.worldLightBrightness",
+    "controls": [
+      {
+        "centering_panel": {
+          "type": "panel",
+          "size": [ "100%", 14 ],
+          "controls": [
+            {
+              "slider_label": {
+                "type": "label",
+                "size": [ "default", "default" ],
+                "text": "$slider_header",
+                "color": "$body_text_color"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "slider_control": {
+          "type": "panel",
+          "size": [ "100% - 2px", 16 ],
+          "$slider_name": "hdr_calibration",
+          "$slider_value_binding_name": "#hdr_calibration",
+          "$default_focus_precedence": 1,
+          "controls": [
+            {
+              "slider@common.slider": {
+                "size": "$slider_size",
+                "$slider_box_size": [ 10, 16 ],
+                "offset": [ 1, 0 ],
+                "$slider_select_on_hover": true,
+                "$slider_tts_header": "$slider_header",
+                "$slider_tts_name": "",
+                "$slider_tts_text_value": "#hdr_calibration_text_value"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+
+
+  "continue_button@common_buttons.light_text_button": {
+    "size": [ "20%", 30 ],
+    "$pressed_button_name": "button.continue",
+    "$button_text": "gui.continue"
+  },
+
+  "main_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "layer": 1,
+    "variables": [
+      {
+        "requires": "($pocket_screen or $is_holographic)",
+        "$padding_between_button_size": [ "100%", 2 ]
+      },
+      {
+        "requires": "$desktop_screen",
+        "$padding_between_button_size": [ "100%", 16 ]
+      }
+    ],
+    "controls": [
+      {
+        "hdr_message_panel@hdr_calibration.stack_panel_centering_panel": {
+          "$control_name": "hdr_calibration.message_panel",
+          "size": [ "100%", 30 ]
+        }
+      },
+      {
+        "image_stack_panel@hdr_calibration.stack_panel_centering_panel": {
+          "$control_name": "hdr_calibration.image_stack",
+          "size": [ "100%", "100%c" ],
+          "variables": [
+            {
+              "requires": "($pocket_screen or $is_holographic)",
+              "$image_panel_size": [ 192, "33.3333%c" ]
+            },
+            {
+              "requires": "$desktop_screen",
+              "$image_panel_size": [ 248, "33.3333%c" ]
+            }
+          ]
+        }
+      },
+      {
+        "padding_0": {
+          "type": "panel",
+          "size": [ "100%", 16 ]
+        }
+      },
+      {
+        "slider_panel@hdr_calibration.stack_panel_centering_panel": {
+          "$control_name": "hdr_calibration.calibration_slider",
+          "size": [ "100%", "100%c" ],
+          "variables": [
+            {
+              "requires": "($pocket_screen or $is_holographic)",
+              "$slider_size": [ 162, 10 ]
+            },
+            {
+              "requires": "$desktop_screen",
+              "$slider_size": [ 218, 10 ]
+            }
+          ]
+        }
+      },
+      {
+        "padding_1": {
+          "type": "panel",
+          "size": "$padding_between_button_size"
+        }
+      },
+      {
+        "continue_button_panel@hdr_calibration.stack_panel_centering_panel": {
+          "$control_name": "hdr_calibration.continue_button",
+          "size": [ "100%", 30 ]
+        }
+      }
+    ]
+  },
+
+  "black_background": {
+    "type": "image",
+    "texture": "textures/ui/realms_text_background"    
+  },
+
+  "hdr_calibration_screen@common.base_screen": {
+    "$screen_content": "hdr_calibration.main_panel",
+    "$screen_bg_content": "hdr_calibration.black_background"
+  }
+
+}

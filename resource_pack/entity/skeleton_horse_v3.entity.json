@@ -1,0 +1,53 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:skeleton_horse",
+      "min_engine_version": "1.17.10",
+      "materials": {
+        "default": "horse"
+      },
+      "textures": {
+        "skeleton": "textures/entity/horse2/horse_skeleton",
+        "markings_none": "textures/entity/horse2/horse_markings_none",
+        "armor_none": "textures/entity/horse2/armor/horse_armor_none"
+      },
+      "geometry": {
+        "default": "geometry.horse.v3"
+      },
+      "animations": {
+        "baby_transform": "animation.horse.v3.baby_transform",
+        "walk": "animation.horse.v3.walk",
+        "eat": "animation.horse.v3.eat",
+        "rear": "animation.horse.v3.rear",
+        "tail": "animation.horse.v3.tail",
+        "look_at_player": "animation.horse.v3.look_at_player"
+      },
+      "scripts": {
+        "initialize": [
+          "variable.eat_anim = 0.0;"
+        ],
+        "pre_animation": [
+          "variable.eat_anim = math.clamp(variable.eat_anim + (query.is_grazing ? ((1.0 - variable.eat_anim) * 0.4 + 0.05) : -variable.eat_anim * 0.4 - 0.05) * query.delta_time * 20.0, 0.0, 1.0);",
+          "variable.head_x_rot = query.target_x_rotation + (query.modified_move_speed > 0.2 ? (math.cos(query.modified_distance_moved * 11.46) * 11.46 * query.modified_move_speed + query.modified_move_speed * 11.46) : 0.0);",
+          "variable.inverse_max_stand_eat = (1.0 - math.max(variable.stand_anim, variable.eat_anim));",
+          "variable.leg_stand_factor = math.cos((query.modified_distance_moved * 38.38) + 180.0);",
+          "variable.leg_x_rot_anim = variable.leg_stand_factor * 45.8 * query.modified_move_speed;"
+        ],
+        "animate": [
+          { "baby_transform": "query.is_baby" },
+          "walk",
+          "look_at_player",
+          { "rear": "variable.stand_anim > 0.0" },
+          { "eat": "!query.is_standing" },
+          { "tail": "variable.shake_tail" }
+        ]
+      },
+      "render_controllers": [ "controller.render.skeleton_horse.v3" ],
+      "spawn_egg": {
+        "texture": "spawn_egg",
+        "texture_index": 32
+      }
+    }
+  }
+}

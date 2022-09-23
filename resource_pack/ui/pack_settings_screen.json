@@ -1,0 +1,189 @@
+{
+  "namespace": "pack_settings",
+
+   "background@common.screen_background": {
+     "alpha": 0.65,
+     "layer": 1
+   },
+
+  "screen@common.base_screen": {
+    "force_render_below": true,
+    "$fill_alpha": 1.0,
+    "$screen_content": "pack_settings.main_screen_content",
+    "$screen_bg_content": "pack_settings.background",
+    "$screen_animations": [
+      "@common.screen_exit_animation_push_fade",
+      "@common.screen_exit_animation_pop_fade",
+      "@common.screen_entrance_animation_push_fade",
+      "@common.screen_entrance_animation_pop_fade"
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ]
+  },
+
+  "main_screen_content@common_dialogs.main_panel_no_buttons": {
+    "size": "$extra_large_screen_size",
+    "max_size": "$extra_large_max_screen_size",
+    "$child_control": "pack_settings.pack_scroll_panel",
+    "$text_name": "#pack_settings_title",
+    "$title_text_binding_type": "global",
+    "layer": 2
+  },
+
+  "pack_scroll_panel@common.scrolling_panel": {
+    "$show_background": false,
+    "$scrolling_content": "pack_settings.scrolling_content",
+    "$scroll_size": [ 5, "100% - 4px" ],
+    "$scrolling_pane_size": [ "100% - 4px", "100%" ],
+    "$scrolling_pane_offset": [ 2, 0 ],
+    "$scroll_bar_right_padding_size": [ 0, 0 ]
+  },
+
+  "scrolling_content": {
+    "type": "stack_panel",
+    "size": [ "100% - 4px", "100%c" ],
+    "orientation": "vertical",
+    "controls": [
+      {
+        "content_tiering_panel@pack_settings.content_tiering_panel": {}
+      },
+      {
+        "generated_form@server_form.generated_contents": {}
+      }
+    ]
+  },
+
+  "content_tiering_panel": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "bindings": [
+      {
+        "binding_name": "#has_content_tiering",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "label_panel": {
+          "type": "panel",
+          "size": [ "100%", "100%c+2px" ],
+          "controls": [
+            {
+              "content_tier_label": {
+                "type": "label",
+                "text": "#text",
+                "color": "$body_text_color",
+                "size": [ "100%-8px", "default" ],
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "offset": [ 4, 2 ],
+                "layer": 1,
+                "localize": false,
+                "bindings": [
+                  {
+                    "binding_name": "#content_tier_label",
+                    "binding_name_override": "#text"
+                  },
+                  {
+                    "binding_name": "#content_tier_supported",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "unsupported_content_tier_label": {
+                "type": "label",
+                "text": "#text",
+                "color": "$error_text_color",
+                "size": [ "100%-8px", "default" ],
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "offset": [ 4, 2 ],
+                "layer": 1,
+                "localize": false,
+                "bindings": [
+                  {
+                    "binding_name": "#content_tier_label",
+                    "binding_name_override": "#text"
+                  },
+                  {
+                    "binding_name": "(not #content_tier_supported)",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "slider_panel": {
+          "type": "panel",
+          "size": [ "100%", 20 ],
+          "controls": [
+            {
+              "content_tier_slider@common.slider": {
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "$slider_select_on_hover": true,
+                "$slider_deselected_button": "button.menu_exit",
+                "size": [ "100% - 18px", 10 ],
+                "layer": 1,
+
+                "$slider_box_size": [ 10, 16 ],
+                "$slider_name": "content_tier_slider",
+
+                "$slider_binding_type": "global",
+                "$slider_value_binding_name": "#content_tier_value",
+
+                "$slider_steps_binding_type": "global",
+                "$slider_steps_binding_name": "#content_tier_steps",
+
+                "$slider_enabled_binding_type": "global",
+                "$slider_enabled_binding_name": "#has_content_tiering",
+
+                "$slider_tts_text_value": "#content_tier_slider_text_value"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "incompatible_label_panel": {
+          "type": "panel",
+          "size": [ "100%", "100%c+2px" ],
+          "controls": [
+            {
+              "label": {
+                "type": "label",
+                "text": "#text",
+                "color": "$error_text_color",
+                "anchor_from": "bottom_left",
+                "anchor_to": "bottom_left",
+                "layer": 1,
+                "size": [ "100%-8px", "default" ],
+                "offset": [ 4, -2 ],
+                "bindings": [
+                  {
+                    "binding_name": "(not #content_tier_supported)",
+                    "binding_name_override": "#visible"
+                  },
+                  {
+                    "binding_name": "#incompatible_reason",
+                    "binding_name_override": "#text"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

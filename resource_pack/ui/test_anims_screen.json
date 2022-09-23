@@ -1,0 +1,420 @@
+{
+  "namespace": "test",
+
+  //---------------------------------------------------------------------------
+  // Common
+  //---------------------------------------------------------------------------
+
+  "button": {
+    "type": "button",
+
+    "$focus_id|default": "", 
+    "$focus_override_down|default": "", 
+    "$focus_override_up|default": "", 
+    "$focus_override_left|default": "", 
+    "$focus_override_right|default": "", 
+    "focus_identifier": "$focus_id",
+    "focus_change_down": "$focus_override_down",
+    "focus_change_up": "$focus_override_up",
+    "focus_change_left": "$focus_override_left",
+    "focus_change_right": "$focus_override_right",
+    "focus_enabled": true,
+
+    "layer": 1,
+    "size": [ 100, 20 ],
+    "sound_name": "random.click",
+    "sound_volume": 1.0,
+    "sound_pitch": 1.0,
+    "default_control": "default",
+    "hover_control": "hover",
+    "pressed_control": "pressed"
+  },
+
+  "button_text": {
+    "type": "label",
+    "color": "$generic_button_text_color",
+    "layer": 1,
+    "font_size": "small",
+    "text": "go button",
+    "shadow": false
+  },
+
+  "button_image": {
+    "type": "image",
+    "texture": "textures/ui/NormalButtonStroke",
+    "layer": 2,
+    "controls": [
+      {
+        "button_text@button_text": {
+        }
+      }
+    ]
+  },
+
+  "go_button@button": {
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ 40, 15 ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.menu_play",
+        "mapping_type": "pressed"
+      }
+    ],
+    "controls": [
+      {
+        "default@button_image": {
+        }
+      },
+      {
+        "hover@button_image": {
+        }
+      },
+      {
+        "pressed@button_image": {
+        }
+      }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // Animations
+  //---------------------------------------------------------------------------
+
+  "anim_guy_walk": {
+    "anim_type": "flip_book",
+    "initial_uv": [ 0, 0 ],
+    "frame_count": 5,
+    "frame_step": 23,
+    "fps": 8
+  },
+
+  "anim_guy_wait": {
+    "anim_type": "wait",
+    "duration": 3,
+    "next": "@anim_guy_move_back"
+  },
+
+  "anim_guy_move_back": {
+    "anim_type": "offset",
+    "easing": "linear",
+    "duration": 4,
+    "from": [ "85%", 0 ],
+    "to": [ "10%", 0 ],
+    "next": "@anim_guy_move_forward"
+  },
+
+  "anim_guy_move_forward": {
+    "anim_type": "offset",
+    "easing": "in_out_back",
+    "duration": 3,
+    "from": [ "10%", 0 ],
+    "to": [ "85%", 0 ],
+    "next": "@anim_guy_wait"
+  },
+
+  "anim_arrow_color": {
+    "anim_type": "color",
+    "easing": "in_out_expo",
+    "duration": 15,
+    "from": [ 0, 1, 0, 1 ],
+    "to": [ 1, 0, 0, 1 ]
+  },
+
+  "anim_color_cycle": {
+    "anim_type": "color",
+    "duration": 2,
+    "from": [ 0, 1, 0, 1 ],
+    "to": [ 1, 0, 1, 1 ],
+    "next": "@anim_color_cycle"
+  },
+
+  "anim_color_flash_wait": {
+    "anim_type": "wait",
+    "duration": 1,
+    "next": "@anim_color_flash"
+  },
+
+  "anim_color_flash": {
+    "anim_type": "color",
+    "duration": 0.2,
+    "from": [ 0, 0, 0, 1 ],
+    "to": [ 1, 0.25, 0, 1 ],
+    "next": "@anim_color_flash_wait"
+  },
+
+  "anim_move": {
+    "anim_type": "offset",
+    "duration": 10
+  },
+
+  "anim_move_along_top@anim_move": {
+    "from": [ "2%", "20%" ],
+    "to": [ "98%", "20%" ],
+    "duration": 5,
+    "easing": "out_bounce",
+    "next": "@anim_move_along_right"
+  },
+
+  "anim_move_along_right@anim_move": {
+    "duration": 1,
+    "from": [ "98%", "20%" ],
+    "to": [ "98%", "80%" ],
+    "easing": "in_out_back",
+    "next": "@anim_move_along_bottom"
+  },
+
+  "anim_move_along_bottom@anim_move": {
+    "from": [ "98%", "80%" ],
+    "to": [ "2%", "80%" ],
+    "easing": "in_bounce",
+    "duration": 6,
+    "next": "@anim_move_along_left"
+  },
+
+  "anim_move_along_left@anim_move": {
+    "from": [ "2%", "80%" ],
+    "to": [ "2%", "20%" ],
+    "duration": 1,
+    "easing": "in_out_circ",
+    "next": "@anim_move_along_top"
+  },
+
+  "anim_move_with_condition_forward": {
+    "anim_type": "offset",
+    "activated": "#active",
+    "easing": "out_expo",
+    "from": [ 10, -10 ],
+    "to": [ 240, -10 ],
+    "duration": 5,
+    "next": "@anim_move_with_condition_back"
+  },
+
+  "anim_move_with_condition_back": {
+    "anim_type": "offset",
+    "easing": "in_expo",
+    "activated": "#active",
+    "from": [ 240, -10 ],
+    "to": [ 10, -10 ],
+    "duration": 5,
+    "next": "@anim_move_with_condition_forward"
+  },
+
+  "anim_move_sub_square_a": {
+    "anim_type": "offset",
+    "from": [ -12, 12 ],
+    "to": [ 12, -12 ],
+    "next": "@anim_move_sub_square_b"
+  },
+
+  "anim_move_sub_square_b": {
+    "anim_type": "offset",
+    "from": [ 12, -12 ],
+    "to": [ -12, 12 ],
+    "next": "@anim_move_sub_square_a"
+  },
+
+  "anim_portal_uv_scroll": {
+    "anim_type": "uv",
+    "from": [ 0, 0 ],
+    "to": [ 0, 256 ],
+    "duration": 4,
+    "next": "@anim_portal_uv_scroll"
+  },
+
+  "anim_portal_scale_big": {
+    "anim_type": "size",
+    "easing": "in_sine",
+    "start_event": "button.menu_achievements",
+    "from": [ 16, 16 ],
+    "to": [ 64, 32 ],
+    "duration": 1.5,
+    "next": "@anim_portal_scale_small"
+  },
+
+  "anim_portal_scale_small": {
+    "anim_type": "size",
+    "easing": "out_sine",
+    "from": [ 64, 32 ],
+    "to": [ 16, 16 ],
+    "duration": 1.5,
+    "next": "@anim_portal_scale_big"
+  },
+
+  //---------------------------------------------------------------------------
+  // Pieces
+  //---------------------------------------------------------------------------
+
+  "arrow_image": {
+    "type": "image",
+    "texture": "textures/ui/arrow",
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "color": "@anim_arrow_color"
+  },
+
+  "walking_image": {
+    "type": "image",
+    "texture": "textures/ui/walking",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ 23, 36 ],
+    "uv_size": [ 23, 36 ],
+    "uv": "@anim_guy_walk",
+    "offset": "@anim_guy_move_forward"
+  },
+
+  "portal_image": {
+    "type": "image",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "offset": [ 0, 0 ],
+    "texture": "images/blocks/portal",
+    "size": "@anim_portal_scale_big",
+    "uv": "@anim_portal_uv_scroll",
+    "uv_size": [ 16, 16 ]
+  },
+
+  "sub_square_thing": {
+    "type": "image",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ 4, 4 ],
+    "texture": "textures/ui/Dot2",
+    "layer": 3,
+    "color": "@anim_color_cycle",
+    "offset": "@anim_move_sub_square_a"
+  },
+
+  "square_thing": {
+    "type": "image",
+    "anchor_from": "top_left",
+    "anchor_to": "center",
+    "size": [ 10, 10 ],
+    "texture": "textures/ui/NormalButtonNoStroke",
+    "layer": 2,
+    "color": "@anim_color_cycle",
+    "offset": "@anim_move_along_top",
+    "controls": [
+      {
+        "sub_square_thing@sub_square_thing": { }
+      }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // Screens
+  //---------------------------------------------------------------------------
+
+  "root_panel": {
+    "type": "panel",
+    "size": [ "90%", "90%" ]
+  },
+
+  "anchored_panel": {
+    "type": "image",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "texture": "textures/ui/NormalButtonNoStroke",
+    "layer": 2
+  },
+
+  "panel_1@anchored_panel": {
+    "size": [ "100%", "25%" ],
+    "offset": [ 0, 0 ],
+    "controls": [
+      {
+        "go_button@go_button": { }
+      },
+      {
+        "square_thing@square_thing": {
+          "color": "@anim_color_flash",
+          "offset": "@anim_move_with_condition_forward",
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left"
+        }
+      }
+    ]
+  },
+
+  "panel_2@anchored_panel": {
+    "size": [ "100%", "25%" ],
+    "offset": [ 0, "25%" ],
+    "controls": [
+      {
+        "square_thing@square_thing": { }
+      }
+    ]
+  },
+
+  "panel_3@anchored_panel": {
+    "size": [ "100%", "25%" ],
+    "offset": [ 0, "50%" ],
+    "controls": [
+      {
+        "portal@portal_image": { }
+      },
+      {
+        "go_button@go_button": {
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.menu_achievements",
+              "mapping_type": "pressed"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "panel_4@anchored_panel": {
+    "size": [ "100%", "25%" ],
+    "offset": [ 0, "75%" ],
+    "controls": [
+      {
+        "walking_image@walking_image": { }
+      },
+      {
+        "arrow_image@arrow_image": { }
+      }
+    ]
+  },
+
+  "anims@common.base_screen": {
+    "send_telemetry": false,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ],
+    "$screen_content": "test.test_anims_screen_content"
+  },
+
+  "test_anims_screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "root_panel@root_panel": {
+          "controls": [
+            {
+              "panel_1@panel_1": { }
+            },
+            {
+              "panel_2@panel_2": { }
+            },
+            {
+              "panel_3@panel_3": { }
+            },
+            {
+              "panel_4@panel_4": { }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

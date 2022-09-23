@@ -1,0 +1,99 @@
+/********************************************************
+*   (c) Mojang. All rights reserved                     *
+*   (c) Microsoft. All rights reserved.                 *
+*********************************************************/
+{
+  "namespace": "discovery_dialog",
+
+  "service_body_label": {
+    "size": [ "100%", "default" ],
+    "type": "label",
+    "text": "#service_body_text",
+    "color": "$body_text_color",
+    "bindings": [
+      {
+        "binding_name": "#service_body_text"
+      }
+    ]
+  },
+
+  "service_button@common_buttons.light_text_button": {
+    "size": [ "100%", 18 ],
+    "$button_text_binding_type": "collection",
+    "$button_binding_condition": "once",
+    "$button_text": "#service_button_text",
+    "$button_text_grid_collection_name": "button_collection",
+    "$button_visible_binding|default": "",
+    "$pressed_button_name": "button.service",
+    "bindings": [
+      {
+        "binding_name": "#service_button_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "button_collection"
+      },
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "button_collection"
+      }
+    ]
+  },
+
+  "service_buttons": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "factory": {
+      "name": "button_factory",
+      "control_name": "discovery_dialog.service_button"
+    },
+    "collection_name": "button_collection",
+    "bindings": [
+      {
+        "binding_name": "#button_count",
+        "binding_name_override": "#collection_length"
+      }
+    ]
+  },
+
+  "content": {
+    "type": "stack_panel",
+    "size": [ 218, "100%c" ],
+    "controls": [
+      {
+        "body_text@common.tts_label_focus_wrapper": {
+          "size": [ "100%", "100%cm" ],
+          "$tts_label_panel": "discovery_dialog.service_body_label"
+        }
+      },
+      {
+        "text_to_button_padding@common.empty_panel": {
+          "size": [ "100%", 9 ]
+        }
+      },
+      {
+        "buttons@discovery_dialog.service_buttons": {
+        }
+      }
+    ]
+  },
+
+  "service_dialog@popup_dialog.form_fit_modal_dialog_popup": {
+    // Above EVERYTHING
+    "layer": 1000,
+    "$modal_title": "#service_title_text",
+    "$modal_title_binding_type": "global",
+    "$modal_title_binding_condition": "once",
+
+    "$modal_contents": "discovery_dialog.content",
+    "$modal_contents_padding": [ 6, 6 ],
+    "$popup_dialog_escape_button_name": "button.close"
+  },
+
+  // Put this in the screen that will present the dialog
+  "discovery_dialog_factory": {
+    "type": "factory",
+    "control_ids": {
+      "service": "@discovery_dialog.service_dialog"
+    }
+  }
+}

@@ -1,0 +1,178 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "auto_save_info",
+
+  "auto_save_animation": {
+    "anim_type": "flip_book",
+    "initial_uv": [ 0, 0 ],
+    "frame_count": 9,
+    "frame_step": 18,
+    "fps": 10,
+    "reversible": true,
+    "easing": "linear"
+  },
+
+  "auto_save": {
+    "type": "image",
+    "layer": 31,
+    "texture": "textures/ui/auto_save",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "offset": [ 0, "5%" ],
+    "size": [ 18, 30 ],
+    "uv_size": [ 18, 30 ],
+    "uv": "@auto_save_info.auto_save_animation",
+    "disable_anim_fast_forward": true,
+    "bindings": [
+      {
+        "binding_name": "#auto_save_animation_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "accept_label": {
+    "type": "panel",
+    "layer": 2,
+    "controls": [
+      {
+        "button_label": {
+          "type": "label",
+          "size": [ "default", "default" ],
+          "offset": [ -2, 0 ],
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "text": "gui.ok",
+          "color": "$text_color"
+        }
+      }
+    ]
+  },
+
+  "accept_button@common_buttons.light_content_button": {
+    "$pressed_button_name": "button.info_accept",
+    "$button_content": "auto_save_info.accept_label"
+  },
+
+  "main_panel": {
+    "type": "input_panel",
+    "size": [ 200, 180 ],
+    "offset": [ 0, 0 ],
+    "controls": [
+      {
+        "common_panel@common.common_panel": {
+          "$dialog_background": "dialog_background_hollow_5",
+          "$show_close_button": false,
+          "$show_divider": false
+        }
+      },
+      {
+        "title_label": {
+          "type": "label",
+          "offset": [ 0, "3%" ],
+          "text": "autosave.title",
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "layer": 2,
+          "color": "$title_text_color"
+        }
+      },
+      {
+        "message_label": {
+          "type": "label",
+          "size": [ "85%", "85%" ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ "5%", "10%" ],
+          "layer": 2,
+          "color": "$body_text_color",
+          "$auto_save_info_message|default": "autosave.info.general",
+          "variables": [
+            {
+              "requires": "$nx_os",
+              "$auto_save_info_message": "autosave.info.nx"
+            },
+            {
+              "requires": "$xbox_one",
+              "$auto_save_info_message": "autosave.info.xbox"
+            },
+            {
+              "requires": "$is_desktop",
+              "$auto_save_info_message": "autosave.info.desktop"
+            },
+            {
+              "requires": "$is_ps4",
+              "$auto_save_info_message": "autosave.info.berwick"
+            }
+          ],
+          "text": "$auto_save_info_message",
+
+          "bindings": [
+            {
+              "binding_name": "#tts_dialog_body",
+              "binding_condition": "once"
+            }
+          ],
+          "property_bag": {
+            "#tts_dialog_body": "$auto_save_info_message"
+          }
+        }
+      },
+      {
+        "save_icon@auto_save_info.auto_save": {}
+      },
+      {
+        "a@auto_save_info.accept_button": {
+          "size": [ "94%", "17%" ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ 0, "-3%" ]
+        }
+      },
+      {
+        "gamepad_helpers@auto_save_info.gamepad_helpers": {}
+      }
+    ]
+  },
+
+  "gamepad_helpers": {
+    "type": "panel",
+    "layer": 2,
+    "controls": [
+      {
+        "gamepad_helper_a@common.gamepad_helper_a": {
+          "offset":  [ 0, "105%" ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle"
+        }
+      }
+    ]
+  },
+
+  // -----------------------------------------------
+  //
+  //    screen
+  //
+  // -----------------------------------------------
+  "auto_save_info_screen@common.base_screen": {
+    "$screen_content": "auto_save_info.auto_save_info_screen_content"
+  },
+
+  "auto_save_info_screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "root_panel": {
+          "type": "panel",
+          "controls": [
+            { "main_panel@auto_save_info.main_panel": { "layer": 1 } }
+          ]
+        }
+      }
+    ]
+  }
+}

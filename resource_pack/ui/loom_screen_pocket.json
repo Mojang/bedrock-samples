@@ -1,0 +1,513 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "loom_pocket",
+
+  //---------------------------------------------------------------------------
+  // #region Images
+  //---------------------------------------------------------------------------
+
+  "vertical_arrow_icon": {
+    "type": "image",
+    "texture": "textures/ui/arrow_down_large",
+    "size": [ 15, 22 ]
+  },
+
+  "banner_empty_image@loom.banner_empty_image": {
+    "size": [ 28, 28 ]
+  },
+
+  "dye_empty_image@loom.dye_empty_image": {
+    "size": [ 28, 28 ]
+  },
+
+  "pattern_item_empty_image@loom.pattern_item_empty_image": {
+    "size": [ 28, 28 ]
+  },
+
+  "chest_item_renderer": {
+    "type": "custom",
+    "renderer": "inventory_item_renderer",
+    "size": [ 16, 16 ],
+    "property_bag": {
+      "#item_id_aux": 3538944,
+      "#collection_name": "inventory_tab",
+      "#collection_index": 0
+    }
+  },
+
+  "banner_item_renderer": {
+    "type": "custom",
+    "renderer": "inventory_item_renderer",
+    "size": [ 16, 16 ],
+    "property_bag": {
+      "#item_id_aux": 29229057,
+      "#collection_name": "patterns_tab",
+      "#collection_index": 0
+    }
+  },
+
+  "loom_item_renderer": {
+    "type": "custom",
+    "renderer": "inventory_item_renderer",
+    "size": [ 16, 16 ],
+    "property_bag": {
+      "#item_id_aux": -13369344,
+      "#collection_name": "loom_tab",
+      "#collection_index": 0
+    }
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Item Slots
+  //---------------------------------------------------------------------------
+
+  "input_item_slot@common.pocket_ui_container_item": {
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$item_collection_name": "loom_input_items",
+    "$cell_overlay_ref": "loom_pocket.banner_empty_image"
+  },
+
+  "dye_item_slot@common.pocket_ui_container_item": {
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$item_collection_name": "loom_dye_items",
+    "$cell_overlay_ref": "loom_pocket.dye_empty_image"
+  },
+
+  "material_item_slot@common.pocket_ui_container_item": {
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$item_collection_name": "loom_material_items",
+    "$cell_overlay_ref": "loom_pocket.pattern_item_empty_image",
+    "$item_renderer_binding_condition": "always_when_visible",
+    "$background_images": "loom.container_cell_image",
+    "$cell_images_binding_condition": "always_when_visible"
+  },
+
+  "result_item_slot@common.pocket_ui_container_item": {
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "$item_collection_name": "loom_result_items",
+    "$button_ref": "loom.result_slot_button"
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Right Panel
+  //---------------------------------------------------------------------------
+
+  "right_panel": {
+    "type": "stack_panel",
+    "size": [ "fill", "100%" ],
+    "orientation": "horizontal",
+
+    "controls": [
+      {
+        "content@common.root_panel": {
+          "size": [ "fill", "100%" ],
+          "controls": [
+            {
+              "bg@common.common_panel": {
+                "size": [ "100%", "100%" ],
+                "$show_close_button": false
+              }
+            },
+            {
+              "loom_content_stack_panel@loom_pocket.loom_content_stack_panel": {
+                "layer": 2
+              }
+            }
+          ]
+        }
+      },
+      {
+        "navigation_tabs_holder": {
+          "type": "panel",
+          "size": [ "100%c - 4px", "100%" ],
+          "controls": [
+            { "right_navigation_tabs@loom_pocket.right_navigation_tabs": {} }
+          ]
+        }
+      }
+    ]
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Right Navigation Tabs
+  //---------------------------------------------------------------------------
+
+  "right_tab_loom@common_tabs.pocket_tab_right": {
+    "$tab_view_binding_name": "loom_tab_toggle",
+
+    "$tab_content": "loom_pocket.loom_item_renderer",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_right_tab_loom"
+  },
+
+  "right_navigation_tabs": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ 35, "100%" ],
+    "offset": [ -4, 0 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "pocket_tab_close_button@common_tabs.pocket_tab_close_button": {} },
+      {
+        "padding": {
+          "type": "panel",
+          "size": [ 0, 1 ]
+        }
+      },
+      { "pocket_tab_help_button@common_tabs.pocket_tab_help_button": {} },
+      {
+        "fill": {
+          "type": "panel",
+          "size": [ "100%", "fill" ]
+        }
+      },
+      {
+        "right_tab_loom@loom_pocket.right_tab_loom": {
+          "$is_bottom_most_tab": true
+        }
+      }
+    ]
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Loom Content
+  //---------------------------------------------------------------------------
+
+  "input_slots_stack_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", "100%cm" ],
+    "controls": [
+      { "input_item_slot@loom_pocket.input_item_slot": {} },
+      {
+        "padding_1": {
+          "type": "panel",
+          "size": [ 4, 0 ]
+        }
+      },
+      { "dye_item_slot@loom_pocket.dye_item_slot": {} },
+      {
+        "padding_2": {
+          "type": "panel",
+          "size": [ 4, 0 ]
+        }
+      },
+      { "material_item_slot@loom_pocket.material_item_slot": {} }
+    ]
+  },
+
+  "result_banner_outline@loom.banner_outline": {
+    "size": [ "50%y", "100%" ],
+    "layer": 1,
+    "controls": [
+      {
+        "result_banner_renderer@loom.result_banner_renderer": {
+          "layer": 1,
+          "size": [ "100% - 2px", "100% - 2px" ]
+        }
+      }
+    ]
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Loom Content Stack Panel
+  //---------------------------------------------------------------------------
+
+  "loom_content_stack_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100% - 12px", "100% - 12px" ],
+    "controls": [
+      {
+        "label_holder": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            { "loom_label@loom.loom_label": {} }
+          ]
+        }
+      },
+      {
+        "padding_1": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      },
+      {
+        "input_slots_holder": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            { "input_slots_stack_panel@loom_pocket.input_slots_stack_panel": {} }
+          ]
+        }
+      },
+      {
+        "padding_2": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      },
+      {
+        "banner_pattern_holder": {
+          "type": "panel",
+          "size": [ "100%", "fill" ],
+          "controls": [
+            { "result_banner_outline@loom_pocket.result_banner_outline": {} }
+          ]
+        }
+      },
+      {
+        "padding_3": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      },
+      {
+        "arrow_holder": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            { "vertical_arrow_icon@loom_pocket.vertical_arrow_icon": {} }
+          ]
+        }
+      },
+      {
+        "padding_4": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      },
+      {
+        "result_item_slot_holder": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            { "result_item_slot@loom_pocket.result_item_slot": {} }
+          ]
+        }
+      },
+      {
+        "padding_5": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      }
+    ]
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Left Panel
+  //---------------------------------------------------------------------------
+
+  "inventory_scroll_panel@common.container_scroll_panel": {
+    "size": [ "100% - 12px", "100% - 12px" ],
+    "$scrolling_content": "common.pocket_container_grid"
+  },
+
+  "pattern_button@loom.pattern_button": {
+    "size": [ 28, 28 ]
+  },
+
+  "banner_pattern@loom.banner_pattern": {
+    "size": [ 12, 24 ]
+  },
+
+  "pattern_scroll_panel@loom.scroll_panel": {
+    "$grid_item_template": "loom_pocket.pattern_button",
+    "$banner_pattern_ref": "loom_pocket.banner_pattern"
+  },
+
+  "left_panel": {
+    "type": "stack_panel",
+    "size": [ "fill", "100%" ],
+    "orientation": "horizontal",
+
+    "controls": [
+      {
+        "gamepad_helpers_and_tabs_holder": {
+          "type": "panel",
+          "size": [ "100%c", "100%" ],
+          "controls": [
+            {
+              "tabs_left_gamepad_helpers@common.tabs_left_gamepad_helpers": {
+                "size": [ 14, 0 ],
+                "inherit_max_sibling_height": true,
+                "anchor_from": "bottom_left",
+                "anchor_to": "bottom_left"
+              }
+            },
+            {
+              "navigation_tabs_holder": {
+                "type": "panel",
+                "size": [ "100%c - 4px", "100%c" ],
+                "anchor_from": "bottom_right",
+                "anchor_to": "bottom_right",
+                "controls": [
+                  { "left_navigation_tabs@loom_pocket.left_navigation_tabs": {} }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "content@common.root_panel": {
+          "size": [ "fill", "100%" ],
+          "controls": [
+            {
+              "bg@common.common_panel": {
+                "size": [ "100%", "100%" ],
+                "$show_close_button": false
+              }
+            },
+            {
+              "inventory_scroll_panel@loom_pocket.inventory_scroll_panel": {
+                "layer": 2,
+                "bindings": [
+                  {
+                    "binding_type": "global",
+                    "binding_name": "#is_left_tab_inventory",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "pattern_scroll_panel@loom_pocket.pattern_scroll_panel": {
+                "layer": 2,
+                "bindings": [
+                  {
+                    "binding_type": "global",
+                    "binding_name": "(not #is_left_tab_inventory)",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Left Navigation Tabs
+  //---------------------------------------------------------------------------
+
+  "left_tab_patterns@common_tabs.pocket_tab_left": {
+    "$tab_view_binding_name": "patterns_tab_toggle",
+    "$toggle_group_forced_index": "$left_tab_index_patterns",
+
+    "$tab_content": "loom_pocket.banner_item_renderer",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_left_tab_patterns"
+  },
+
+  "left_tab_inventory@common_tabs.pocket_tab_left": {
+    "$tab_view_binding_name": "inventory_tab_toggle",
+    "$toggle_group_forced_index": "$left_tab_index_inventory",
+
+    "$tab_content": "loom_pocket.chest_item_renderer",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_left_tab_inventory"
+  },
+
+  "left_navigation_tabs": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ 35, "default" ],
+    "offset": [ 4, 0 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "controls": [
+      { "left_tab_patterns@loom_pocket.left_tab_patterns": {} },
+      {
+        "padding": {
+          "type": "panel",
+          "size": [ 0, 1 ]
+        }
+      },
+      {
+        "left_tab_inventory@loom_pocket.left_tab_inventory": {
+          "$is_bottom_most_tab": true
+        }
+      }
+    ]
+  },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region Base Panels
+  //---------------------------------------------------------------------------
+
+  "pocket_hotbar_and_content_panels@common.pocket_hotbar_and_content_panels": {
+    "layer": 2,
+    "$left_panel_control": "loom_pocket.left_panel",
+    "$right_panel_control": "loom_pocket.right_panel"
+  },
+
+  "loom_panel": {
+    "type": "panel",
+    "controls": [
+      { "pocket_hotbar_and_content_panels@loom_pocket.pocket_hotbar_and_content_panels": {} },
+
+      {
+        "container_gamepad_helpers@common.container_gamepad_helpers": {
+          "size": [ "100%", 40 ],
+          "$gamepad_helper_size": [ "100%c", 15 ],
+          "$a_b_stack_panel_orientation": "vertical",
+          "$x_y_stack_panel_orientation": "vertical",
+          "$a_b_stack_panel_size": [ "100%cm", "100%" ],
+          "$x_y_stack_panel_size": [ "100%cm", "100%" ]
+        }
+      },
+      {
+        "selected_item_details_factory@common.selected_item_details_factory": {
+          "$offset": [ 0, "-37px" ]
+        }
+      },
+      {
+        "item_lock_notification_factory@common.item_lock_notification_factory": {
+          "$offset": [ 0, "85%" ]
+        }
+      },
+      { "inventory_selected_icon_button@common.inventory_selected_icon_button": {} },
+      { "inventory_take_progress_icon_button@common.inventory_take_progress_icon_button": {} },
+      {
+        "flying_item_renderer@common.flying_item_renderer": {
+          "layer": 8
+        }
+      }
+    ]
+  }
+}
+
+// #endregion

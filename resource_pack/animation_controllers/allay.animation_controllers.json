@@ -1,0 +1,80 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.allay.general": {
+			"initial_state": "idling",
+			"states": {
+				"idling": {
+					"animations": [	"idle" ],
+					"transitions": [
+						{ "flying": "query.modified_move_speed > 0.2"}
+					],
+					"blend_transition": 0.2
+				},
+				"flying": {
+					"animations": [ "fly" ],
+					"transitions": [
+						{ "idling": "query.modified_move_speed < 0.2"}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		},
+		"controller.animation.allay.look_at_target": {
+			"initial_state": "default",
+			"states" : {
+				"default": {
+					"transitions": [
+						{ "looking_at_target": "!query.is_dancing" }
+					]
+				},
+				"looking_at_target" : {
+					"animations": [ "look_at_target_default" ],
+					"transitions": [
+						{ "default": "query.is_dancing" }
+					]
+				}
+			}
+		},
+		"controller.animation.allay.holding": {
+			"initial_state": "holding",
+			"states": {
+				"holding": {
+					"animations": [
+						{ "hold_item": "variable.is_holding_left || variable.is_holding_right" }
+					],
+					"transitions": [
+						{ "fly_holding": "query.modified_move_speed > 0.2" }
+					],
+					"blend_transition": 0.2
+				},
+				"fly_holding": {
+					"animations": [
+						{ "hold_item_fly": "variable.is_holding_left || variable.is_holding_right" }
+					],
+					"transitions": [
+						{ "holding": "query.modified_move_speed < 0.2" }
+					],
+					"blend_transition": 0.2
+				}
+			}
+		},
+		"controller.animation.allay.dancing": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{ "dancing": "query.is_dancing" }
+					],
+					"blend_transition": 0.2
+				},
+				"dancing": {
+					"animations": [ "dance" ],
+					"transitions": [
+						{ "default": "!query.is_dancing" }
+					]
+				}
+			}
+		}
+	}
+}

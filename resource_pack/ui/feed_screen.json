@@ -1,0 +1,1625 @@
+{
+  "namespace": "feed",
+
+  "anim_faded_background@feed_common.anim_faded_background": {},
+
+  //--------------------------------------------------------------------------------
+  // Feed_grid
+  //--------------------------------------------------------------------------------
+
+  "feed_item_scrolling_panel": {
+    "type": "panel",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "layer": 0,
+    "controls": [
+      {
+        "feed_item_scrolling_panel_content_instance@feed.feed_item_scrolling_panel_content": {
+          "$scrolling_pane_size": [ "100% - 4px", "100%" ]
+        }
+      }
+    ]
+  },
+
+  "feed_item_scrolling_panel_content@common.scrolling_panel": {
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "$show_background": false,
+    "$scroll_size": [ 5, "100% - 4px" ],
+    "$scrolling_content": "feed.factory_scrolling_content_stack",
+    "$feed_panel_size": [ "100%", "100%c" ]
+  },
+
+  "spacing_gap": {
+    "type": "panel",
+    "size": [ "100%", 20 ]
+  },
+
+  "factory_scrolling_content_stack": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "vertical",
+    "size": "$feed_panel_size",
+    "offset": [ 0, 0 ],
+
+    "controls": [
+      {
+        "top_spacing_gap@feed_common.spacing_gap": {
+          "size": [ "100%", 40 ]
+        }
+      },
+      { "feed_loading_grid_item@feed.feed_loading_grid_item": {} },
+      {
+        "factory_feed_content@feed.feed_stack_panel_factory_content": {}
+      },
+      { "spacing_gap2@feed.spacing_gap": {} },
+      {
+        "pagination_panel@feed.pagination_panel": {
+          "$is_visible_binding_name": "#feed_buttons_visible",
+          "$this_page_index_text": "#feed_page_index_text",
+          "$is_prev_visible": "#feed_prevButton_visible",
+          "$is_next_visible": "#feed_nextButton_visible",
+          "bindings": [
+            {
+              "binding_name": "(not #is_using_gamepad)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "pagination_panel_gamepad@feed_common.pagination_panel_gamepad": {
+          "$is_visible_binding_name": "#feed_buttons_visible",
+          "$this_page_index_text": "#feed_page_index_text",
+          "bindings": [
+            {
+              "binding_name": "(#is_using_gamepad)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "pagination_panel@feed_common.pagination_panel": {
+    "$next_button_name": "button.feed_next_button",
+    "$prev_button_name": "button.feed_prev_button",
+    "bindings": [
+      {
+        "binding_name": "$is_visible_binding_name",
+        "binding_name_override": "#visible",
+        "binding_type": "global"
+      }
+    ]
+  },
+
+  "feed_stack_panel_factory_content": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+
+    "factory": {
+      "name": "factory",
+      "control_ids": {
+        "xbox_live": "@feed.feed_xbox_live_account",
+        "linked": "@feed.feed_linked_account"
+      },
+      "factory_variables": [
+        "$feed_factory_collection_details",
+        "$feed_factory_binding_type",
+        "$feed_factory_collection_prefix",
+        "$collection_binding_name"
+      ]
+    },
+    "$feed_factory_collection_details|default": "collection_details",
+    "$feed_factory_binding_type|default": "collection",
+    "$feed_factory_collection_prefix|default": "factory",
+    "collection_name": "feed_collection",
+    "$collection_binding_name": "feed_collection",
+
+    "bindings": [
+      {
+        "binding_name": "#feed_page_collection_length",
+        "binding_name_override": "#collection_length"
+      }
+    ]
+  },
+
+  "feed_linked_account": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", 190 ],
+    "controls": [
+      {
+        "image_panel_instance@feed.image_panel": {
+          "size": [ "60%", "80%" ]
+        }
+      },
+      {
+        "spacing_gap_00": {
+          "type": "panel",
+          "size": [ 10, "100%" ]
+        }
+      },
+      {
+        "player_and_comment_and_buttons": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "size": [ "100%", 190 ],
+          "controls": [
+            {
+              "spacing_gap_01": {
+                "type": "panel",
+                "size": [ "100%", "10%" ]
+              }
+            },
+            {
+              "player_and_time": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "size": [ "100%", "30%" ],
+                "controls": [
+                  {
+                    "gamer_pic_panel": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_left",
+                      "anchor_to": "top_left",
+                      "size": [ 20, "100%" ],
+                      "controls": [
+                        {
+                          "player_platform_pic@feed.player_platform_pic_panel": {
+                            "layer": 0
+                          }
+                        },
+                        {
+                          "account_link_icon@feed_common.account_link_icon": {}
+                        },
+                        {
+                          "player_pic_panel_instance@feed.player_pic_panel": {
+                            "layer": 0
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "spacing_gap_03": {
+                      "type": "panel",
+                      "size": [ 5, "100%" ]
+                    }
+                  },
+                  {
+                    "tag_and_date": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_left",
+                      "anchor_to": "top_left",
+                      "size": [ 100, "100%" ],
+                      "controls": [
+                        {
+                          "feed_platformtag_instance@feed_common.item_label": {
+                            "size": [ 100, 10 ],
+                            "font_size": "normal",
+                            "text": "#platform_tag",
+                            "bindings": [
+                              {
+                                "binding_name": "#platform_tag",
+                                "binding_type": "collection",
+                                "binding_collection_name": "feed_collection"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "spacing_gap_04": {
+                            "type": "panel",
+                            "size": [ "100%", 15 ]
+                          }
+                        },
+                        {
+                          "feed_gamertag_instance@feed_common.item_label": {
+                            "size": [ 100, 10 ],
+                            "font_size": "normal",
+                            "text": "#gamertag",
+                            "bindings": [
+                              {
+                                "binding_name": "#gamertag",
+                                "binding_type": "collection",
+                                "binding_collection_name": "feed_collection"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "feed_timesince_instance@feed_common.item_label": {
+                            "size": [ 100, 10 ],
+                            "font_size": "normal",
+                            "alpha": 0.5,
+                            "text": "#time_since_feed_post",
+                            "bindings": [
+                              {
+                                "binding_name": "#time_since_feed_post",
+                                "binding_type": "collection",
+                                "binding_collection_name": "feed_collection"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "spacing_gap_02": {
+                      "type": "panel",
+                      "size": [ 2, "100%" ]
+                    }
+                  },
+                  {
+                    "platform_icon@feed_common.platform_icon_panel": {}
+                  }
+                ]
+              }
+            },
+            {
+              "feed_text_instance@feed_common.item_label": {
+                "size": [ 100, 30 ],
+                "font_size": "normal",
+                "text": "#content",
+                "bindings": [
+                  {
+                    "binding_name": "#content",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  },
+                  {
+                    "binding_name": "#feed_text_visible",
+                    "binding_name_override": "#visible",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  }
+                ]
+              }
+            },
+            {
+              "like_comment_label_instance@feed_common.item_label": {
+                "size": [ 150, 10 ],
+                "font_size": "normal",
+                "alpha": 0.5,
+                "text": "#likes_and_comments",
+                "bindings": [
+                  {
+                    "binding_name": "#likes_and_comments",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  }
+                ]
+              }
+            },
+            {
+              "spacing_gap_05": {
+                "type": "panel",
+                "size": [ "100%", 2 ]
+              }
+            },
+            { "feed_buttons_panel@feed.feed_buttons_panel": {} }
+          ]
+        }
+      }
+    ],
+    "$visible_binding_name|default": "(not #loading_bars_animation_visible)",
+
+    "bindings": [
+      {
+        "binding_name": "$visible_binding_name",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "feed_xbox_live_account": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", 190 ],
+    "controls": [
+      {
+        "image_panel_instance@feed.image_panel": {
+          "size": [ "60%", "80%" ]
+        }
+      },
+      {
+        "spacing_gap_00": {
+          "type": "panel",
+          "size": [ 10, "100%" ]
+        }
+      },
+      {
+        "player_and_comment_and_buttons": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "size": [ "100%", 190 ],
+          "controls": [
+            {
+              "spacing_gap_01": {
+                "type": "panel",
+                "size": [ "100%", "10%" ]
+              }
+            },
+            {
+              "player_and_time": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "size": [ "100%", "20%" ],
+                "controls": [
+                  {
+                    "gamer_pic_panel": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_left",
+                      "anchor_to": "top_left",
+                      "size": [ 20, "100%" ],
+                      "controls": [
+                        {
+                          "player_pic_panel_instance@feed.player_gamerpic_panel": {
+                            "layer": 0
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "spacing_gap_03": {
+                      "type": "panel",
+                      "size": [ 5, "100%" ]
+                    }
+                  },
+                  {
+                    "tag_and_date": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_left",
+                      "anchor_to": "top_left",
+                      "size": [ "100%", "100%" ],
+                      "controls": [
+                        {
+                          "feed_gamertag_instance@feed_common.item_label": {
+                            "size": [ 100, 10 ],
+                            "font_size": "normal",
+                            "text": "#gamertag",
+                            "bindings": [
+                              {
+                                "binding_name": "#gamertag",
+                                "binding_type": "collection",
+                                "binding_collection_name": "feed_collection"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "feed_timesince_instance@feed_common.item_label": {
+                            "size": [ 100, 10 ],
+                            "font_size": "normal",
+                            "alpha": 0.5,
+                            "text": "#time_since_feed_post",
+                            "bindings": [
+                              {
+                                "binding_name": "#time_since_feed_post",
+                                "binding_type": "collection",
+                                "binding_collection_name": "feed_collection"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "feed_text_instance@feed_common.item_label": {
+                "size": [ 100, 30 ],
+                "font_size": "normal",
+                "text": "#content",
+                "bindings": [
+                  {
+                    "binding_name": "#content",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  },
+                  {
+                    "binding_name": "#feed_text_visible",
+                    "binding_name_override": "#visible",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  }
+                ]
+              }
+            },
+            {
+              "like_comment_label_instance@feed_common.item_label": {
+                "size": [ 150, 10 ],
+                "font_size": "normal",
+                "alpha": 0.5,
+                "text": "#likes_and_comments",
+                "bindings": [
+                  {
+                    "binding_name": "#likes_and_comments",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  }
+                ]
+              }
+            },
+            {
+              "spacing_gap_05": {
+                "type": "panel",
+                "size": [ "100%", 2 ]
+              }
+            },
+            { "feed_buttons_panel@feed.feed_buttons_panel": {} }
+          ]
+        }
+      }
+    ],
+    "$visible_binding_name|default": "(not #loading_bars_animation_visible)",
+
+    "bindings": [
+      {
+        "binding_name": "$visible_binding_name",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "feed_buttons_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+    "offset": [ 0, 0 ],
+    "size": [ "30%", "30%" ],
+    "controls": [
+      {
+        "like_button@feed_common.like_button": {
+          "$button_mapping_id": "button.feed_like",
+          "$is_like_visible": "#feed_likeIcon_visible",
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "$collection_binding_name"
+            }
+          ]
+        }
+      },
+      { "comment_button_instance@feed.comment_button": {} },
+      {
+        "options_button@feed_common.options_button": {
+          "$button_mapping_id": "button.feed_options",
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "$collection_binding_name"
+            }
+          ]
+        }
+      },
+      {
+        "spacing_gap": {
+          "type": "panel",
+          "size": [ 189, "100%" ]
+        }
+      }
+    ]
+  },
+
+  //--------------------------------------------------------------------------------
+  // Grid item for loading
+  //--------------------------------------------------------------------------------
+
+  "feed_loading_grid_item": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", 190 ],
+    "$visible_binding_name|default": "#loading_bars_animation_visible",
+    "controls": [
+      {
+        "containing_panel": {
+          "type": "panel",
+          "size": [ "65%", "90%" ],
+          "controls": [
+            {
+              "loading_image_panel@feed.loading_image_panel": {
+                "size": [ "178%y", "100%" ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "spacing_gap0": {
+          "type": "panel",
+          "size": [ 5, "100%" ]
+        }
+      },
+      {
+        "player_and_comment_and_buttons_load": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "size": [ "100%", 190 ],
+          "controls": [
+            {
+              "spacing_gap1": {
+                "type": "panel",
+                "size": [ "100%", "10%" ]
+              }
+            },
+            {
+              "player_and_time": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "size": [ "100%", "20%" ],
+                "controls": [
+                  {
+                    "player_pic_panel_loading@feed.player_pic_panel_loading": {
+                      "layer": 0
+                    }
+                  },
+                  {
+                    "spacing_gap_01": {
+                      "type": "panel",
+                      "size": [ 5, "100%" ]
+                    }
+                  },
+                  {
+                    "tag_and_date_loading": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_left",
+                      "anchor_to": "top_left",
+                      "size": [ "100%", "100%" ],
+                      "controls": [
+                        {
+                          "feed_gamertag_loading": {
+                            "size": [ 70, 8 ],
+                            "type": "image",
+                            "texture": "textures/ui/Black",
+                            "anchor_from": "center",
+                            "anchor_to": "center",
+                            "alpha": 0.5
+                          }
+                        },
+                        {
+                          "feed_timesince_loading": {
+                            "size": [ 70, 8 ],
+                            "type": "image",
+                            "texture": "textures/ui/Black",
+                            "anchor_from": "center",
+                            "anchor_to": "center",
+                            "alpha": 0.5
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "feed_text_instance@feed_common.item_label": {
+                "size": [ 100, 30 ],
+                "font_size": "normal",
+                "text": "#content",
+                "bindings": [
+                  {
+                    "binding_name": "#content",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  },
+                  {
+                    "binding_name": "#feed_text_visible",
+                    "binding_name_override": "#visible",
+                    "binding_type": "collection",
+                    "binding_collection_name": "feed_collection"
+                  }
+                ]
+              }
+            },
+            {
+              "like_comment_label_loading": {
+                "size": [ 100, 10 ],
+                "type": "image",
+                "layer": 0,
+                "texture": "textures/ui/Black",
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "alpha": 0.5
+              }
+            },
+            {
+              "spacing_gap": {
+                "type": "panel",
+                "size": [ "100%", 2 ]
+              }
+            },
+            { "feed_buttons_panel_loading@feed.feed_buttons_panel_loading": {} }
+          ]
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "$visible_binding_name",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "feed_buttons_panel_loading": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+    "offset": [ -10, 0 ],
+    "size": [ "30%", "30%" ],
+    "controls": [
+      {
+        "like_button_loading@feed.like_button_loading": {}
+      },
+      {
+        "spacing_gap1": {
+          "type": "panel",
+          "size": [ 2, "100%" ]
+        }
+      },
+      { "comment_button_loading@feed.comment_button_loading": {} },
+      {
+        "spacing_gap2": {
+          "type": "panel",
+          "size": [ 2, "100%" ]
+        }
+      },
+      { "options_button_loading@feed.options_button_loading": {} }
+    ]
+  },
+
+  "like_button_loading": {
+    "size": [ 40, 25 ],
+    "type": "image",
+    "texture": "textures/ui/Black",
+    "alpha": 0.5
+  },
+
+  "comment_button_loading": {
+    "size": [ 70, 25 ],
+    "type": "image",
+    "texture": "textures/ui/Black",
+    "alpha": 0.5
+  },
+
+  "options_button_loading": {
+    "size": [ 25, 25 ],
+    "type": "image",
+    "texture": "textures/ui/Black",
+    "alpha": 0.5
+  },
+
+  "player_pic_panel_loading": {
+    "type": "panel",
+    "size": [ 20, 20 ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      { "player_gamer_pic_loading@feed.player_gamer_pic_loading": {} }
+    ]
+  },
+
+  "player_gamer_pic_loading": {
+    "type": "image",
+    "texture": "textures/ui/Black",
+    "size": [ 18, 18 ],
+    "alpha": 0.5
+  },
+
+  "loading_image_panel": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "offset": [ 0, 0 ],
+    "controls": [
+      {
+        "progress_loading_bars@feed_common.progress_loading_bars": {
+          "bindings": [
+            {
+              "binding_name": "#progress_visible",
+              "binding_type": "collection",
+              "binding_collection_name": "feed_collection",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      { "feed_image_loading@feed.feed_image_loading": {} },
+      {
+        "no_feed_item_content@feed_common.no_feed_item_content": {
+          "text": "feed.no_feed_item_content"
+        }
+      }
+    ]
+  },
+
+  "feed_image_loading": {
+    "type": "image",
+    "layer": 0,
+    "texture": "textures/ui/Black",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%" ],
+    "alpha": 0.5
+  },
+
+  //--------------------------------------------------------------------------------
+  // Common Controls
+  //--------------------------------------------------------------------------------
+
+  "new_post_label": {
+    "type": "label",
+    "color": "$f_color_format",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "text": "feed.newPost",
+    "text_alignment": "center",
+    "alpha": "$content_alpha",
+    "size": [ "100%", 15 ],
+    "offset": [ 0, 2 ],
+    "layer": 2
+  },
+
+  "go_to_manage_feed_label": {
+    "type": "label",
+    "size": [ "default", "default" ],
+    "layer": 2,
+    "color": "$f_color_format",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "text": "feed.manage",
+    "alpha": "$content_alpha"
+  },
+
+  "feed_image": {
+    "type": "image",
+    "layer": 0,
+    "texture": "#feed_texture",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ "177.78%y", "90%" ],
+    "texture_file_system": "#feed_texture_source",
+    "bindings": [
+      {
+        "binding_name": "#feed_texture",
+        "binding_type": "collection",
+        "binding_name_override": "#texture",
+        "binding_collection_name": "feed_collection"
+      },
+      {
+        "binding_name": "#feed_texture_source",
+        "binding_name_override": "#texture_file_system",
+        "binding_type": "collection",
+        "binding_collection_name": "feed_collection"
+      }
+    ]
+  },
+
+  "feed_image_content_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "offset": [ 0, 0 ],
+    "controls": [
+      {
+        "feed_image@feed.feed_image": {
+          "controls": [
+            { "textpost_content@feed.textpost_content": {} }
+          ]
+        }
+      }
+
+    ]
+  },
+
+  "feed_image_button@common_buttons.transparent_content_button": {
+    "layer": 0,
+    "size": [ "100%", "100%" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$button_content": "feed.feed_image_content_panel",
+    "$default_content_alpha": 1,
+    "$hover_content_alpha": 0.6,
+    "$pressed_alpha": 0.3,
+    "$default_button_alpha": 0,
+    "$default_hover_alpha": 0,
+    "$default_pressed_alpha": 0,
+    "$border_visible": true,
+    "$default_state_border_visible": false,
+    "$hover_state_border_visible": true,
+    "$pressed_state_border_visible": true,
+    "$locked_state_border_visible": false,
+    "$border_default_alpha": 0,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.feed_image",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.feed_image",
+        "mapping_type": "focused"
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "feed_collection"
+      },
+      {
+        "binding_name": "#feed_comment_enabled",
+        "binding_name_override": "#enabled",
+        "binding_collection_name": "feed_collection",
+        "binding_type": "collection"
+      }
+    ]
+  },
+
+  "comment_image": {
+    "type": "image",
+    "layer": 0,
+    "texture": "textures/ui/comment",
+    "size": [ "30%", "100%" ]
+  },
+
+  "add_screenshot_label@feed_common.smooth_label": {
+    "text": "feed.addScreenshot",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "text_alignment": "center",
+    "size": [ "100%", 15 ],
+    "offset": [ 0, 2 ]
+  },
+
+  "feed_comment_content_panel": {
+    "type": "stack_panel",
+    "size": [ "100%", "50%" ],
+    "orientation": "horizontal",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "controls": [
+      {
+        "comment_image_instance@feed.comment_image": {
+          "size": [ "25%", "100%" ]
+        }
+      },
+      {
+        "comment_label@feed_common.smooth_label": {
+          "text": "feed.comments",
+          "size": [ "fill", 15 ],
+          "text_alignment": "left"
+        }
+      }
+    ]
+  },
+
+  "new_post_button@common_buttons.transparent_content_button": {
+    "layer": 10,
+    "size": [ 70, 25 ],
+    "offset": [ -20, 0 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "$button_content": "feed.new_post_label",
+    "$hover_button_texture": "textures/ui/imagetaggedcornergreenhover",
+    "$pressed_button_texture": "textures/ui/imagetaggedcornergreenpressed",
+    "$default_content_alpha": 1,
+    "$default_button_alpha": 0,
+    "bindings": [
+      {
+        "binding_name": "(not #gamepad_helper_visible)",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.newpost",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.newpost",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "new_post_gamepad_option": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "layer": 10,
+    "size": [ "100%c", 20 ],
+    "offset": [ -15, 0 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "bindings": [
+      {
+        "binding_name": "(#gamepad_helper_visible)",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "gamepad_helper_y@common.gamepad_helper_y": {
+          "$hide_description|default": true
+        }
+      },
+      {
+        "new_post_stack_panel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "padding_panel": {
+                "type": "panel",
+                "size": [ 0, 8 ]
+              }
+            },
+            {
+              "new_post_text": {
+                "type": "label",
+                "color": "$f_color_format",
+                "text": "feed.newPost",
+                "text_alignment": "left",
+                "anchor_from": "bottom_right",
+                "anchor_to": "bottom_right",
+                "size": [ "default", 50 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "go_to_manage_feed_button@common_buttons.transparent_content_button": {
+    "layer": 10,
+    "size": [ 40, 25 ],
+    "offset": [ -20, 40 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "$pressed_button_name": "button.manage_feed",
+    "$button_content": "feed.go_to_manage_feed_label",
+    "$default_content_alpha": 1,
+    "$hover_content_alpha": 0.6,
+    "$pressed_alpha": 0.3,
+    "$default_button_alpha": 0,
+    "$default_hover_alpha": 0,
+    "$default_pressed_alpha": 0
+  },
+
+  "add_screenshot_button@common_buttons.transparent_content_button": {
+    "size": [ 80, 25 ],
+    "ignored": "($is_holographic)",
+    "$pressed_button_name": "button.add_screenshot",
+    "$button_content": "feed.add_screenshot_label",
+    "$default_button_texture": "textures/ui/imagetaggedcorner",
+    "$hover_button_texture": "textures/ui/imagetaggedcornergreenhover",
+    "$pressed_button_texture": "textures/ui/imagetaggedcornergreenpressed",
+    "$default_button_alpha": 0.6,
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.add_screenshot",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.add_screenshot",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "comment_button@common_buttons.transparent_content_button": {
+    "size": [ 80, 25 ],
+    "$pressed_button_name": "button.menu_start_realms_world",
+    "$button_content": "feed.feed_comment_content_panel",
+    "$default_button_alpha": 0.3,
+    "$hover_button_texture": "textures/ui/imagetaggedcornergreenhover",
+    "$pressed_button_texture": "textures/ui/imagetaggedcornergreenpressed",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.feed_comment",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.feed_comment",
+        "mapping_type": "focused"
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "$collection_binding_name"
+      },
+      {
+        "binding_name": "#feed_comment_enabled",
+        "binding_name_override": "#enabled",
+        "binding_collection_name": "$collection_binding_name",
+        "binding_type": "collection"
+      }
+    ]
+  },
+
+  "textpost_content": {
+    "type": "label",
+    "color": "$f_color_format",
+    "text": "#textpost_content",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ "80%", "default" ],
+    "text_alignment": "center",
+    "layer": 1,
+    "font_type": "smooth",
+    "bindings": [
+      {
+        "binding_name": "#textpost_content",
+        "binding_type": "collection",
+        "binding_collection_name": "feed_collection"
+      },
+      {
+        "binding_name": "#textpost_visible",
+        "binding_type": "collection",
+        "binding_collection_name": "feed_collection",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "image_panel": {
+    "type": "panel",
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "offset": [ 0, 0 ],
+    "controls": [
+      { "feed_image_button@feed.feed_image_button": {} },
+      { "progress_loading_bars@feed_common.progress_loading_bars": {} }
+    ]
+  },
+
+  //--------------------------------------------------------------------------------
+  // player related
+  //--------------------------------------------------------------------------------
+
+  "player_gamerpic_panel": {
+    "type": "panel",
+    "size": [ 20, 20 ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      {
+        "player_gamer_pic_instance@feed.player_gamer_pic": {
+          "layer": 0
+        }
+      }
+    ]
+  },
+
+  "player_pic_panel": {
+    "type": "panel",
+    "size": [ 20, 20 ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      {
+        "player_gamer_pic_instance@feed.player_gamer_pic": {
+          "layer": 0
+        }
+      },
+      {
+        "bevel_bg@feed_common.player_pic_bevel": {
+          "layer": 1
+        }
+      }
+    ]
+  },
+
+  "player_platform_pic_panel": {
+    "type": "panel",
+    "size": [ 20, 20 ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      {
+        "player_gamer_pic_instance@feed.player_platform_pic": {
+          "layer": 0
+        }
+      },
+      {
+        "bevel_bg@feed_common.player_pic_bevel": {
+          "layer": 1
+        }
+      }
+    ]
+  },
+
+  "player_gamer_pic": {
+    "type": "image",
+    "$texture_path|default": "#gamerpic_texture",
+    "$texture_source|default": "#gamerpic_texture_source",
+    "$is_picture_visible|default": "#gamerpic_visible",
+    "texture": "$texture_path",
+    "size": [ 18, 18 ],
+    "texture_file_system": "$texture_source",
+    "bindings": [
+      {
+        "binding_name": "$texture_path",
+        "binding_name_override": "#texture",
+        "binding_type": "collection",
+        "binding_collection_name": "feed_collection"
+      },
+      {
+        "binding_name": "$texture_source",
+        "binding_name_override": "#texture_file_system",
+        "binding_type": "collection",
+        "binding_collection_name": "feed_collection"
+      },
+      {
+        "binding_name": "$is_picture_visible",
+        "binding_type": "collection",
+        "binding_collection_name": "feed_collection",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "player_platform_pic@feed.player_gamer_pic": {
+    "$texture_path": "#platform_profile_pic_texture",
+    "$texture_source": "#platform_profile_pic_texture_source",
+    "$is_picture_visible": "#platform_pic_visible"
+  },
+
+  //--------------------------------------------------------------------------------
+  // New Post Dialog Popup
+  //--------------------------------------------------------------------------------
+  "popup_dialog__new_post@popup_dialog.popup_dialog": {
+    "size": [ 300, 225 ],
+    // _displayCustomModalPopup() may be called while this popup is visible -- need to move it down
+    // from the default layer 100 so that it does not interfere with the second popup
+    "layer": 90,
+    "$is_screenshot_visible": "#feed_screenshot_visible",
+    "$is_add_screenshot_visible": "#feed_add_screenshot_visible",
+    "controls": [
+      { "popup_dialog_bg@feed_common.popup_dialog_bg": {} },
+      {
+        "new_post_popup_dialog_header@feed.new_post_popup_dialog_header": {
+          "size": [ "100%", "10%" ],
+          "layer": 1
+        }
+      },
+      {
+        "new_post_popup_dialog_share_post@feed.new_post_popup_dialog_share_post": {
+          "size": [ "100%", "15%" ],
+          "offset": [ 0, "10%" ],
+          "layer": 1
+        }
+      },
+      {
+        "new_post_popup_dialog_add_screenshot@feed.new_post_popup_dialog_add_screenshot": {
+          "size": [ "100%", "75%-1px" ],
+          "offset": [ 0, "25%+1px" ],
+          "layer": 2
+        }
+      },
+      {
+        "screenshot_image@feed.screenshot_image": {
+          "size": [ "100%", "75%" ],
+          "offset": [ 0, "25%" ],
+          "layer": 2
+        }
+      }
+    ]
+  },
+
+  "screenshot_image": {
+    "type": "image",
+    "size": [ "100%", "100%" ],
+    "texture": "#feed_screenshot_texture",
+    "texture_file_system": "#feed_screenshot_texture_source",
+    "color": "$7_color_format",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$is_screenshot_visible|default": "#visible",
+    "bindings": [
+      {
+        "binding_name": "$is_screenshot_visible",
+        "binding_name_override": "#visible"
+      },
+      {
+        "binding_name": "#feed_screenshot_texture",
+        "binding_name_override": "#texture"
+      },
+      {
+        "binding_name": "#feed_screenshot_texture_source",
+        "binding_name_override": "#texture_file_system"
+      }
+    ]
+  },
+
+  "camera_image": {
+    "size": [ "15%", "15%" ],
+    "ignored": "($is_holographic)",
+    "offset": [ 0, 30 ],
+    "anchor_to": "top_middle",
+    "anchor_from": "top_middle",
+    "type": "image",
+    "texture": "textures/ui/camera-yo",
+    "color": "$7_color_format"
+  },
+
+  "new_post_popup_dialog_header": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "new_post_popup_dialog_header_text@feed_common.new_post_header_text": {} },
+      {
+        "close_button@common.close_button": {
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "offset": [ -1, 1 ],
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.feed_new_post_close",
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "button.feed_new_post_close",
+              "mapping_type": "focused"
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "(not #is_using_gamepad)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "new_post_popup_dialog_share_post": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "layer": 10,
+    "controls": [
+      { "white_banner@feed_common.white_banner": {} },
+      {
+        "share_text_box@feed_common.share_text_box": {
+          "$text_box_name": "share_text_box",
+          "$text_edit_box_content_binding_name": "#share_box_text",
+          "bindings": [
+            {
+              "binding_name": "#share_text_box"
+            }
+          ]
+        }
+      },
+      {
+        "share_button@feed_common.share_button": {
+          "$pressed_button_name": "button.share_feed_item",
+          "offset": [ -2, 4 ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right"
+        }
+      }
+    ]
+  },
+
+  "new_post_popup_dialog_add_screenshot": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$is_add_screenshot_visible|default": "#visible",
+    "bindings": [
+      {
+        "binding_name": "$is_add_screenshot_visible",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "white_banner@feed_common.white_banner": {} },
+      {
+        "camera_image@feed.camera_image": {
+          "layer": 5
+        }
+      },
+      { "add_screenshot_button@feed.add_screenshot_button": {} }
+    ]
+  },
+
+  //--------------------------------------------------------------------------------
+  // Options Dialog Popup
+  //--------------------------------------------------------------------------------
+
+  "popup_dialog__options@popup_dialog.popup_dialog": {
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "faded_background_image@feed_common.faded_background_image": {} },
+      {
+        "gamepad_helpers@feed_common.gamepad_helpers": {}
+      },
+      { "options_popup_dialog_button_panel@feed.options_popup_dialog_button_panel": {} }
+    ]
+  },
+
+  "options_popup_dialog_button_panel": {
+    "type": "stack_panel",
+    "size": [ "30%", "15%" ],
+    "orientation": "vertical",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "layer": 10,
+    "controls": [
+      {
+        "close_button_panel": {
+          "type": "panel",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "size": [ 140, "100%c" ],
+          "controls": [
+            {
+              "close_button_options@common.close_button": {
+                "anchor_from": "bottom_right",
+                "anchor_to": "bottom_right",
+                "$default_button_alpha": "@feed_common.anim_faded_background_full",
+                "button_mappings": [
+                  {
+                    "from_button_id": "button.menu_select",
+                    "to_button_id": "button.feed_options_close",
+                    "mapping_type": "pressed"
+                  },
+                  {
+                    "from_button_id": "button.menu_ok",
+                    "to_button_id": "button.feed_options_close",
+                    "mapping_type": "focused"
+                  }
+                ],
+                "bindings": [
+                  {
+                    "binding_name": "(not #is_using_gamepad)",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "report_to_club_button@feed_common.report_to_club_button": {
+          "$pressed_button_name": "button.feed_report_club",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "bindings": [
+            {
+              "binding_name": "#report_to_club_button_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "global"
+            }
+          ]
+        }
+      },
+      {
+        "report_to_xbox_button@feed_common.report_to_xbox_button": {
+          "$pressed_button_name": "button.feed_report_xbox",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "bindings": [
+            {
+              "binding_name": "#report_to_enforcement_button_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "global"
+            }
+          ]
+        }
+      },
+      {
+        "delete_button@feed_common.delete_button": {
+          "$pressed_button_name": "button.delete_feed_item",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "bindings": [
+            {
+              "binding_name": "#delete_button_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "global"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  //--------------------------------------------------------------------------------
+  // Root Controls
+  //--------------------------------------------------------------------------------
+
+  "content": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%" ],
+    "offset": [ 5, 0 ],
+    "controls": [
+      {
+        "top_bar_gradient@feed_common.top_bar_gradient": {
+          "size": [ "100%", "8%" ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [ -5, 0 ],
+          "layer": 9
+        }
+      },
+      {
+        "gamepad_helpers@feed_common.gamepad_helpers": {}
+      },
+      { "new_post_button@feed.new_post_button": {} },
+      { "new_post_gamepad_option@feed.new_post_gamepad_option": {} },
+      {
+        "return_button@feed_common.return_button": {
+          "$close_button_to_button_id|default": "button.close_feed",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "$close_button_to_button_id",
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "$close_button_to_button_id",
+              "mapping_type": "focused"
+            }
+          ]
+        }
+      },
+      {
+        "world_name_label_instance@feed_common.title_label": {
+          "layer": 10,
+          "text": "#feed_world_name",
+          "bindings": [
+            {
+              "binding_name": "#feed_world_name"
+            }
+          ]
+        }
+      },
+      { "feed_item_scrolling_panel_instance@feed.feed_item_scrolling_panel": {} },
+      {
+        "popup_dialog_factory_new_post": {
+          "type": "factory",
+          "control_ids": {
+            "new_post": "@feed.popup_dialog__new_post"
+          }
+        }
+      },
+      {
+        "popup_dialog_factory_options": {
+          "type": "factory",
+          "control_ids": {
+            "options": "@feed.popup_dialog__options"
+          }
+        }
+      }
+    ]
+  },
+
+  "feed_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.controller_secondary_select", //y-button controller
+        "to_button_id": "button.newpost",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_tab_right",
+        "to_button_id": "button.feed_next_button",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_tab_left",
+        "to_button_id": "button.feed_prev_button",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_up",
+        "to_button_id": "button.menu_up",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_down",
+        "to_button_id": "button.menu_down",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_left",
+        "to_button_id": "button.menu_left",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_right",
+        "to_button_id": "button.menu_right",
+        "mapping_type": "global",
+        "scope": "view"
+      }
+    ],
+    "$default_text_color": [ 0.3, 0.3, 0.3 ],
+    "$screen_content": "feed.feed_screen_content"
+  },
+
+  "feed_screen_content@common.common_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "transparent_background@feed_common.transparent_background": {}
+      },
+      {
+        "container": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "layer": 1,
+          "controls": [
+            { "content@feed.content": {} }
+          ]
+        }
+      }
+    ]
+  }
+}

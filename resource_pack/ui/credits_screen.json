@@ -1,0 +1,175 @@
+{
+  "namespace": "credits",
+
+  "anim_fade_in": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "duration": 3,
+    "from": 1,
+    "to": 0
+  },
+
+  "anim_fade_out": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "duration": 3,
+    "from": 0,
+    "to": 1,
+    "end_event": "credits_end"
+  },
+
+  "anim_background_scroll": {
+    "anim_type": "offset",
+    "from": [ 0, "-0%y" ],
+    "to": [ 0, "-25%y" ],
+    "duration": "$background_scroll_duration"
+  },
+
+  "anim_button_wait": {
+    "anim_type": "wait",
+    "duration": 5.0,
+    "destroy_at_end": "skip_button"
+  },
+
+  "fade_in_image": {
+    "type": "image",
+    "texture": "textures/ui/White",
+    "color": [ 0, 0, 0 ],
+    "anims": [
+      "@credits.anim_fade_in"
+    ]
+  },
+
+  "fade_out_image@credits.fade_in_image": {
+    "alpha": 0,
+    "anims": [
+      "@credits.anim_fade_out"
+    ]
+  },
+
+  "skip_panel": {
+    "type": "panel",
+    "layer": 2,
+
+    "controls": [
+      {
+        "skip_button@common_buttons.light_text_form_fitting_button": {
+          "$pressed_button_name": "button.menu_exit",
+          "anchor_from": "bottom_right",
+          "anchor_to": "bottom_right",
+          "$button_text": "credits.skip",
+          "offset": [ -8, -8 ],
+          "bindings": [
+            {
+              "binding_name": "#skip_button_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "global"
+            }
+          ],
+          "anims": [
+            "@credits.anim_button_wait"
+          ]
+        }
+      },
+      {
+        "exit_credits_input_panel": {
+          "type": "input_panel",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_cancel",
+              "to_button_id": "button.menu_exit",
+              "mapping_type": "global"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "credits_renderer": {
+    "type": "custom",
+    "renderer": "credits_renderer",
+    "size": [ "65%", "100%" ],
+    "end_event": "scroll_end",
+    "bindings": [
+      {
+        "binding_name": "#show_edu_icon"
+      },
+      {
+        "binding_name": "#show_end_poem"
+      },
+      {
+        "binding_name": "#player_name"
+      },
+      {
+        "binding_name": "#scroll_faster"
+      }
+    ]
+  },
+
+  "credits_screen_content": {
+    "type": "panel",
+    "controls": [
+      { "credits_renderer@credits.credits_renderer": { "layer": 2 } },
+      {
+        "vignette_renderer": {
+          "type": "custom",
+          "renderer": "vignette_renderer",
+          "layer": 2,
+          "property_bag": {
+            "opacity_override": 0.0
+          }
+        }
+      },
+      { "fade_in_image@credits.fade_in_image": { "layer": 1 } },
+      {
+        "credits_factory": {
+          "type": "factory",
+          "control_ids": {
+            "fade_out_image": "fade_out_image@credits.fade_out_image",
+            "skip_button": "skip_button@credits.skip_panel"
+          }
+        }
+      },
+      {
+        "whole_screen_input_panel": {
+          "type": "input_panel",
+          "layer": 1,
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.show_skip",
+              "mapping_type": "global"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "button.show_skip",
+              "mapping_type": "global"
+            },
+            {
+              "from_button_id": "button.menu_cancel",
+              "to_button_id": "button.show_skip",
+              "mapping_type": "global"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "background@common.dirt_background": {
+    // Background scroll
+    "$background_scroll_duration|default": 503,
+    "size": [ "100%", "2000%" ],
+    "tiled_scale": [ 2, 2 ],
+    "layer": 0,
+    "anims": [
+      "@credits.anim_background_scroll"
+    ]
+  },
+
+  "credits_screen@common.base_screen": {
+    "$screen_content": "credits.credits_screen_content",
+    "$screen_bg_content": "credits.background"
+  }
+}

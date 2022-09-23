@@ -1,0 +1,65 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:skeleton_horse",
+      "materials": {
+        "default": "horse"
+      },
+      "textures": {
+        "skeleton": "textures/entity/horse/horse_skeleton",
+        "markings_none": "textures/entity/horse/horse_markings_none",
+        "armor_none": "textures/entity/horse/armor/horse_armor_none"
+      },
+      "geometry": {
+        "default": "geometry.horse"
+      },
+      "animations": {
+        "setup": "animation.horse.setup",
+        "baby_transform": "animation.horse.baby_transform",
+        "walk": "animation.horse.walk",
+        "eat": "animation.horse.eat",
+        "stand": "animation.horse.stand",
+        "shake_tail": "animation.horse.shake_tail",
+        "mouth": "animation.horse.mouth",
+        "look_at_player": "animation.horse.look_at_player"
+      },
+      "scripts": {
+        "initialize": [
+          "variable.eat_anim = 0.0;",
+          "variable.mouth_anim = 0.0;",
+          "variable.leg_back_origin = query.bone_origin('leg1a');",
+          "variable.leg_front_origin = query.bone_origin('leg3a');",
+          "variable.head_rotation = query.bone_rotation('head');"
+        ],
+        "pre_animation": [
+          "variable.eat_anim = math.clamp(variable.eat_anim + (query.is_grazing ? ((1.0 - variable.eat_anim) * 0.4 + 0.05) : -variable.eat_anim * 0.4 - 0.05) * query.delta_time * 20.0, 0.0, 1.0);",
+          "variable.mouth_anim = math.clamp(variable.mouth_anim + (variable.open_mouth ? ((1.0 - variable.mouth_anim) * 0.7 + 0.05) : -variable.mouth_anim * 0.7 - 0.05) * query.delta_time * 20.0, 0.0, 1.0);",
+          "variable.walk_tail_angle = math.clamp(query.modified_move_speed * 50.0, 0.0, 90.0) * (1.0 - variable.stand_anim);",
+          "variable.head_x_rot = query.target_x_rotation + (query.modified_move_speed > 0.2 ? (math.cos(query.modified_distance_moved * 11.46) * 11.46 * query.modified_move_speed + query.modified_move_speed * 11.46) : 0.0);",
+          "variable.inverse_max_stand_eat = (1.0 - math.max(variable.stand_anim, variable.eat_anim));",
+          "variable.base_head_angle = variable.inverse_max_stand_eat * (30.0 + variable.head_x_rot + variable.mouth_anim * math.sin((query.life_time * 20.0 + query.frame_alpha) * 57.3) * 2.86);",
+          "variable.leg_walk_factor = math.cos((query.modified_distance_moved * 38.38) + 180.0);",
+          "variable.leg_x_rot_anim = variable.leg_walk_factor * 45.8 * query.modified_move_speed;",
+          "variable.leg_stand = math.cos((query.life_time * 20.0) * 34.38)  * variable.stand_anim;",
+          "variable.baby_ratio = query.is_baby ? ((0.0625 - query.model_scale) * 16.0) : 0.0;"
+        ],
+        "animate": [
+          "setup",
+          { "baby_transform": "query.is_baby" },
+          { "walk": "variable.stand_anim < 0.5" },
+          { "stand": "variable.stand_anim > 0.0" },
+          { "eat": "!query.is_standing" },
+          { "shake_tail": "variable.shake_tail" },
+          "mouth",
+          "look_at_player"
+        ]
+      },
+      "render_controllers": [ "controller.render.skeleton_horse.v1.and.v2" ],
+      "spawn_egg": {
+        "texture": "spawn_egg",
+        "texture_index": 32
+      }
+    }
+  }
+}

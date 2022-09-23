@@ -1,0 +1,684 @@
+{
+  "namespace": "persona_common",
+
+  /* ============================================================
+  RARITY BAR 
+
+  Requires:
+    - #rarity_bar_texture
+    - #rarity_bar_visible
+    - $persona_piece_binding_type
+    - $persona_piece_collection_name
+
+  Bindings:
+    - #rarity_bar_texture
+        Texture to use for the rarity bar.
+    - #rarity_bar_visible
+        If the bar is visible or not
+  */
+  "rarity_bar": {
+    "type": "image",
+    "size": [ "100%", 3 ],
+    "anchor_to": "bottom_middle",
+    "anchor_from": "bottom_middle",
+    "texture": "#rarity_bar_texture",
+    "bindings": [
+      {
+        "binding_type": "$piece_section_collection_details",
+        "binding_collection_name": "$piece_section_collection_name",
+        "binding_collection_prefix": "$piece_section_collection_prefix"
+      },
+      {
+        "binding_type": "$persona_piece_binding_type",
+        "binding_collection_name": "$persona_piece_collection_name",
+        "binding_name": "#rarity_bar_texture",
+        "binding_name_override": "#texture"
+      },
+      {
+        "binding_type": "$persona_piece_binding_type",
+        "binding_collection_name": "$persona_piece_collection_name",
+        "binding_name": "#rarity_bar_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  /* ============================================================
+  RARITY BACKGROUND
+
+  Requires:
+    - #rarity_color
+
+  Variables:
+    - $rarity_color_background_texture
+        Optional override for texture. Defaults to white texture.
+    - $rarity_binding_type
+        The binding type for the `#rarity_color` binding. Defaults to `global`
+    - $rarity_collection_name
+        Optional collection name for the `#rarity_color` binding. Defaults to `none`
+
+  Bindings:
+    - #rarity_color
+        The color to tint the texture with.
+
+  */
+  "item_rarity_color_background": {
+    "type": "image",
+    "$rarity_color_background_texture|default": "textures/ui/White",
+    "texture": "$rarity_color_background_texture",
+    "$rarity_background_alpha|default": 1,
+    "alpha": "$rarity_background_alpha",
+
+    "property_bag": {
+      "#common": "$rarity_common_bg_color",
+      "#uncommon": "$rarity_uncommon_bg_color",
+      "#rare": "$rarity_rare_bg_color",
+      "#epic": "$rarity_epic_bg_color",
+      "#legendary": "$rarity_legendary_bg_color"
+    },
+
+    "$rarity_section_collection_details|default": "none",
+    "$rarity_section_collection_prefix|default": "",
+    "$rarity_section_collection_name|default": "",
+
+    "$rarity_binding_type|default": "global",
+    "$rarity_collection_name|default": "none",
+    "$rarity_background_bindings|default": [
+      {
+        "binding_type": "$rarity_section_collection_details",
+        "binding_collection_name": "$rarity_section_collection_name",
+        "binding_collection_prefix": "$rarity_section_collection_prefix"
+      },
+      {
+        "binding_type": "$rarity_binding_type",
+        "binding_collection_name": "$rarity_collection_name",
+        "binding_name": "#rarity_color",
+        "binding_name_override": "#color"
+      }
+    ],
+    "bindings": "$rarity_background_bindings"
+  },
+
+
+  /* ============================================================
+  PERSONA ITEM DISPLAY
+
+  Requires:
+    - #rarity_color
+    - #rarity_bar_texture
+    - #rarity_bar_visible
+    - $persona_piece_binding_type
+    - $persona_piece_collection_name
+    
+  Variables:
+    - $item_display_size
+        The size of the control. Default is `[ "100%", "100%" ]`
+    - $is_loading
+        If the item is still loading or not (doesn't have image). Default is `false`
+    - $item_content_control
+        Child control to be placed over the image. (Extra icons, status symbols,
+        ...). Default is empty panel.
+    - $item_texture_file_system_binding_name
+        Binding name for the file system binding. Default is `#thumbnail_texture_file_system`
+    - $item_texture_path_binding_name
+        Binding name for the texture path binding. Default is `#thumbnail_texture_path`
+    - $ignore_background
+        If you want the background or not. Default is `false`
+    - $ignore_rarity_bar
+        If you want the rarity bar or not. Default is `false`
+  
+  Bindings:
+    - #rarity_color
+        The color to tint the texture with.
+    - #rarity_bar_texture
+        Texture to use for the rarity bar.
+    - #rarity_bar_visible
+        If the bar is visible or not
+  */
+  "piece_item_display@common.empty_panel": {
+    "$item_display_size|default": [ "100%", "100%" ],
+    "size": "$item_display_size",
+    "$is_loading|default": false,
+    "$item_content_control|default": "common.empty_panel",
+    "$ignore_background|default": false,
+    "$ignore_rarity_bar|default": false,
+
+    "$piece_section_collection_details|default": "none",
+    "$piece_section_collection_prefix|default": "",
+    "$piece_section_collection_name|default": "",
+
+    "$item_texture_path_binding_name|default": "#thumbnail_texture_path",
+    "$item_texture_file_system_binding_name|default": "#thumbnail_texture_file_system",
+
+    "controls": [
+      {
+        "item_renderer@common.empty_panel": {
+          "visible": "(not $is_loading)",
+          "controls": [
+            {
+              "background@persona_common.item_rarity_color_background": {
+                "ignored": "$ignore_background",
+                "$rarity_color_background_texture": "textures/ui/button_borderless_light",
+                "$rarity_binding_type": "$persona_piece_binding_type",
+                "$rarity_collection_name": "$persona_piece_collection_name",
+
+                "$rarity_section_collection_details": "$piece_section_collection_details",
+                "$rarity_section_collection_prefix": "$piece_section_collection_prefix",
+                "$rarity_section_collection_name": "$piece_section_collection_name"
+              }
+            },
+            {
+              "item_image": {
+                "type": "image",
+                "layer": 2,
+                "size": [ "100% - 3px", "100% - 3px" ],
+                "offset": [ 0, 1 ],
+                "anchor_to": "top_middle",
+                "anchor_from": "top_middle",
+                "bindings": [
+                  {
+                    "binding_type": "$piece_section_collection_details",
+                    "binding_collection_name": "$piece_section_collection_name",
+                    "binding_collection_prefix": "$piece_section_collection_prefix"
+                  },
+                  {
+                    "binding_type": "$persona_piece_binding_type",
+                    "binding_collection_name": "$persona_piece_collection_name",
+                    "binding_name": "$item_texture_file_system_binding_name",
+                    "binding_name_override": "#texture_file_system"
+                  },
+                  {
+                    "binding_type": "$persona_piece_binding_type",
+                    "binding_collection_name": "$persona_piece_collection_name",
+                    "binding_name": "$item_texture_path_binding_name",
+                    "binding_name_override": "#texture"
+                  }
+                ]
+              }
+            },
+            {
+              "rarity_bar_panel@persona_common.rarity_bar": {
+                "ignored": "$ignore_rarity_bar",
+                "layer": 3
+              }
+            },
+            {
+              "extra_control@common.empty_panel": {
+                "layer": 4,
+                "controls": [
+                  { "control_instance@$item_content_control": {} }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "loading_progress_spinner": {
+          "type": "image",
+          "layer": 2,
+          "texture": "textures/ui/loading_spinner",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "offset": [ 0, 6 ],
+          "uv_size": [ 7, 7 ],
+          "size": [ 14, 14 ],
+          "uv": "@progress.spinner_animation",
+          "visible": "$is_loading"
+        }
+      }
+    ]
+  },
+
+  /*
+  Emote Wheel definitions
+  */
+  "wheel_state": {
+    "type": "image",
+    "layer": 1,
+    "texture": "$wheel_state_texture"
+  },
+
+  "emote_label": {
+    "ignored": "(not #visible)",
+    "type": "label",
+    "size": [ "100%", 100 ],
+    "text_alignment": "center",
+    "color": "$dark_button_default_text_color"
+  },
+
+  "touch_name_label": {
+    "type": "label",
+    "size": [ 75, 22 ],
+    "text_alignment": "left",
+    "text": "#text",
+    "shadow": true,
+    "color": "$dark_button_default_text_color",
+    "font_type": "smooth",
+    "tts_skip_message": true,
+    "bindings": [
+      {
+        "binding_name": "#is_touch_mode",
+        "binding_name_override": "#visible"
+      },
+      {
+        "binding_name": "#emote_name_touch",
+        "binding_name_override": "#text",
+        "binding_condition": "always"
+      }
+    ]
+  },
+
+  "emote_image@common.empty_panel": {
+    "layer": 2,
+    "size": [ "100%c", "100%c" ],
+    "controls": [
+      {
+        "empty": {
+          "type": "image",
+          "texture": "textures/ui/icon_none",
+          "size": [ 14, 14 ],
+          "property_bag": "$property_bag",
+          "bindings": [
+            {
+              "binding_name": "(not #emote_is_valid)",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
+            }
+          ]
+        }
+      },
+      {
+        "emote_preview": {
+          "type": "panel",
+          "size": [ 42, 42 ],
+          "property_bag": "$property_bag",
+          "bindings": [
+            {
+              "binding_name": "#emote_is_valid",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
+            }
+          ],
+          "controls": [
+            {
+              "valid": {
+                "type": "image",
+                "size": [ "100%", "100%" ],
+                "texture": "#texture",
+                "property_bag": "$property_bag",
+                "bindings": [
+                  {
+                    "binding_name": "#emote_image",
+                    "binding_name_override": "#texture",
+                    "binding_condition": "always"
+                  },
+                  {
+                    "binding_name": "#emote_image_file_system",
+                    "binding_name_override": "#texture_file_system",
+                    "binding_condition": "always"
+                  },
+                  {
+                    "binding_name": "#emote_image_tint",
+                    "binding_name_override": "#color",
+                    "binding_condition": "always"
+                  },
+                  {
+                    "binding_name": "#image_is_valid",
+                    "binding_name_override": "#visible",
+                    "binding_condition": "always"
+                  }
+                ]
+              }
+            },
+            {
+              "valid_no_image": {
+                "type": "panel",
+                "size": [ "100%", "100%" ],
+                "property_bag": "$property_bag",
+                "bindings": [
+                  {
+                    "binding_name": "(not #image_is_valid)",
+                    "binding_name_override": "#visible",
+                    "binding_condition": "always"
+                  }
+                ],
+                "controls": [
+                  {
+                    "valid_text": {
+                      "type": "label",
+                      "size": [ "100%", 13 ],
+                      "text_alignment": "center",
+                      "color": "$dark_button_default_text_color",
+                      "font_scale_factor": 1.5,
+                      "shadow": true,
+                      "property_bag": "$property_bag",
+                      "text": "#text",
+                      "bindings": [
+                        {
+                          "binding_name": "#emote_index_name",
+                          "binding_name_override": "#text",
+                          "binding_condition": "always"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "keyboard_hotkey_helpers": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "$keyboard_helper_size": [ 17, 17 ],
+    "$hide_description": true,
+    "controls": [
+      {
+        "keyboard_1@common.keyboard_helper_keys": {
+          "size": "$keyboard_helper_size",
+          "offset": [ 0, "-50% - 11px" ],
+          "$keyboard_character": "keyboard.keyName.1",
+          "$text_color": "$generic_button_text_color"
+        }
+      },
+      {
+        "keyboard_2@common.keyboard_helper_keys": {
+          "size": "$keyboard_helper_size",
+          "offset": [ "50% + 10px", 0 ],
+          "$keyboard_character": "keyboard.keyName.2",
+          "$text_color": "$generic_button_text_color"
+        }
+      },
+      {
+        "keyboard_3@common.keyboard_helper_keys": {
+          "size": "$keyboard_helper_size",
+          "offset": [ 0, "50% + 5px" ],
+          "layer": 3,
+          "$keyboard_character": "keyboard.keyName.3",
+          "$text_color": "$generic_button_text_color"
+        }
+      },
+      {
+        "keyboard_4@common.keyboard_helper_keys": {
+          "size": "$keyboard_helper_size",
+          "offset": [ "-50% - 11px", 0 ],
+          "$keyboard_character": "keyboard.keyName.4",
+          "$text_color": "$generic_button_text_color"
+        }
+      }
+    ]
+  },
+
+  "gamepad_hotkey_helpers": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "$hide_description": true,
+    "controls": [
+      {
+        "gamepad_y@common.gamepad_helper_y": {
+          "offset": [ 0, "-50% - 10px" ]
+        }
+      },
+      {
+        "gamepad_b@common.gamepad_helper_b": {
+          "offset": [ "50% + 10px", 0 ]
+        }
+      },
+      {
+        "gamepad_a@common.gamepad_helper_a": {
+          "offset": [ 0, "50% + 10px" ]
+        }
+      },
+      {
+        "gamepad_x@common.gamepad_helper_x": {
+          "offset": [ "-50% - 10px", 0 ]
+        }
+      }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////
+  //
+  // requires:
+  //   - $emote_slot_index : int
+  //   - $emote_slot_name : string
+  //   - $wheel_state_texture : string : texture path
+  //   - $emote_image_offset : vec2
+  //   - $emote_touch_label_offset : vec2
+  //
+  /////////////////////////////////////////////////////////////
+  "emote_wheel_slot_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "$emote_slot_name@persona_common.wheel_state": {}
+      },
+      {
+        "image_0@persona_common.emote_image": {
+          "offset": "$emote_image_offset",
+          "$property_bag": {
+            "#index": "$emote_slot_index"
+          }
+        }
+      },
+      {
+        "touch_label_0@persona_common.touch_name_label": {
+          "offset": "$emote_touch_label_offset",
+          "text_alignment": "$emote_touch_label_alignment",
+          "property_bag": {
+            "#index": "$emote_slot_index"
+          }
+        }
+      }
+    ]
+  },
+
+  "selection_wheel": {
+    "type": "selection_wheel",
+    "size": [ "100%", "100%" ],
+
+    "$slice_count|default": 1,
+    "$inner_radius|default": 0.0,
+    "$outer_radius|default": 1.0,
+    "$button_name|default": "",
+    "$iterate_left_button_name|default": "button.iterate_selection_left",
+    "$iterate_right_button_name|default": "button.iterate_selection_right",
+    "slice_count": "$slice_count",
+    "inner_radius": "$inner_radius",
+    "outer_radius": "$outer_radius",
+
+    "focus_enabled": true,
+
+    "button_name": "$button_name",
+    "iterate_left_button_name": "$iterate_left_button_name",
+    "iterate_right_button_name": "$iterate_right_button_name",
+    "initial_button_slice": -1,
+    "$button_focus_precedence|default": 0,
+    "default_focus_precedence": "$button_focus_precedence",
+
+    "$button_tts_name|default": "",
+    "$button_tts_header|default": "",
+    "$tts_section_header|default": "",
+    "$button_tts_control_type_order_priority|default": 100,
+
+    "tts_name": "$button_tts_name",
+    "tts_control_header": "$button_tts_header",
+    "tts_section_header": "$tts_section_header",
+    "tts_control_type_order_priority": "$button_tts_control_type_order_priority",
+    "tts_skip_message": true,
+
+    "layer": 1,
+    "sound_name": "random.click",
+    "sound_volume": 1.0,
+    "sound_pitch": 1.0,
+    "state_controls": [],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "to_button_id": "$button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.controller_secondary_select",
+        "to_button_id": "button.select_emote_slot_0",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.select_emote_slot_1",
+        "input_mode_condition": "gamepad_and_not_gaze",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.select_emote_slot_2",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_clear",
+        "to_button_id": "button.select_emote_slot_3",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.slot1",
+        "to_button_id": "button.select_emote_slot_0",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.slot2",
+        "to_button_id": "button.select_emote_slot_1",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.slot3",
+        "to_button_id": "button.select_emote_slot_2",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.slot4",
+        "to_button_id": "button.select_emote_slot_3",
+        "mapping_type": "global"
+      }
+    ],
+    "property_bag": {
+      "#hover_slice": 0
+    },
+    "$selection_wheel_bindings|default": [],
+    "bindings": "$selection_wheel_bindings"
+  },
+
+  /* ============================================================
+  Emote Wheel Panel
+
+  */
+  "emote_selection_wheel@persona_common.selection_wheel": {
+    "inner_radius": 0.35,
+    "outer_radius": 1.0,
+    "$slice_count": 4,
+    "$button_name": "button.emote_selected",
+
+    "$button_focus_precedence": 10,
+    "focus_identifier": "emote_wheel",
+    "focus_change_left": "FOCUS_OVERRIDE_STOP",
+    "focus_change_right": "FOCUS_OVERRIDE_STOP",
+    "focus_change_up": "FOCUS_OVERRIDE_STOP",
+
+    "controls": [
+      {
+        "default_state@persona_common.wheel_state": {
+          "texture": "textures/ui/emote_wheel_updated_base"
+        }
+      },
+      {
+        "emote_slot_0_content@persona_common.emote_wheel_slot_content": {
+          "$emote_slot_index": 0,
+          "$emote_slot_name": "emote_slot_0",
+          "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_0",
+          "$emote_image_offset": [ 0, "-33.57%" ],
+          "$emote_touch_label_offset": [ 0, "-56%" ],
+          "$emote_touch_label_alignment": "center"
+        }
+      },
+      {
+        "emote_slot_1_content@persona_common.emote_wheel_slot_content": {
+          "$emote_slot_index": 1,
+          "$emote_slot_name": "emote_slot_1",
+          "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_1",
+          "$emote_image_offset": [ "32.8125%", 0 ],
+          "$emote_touch_label_offset": [ "92%", 0 ],
+          "$emote_touch_label_alignment": "left"
+        }
+      },
+      {
+        "emote_slot_2_content@persona_common.emote_wheel_slot_content": {
+          "$emote_slot_index": 2,
+          "$emote_slot_name": "emote_slot_2",
+          "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_2",
+          "$emote_image_offset": [ 0, "33.57%" ],
+          "$emote_touch_label_offset": [ 0, "62%" ],
+          "$emote_touch_label_alignment": "center"
+        }
+      },
+      {
+        "emote_slot_3_content@persona_common.emote_wheel_slot_content": {
+          "$emote_slot_index": 3,
+          "$emote_slot_name": "emote_slot_3",
+          "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_3",
+          "$emote_image_offset": [ "-32.8125%", 0 ],
+          "$emote_touch_label_offset": [ "-92%", 0 ],
+          "$emote_touch_label_alignment": "right"
+        }
+      }
+    ],
+    "state_controls": [
+      "default_state",
+      "emote_slot_0",
+      "emote_slot_1",
+      "emote_slot_2",
+      "emote_slot_3"
+    ]
+  },
+
+  "emote_wheel_panel@common_dialogs.main_panel": {
+    "size": [ "100%y", "100%" ],
+    "controls": [
+      {
+        "emote_name@persona_common.emote_label": {
+          "size": [ 35, 35 ],
+          "offset": [ 0, "7%" ],
+          "text": "#emote_name",
+          "layer": 10,
+          "font_type": "smooth",
+          "font_scale_factor": 0.8,
+          "shadow": true,
+          "bindings": [
+            {
+              "binding_name": "#emote_name",
+              "binding_condition": "always"
+            }
+          ]
+        }
+      },
+      {
+        "emote_wheel_content_panel": {
+          "type": "panel",
+          "size": [ "89.51%y", "100% - 40px" ],
+          "controls": [
+            { "gamepad_helpers@persona_common.gamepad_hotkey_helpers": {} },
+            { "keyboard_helpers@persona_common.keyboard_hotkey_helpers": {} },
+            { "emote_wheel@persona_common.emote_selection_wheel": {} }
+          ]
+        }
+      }
+    ]
+  }
+}

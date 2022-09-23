@@ -1,0 +1,100 @@
+/********************************************************
+*   (c) Mojang. All rights reserved                     *
+*   (c) Microsoft. All rights reserved.                 *
+*********************************************************/
+
+{
+  "namespace": "sign",
+  //---------------------------------------------------------------------------
+  // CONTROLS
+  //---------------------------------------------------------------------------
+  "sign_background": {
+    "type": "image",
+    "texture": "$sign_texture",
+    "size": [ "192px", "93px" ],
+    "offset": [ -1, -5 ]
+  },
+
+  //---------------------------------------------------------------------------
+  // CONTENT
+  //---------------------------------------------------------------------------
+  "sign_text_multiline@common.multiline_text_edit_box": {
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": "$sign_screen_size",
+    "offset": [ 0, 5 ],
+    "$font_size": "large",
+    "$text_alignment": "center",
+    "constrain_to_rect": false,
+    "selected": true,
+    "can_be_deselected": false,
+    "focus_enabled": true,
+    "$text_box_name": "#sign_text_multi",
+    "max_length": 32500,
+    "$text_color_binding_type": "global",
+
+    "$text_background_default": "sign.sign_background",
+    "$text_background_hover": "sign.sign_background",
+
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "handle_select": false,
+        "handle_deselect": true,
+        "mapping_type": "global"
+      }
+    ]
+  },
+
+  "sign_screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "input_eating_panel": {
+          "type": "input_panel",
+          "layer": 2,
+          "size": [ "100%c", "100%c" ],
+          "focus_enabled": false,
+          // Ensure the entire text edit box is visible over the virtual keyboard
+          "$virtual_keyboard_buffer_control": "text_edit",
+          "controls": [
+            { "text_edit@sign.sign_text_multiline": {} }
+          ]
+        }
+      },
+      {
+        "invisible_exit_background": {
+          "type": "input_panel",
+          "layer": 1,
+          "size": [ "100%", "100%" ],
+          "focus_enabled": true,
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "bindings": [
+            {
+              "binding_name": "#close_button_visible",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.menu_exit",
+              "mapping_type": "pressed"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // SCREEN
+  //---------------------------------------------------------------------------
+  "sign_screen@common.base_screen": {
+    "$screen_content": "sign.sign_screen_content",
+    "$close_on_player_hurt|default": true,
+    "close_on_player_hurt": "$close_on_player_hurt"
+  }
+}

@@ -1,0 +1,517 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "realms_pending_invitations",
+
+  //---------------------------------------------------------------------------
+  // Common
+  //---------------------------------------------------------------------------
+
+  "panel_text": {
+    "type": "label",
+    "color": "$main_header_text_color",
+    "layer": 5,
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "font_size": "normal"
+  },
+
+  "banner_panel_base": {
+    "type": "panel",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ "100%", 27 ],
+    "controls": [
+      {
+        "background@$banner_image": {
+          "size": [ "100%-4px", "100% - 1px" ],
+          "offset": [ 2, 1 ]
+        }
+      },
+      {
+        "indent_panel": {
+          "type": "panel",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "size": [ "100% - 8px", "100% - 5px" ],
+          "offset": [ 4, 3 ],
+          "controls": [ { "content@$child_control": {} } ]
+        }
+      }
+    ]
+  },
+
+  "banner_panel@banner_panel_base": {
+    "$banner_image": "realms_common.dark_banner"
+  },
+
+  "banner_panel_hover@banner_panel_base": {
+    "$banner_image": "realms_common.dark_banner_hover"
+  },
+
+  "realm_invite_button@common_buttons.light_content_button": {
+    "anchor_to": "top_right",
+    "anchor_from": "top_right",
+    "size": [ "100%y", "100%" ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "pending_invites_collection"
+      },
+      {
+        "binding_name": "#response_buttons_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "pending_invites_collection"
+      }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // Gamertag Grid
+  //---------------------------------------------------------------------------
+
+  /*"realm_screenshot": {
+    "type": "panel",
+    "controls": [
+      { "legacy_banner@realms_common.legacy_banner": { } },
+      {
+        "realm_screenshot_texture": {
+          "type": "image",
+          "texture": "textures/ui/WorldDemoScreen",
+          "layer": 5,
+          "anchor_to": "center",
+          "anchor_from": "center",
+          "size": [ "100% - 2px", "100% - 2px" ]
+        }
+      }
+    ]
+  },/**/
+
+  "realm_name_label@realms_pending_invitations.panel_text": {
+    "text": "#realm_name",
+    "bindings": [
+      {
+        "binding_name": "#realm_name",
+        "binding_type": "collection",
+        "binding_collection_name": "pending_invites_collection"
+      }
+    ]
+  },
+
+  "realm_owner_label@realms_pending_invitations.panel_text": {
+    "text": "#realm_owner",
+    "color": "$dark_button_secondary_default_text_color",
+    "bindings": [
+      {
+        "binding_name": "#realm_owner",
+        "binding_type": "collection",
+        "binding_collection_name": "pending_invites_collection"
+      }
+    ]
+  },
+
+  "tts_gamertag_item_info_wrapper@common.tts_label_focus_wrapper": {
+    "size": [ "100% - 62px", "100%" ],
+    "$focus_border_size": [ "100%", 22 ],
+    "$tts_label_panel": "realms_pending_invitations.gamertag_item_info",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left"
+  },
+
+  "gamertag_item_info": {
+    "type": "panel",
+    "layer": 4,
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "pending_invites_collection"
+      }
+    ],
+    "controls": [
+      /*{
+        "ss@realms_pending_invitations.realm_screenshot": {
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "size": [ "160%y", "100%" ]
+        }
+      },
+      {
+        "text_area": {
+          "type": "panel",
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "size": [ "100% - 160%y", "100%" ],
+          "offset": [ "160%y", 0 ],
+          "controls": [/**/
+      {
+        "rnl@realms_pending_invitations.realm_name_label": {
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "size": [ "100% - 2px", "50%" ],
+          "offset": [ 2, 0.5 ]
+        }
+      },
+      {
+        "rol@realms_pending_invitations.realm_owner_label": {
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left",
+          "size": [ "100% - 2px", "50%" ],
+          "offset": [ 2, 0.5 ]
+        }
+      }
+      /*]
+        }
+      }/**/
+    ]
+  },
+
+  "accept_button_content": {
+    "type": "image",
+    "texture": "textures/ui/realms_green_check",
+    "anchor_to": "center",
+    "anchor_from": "center",
+    //"layer": 6,
+    "size": [ 15, 12 ]
+  },
+
+  "decline_button_content": {
+    "type": "image",
+    "texture": "textures/ui/realms_red_x",
+    "anchor_to": "center",
+    "anchor_from": "center",
+    //"layer": 6,
+    "size": [ 12, 12 ]
+  },
+
+  "realm_accept_button@realms_pending_invitations.realm_invite_button": {
+    "$button_content": "realms_pending_invitations.accept_button_content",
+    "offset": [ "-100%y - 1px", 0 ],
+    "layer": 2,
+    "$button_tts_header": "gui.accept",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.realm_invitation_accept",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.realm_invitation_accept",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "realm_decline_button@realms_pending_invitations.realm_invite_button": {
+    "$button_content": "realms_pending_invitations.decline_button_content",
+    "layer": 2,
+    "$button_tts_header": "gui.decline",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.realm_invitation_decline",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.realm_invitation_decline",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "realm_accepted_panel@realms_pending_invitations.panel_text": {
+    "text": "#invite_status",
+    "anchor_to": "top_right",
+    "anchor_from": "top_right",
+    "size": [ "60px", "100%" ],
+    "offset": [ 0, 0.5 ],
+    "color": "$dark_button_secondary_default_text_color",
+    "layer": 5,
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "pending_invites_collection"
+      },
+      {
+        "binding_name": "#accept_panel_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "pending_invites_collection"
+      },
+      {
+        "binding_name": "#invite_status",
+        "binding_type": "collection",
+        "binding_collection_name": "pending_invites_collection"
+      }
+    ]
+  },
+
+  "gamertag_item_content": {
+    "type": "panel",
+    "controls": [
+      { "lb@realms_pending_invitations.tts_gamertag_item_info_wrapper": {} },
+      { "a@realms_pending_invitations.realm_accept_button": {} },
+      { "d@realms_pending_invitations.realm_decline_button": {} },
+      { "ap@realms_pending_invitations.realm_accepted_panel": {} }
+    ]
+  },
+
+  "gamertag_item@realms_pending_invitations.banner_panel": {
+    "$child_control": "realms_pending_invitations.gamertag_item_content"
+  },
+
+  "gamertag_item_grid": {
+    "type": "grid",
+    "grid_item_template": "realms_pending_invitations.gamertag_item",
+    "grid_dimension_binding": "#gamertag_item_grid_dimension",
+    "collection_name": "pending_invites_collection",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ "100%", "default" ],
+    "bindings": [
+      {
+        "binding_name": "#gamertag_item_grid_dimension",
+        "binding_type": "global"
+      }
+    ]
+  },
+
+
+  // -----------------------------------------------
+  //
+  //    toggle
+  //
+  // -----------------------------------------------
+
+  "show_friends_only_toggle_state_content": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%" ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "layer": 3,
+    "controls": [
+      {
+        "checkbox_holding_panel": {
+          "type": "panel",
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "size": [ "100%y", "100%" ],
+          "controls": [
+            {
+              "hide_invites@$toggle_image": {
+                "anchor_from": "center",
+                "anchor_to": "center"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "hide_invites_text_panel": {
+          "type": "panel",
+          "controls": [
+            {
+              "hide_invites_text@realms_pending_invitations.panel_text": {
+                "size": [ "default", "default" ],
+                "anchor_from": "left_middle",
+                "anchor_to": "left_middle",
+                "text": "realmsPendingInvitationsScreen.showFriendInvites"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "show_friends_only_toggle_on_state_content@realms_pending_invitations.show_friends_only_toggle_state_content": {
+    "$toggle_image": "common.checkbox_checked_state"
+  },
+
+  "show_friends_only_toggle_on_state@realms_pending_invitations.banner_panel": {
+    "$child_control": "realms_pending_invitations.show_friends_only_toggle_on_state_content"
+  },
+
+  "show_friends_only_toggle_off_state_content@realms_pending_invitations.show_friends_only_toggle_state_content": {
+    "$toggle_image": "common.checkbox_unchecked_state"
+  },
+
+  "show_friends_only_toggle_off_state@realms_pending_invitations.banner_panel": {
+    "$child_control": "realms_pending_invitations.show_friends_only_toggle_off_state_content"
+  },
+
+  "show_friends_only_toggle_on_hover_state_content@realms_pending_invitations.show_friends_only_toggle_state_content": {
+    "$toggle_image": "common.checkbox_checked_hover_state"
+  },
+
+  "show_friends_only_toggle_on_hover_state@realms_pending_invitations.banner_panel_hover": {
+    "$child_control": "realms_pending_invitations.show_friends_only_toggle_on_hover_state_content"
+  },
+
+  "show_friends_only_toggle_off_hover_state_content@realms_pending_invitations.show_friends_only_toggle_state_content": {
+    "$toggle_image": "common.checkbox_unchecked_hover_state"
+  },
+
+  "show_friends_only_toggle_off_hover_state@realms_pending_invitations.banner_panel_hover": {
+    "$child_control": "realms_pending_invitations.show_friends_only_toggle_off_hover_state_content"
+  },
+
+  "show_friends_only_toggle_on_locked_state_content@realms_pending_invitations.show_friends_only_toggle_state_content": {
+    "$toggle_image": "common.checkbox_checked_locked_state"
+  },
+
+  "show_friends_only_toggle_on_locked_state@realms_pending_invitations.banner_panel": {
+    "$child_control": "realms_pending_invitations.show_friends_only_toggle_on_locked_state_content"
+  },
+
+  "show_friends_only_toggle_off_locked_state_content@realms_pending_invitations.show_friends_only_toggle_state_content": {
+    "$toggle_image": "common.checkbox_unchecked_locked_state"
+  },
+
+  "show_friends_only_toggle_off_locked_state@realms_pending_invitations.banner_panel": {
+    "$child_control": "realms_pending_invitations.show_friends_only_toggle_off_locked_state_content"
+  },
+
+  "show_friends_only_toggle@common.toggle": {
+    "size": [ "100%", "100%c" ],
+    "$toggle_name": "#hide_invites",
+    "$toggle_state_binding_name": "#invite_toggle_state",
+    "$unchecked_control": "realms_pending_invitations.show_friends_only_toggle_off_state",
+    "$checked_control": "realms_pending_invitations.show_friends_only_toggle_on_state",
+    "$unchecked_hover_control": "realms_pending_invitations.show_friends_only_toggle_off_hover_state",
+    "$checked_hover_control": "realms_pending_invitations.show_friends_only_toggle_on_hover_state",
+    "$unchecked_locked_control": "realms_pending_invitations.show_friends_only_toggle_off_locked_state",
+    "$unchecked_locked_hover_control": "realms_pending_invitations.show_friends_only_toggle_off_locked_state",
+    "$checked_locked_control": "realms_pending_invitations.show_friends_only_toggle_on_locked_state",
+    "$checked_locked_hover_control": "realms_pending_invitations.show_friends_only_toggle_on_locked_state"
+  },
+
+
+  // -----------------------------------------------
+  //
+  //    screen
+  //
+  // -----------------------------------------------
+
+  "gamepad_helpers": {
+    "type": "panel",
+    "layer": 2,
+    "size": [ "100%", 16 ],
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "controls": [
+      {
+        "a@common.gamepad_helper_a": {
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left"
+        }
+      },
+      {
+        "b@common.gamepad_helper_b": {
+          "anchor_from": "bottom_right",
+          "anchor_to": "bottom_right"
+        }
+      }
+    ]
+  },
+
+  "no_invites_label_wrapper@common.tts_label_focus_wrapper": {
+    "$tts_label_panel": "realms_pending_invitations.no_invites_label",
+    "bindings": [
+      {
+        "binding_name": "#no_invites_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "global"
+      }
+    ]
+  },
+
+  "no_invites_label": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "label@realms_pending_invitations.panel_text": {
+          "text": "realmsPendingInvitationsScreen.noInvites",
+          "size": [ "default", "default" ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle"
+        }
+      }
+    ]
+  },
+
+  "realms_pending_invitation_list": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "controls": [
+      {
+        "upper_padding": {
+          "type": "panel",
+          "size": [ "100%", 1 ]
+        }
+      },
+      { "sfop@realms_pending_invitations.show_friends_only_toggle": {} },
+      { "gig@realms_pending_invitations.gamertag_item_grid": {} },
+      {
+        "lower_padding": {
+          "type": "panel",
+          "size": [ "100%", 2 ]
+        }
+      },
+      { "nil@realms_pending_invitations.no_invites_label_wrapper": {} }
+    ]
+  },
+
+  "content_panel@common.scrolling_panel": {
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "$show_background": false,
+    "$scrolling_pane_size": [ "100% - 1px", "100%" ],
+    "$scrolling_content": "realms_pending_invitations.realms_pending_invitation_list",
+    "$scroll_size": [ 5, "100% - 4px" ]
+  },
+
+  "realms_pending_invitations_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ],
+    "$screen_content": "realms_pending_invitations.realms_invitation_screen_content"
+  },
+
+  "realms_invitation_screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "root_panel": {
+          "type": "input_panel",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "controls": [
+            {
+              "main_panel@common_dialogs.main_panel_no_buttons": {
+                "size": "$narrow_screen_size",
+                "offset": [ 0, 0 ],
+                "$text_name": "realmsPendingInvitationsScreen.pendingInvitations",
+                "$child_control": "realms_pending_invitations.content_panel"
+              }
+            },
+            { "sgh@realms_pending_invitations.gamepad_helpers": {} }
+          ]
+        }
+      }
+    ]
+  }
+}

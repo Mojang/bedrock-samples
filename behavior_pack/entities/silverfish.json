@@ -1,0 +1,160 @@
+{
+  "format_version": "1.17.10",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:silverfish",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+
+    "component_groups": {
+      "minecraft:silverfish_calm": {
+        "minecraft:on_target_acquired" : {
+          "event": "minecraft:become_angry",
+          "target": "self"
+        }
+      },
+      "minecraft:silverfish_angry": {
+        "minecraft:angry": {
+          "duration": -1,
+          "broadcast_anger": true,
+          "broadcast_range": 20,
+          "calm_event": {
+            "event": "minecraft:on_calm",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.melee_attack": {
+          "priority": 4,
+          "track_target": true
+        },
+        "minecraft:behavior.silverfish_wake_up_friends": {
+          "priority": 1
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:experience_reward": {
+        "on_death": "query.last_hit_by_player ? 5 : 0"
+      },
+      "minecraft:type_family": {
+        "family":["silverfish", "monster", "lightweight", "mob", "arthropod" ]
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/silverfish.json"
+      },
+      "minecraft:health": {
+        "value": 8,
+        "max": 8
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true
+      },
+      "minecraft:movement.basic": {
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:attack": {
+        "damage": 1
+      },
+      "minecraft:collision_box": {
+        "width": 0.4,
+        "height": 0.3
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:behavior.float": {
+        "priority": 1
+      },
+      "minecraft:behavior.silverfish_merge_with_stone": {
+        "priority": 5
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "attack_interval": 10,
+        "entity_types": [
+          {
+            "filters": {
+                "any_of": [
+                  { "test" :  "is_family", "subject" : "other", "value" :  "player"},
+                  { "test" :  "is_family", "subject" : "other", "value" :  "snowgolem"},
+                  { "test" :  "is_family", "subject" : "other", "value" :  "irongolem"}
+                ]
+            },
+            "max_dist": 8
+          }
+        ]
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 1,
+        "alert_same_type": true
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      },
+      "minecraft:block_climber": {
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "remove": {
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:silverfish_calm"
+          ]
+        }
+      },
+      "minecraft:become_angry": {
+        "remove": {
+          "minecraft:silverfish_calm": { }
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:silverfish_angry"
+          ]
+        }
+      },
+      "minecraft:on_calm": {
+        "remove": {
+          "minecraft:silverfish_angry": { }
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:silverfish_calm"
+          ]
+        }
+      }
+    }
+  }
+}
