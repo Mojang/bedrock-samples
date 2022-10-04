@@ -1,0 +1,106 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:warden",
+      "materials": {
+        "default": "warden",
+        "bioluminescent_layer": "warden_bioluminescent_layer"
+      },
+      "textures": {
+        "default": "textures/entity/warden/warden",
+        "bioluminescent_layer": "textures/entity/warden/warden_bioluminescent_layer",
+        "spots_1": "textures/entity/warden/warden_pulsating_spots_1",
+        "spots_2": "textures/entity/warden/warden_pulsating_spots_2",
+        "tendrils": "textures/entity/warden/warden_tendrils",
+        "heart": "textures/entity/warden/warden_heart"
+      },
+      "geometry": { "default": "geometry.warden" },
+      "scripts": {
+        "pre_animation": [
+          "variable.animation_speed = Math.min(0.5, 3.0 * query.modified_move_speed);",
+          "variable.anim_pos_mod = 49.388962;",
+          "variable.bob = query.life_time * 20;",
+          "variable.modified_bob = variable.bob * 0.1 * 57.2958;",
+          "variable.modified_bob_sin = math.sin(variable.modified_bob);",
+          "variable.modified_bob_cos = math.cos(variable.modified_bob);",
+          "variable.pi = 180;",
+          "variable.halfpi = variable.pi / 2.0;",
+          "variable.tendril_animation_length = 0.5;",
+          "variable.head_x_rot = (68.7549 * math.cos(query.modified_distance_moved * variable.anim_pos_mod + variable.halfpi) * math.min(0.35, variable.animation_speed)) + (math.sin(variable.bob * 5.72958) * 0.06);",
+          "variable.head_z_rot = (17.1887 * math.sin(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed) + (Math.cos(variable.bob * 5.72958) * 0.06);",
+          "variable.body_x_rot = (57.2958 * math.cos(query.modified_distance_moved * variable.anim_pos_mod) * math.min(0.35, variable.animation_speed)) + (math.cos(variable.bob * 5.72958) * 0.025);",
+          "variable.body_z_rot = (5.72958 * math.sin(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed) + (math.sin(variable.bob * 5.72958) * 0.025);",
+          "variable.left_leg_x_rot = 57.2958 * math.cos(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed;",
+          "variable.right_leg_x_rot = 57.2958 * math.cos(query.modified_distance_moved * variable.anim_pos_mod + variable.pi) * variable.animation_speed;",
+          "variable.left_arm_x_rot = -(45.8366 * math.cos(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed);",
+          "variable.right_arm_x_rot = -(45.8366 * math.sin(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed);",
+          "variable.vibration_phase = query.time_since_last_vibration_detection;",
+          "variable.tendril_animation = variable.vibration_phase < 0.0 ? 0.0 : 1.0 - (math.min(query.time_since_last_vibration_detection, variable.tendril_animation_length) / variable.tendril_animation_length);",
+          "variable.left_tendril_x_rot = variable.tendril_animation * (math.cos(variable.bob * 128.9155) * variable.pi * 0.1);",
+          "variable.right_tendril_x_rot = variable.left_tendril_x_rot * -1;",
+          "variable.spots_1_alpha = 0.25 * math.cos(variable.bob * 2.578);",
+          "variable.spots_2_alpha = 0.25 * math.cos(variable.bob * 2.578 + 180.0);",
+          "variable.tendrils_alpha = variable.tendril_animation;",
+          "variable.heart_alpha = 0.8 * (1.0 - query.heartbeat_phase);"
+        ],
+        "animate": [
+          "base_pose",
+          { "move": "!(query.is_emerging || query.is_digging)" },
+          "shiver_controller",
+          "bob",
+          { "emerge": "query.is_emerging" },
+          "sniff_controller",
+          { "dig": "query.is_digging" },
+          "roar_controller",
+          { "look_at_target": "!(query.is_emerging || query.is_digging)" },
+          "melee_attack_controller",
+          { "swimming": "query.swim_amount > 0.0" },
+          "sonic_boom_controller"
+        ]
+      },
+      "animations": {
+        "emerge": "animation.warden.emerge",
+        "sniff": "animation.warden.sniff",
+        "sniff_controller": "controller.animation.warden.sniff",
+        "dig": "animation.warden.dig",
+        "roar": "animation.warden.roar",
+        "roar_controller": "controller.animation.warden.roar",
+        "shiver": "animation.warden.shiver",
+        "shiver_controller": "controller.animation.warden.shiver",
+        "base_pose": "animation.humanoid.base_pose.v1.0",
+        "look_at_target": "animation.warden.look_at_target.default",
+        "move": "animation.warden.move",
+        "melee_attack": "animation.warden.attack",
+        "melee_attack_controller": "controller.animation.warden.melee_attacking",
+        "bob": "animation.warden.bob",
+        "swimming": "animation.humanoid.swimming.v1.0",
+        "sonic_boom": "animation.warden.sonic_boom",
+        "sonic_boom_controller": "controller.animation.warden.sonic_boom"
+      },
+      "render_controllers": [
+        "controller.render.warden",
+        "controller.render.warden_bioluminescent_layer",
+        "controller.render.warden_spots_1",
+        "controller.render.warden_spots_2",
+        "controller.render.warden_tendrils",
+        "controller.render.warden_heart"
+       ],
+      "enable_attachables": true,
+      "spawn_egg": {
+        "base_color": "#0F4649",
+        "overlay_color": "#39D6E0"
+      },
+      "sound_effects": {
+        "emerge": "mob.warden.emerge",
+        "sniff": "mob.warden.sniff",
+        "dig": "mob.warden.dig",
+        "roar": "mob.warden.roar",
+        "clicking": "mob.warden.clicking"
+      },
+      "particle_effects": {
+        "digging": "minecraft:warden_dig"
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "xbl_first_launch",
+
+
+  "Xbox_icon": {
+    "type": "image",
+    "texture": "textures/ui/xbox4",
+    "layer": 3,
+    "size": [ 20, 20 ]
+  },
+
+  "horizontal_break": {
+    "type": "image",
+    "texture": "textures/ui/horizontalbreak"
+  },
+
+  "button_label": {
+    "type": "label",
+    "size": [ "100%-15px", "default" ],
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "text_alignment": "center",
+    "text": "xbox.signinFree",
+    "color": "$text_color"
+  },
+
+  "xbl_signin_label": {
+    "type": "panel",
+    "layer": 2,
+    "controls": [
+      {
+        "Xbox_icon@Xbox_icon": {
+          "ignored": true,
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "offset": [ 6, 0 ]
+        }
+      },
+      {
+        "button_label@xbl_first_launch.button_label": {
+          "ignored": false
+        }
+      }
+    ]
+  },
+
+  "xbl_signin_button@common_buttons.light_content_button": {
+    "$pressed_button_name": "button.xbl_signin",
+    "$button_content": "xbl_first_launch.xbl_signin_label",
+    "$button_focus_precedence": 10
+  },
+
+  "message_label": {
+    "type": "label",
+    "size": [ "100%", "100%" ],
+    "text": "#message",
+    "font_type": "smooth",
+    "$message_scale_factor|default": 1.0,
+    "variables": {
+      "requires": "$has_platform_specific_prompt",
+      "$message_scale_factor": 0.85
+    },
+    "font_scale_factor": "$message_scale_factor",
+    "layer": 2,
+    "color": "$body_text_color",
+    "bindings": [
+      {
+        "binding_name": "#message"
+      },
+      {
+        "binding_type": "global",
+        "binding_condition": "once",
+        "binding_name": "#tts_dialog_body"
+      }
+    ],
+    "property_bag": {
+      "#tts_dialog_body": "#message"
+    }
+  },
+
+  "title_image_panel": {
+    "type": "panel",
+    "size": [ "100% - 4px", "100% - 4px" ],
+    "controls": [
+      {
+        "label_wrapper@common.tts_label_focus_wrapper": {
+          "size": [ "100%-96.73px", "100%" ],
+          "$focus_border_size": [ "100% + 8px", "100% + 4px" ],
+          "$tts_label_panel": "xbl_first_launch.message_label",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "$focus_border_offset": [ 2, 0 ]
+        }
+      },
+      {
+        "title_image": {
+          "type": "image",
+          "layer": 1,
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "texture": "textures/ui/train",
+          "offset": [ 2, -2 ],
+          "size": [ 87.83, 80.33 ]
+        }
+      },
+      {
+        "sign_in_button@xbl_signin_button": {
+          "size": [ 89.83, 33 ],
+          "anchor_from": "bottom_right",
+          "anchor_to": "bottom_right",
+          "offset": [ 3, 3 ],
+          "layer": 4
+        }
+      },
+      {
+        "horizontal_break@xbl_first_launch.horizontal_break": {
+          "size": [ 89.83, 37 ],
+          "offset": [ 3, 3 ],
+          "anchor_from": "bottom_right",
+          "anchor_to": "bottom_right",
+          "layer": 3
+        }
+      }
+    ]
+  },
+
+  "main_panel": {
+    "type": "input_panel",
+    "size": "$xbl_first_launch_screen_size",
+    "offset": [ 0, "15%" ],
+    "controls": [
+      {
+        "dialog@common_dialogs.main_panel_no_buttons": {
+          "$text_name": "xblLogin.LoginMessageTitle",
+          "$child_control": "xbl_first_launch.title_image_panel",
+          "$show_divider": true,
+          "$divider_offset": [ "100% - 100.83px", "22px" ]
+        }
+      }
+    ]
+  },
+
+  "gamepad_helpers": {
+    "type": "panel",
+    "layer": 2,
+    "controls": [
+      {
+        "gamepad_helper_a@common.gamepad_helper_a": {
+          "anchor_from": "bottom_right",
+          "anchor_to": "bottom_right"
+        }
+      }
+    ]
+  },
+
+  // -----------------------------------------------
+  //
+  //    screen
+  //
+  // -----------------------------------------------
+  "xbl_first_launch_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ],
+    "$close_button_visible_binding_name": "#xbl_first_launch_close_button_visible",
+    "$screen_content": "xbl_first_launch.xbl_first_launch_screen_content"
+  },
+
+  "xbl_first_launch_screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "title_panel_content@common_art.title_panel_content": {}
+      },
+      {
+        "root_panel": {
+          "type": "panel",
+          "controls": [
+            { "gamepad_helpers@gamepad_helpers": {} },
+            { "main_panel@main_panel": { "layer": 1 } }
+          ]
+        }
+      }
+    ]
+  }
+}

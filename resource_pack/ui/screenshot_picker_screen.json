@@ -1,0 +1,494 @@
+{
+  "namespace": "screenshotpicker",
+
+  //--------------------------------------------------------------------------------
+  // screenshotpicker_grid
+  //--------------------------------------------------------------------------------
+
+  "screenshotpicker_item_scrolling_panel": {
+    "type": "panel",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "layer": 0,
+    "controls": [
+      {
+        "screenshotpicker_item_scrolling_panel_content_instance@screenshotpicker.screenshotpicker_item_scrolling_panel_content": {
+          "$scrolling_pane_size": [ "100% - 4px", "100%" ]
+        }
+      }
+    ]
+  },
+
+  "screenshotpicker_item_scrolling_panel_content@common.scrolling_panel": {
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "$show_background": false,
+    "$scroll_size": [ 5, "100% - 4px" ],
+    "$scrolling_content": "screenshotpicker.grid_panel",
+    "$screenshotpicker_panel_size": [ "100%", "100%c" ]
+  },
+
+  "spacing_gap": {
+    "type": "panel",
+    "size": [ "100%", 20 ]
+  },
+
+  "grid_panel": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "vertical",
+    "size": "$screenshotpicker_panel_size",
+    "controls": [
+      { "spacing_gap@screenshotpicker.spacing_gap": {} },
+      {
+        "screenshotpicker_grid_instance@screenshotpicker.screenshotpicker_grid": {
+        }
+      },
+      { "spacing_gap2@screenshotpicker.spacing_gap": {} },
+      {
+        "pagination_panel@screenshotpicker.pagination_panel": {
+          "$is_visible_binding_name": "#screenshotpicker_buttons_visible",
+          "$this_page_index_text": "#screenshotpicker_page_index_text",
+          "$is_prev_visible": "#screenshotpicker_prevButton_visible",
+          "$is_next_visible": "#screenshotpicker_nextButton_visible"
+        }
+      }
+    ]
+  },
+
+  "pagination_panel@feed_common.pagination_panel": {
+    "$next_button_name": "button.screenshotpicker_next_button",
+    "$prev_button_name": "button.screenshotpicker_prev_button",
+    "bindings": [
+      {
+        "binding_name": "$is_visible_binding_name",
+        "binding_name_override": "#visible",
+        "binding_type": "global"
+      }
+    ]
+  },
+
+  "screenshotpicker_grid": {
+    "type": "grid",
+    "size": [ "100%", "default" ],
+    "grid_item_template": "screenshotpicker.screenshotpicker_grid_item",
+    "grid_dimension_binding": "#screenshotpicker_grid_dimension",
+    "collection_name": "screenshotpicker_collection",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "bindings": [
+      {
+        "binding_name": "#screenshotpicker_grid_dimension"
+      }
+    ]
+  },
+
+  "screenshotpicker_grid_item": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "25%", 100 ],
+    "controls": [
+      {
+        "image_panel_instance@screenshotpicker.image_panel": {
+          "size": [ "100%", "90%" ]
+        }
+      },
+      {
+        "edit_item_panel@screenshotpicker.edit_item_panel": {
+          "size": [ "100%", "100%" ]
+        }
+      },
+      {
+        "timesince_panel@screenshotpicker.timesince_panel": {
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left",
+          "offset": [ 0, 2 ]
+        }
+      },
+      {
+        "invalid_screenshot_overlay@screenshotpicker.faded_background": {
+          "visible": "#validation_failure_visible",
+          "layer": 8,
+          "alpha": 0.5,
+          "bindings": [
+            {
+              "binding_name": "#validation_failure_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "collection",
+              "binding_collection_name": "screenshotpicker_collection"
+            }
+          ]
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#screenshotpicker_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "screenshotpicker_collection"
+      }
+    ]
+  },
+
+  "timesince_panel": {
+    "type": "panel",
+    "size": [ "100%", 20 ],
+    "controls": [
+      {
+        "screenshotpicker_timesince_instance@screenshotpicker.screenshotpicker_item_label": {
+          "size": [ "100%", "100%" ],
+          "font_size": "normal",
+          "alpha": 0.5,
+          "text": "#screenshotpicker_screenshot_time",
+          "offset": [ 3, -4 ],
+          "bindings": [
+            {
+              "binding_name": "#screenshotpicker_screenshot_time",
+              "binding_type": "collection",
+              "binding_collection_name": "screenshotpicker_collection"
+            },
+            {
+              "binding_name": "#screenshotpicker_timesince_visible",
+              "binding_type": "collection",
+              "binding_collection_name": "screenshotpicker_collection",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  //--------------------------------------------------------------------------------
+  // Common Controls
+  //--------------------------------------------------------------------------------
+
+  "screenshotpicker_item_label": {
+    "type": "label",
+    "layer": 0,
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "font_type": "smooth",
+    "color": "$f_color_format"
+  },
+
+  "edit_label": {
+    "type": "label",
+    "layer": 2,
+    "color": "$f_color_format",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "text": "feed.edit",
+    "alpha": "$content_alpha",
+    "text_alignment": "center",
+    "size": [ "100%", 15 ],
+    "offset": [ 0, 2 ]
+  },
+
+  "screenshotpicker_image": {
+    "type": "image",
+    "layer": 0,
+    "texture": "#screenshotpicker_texture",
+    "texture_file_system": "#screenshotpicker_texture_source",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%" ],
+    "bindings": [
+      {
+        "binding_name": "#screenshotpicker_texture",
+        "binding_type": "collection",
+        "binding_name_override": "#texture",
+        "binding_collection_name": "screenshotpicker_collection"
+      },
+      {
+        "binding_name": "#screenshotpicker_texture_source",
+        "binding_name_override": "#texture_file_system",
+        "binding_type": "collection",
+        "binding_collection_name": "screenshotpicker_collection"
+      }
+    ]
+  },
+
+  "delete_panel": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      {
+        "delete_label@feed_common.smooth_label": {
+          "text": "feed.delete",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "layer": 1
+        }
+      },
+      {
+        "faded_background@screenshotpicker.faded_background": {}
+      }
+    ]
+  },
+
+  "faded_background": {
+    "type": "image",
+    "texture": "textures/ui/control",
+    "size": [ "100%", "100%" ],
+    "alpha": 0.30
+  },
+
+  "screenshot_button@common_buttons.transparent_content_button": {
+    "layer": 1,
+    "size": [ "100%", "100%" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$button_content": "screenshotpicker.screenshotpicker_image",
+    "$default_content_alpha": 1,
+    "$hover_content_alpha": 0.6,
+    "$pressed_alpha": 0.3,
+    "$default_button_alpha": 0,
+    "$default_hover_alpha": 0,
+    "$default_pressed_alpha": 0,
+    "$default_state_border_visible": false,
+    "$hover_state_border_visible": true,
+    "$pressed_state_border_visible": true,
+    "$locked_state_border_visible": false,
+    "$border_default_alpha": 0,
+    "enabled": "#validation_succeeded",
+    "$locked_button_texture": "",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.screenshot",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.screenshot",
+        "mapping_type": "focused"
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "screenshotpicker_collection"
+      },
+      {
+        "binding_name": "#validation_succeeded",
+        "binding_name_override": "#enabled",
+        "binding_type": "collection",
+        "binding_collection_name": "screenshotpicker_collection"
+      }
+    ]
+  },
+
+  "remove_item_button@common_buttons.transparent_content_button": {
+    "layer": 2,
+    "size": [ "100%", "100%" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$button_content": "screenshotpicker.delete_panel",
+    "$default_content_alpha": 1,
+    "$hover_content_alpha": 0.6,
+    "$pressed_alpha": 0.3,
+    "$default_button_alpha": 0,
+    "$default_hover_alpha": 0,
+    "$default_pressed_alpha": 0,
+    "$border_default_alpha": 0,
+    "$default_state_border_visible": false,
+    "$hover_state_border_visible": true,
+    "$pressed_state_border_visible": true,
+    "$locked_state_border_visible": false,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.delete_item",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.delete_item",
+        "mapping_type": "focused"
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "screenshotpicker_collection"
+      },
+      {
+        "binding_name": "#is_delete_visible",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "screenshotpicker_collection"
+      }
+    ]
+  },
+
+  "edit_button@common_buttons.transparent_content_button": {
+    "layer": 10,
+    "size": [ 60, 25 ],
+    "offset": [ -20, 0 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "$pressed_button_name": "button.edit",
+    "$button_content": "screenshotpicker.edit_label",
+    "$default_content_alpha": 1,
+    "$hover_button_texture": "textures/ui/imagetaggedcornergreenhover",
+    "$pressed_button_texture": "textures/ui/imagetaggedcornergreenpressed",
+    "$default_button_alpha": 0
+  },
+
+  "image_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "screenshotpicker_button_instance@screenshotpicker.screenshot_button": {} }
+    ]
+  },
+
+  "edit_item_panel": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "remove_item_button@screenshotpicker.remove_item_button": {} }
+    ]
+  },
+
+  //--------------------------------------------------------------------------------
+  // Root Controls
+  //--------------------------------------------------------------------------------
+
+  "content": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%" ],
+    "offset": [ 5, 0 ],
+    "controls": [
+      {
+        "top_bar_gradient@feed_common.top_bar_gradient": {
+          "size": [ "100%", "8%" ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [ -5, 0 ],
+          "layer": 9
+        }
+      },
+      { "edit_button_instance@screenshotpicker.edit_button": {} },
+      {
+        "return_button@feed_common.return_button": {
+          "$return_label_text": "feed.cancel",
+          "$close_button_to_button_id|default": "button.close_screenshot_picker",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "$close_button_to_button_id",
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "$close_button_to_button_id",
+              "mapping_type": "focused"
+            }
+          ]
+        }
+      },
+      {
+        "screenshots_label@feed_common.title_label": {
+          "text": "feed.screenshots",
+          "layer": 10
+        }
+      },
+      {
+        "no_screenshot_label@feed_common.smooth_label": {
+          "text": "feed.no_screenshot",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "layer": 1,
+          "bindings": [
+            {
+              "binding_name": "#no_screenshot_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "global"
+            }
+          ]
+        }
+      },
+      { "screenshotpicker_item_scrolling_panel_instance@screenshotpicker.screenshotpicker_item_scrolling_panel": {} }
+    ]
+  },
+
+  "screenshotpicker_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_tab_right",
+        "to_button_id": "button.screenshotpicker_next_button",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_tab_left",
+        "to_button_id": "button.screenshotpicker_prev_button",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_up",
+        "to_button_id": "button.menu_up",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_down",
+        "to_button_id": "button.menu_down",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_left",
+        "to_button_id": "button.menu_left",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_right",
+        "to_button_id": "button.menu_right",
+        "mapping_type": "global",
+        "scope": "view"
+      }
+    ],
+    "$default_text_color": [ 0.3, 0.3, 0.3 ],
+    "$screen_content": "screenshotpicker.screenshotpicker_screen_content"
+  },
+
+  "screenshotpicker_screen_content@common.common_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "transparent_background_instance@feed_common.transparent_background": {}
+      },
+      {
+        "gamepad_helpers@feed_common.gamepad_helpers": {}
+      },
+      {
+        "container": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "layer": 1,
+          "controls": [
+            { "content@screenshotpicker.content": {} }
+          ]
+        }
+      }
+    ]
+  }
+}

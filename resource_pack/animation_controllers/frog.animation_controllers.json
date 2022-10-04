@@ -1,0 +1,81 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.frog.general": {
+			"initial_state": "on_land",
+			"states": {
+				"on_land": {
+					"animations": [
+						{ "walk": "math.min(1.0, query.modified_move_speed * 10)" }
+					],
+					"transitions": [
+						{ "idling_water": "query.is_in_water && query.modified_move_speed < 0.15" },
+						{ "swimming": "query.is_in_water && query.modified_move_speed > 0.15" },
+						{ "jumping": "query.is_jump_goal_jumping"}
+					]
+				},
+				"jumping": {
+					"animations": [
+						{ "jump": "query.is_jump_goal_jumping" }
+					],
+					"transitions": [
+						{ "on_land": "!query.is_in_water && !query.is_jump_goal_jumping" },
+						{ "idling_water": "query.is_in_water && query.modified_move_speed < 0.15" },
+						{ "swimming": "query.is_in_water && query.modified_move_speed > 0.15" }
+					]
+
+				},
+				"idling_water": {
+					"animations": [
+						"idle_water"
+					],
+					"transitions": [
+						{ "on_land": "!query.is_in_water" },
+						{ "swimming": "query.is_in_water && query.modified_move_speed > 0.15" }
+					]
+				},
+				"swimming": {
+					"animations": [
+						{ "swim": "math.min(1.0, query.modified_move_speed * 10)" }
+					],
+					"transitions": [
+						{ "on_land": "!query.is_in_water" },
+						{ "idling_water": "query.is_in_water && query.modified_move_speed < 0.15" }
+					]
+				}
+			}
+		},
+		"controller.animation.frog.eat_mob": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{ "eating": "query.is_eating_mob" }
+					]
+				},
+				"eating": {
+					"animations": [ "tongue" ],
+					"transitions": [
+						{ "default": "!query.is_eating_mob" }
+					]
+				}
+			}
+		},
+		"controller.animation.frog.croaking": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{ "croaking": "query.is_croaking" }
+					]
+				},
+				"croaking": {
+					"animations": [ "croak" ],
+					"transitions": [
+						{ "default": "!query.is_croaking || query.is_eating_mob" }
+					]
+				}
+			}
+		}
+	}
+}

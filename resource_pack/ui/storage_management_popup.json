@@ -1,0 +1,339 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "storage_management_popup",
+
+  //---------------------------------------------------------------------------
+  // Dependency Popup
+  //---------------------------------------------------------------------------
+
+  "storage_dependency_modal@popup_dialog.modal_input_panel": {
+    "$default_text_color": [ 1, 1, 1 ],
+    "controls": [
+      {
+        "base@popup_dialog.modal_dialog_base":{
+          "$popup_size|default": [ "100% - 4px", "100% - 4px" ],
+          "variables": [
+            {
+              "requires": "$desktop_screen",
+              "$popup_size": [ 372, 218 ]
+            }
+          ],
+          "size": "$popup_size", //Explicit size definition since this is created through a factory
+          "controls": [
+            {
+              "background_with_buttons@common.common_panel": {
+                "$show_close_button": false,
+                "$dialog_background": "dialog_background_hollow_2",
+                "$fill_alpha": 0.98
+              }
+            },
+            { 
+              "title@popup_dialog.modal_title_text": { 
+                "$visibility_source_control_name": "two_buttons"
+              } 
+            },
+            {
+              "dependencies@storage_management_popup.storage_dependency_panel": {
+                "size": [ "100% - 16px", "100% - 55px" ],
+                "$scroll_view_name": "dependency_scroll",
+                "offset": [2, 0]
+              }
+            },
+            { 
+              "two_buttons": { 
+                "type": "panel",
+                "anchor_to": "bottom_middle",
+                "anchor_from": "bottom_middle",
+                "size": [ "100%-14px", 30 ],
+                "offset": [ 0, -7 ],
+                "controls": [
+                  { 
+                    "disabled_left@popup_dialog.modal_first_button": {
+                      "$button_text": "storageManager.dependency.continue.scroll",
+                      "enabled": false,
+                      "bindings":[
+                        {
+                          "binding_type": "view",
+                          "source_control_name": "dependency_scroll",
+                          "source_property_name": "(not #scrollbar_hit_bottom)",
+                          "target_property_name": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "left@popup_dialog.modal_first_button": {
+                      "$button_text": "storageManager.dependency.continue",
+                      "visible": false,
+                      "bindings":[
+                        {
+                          "binding_type": "view",
+                          "source_control_name": "dependency_scroll",
+                          "source_property_name": "#scrollbar_hit_bottom",
+                          "target_property_name": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "right@popup_dialog.modal_second_button": {
+                      "default_focus_precedence": 1
+                    }
+                  }
+                ]
+              } 
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "storage_dependency_panel": {
+    "type": "panel",
+    "controls":[
+      {
+        "scroll@storage_management_popup.storage_dependency_scroll_panel": {}
+      }
+    ]
+  },
+
+  "storage_dependency_scroll_panel@common.scrolling_panel": {
+    "layer": 1,
+    "$scrolling_pane_size": [ "100% - 3px", "90%" ],
+    "$scrolling_content": "storage_management_popup.dependency_scroll_pane",
+    "$scroll_size": [ 5, "100% - 4px" ],
+    "$show_background": false,
+    "anchor_from": "top_right",
+    "anchor_to": "top_right"
+  },
+
+  "dependency_item_content":{
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls":[
+      {
+        "content@$item_template":{
+          "$button_state": "default"
+        }
+      }
+    ]
+  },
+
+  "dependency_scroll_pane": {
+    "type": "stack_panel",
+    "$panel_prefix": "dependency",
+
+    "controls":[
+      {
+        "main_label": {
+          "type": "label",
+          "color": "$main_header_text_color",
+          "shadow": false,
+          "size": [ "100%", 28 ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+
+          "text": "#dependency_label_text",
+          "bindings": [
+            {
+              "binding_name": "#dependency_label_text"
+            }
+          ]
+        }
+      },
+      {
+        "contentPanel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%", "default" ],
+
+          "$item_template": "storage_management_popup.dependency_sub_item",
+          "$control_template": "storage_management_popup.dependency_item_content",
+
+          "$panel_prefix": "dependency",
+          "$panel_length": "('#' + $panel_prefix + _length)",
+          
+          "$padding_size": [ 0, "fill" ],
+
+          "factory": {
+            "name": "dependency_item",
+            "control_name": "storage_management.resource_sub_item"
+          },
+          
+          "collection_name": "($panel_prefix + _panel)",
+          "bindings": [
+            {
+              "binding_name": "$panel_length",
+              "binding_name_override": "#collection_length"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "dependency_item@storage_management.pack_description_sub_item": {
+    "$check_visible": false,
+    "$warning_binding": "none",
+    "size": [ "100% - 6px", 32 ]
+  },
+
+  "dependency_item_small@storage_management.version_sub_item": {
+    "$check_visible": false,
+    "$warning_binding": "none",
+    "size": [ "100% - 6px", 25 ]
+  },
+
+  "dependency_resource_item@storage_management_popup.dependency_item":{
+    "$name_binding_collection": "dependency_panel",
+    "$size_binding_collection": "dependency_panel",
+    "$date_binding_collection": "dependency_panel",
+    "$texture_binding_collection": "dependency_panel",
+    "$version_binding_collection": "dependency_panel"
+  },
+
+  "dependency_resource_item_small@storage_management_popup.dependency_item_small":{
+    "$name_binding_collection": "dependent_packs_panel",
+    "$size_binding_collection": "dependent_packs_panel",
+    "$date_binding_collection": "dependent_packs_panel",
+    "$texture_binding_collection": "dependent_packs_panel"
+  },
+
+  "dependency_sub_item": {
+    "type": "stack_panel",
+    "controls":[
+      {
+        "border":{
+          "type": "image",
+          "layer": 1,
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "texture": "textures/ui/Banners",
+          "size": [ "100%", "100%c" ],
+          "controls":[
+            {
+              "stack":{
+                "type": "stack_panel",
+                "controls":[
+                  {
+                    "padding_0":{
+                      "type": "panel",
+                      "size": ["100%", 4]
+                    }
+                  },
+                  {
+                    "wrapper":{
+                      "type": "panel",
+                      "size": ["100%", "100%c"],
+                      "controls":[
+                        {
+                          "dependency_item@storage_management_popup.dependency_item": {}
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "panel_0":{
+                      "type": "panel",
+                      "size": [ "100%", 12 ],
+                      "controls":[
+                        {
+                          "main_label": {
+                            "type": "label",
+                            "color": "$body_text_color",
+                            "shadow": false,
+                            "size": [ "100%", "100%" ],
+                            "offset": [ 6, 1 ],
+                            "anchor_from": "top_left",
+                            "anchor_to": "top_left",
+                            "layer": 2,
+                            "text": "storageManager.dependency.breakItem"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "contentPanel": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "size": [ "100%", "default" ],
+
+                      "$panel_prefix": "dependent_packs",
+                      "$item_template": "storage_management_popup.dependency_resource_item_small",
+                      "$control_template": "storage_management_popup.dependency_item_content",
+                      
+                      "$padding_size": [ 0, "fill" ],
+
+                      "factory": {
+                        "name": "DependencySubFactory",
+                        "control_name": "storage_management.resource_sub_item"
+                      },
+                      
+                      "collection_name": "dependent_packs_panel",
+                      "bindings": [
+                        {
+                          "binding_name": "#dependent_packs_length",
+                          "binding_type": "collection",
+                          "binding_collection_name": "dependency_panel",
+                          "binding_name_override": "#collection_length"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "panel_1":{
+                      "type": "panel",
+                      "size": [ "100% - 8px", 32 ],
+                      "controls":[
+                        {
+                          "remove_pack_button@common_buttons.light_text_button": {
+                            "size": [ "100%", "100%" ],
+                            "offset": [4, -1],
+                            "$pressed_button_name": "button.remove_pack_button",
+                            "$button_text": "storageManager.dependency.removeDependencies",
+                            "bindings": [
+                              {
+                                "binding_type": "collection_details",
+                                "binding_collection_name": "($panel_prefix + _panel)"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "padding_1":{
+                      "type": "panel",
+                      "size": ["100%", 2]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padding":{
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      }
+    ]
+  },
+
+
+  //---------------------------------------------------------------------------
+  // Sharing popup
+  //---------------------------------------------------------------------------
+  "sharing_popup_content@popup_dialog.progress_dialog_popup": {
+    "$button_text_binding_type": "global"
+  }
+}

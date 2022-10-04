@@ -1,0 +1,187 @@
+{
+    "namespace": "online_safety",
+  
+    //--------------------------------------------------------------------------------
+  
+    "online_safety_proceed_button@popup_dialog.popup_dialog_button": {
+      "size": "$button_size",
+      "$pressed_button_name": "button.proceed",
+      "$button_text": "onlinePlay.proceed"
+    },
+  
+    "online_safety_back_button@popup_dialog.popup_dialog_button": {
+      "size": "$button_size",
+      "$pressed_button_name": "button.back",
+      "$button_text": "onlinePlay.Back"
+    },
+  
+    "online_safety_description": {
+      "type": "label",
+      "size": [ "100%-4px", "default" ],
+      "color": "$body_text_color",
+      "$safety_description_text|default": "onlinePlay.message",
+      "variables": [
+        {
+          "requires": "$is_editor_mode_enabled",
+          "$safety_description_text": "onlinePlay.editor.message"
+        }
+      ],
+      "text": "$safety_description_text"
+    },
+  
+    "online_safety_label_panel@common.scrolling_panel": {
+      "$scrolling_pane_size": [ "100% - 1px", "100% - 3px" ],
+      "$scrolling_pane_offset": [ 2, 2 ],
+      "$scrolling_content": "online_safety.online_safety_description",
+      "$scroll_size": [ 5, "100% - 4px" ],
+      "$show_background": false,
+      "layer": 1,
+      "anchor_from": "top_middle",
+      "anchor_to": "top_middle",
+      "$always_handle_scrolling": true
+    },
+  
+    "do_not_show_checkbox@common.checkbox": {
+      "size": [ "100%", 30 ],
+      "anchor_from": "top_left",
+      "anchor_to": "top_left",
+      "$toggle_name": "online_safety_do_not_show_again",
+      "$toggle_state_binding_name": "#online_safety_do_not_show_again",
+      "$toggle_label_text|default": "onlinePlay.doNotShowAgain",
+  
+      "tts_control_type_order_priority": 100,
+      "tts_value_order_priority": 101,
+      "$toggle_enabled_binding_type": "global",
+  
+      "controls": [
+        {
+          "header_description_stack_panel": {
+            "type": "stack_panel",
+            "orientation": "horizontal",
+            "size": [ "100%", "100%" ],
+            "anchor_from": "top_left",
+            "anchor_to": "top_left",
+  
+            "controls": [
+              {
+                "checkbox_visuals@common.toggle_visuals": {
+                  "size": [ 30, "100%" ],
+                  "anchor_from": "left_middle",
+                  "anchor_to": "left_middle"
+                }
+              },
+              {
+                "buffer_panel": {
+                  "type": "panel",
+                  "layer": 3,
+                  "size": [ "fill", "100%" ],
+                  "controls": [
+                    {
+                      "label": {
+                        "type": "label",
+                        "color": "$light_button_default_text_color",
+                        "text": "$toggle_label_text",
+                        "size": [ "default", "default" ],
+                        "anchor_from": "center",
+                        "anchor_to": "center"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "another_panel": {
+                  "type": "panel",
+                  "size": [ 30, "100%" ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+  
+    "online_safety_dialog@common_dialogs.main_panel_three_buttons": {
+      "size": [ 300, 200 ],
+      "$fill_alpha": 1,
+  
+      "layer": 101,
+      "$text_name": "onlinePlay.notRated",
+      "$description_text": "onlinePlay.message",
+      "variables": [
+        {
+          "requires": "$is_editor_mode_enabled",
+          "$text_name": "onlinePlay.editor.notRated",
+          "$description_text": "onlinePlay.editor.message"
+        }
+      ],
+
+      "$button_size": [ "100%", 30 ],
+  
+      "$show_close_button": false,
+      "$child_control": "online_safety.online_safety_label_panel",
+      "$top_button_panel": "online_safety.do_not_show_checkbox",
+      "$middle_button_panel": "online_safety.online_safety_proceed_button",
+      "$bottom_button_panel": "online_safety.online_safety_back_button"
+    },
+  
+    //--------------------------------------------------------------------------------
+    
+    "gamepad_helpers": {
+      "type": "panel",
+      "size": [ 100, 10 ],
+      "offset": [ 0, "45%" ],
+      "controls": [
+        {
+          "gamepad_helper_a@common.gamepad_helper_a": {
+            "anchor_from": "center",
+            "anchor_to": "center"
+          }
+        }
+      ]
+    },
+  
+    //---------------------------------------------------------------------------
+    // Screens
+    //---------------------------------------------------------------------------
+    "online_safety_screen@common.base_screen": {
+      "force_render_below": false,
+      "should_be_skipped_during_automation": true,
+      "$screen_animations": [
+        "@common.screen_exit_animation_push_fade",
+        "@common.screen_exit_animation_pop_fade"
+      ],
+  
+      "button_mappings": [
+        {
+          "from_button_id": "button.menu_cancel",
+          "to_button_id": "button.menu_exit",
+          "mapping_type": "global"
+        }
+      ],
+
+      "$screen_content": "online_safety.online_safety_screen_content"
+    },
+  
+    "online_safety_screen_content": {
+      "type": "panel",
+      "variables": [
+        {
+          "requires": "$desktop_screen",
+          "$button_state_default_base": "common.button_state_default",
+          "$button_state_hover_base": "common.button_state_hover",
+          "$button_state_pressed_base": "common.button_state_pressed"
+        },
+        {
+          "requires": "$pocket_screen",
+          "$button_state_default_base": "common-classic.button_state_default",
+          "$button_state_hover_base": "common-classic.button_state_hover",
+          "$button_state_pressed_base": "common-classic.button_state_pressed"
+        }
+      ],
+      "controls": [
+        { "online_safety_dialog@online_safety.online_safety_dialog": {} },
+        { "gamepad_helpers@online_safety.gamepad_helpers": {} }
+      ]
+    }  
+  }

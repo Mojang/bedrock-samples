@@ -1,0 +1,978 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                      *
++*   (c) Microsoft. All rights reserved.                  *
++*********************************************************/
+
+{
+  "namespace": "portfolio",
+
+
+  //---------------------------------------------------------------------------
+  // Common
+  //---------------------------------------------------------------------------
+  "screenshot": {
+    "type": "image",
+    "texture_file_system": "$screenshot_file_system",
+    "layer": 1,
+    "$screenshot_collection_name|default": "photos",
+
+    "bindings": [
+      {
+        "binding_name": "#screenshot_path",
+        "binding_name_override": "#texture",
+        "binding_type": "collection",
+        "binding_collection_name": "$screenshot_collection_name"
+      }
+    ]
+  },
+
+  "screenshot_frame": {
+    "type": "image",
+    "texture": "$screenshot_frame_texture",
+    "layer": 1
+  },
+
+  "trash_default": {
+    "type": "image",
+    "texture": "textures/ui/book_trash_default"
+  },
+
+  "trash_hover": {
+    "type": "image",
+    "texture": "textures/ui/trash_hover"
+  },
+
+  "trash_pressed": {
+    "type": "image",
+    "texture": "textures/ui/trash_pressed"
+  },
+
+
+  "photo_trash_button_left@edu_common.photo_trash_button": {
+    "offset": [ "22%-50%x", -11 ],
+    "size":  [18, 18],
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "bindings": [
+      {
+        "binding_name": "#left_photo_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.portfolio_delete_photo_left",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.portfolio_delete_photo_left",
+        "mapping_type": "focused"
+      }
+    ],
+    "controls": [
+      { "default@portfolio.trash_default": {} },
+      { "hover@portfolio.trash_hover": {} },
+      { "pressed@portfolio.trash_pressed": {} }
+    ]
+  },
+
+  "photo_trash_button_right@edu_common.photo_trash_button": {
+    "offset": [ "-28%+50%x", -11 ],
+    "size": [ 18, 18 ],
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+
+    "bindings": [
+      {
+        "binding_name": "#right_photo_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.portfolio_delete_photo_right",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.portfolio_delete_photo_right",
+        "mapping_type": "focused"
+      }
+    ],
+    "controls": [
+      { "default@portfolio.trash_default": {} },
+      { "hover@portfolio.trash_hover": {} },
+      { "pressed@portfolio.trash_pressed": {} }
+    ]
+  },
+
+  "photo_number": {
+    "type": "label",
+    "offset": [ 0, -24 ],
+    "layer": 1,
+    "size": [ 60, 30 ],
+    "text": "#item_name",
+    "color": "$portfolio_body_text_color",
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "shadow": false
+  },
+
+  "photo_number_left@portfolio.photo_number": {
+    "offset": [ "50%x", -88 ],
+    "size": [ "25%", "default" ],
+    "text_alignment": "center",
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "bindings": [
+      {
+        "binding_name": "#photo_page_item_name_left",
+        "binding_name_override": "#item_name",
+        "binding_type": "collection",
+        "binding_collection_name": "photos"
+      }
+    ]
+  },
+
+  "photo_number_right@portfolio.photo_number": {
+    "offset": [ "-50%x", -88 ],
+    "size": [ "25%", "default" ],
+    "text_alignment": "center",
+    "anchor_from": "right_middle",
+    "anchor_to": "right_middle",
+    "bindings": [
+      {
+        "binding_name": "#photo_page_item_name_right",
+        "binding_name_override": "#item_name",
+        "binding_type": "collection",
+        "binding_collection_name": "photos"
+      }
+    ]
+  },
+
+  "photo_corner_bl": {
+    "type": "image",
+    "texture": "textures/ui/photo_corner_bl",
+    "size": [ 19, 19 ],
+    "offset": [ -1, 1 ],
+    "layer": 1,
+    "anchor_to": "bottom_left",
+    "anchor_from": "bottom_left"
+  },
+
+  "photo_corner_br": {
+    "type": "image",
+    "texture": "textures/ui/photo_corner_br",
+    "size": [ 19, 19 ],
+    "offset": [ 1, 1 ],
+    "layer": 1,
+    "anchor_to": "bottom_right",
+    "anchor_from": "bottom_right"
+  },
+
+  "photo_corner_tr": {
+    "type": "image",
+    "texture": "textures/ui/photo_corner_tr",
+    "size": [ 19, 19 ],
+    "offset": [ 1, -1 ],
+    "layer": 1,
+    "anchor_to": "top_right",
+    "anchor_from": "top_right"
+  },
+
+  "photo_corner_tl": {
+    "type": "image",
+    "texture": "textures/ui/photo_corner_tl",
+    "size": [ 19, 19 ],
+    "offset": [ -1, -1 ],
+    "layer": 1,
+    "anchor_to": "top_left",
+    "anchor_from": "top_left"
+  },
+
+  "page_photo": {
+    "type": "panel",
+    "layer": 1,
+    // Photos are square, so use x for y size
+    "size": [ "100%-32px", "100%x" ],
+    "offset": [ 0, -2 ],
+    "controls": [
+      {
+        "screenshot@portfolio.screenshot": {
+          "bindings": [
+            {
+              "binding_name": "#screenshot_path",
+              "binding_name_override": "#texture",
+              "binding_type": "global"
+            },
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "screenshot_column_collection",
+              "binding_collection_prefix": "screenshot_column"
+            },
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "screenshot_row_collection",
+              "binding_collection_prefix": "screenshot_row"
+            }
+          ]
+        }
+      },
+      { "screenshot_frame@portfolio.screenshot_frame": { "layer": 4 } },
+      { "photo_corner_bl@portfolio.photo_corner_bl": { "layer": 5 } },
+      { "photo_corner_br@portfolio.photo_corner_br": { "layer": 5 } },
+      { "photo_corner_tl@portfolio.photo_corner_tl": { "layer": 5 } },
+      { "photo_corner_tr@portfolio.photo_corner_tr": { "layer": 5 } }
+    ]
+  },
+
+  "pick_item@common.empty_panel": {
+    "type": "panel",
+    "size": [ 100, 100 ],
+    "$screenshot_collection_name": "screenshot",
+    "controls": [
+      {
+        "photo@portfolio.page_photo": {
+          "size": [ "100% - 8px", "100% - 8px" ],
+          "bindings": [],
+          "$caption_enabled": false
+        }
+      },
+      {
+        "button": {
+          "type": "button",
+          "size": [ "100% - 8px", "100% - 8px" ],
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "screenshot_column_collection",
+              "binding_collection_prefix": "screenshot_column"
+            },
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "screenshot_row_collection",
+              "binding_collection_prefix": "screenshot_row"
+            }
+          ],
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.picked",
+              "mapping_type": "pressed"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "header": {
+    "type": "label",
+    "max_size": [ "100%", "default" ],
+    "color": "$book_page_number_color",
+    "text": "$header_text"
+  },
+
+  "screenshot_grid@edu_common.stack_panel_grid": {
+    "$grid_collection_prefix": "screenshot",
+    "$stack_grid_item": "portfolio.pick_item"
+  },
+
+  "text_centering_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "header@portfolio.header": {
+          "$header_text": "book.headerInventory"
+        }
+      }
+    ]
+  },
+
+  "pick_scrolling_content": {
+    "type": "stack_panel",
+    "size": [ "100%", "default" ],
+    "controls": [
+      { "header@portfolio.text_centering_panel": {} },
+      { "portfolio_grid@portfolio.screenshot_grid": {} }
+    ]
+  },
+
+  "no_pick_photos_alert_label": {
+    "layer": 12,
+    "type": "label",
+    "size": [ "50%", "default" ],
+    "text_alignment": "center",
+    "color": "$portfolio_body_text_color",
+    "bindings": [
+      {
+        "binding_name": "#no_pick_photos_alert_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "text": "portfolioScreen.noInventory"
+  },
+
+  "pick_panel": {
+    "type": "image",
+    "texture": "textures/ui/book_frame",
+    "size": [ 225, 231 ],
+
+    "controls": [
+      {
+        "scroll@common.scrolling_panel": {
+          "$show_background": false,
+          "$scrolling_pane_size": [ "100% - 16px", "100% - 30px" ],
+          "$scrolling_pane_offset": [ 8, 21 ],
+          "$scrolling_content": "portfolio.pick_scrolling_content"
+        }
+      },
+      {
+        "close_button@portfolio.close_button": {
+          "offset": [ -7, 7 ]
+        }
+      },
+      {
+        "no_pick_photos_alert_label@portfolio.no_pick_photos_alert_label": {}
+      }
+    ]
+  },
+
+  "text_edit_box_default_indent": {
+    "type": "panel",
+    "allow_clipping": false
+  },
+
+  "text_edit_box_hover_indent@portfolio.text_edit_box_default_indent": {
+    "controls": [
+      {
+        "focus_border_white@common.focus_border_white": {
+          "allow_clipping": false,
+          "$focus_border_color": [ 0.0, 0.0, 0.0, 0.0 ]
+        }
+      }
+    ]
+  },
+
+  // **************************************************
+
+  "text_edit_control@common.multiline_text_edit_box": {
+    "anchor_from": "bottom_middle", // the parent
+    "anchor_to": "bottom_middle", // this control
+    "constrain_to_rect": true,
+    "enabled_newline": true,
+    "layer": 100,
+    "$text_edit_binding_name": "#text_box_item_name",
+    "property_bag": {
+      "#property_field": "#item_name"
+    },
+    "max_length": 1000, // use the parent area
+    "$panel_offset|default": [ 0, 0 ],
+    "size": [ "85%", 22 ],
+    "offset": "$panel_offset",
+    "$place_holder_text": "portfolioScreen.caption",
+    "$text_edit_box_content_binding_type": "collection",
+    "$text_edit_box_grid_collection_name": "photos",
+    "$text_box_name": "#text_box_photos",
+    "$text_color_binding_type": "global",
+    "$text_alignment": "center",
+    "variables": [
+      {
+        "requires": "($pocket_screen)",
+        "$panel_offset": [ 0, 2 ]
+      }
+    ],
+    "controls": [
+      {
+        "clipper_panel": {
+          "type": "panel",
+          "size": [ "100% - 6px", "100% - 4px" ],
+          "clips_children": true,
+          "$disabled_color|default": "$color",
+
+          "controls": [
+            {
+              "display_text@common.text_edit_box_label": {
+                "layer": 1,
+                "size": "$text_edit_box_label_size",
+                "min_size": [ "100%", 0 ],
+                "anchor_from": "right_middle",
+                "anchor_to": "right_middle",
+                "$text_alpha|default": "$alpha",
+                "$locked_text_alpha|default": "$disabled_alpha",
+                "$locked_color|default": "$disabled_color",
+                "$text_box_tts_name": "accessibility.textbox.tts.title"
+              }
+            },
+            {
+              "place_holder_control@$place_holder_control": {
+                "layer": 1,
+                "size": "$text_edit_box_label_size",
+                "min_size": [ "100%", 0 ],
+                "anchor_from": "right_middle",
+                "anchor_to": "right_middle",
+                "$text_alpha|default": "$alpha",
+                "$locked_text_alpha|default": "$disabled_alpha",
+                "$locked_color|default": "$disabled_color"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "locked": {
+          "type": "panel",
+          "$disabled_color|default": "$color",
+          "controls": [
+            {
+              "edit_box_indent@common.edit_box_indent": {
+                "$color": "$disabled_color",
+                "$alpha": "$disabled_alpha"
+              }
+            }
+          ]
+        }
+      },
+      { "default@portfolio.text_edit_box_default_indent": {} },
+      { "hover@portfolio.text_edit_box_hover_indent": {} },
+      { "pressed@portfolio.text_edit_box_hover_indent": {} }
+
+    ]
+  },
+  "photo_item": {
+    "type": "panel",
+    "layer": 1,
+    "size": [ "75%", "100%x" ],
+    "offset": [ 0, -2 ],
+    "bindings": [
+      {
+        "binding_name": "#photo_visibility",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "photos"
+      }
+    ],
+    "controls": [
+      { "screenshot@portfolio.screenshot": {} },
+      { "screenshot_frame@portfolio.screenshot_frame": { "layer": 2 } },
+      { "text_edit_control@portfolio.text_edit_control": { "layer": 3 } },
+      { "photo_corner_bl@portfolio.photo_corner_bl": { "layer": 4 } },
+      { "photo_corner_br@portfolio.photo_corner_br": { "layer": 4 } },
+      { "photo_corner_tl@portfolio.photo_corner_tl": { "layer": 4 } },
+      { "photo_corner_tr@portfolio.photo_corner_tr": { "layer": 4 } }
+    ]
+  },
+
+  "photo_grid_item": {
+    "type": "panel",
+    "controls": [
+      { "photo_item@portfolio.photo_item": {} }
+    ]
+  },
+
+  "photo_list_grid": {
+    "type": "grid",
+    "grid_item_template": "photo_grid_item",
+    "grid_dimensions": [ 2, 1 ],
+    "collection_name": "photos",
+    "size": "$book_size"
+  },
+  // **************************************************
+
+  // -----------------------------------------
+  // Photo Page PREV
+  // -----------------------------------------
+  "prev_button_default": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_pageleft_default"
+  },
+
+  "prev_button_hover": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_pageleft_hover"
+  },
+
+  "prev_button_pressed": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_pageleft_pressed"
+  },
+
+  "photo_page_prev_button@common.button": {
+    "type": "button",
+    "focus_enabled": true,
+    "size": [ 24, 24 ],
+    "layer": 1,
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "offset": [ 6, -8 ],
+    "default_control": "default",
+    "hover_control": "hover",
+    "pressed_control": "pressed",
+    "default_focus_precedence": 1,
+    "bindings": [
+      {
+        "binding_name": "#page_prev_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.portfolio_page_prev",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.portfolio_page_prev",
+        "mapping_type": "focused"
+      }
+    ],
+    "controls": [
+      { "default@portfolio.prev_button_default": {} },
+      { "hover@portfolio.prev_button_hover": {} },
+      { "pressed@portfolio.prev_button_pressed": {} }
+    ]
+  },
+
+
+  // -----------------------------------------
+  // Photo Page NEXT
+  // -----------------------------------------
+  "next_button_default": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_pageright_default"
+  },
+
+  "next_button_hover": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_pageright_hover"
+  },
+
+  "next_button_pressed": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_pageright_pressed"
+  },
+
+  "photo_page_next_button@common.button": {
+    "type": "button",
+    "focus_enabled": true,
+    "size": [ 24, 24 ],
+    "layer": 1,
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+    "offset": [ -6, -8 ],
+    "default_control": "default",
+    "hover_control": "hover",
+    "pressed_control": "pressed",
+    "default_focus_precedence": 2,
+    "bindings": [
+      {
+        "binding_name": "#page_next_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.portfolio_page_next",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.portfolio_page_next",
+        "mapping_type": "focused"
+      }
+    ],
+    "controls": [
+      { "default@portfolio.next_button_default": {} },
+      { "hover@portfolio.next_button_hover": {} },
+      { "pressed@portfolio.next_button_pressed": {} }
+    ]
+  },
+
+
+  // -----------------------------------------
+  // Photo Convert to Item LEFT
+  // -----------------------------------------
+  "convert_button_default": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_convertpicture_default"
+  },
+
+  "convert_button_hover": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_convertpicture_hover"
+  },
+
+  "convert_button_pressed": {
+    "type": "image",
+    "texture": "textures/ui/portfolio_convertpicture_pressed"
+  },
+
+  "photo_convert_left_button@common.button": {
+    "type": "button",
+    "focus_enabled": true,
+    "size": [ 18, 18 ],
+    "layer": 1,
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "bindings": [
+      {
+        "binding_name": "#left_photo_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "offset": [ "28%-50%x", -9 ],
+    "default_focus_precedence": 1,
+    "$pressed_button_name": "button.portfolio_convert_left",
+    "controls": [
+      { "default@portfolio.convert_button_default": {} },
+      { "hover@portfolio.convert_button_hover": {} },
+      { "pressed@portfolio.convert_button_pressed": {} }
+    ]
+  },
+
+  // -----------------------------------------
+  // Photo Convert to Item RIGHT
+  // -----------------------------------------
+  "photo_convert_right_button@common.button": {
+    "type": "button",
+    "focus_enabled": true,
+    "size": [ 18, 18 ],
+    "layer": 1,
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+    "bindings": [
+      {
+        "binding_name": "#right_photo_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "offset": [ "-22%+50%x", -9 ],
+    "default_focus_precedence": 1,
+    "$pressed_button_name": "button.portfolio_convert_right",
+    "controls": [
+      { "default@portfolio.convert_button_default": {} },
+      { "hover@portfolio.convert_button_hover": {} },
+      { "pressed@portfolio.convert_button_pressed": {} }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // Bottom Buttons
+  //---------------------------------------------------------------------------
+
+  "bottom_button_panel": {
+    "type": "panel",
+    "size": "$book_size",
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "controls": [
+      { "export_button@portfolio.export_button": {} },
+      { "im_content_button@portfolio.im_content_button": {} },
+      { "add_photo_button@portfolio.add_photo_button": {} }
+    ]
+  },
+
+  "im_content_button@im_reader.reader_button": {
+    "size": [ "100%y", "100%sm" ],
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+    "bindings": [
+      {
+        "binding_name": "#export_visibility",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "export_button@common_buttons.light_text_button": {
+    "type": "button",
+    "size": [ 110, 20 ],
+    "offset": [ "65%x", "0%y" ],
+    "$button_text": "portfolioScreen.export",
+    "$pressed_button_name": "button.portfolio_export",
+    "layer": 1,
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "bindings": [
+      {
+        "binding_name": "#export_visibility",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "add_photo_button@common_buttons.light_text_button": {
+    "type": "button",
+    "size": [ 110, 20 ],
+    "offset": [ "-65%x", "0%y" ],
+    "$button_text": "portfolioScreen.addPhoto",
+    "$pressed_button_name": "button.portfolio_add_photo",
+    "layer": 1,
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "bindings": [
+      {
+        "binding_name": "#viewing",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+
+
+
+  //---------------------------------------------------------------------------
+  // Background
+  //---------------------------------------------------------------------------
+  "book_binding": {
+    "type": "image",
+    "texture": "textures/ui/book_binding",
+    "layer": 1,
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "offset": [ 0, 7 ],
+    "size": [ "1.5%", "100%-7px" ]
+  },
+
+  "book_spine": {
+    "type": "image",
+    "texture": "textures/ui/book_spine",
+    "layer": 1
+  },
+
+  "book_background": {
+    "type": "image",
+    "texture": "textures/ui/book_frame",
+    "controls": [
+      { "book_binding@portfolio.book_binding": {} },
+      {
+        "top_spine@portfolio.book_spine": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [ 0, 1 ],
+          "size": [ 7, 6 ]
+        }
+      },
+      {
+        "bottom_spine@portfolio.book_spine": {
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ 0, -1 ],
+          "size": [ 7, 7 ]
+        }
+      }
+    ]
+  },
+
+  "header_panel": {
+    "type": "panel",
+    "size": [ "100%", 27 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "texture": "textures/ui/header_bar"
+        }
+      }
+    ]
+  },
+
+  "close_button_default": {
+    "type": "image",
+    "texture": "textures/ui/close_button_default",
+    "color": "$portfolio_close_color"
+  },
+
+  "close_button_hover": {
+    "type": "image",
+    "texture": "textures/ui/close_button_hover"
+  },
+
+  "close_button_pressed": {
+    "type": "image",
+    "texture": "textures/ui/close_button_pressed"
+  },
+
+  "close_button": {
+    "type": "button",
+    "size": [ 14, 14 ],
+    "layer": 10,
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "default_control": "default",
+    "hover_control": "hover",
+    "pressed_control": "pressed",
+    "focus_enabled": false,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.close_button",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.close_button",
+        "mapping_type": "global"
+      }
+    ],
+    "controls": [
+      { "default@portfolio.close_button_default": {} },
+      { "hover@portfolio.close_button_hover": {} },
+      { "pressed@portfolio.close_button_pressed": {} }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // No pics alert
+  //---------------------------------------------------------------------------
+  "no_photos_alert_label": {
+    "layer": 11,
+    "type": "label",
+    "offset": [ "50%x", 0 ],
+    "size": [ "25%", "default" ],
+    "text_alignment": "center",
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "color": "$portfolio_body_text_color",
+    "bindings": [
+      {
+        "binding_name": "#no_pics_alert_visibility",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "text": "portfolioScreen.nopics0"
+  },
+
+
+  // -----------------------------------------------
+  //
+  //    screen
+  //
+  // -----------------------------------------------
+
+
+  "book_and_buttons_panel": {
+    "type": "panel",
+    "size": [ "100%cm", "100%" ],
+    "max_size": [ "100%", 231 ],
+
+    "controls": [
+      {
+        "book_panel": {
+          "type": "panel",
+          "size": "$book_size",
+          "max_size": [ 320, "100% - 20px" ],
+          "offset": [ 0, -10 ],
+          
+          "controls": [ 
+            {
+              "book_background@portfolio.book_background": {
+                "bindings": [
+                  {
+                    "binding_name": "#viewing",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            
+            {
+              "close_button@portfolio.close_button": {
+                "offset": [ -7, 7 ],
+                "bindings": [
+                  {
+                    "binding_name": "#viewing",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+
+            { "photo_list_grid@portfolio.photo_list_grid": {} },
+
+            { "photo_number_left@portfolio.photo_number_left": {} },
+            { "photo_number_right@portfolio.photo_number_right": {} },
+
+            { "photo_trash_button_left@portfolio.photo_trash_button_left": {} },
+            { "photo_trash_button_right@portfolio.photo_trash_button_right": {} },
+
+            { "photo_page_prev_button@portfolio.photo_page_prev_button": {} },
+            { "photo_page_next_button@portfolio.photo_page_next_button": {} },
+
+            { "photo_convert_left_button@portfolio.photo_convert_left_button": {} },
+            { "photo_convert_right_button@portfolio.photo_convert_right_button": {} },
+            
+            { "no_photos_alert_label@portfolio.no_photos_alert_label": {} }
+          ]
+        }
+      },
+    
+      { "bottom_button_panel@portfolio.bottom_button_panel": {} }
+    ]
+  },
+
+
+  // Root panel all others parented to
+  "root_panel": {
+    "type": "panel",
+    "layer": 1
+  },
+
+  "portfolio_screen@common.base_screen": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ],
+    "$screen_content": "portfolio.portfolio_screen_content"
+  },
+
+  "portfolio_screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "root_panel@portfolio.root_panel": {
+          "layer": 1,
+          "$book_size": [ 320, 207 ],
+          "$page_size": [ 160, 207 ],
+
+          "controls": [
+
+            {
+              "book_and_buttons_panel@portfolio.book_and_buttons_panel": {
+                "bindings": [
+                  {
+                    "binding_name": "#viewing",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+
+            {
+              "pick_panel@portfolio.pick_panel": {
+                "bindings": [
+                  {
+                    "binding_name": "#picking",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

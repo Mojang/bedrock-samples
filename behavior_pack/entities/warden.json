@@ -1,0 +1,230 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:warden",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "emerging": {
+        "minecraft:behavior.emerge": {
+          "duration": 7.0,
+          "on_done": {
+            "event": "minecraft:emerged",
+            "target": "self"
+          }
+        }
+      },
+      "pushable": {
+        "minecraft:pushable": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      }
+    },
+    "components": {
+      "minecraft:movement_sound_distance_offset": {
+        "value": 0.55
+      },
+      "minecraft:experience_reward": {
+        "on_bred": "Math.Random(1,7)",
+        "on_death": "query.last_hit_by_player ? 5 : 0"
+      },
+      "minecraft:attack": {
+        "damage": 30
+      },
+      "minecraft:vibration_listener": {},
+      "minecraft:vibration_damper": {},
+      "minecraft:suspect_tracking": {},
+      "minecraft:anger_level": {
+        "max_anger": 150,
+        "angry_threshold": 80,
+        "remove_targets_below_angry_threshold": true,
+        "angry_boost": 20,
+        "anger_decrement_interval": 1.0,
+        "default_annoyingness": 35,
+        "default_projectile_annoyingness":  10,
+        "on_increase_sounds": [
+          { "sound": "listening_angry", "condition" : "query.anger_level(this) >= 40" },
+          { "sound": "listening", "condition" : "query.anger_level(this) >= 0" }
+        ],
+        "nuisance_filter": {
+          "all_of": [
+            { "test": "is_family", "subject": "other", "operator": "not", "value": "warden" },
+            { "test": "is_family", "subject": "other", "operator": "not", "value": "inanimate" }
+          ]
+        }
+      },
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:type_family": {
+        "family": [
+          "warden",
+          "monster",
+          "mob"
+        ]
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "can_path_over_lava": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:preferred_path": {
+        "max_fall_blocks": 20
+      },
+      "minecraft:ambient_sound_interval": {
+        "value": 2.0,
+        "range": 4.0,
+        "event_name": "ambient",
+        "event_names": [
+          {
+            "event_name" : "angry",
+            "condition" : "query.anger_level(this) >= 80"
+          },
+          {
+            "event_name" : "agitated",
+            "condition" : "query.anger_level(this) >= 40"
+          }
+        ]
+      },
+      "minecraft:heartbeat": {
+        "interval": "2.0 - math.clamp(query.anger_level / 80 * 1.5, 0, 1.5)"
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:can_climb": {},
+      "minecraft:collision_box": {
+        "width": 0.9,
+        "height": 2.9
+      },
+      "minecraft:health": {
+        "value": 500,
+        "max": 500
+      },
+      "minecraft:movement": {
+        "value": 0.3
+      },
+      "minecraft:knockback_resistance": {
+        "value": 1.0
+      },
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:behavior.dig": {
+        "priority": 1,
+        "duration": 5.5,
+        "idle_time": 60.0,
+        "vibration_is_disturbance": true,
+        "suspicion_is_disturbance": true,
+        "digs_in_daylight": false,
+        "on_start": {
+          "event": "on_digging_event",
+          "target": "self"
+        }
+      },
+      "minecraft:behavior.roar": {
+        "priority": 2,
+        "duration": 4.2
+      },
+      "minecraft:behavior.sonic_boom": {
+        "priority": 3,
+        "duration": 3.0,
+        "speed_multiplier": 1.2,
+        "attack_damage": 10,
+        "attack_range_horizontal": 15,
+        "attack_range_vertical": 20,
+        "attack_cooldown": 2,
+        "knockback_vertical_strength": 0.5,
+        "knockback_horizontal_strength": 2.5,
+        "knockback_height_cap": 0.5,
+        "duration_until_attack_sound": 1.7,
+        "charge_sound": "sonic_charge",
+        "attack_sound": "sonic_boom"
+      },
+      "minecraft:behavior.melee_attack": {
+        "priority": 4,
+        "speed_multiplier": 1.2,
+        "melee_fov": 360
+      },
+      "minecraft:behavior.investigate_suspicious_location": {
+        "priority": 5,
+        "speed_multiplier": 0.7
+      },
+      "minecraft:behavior.sniff": {
+        "priority": 6,
+        "duration": 4.16,
+        "sniffing_radius": 24.0,
+        "suspicion_radius_horizontal" : 6.0,
+        "suspicion_radius_vertical": 20.0,
+        "cooldown_range": [ 5.0, 10.0 ]
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 9,
+        "speed_multiplier": 0.5
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 11
+      },
+      "minecraft:physics": {},
+      "minecraft:mob_effect": {
+        "effect_range": 20,
+        "effect_time": 13,
+        "mob_effect": "darkness",
+        "cooldown_time": 6,
+        "entity_filter": {
+          "all_of": [
+            { "test": "is_family", "subject": "other", "value": "player" },
+            { "operator": "not", "test": "has_ability", "subject" : "other", "value" : "invulnerable" }
+          ]
+        }
+      },
+      "minecraft:follow_range": 30,
+      "minecraft:fire_immune": {},
+      "minecraft:nameable": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/warden.json"
+      }
+    },
+    "events": {
+      "minecraft:spawn_emerging": {
+        "add": {
+          "component_groups": [
+            "emerging"
+          ]
+        }
+      },
+      "minecraft:emerged": {
+        "add": {
+          "component_groups": [
+            "pushable"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "emerging"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "pushable"
+          ]
+        }
+      },
+      "on_digging_event": {
+        "remove": {
+          "component_groups": [
+            "pushable"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.persona.blink": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            { "open": "variable.is_blinking = 0; variable.return_from_blink = query.life_time + math.random(0, 0.2); variable.last_blink_time = query.life_time; return variable.last_blink_time != 0;" }
+          ]
+        },
+        "open": {
+          "transitions": [
+            { "blink": "variable.is_blinking = 0; variable.return_from_blink = query.life_time + math.random(0, 0.2); return query.life_time > (variable.last_blink_time + math.random(3, 40));" }
+          ]
+        },
+        "blink": {
+          "transitions": [
+            { "open": "variable.is_blinking = 1; variable.last_blink_time = query.life_time; return query.all_animations_finished && (query.life_time > (variable.return_from_blink ?? 0.2));" }
+          ]
+        }
+      }
+    }
+  }
+}

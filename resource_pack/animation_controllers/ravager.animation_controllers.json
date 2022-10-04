@@ -1,0 +1,69 @@
+{
+	"format_version" : "1.10.0",
+	"animation_controllers" : {
+		"controller.animation.ravager.head_movement" : {
+			"initial_state" : "default",
+			"states" : {
+				"biting" : {
+					"animations" : [ "biting" ],
+					"transitions" : [
+						{
+							"default" : "query.is_delayed_attacking == 0"
+						}
+					]
+				},
+				"default" : {
+					"animations" : [ "idle_mouth" ],
+					"transitions" : [
+						{
+							"roaring" : "query.is_roaring == 1"
+						},
+						{
+							"biting" : "query.is_delayed_attacking == 1"
+						}
+					]
+				},
+				"roaring" : {
+					"animations" : [ "roaring" ],
+					"transitions" : [
+						{
+							"default" : "query.is_roaring == 0"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.ravager.move" : {
+			"initial_state" : "default",
+			"states" : {
+				"default" : {
+					"animations" : [
+						{
+							"walk" : "query.modified_move_speed"
+						},
+						"look_at_target"
+					],
+					"transitions" : [
+						{
+							"stunned" : "query.is_stunned == 1"
+						}
+					]
+				},
+				"stunned" : {
+					"animations" : [ "stunned" ],
+					"particle_effects" : [
+						{
+							"effect" : "stun_particles",
+							"locator" : "stun"
+						}
+					],
+					"transitions" : [
+						{
+							"default" : "query.is_stunned == 0"
+						}
+					]
+				}
+			}
+		}
+	}
+}

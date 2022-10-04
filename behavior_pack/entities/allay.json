@@ -1,0 +1,264 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "minecraft:allay",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+    "component_groups": {
+      "pickup_item_delay": {
+        "minecraft:timer": {
+          "looping": false,
+          "time": 3,
+          "time_down_event": {
+            "event": "pickup_item_delay_complete"
+          }
+        }
+      },
+      "pickup_item": {
+        "minecraft:behavior.pickup_items": {
+          "priority": 2,
+          "max_dist": 32,
+          "search_height": 32,
+          "goal_radius": 2.2,
+          "speed_multiplier": 6,
+          "pickup_based_on_chance": false,
+          "can_pickup_any_item": false,
+          "can_pickup_to_hand_or_equipment": false,
+          "pickup_same_items_as_in_hand": true
+        }
+      }
+    },
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:type_family": {
+        "family": [ "allay", "mob" ]
+      },
+      "minecraft:collision_box": {
+        "width": 0.35,
+        "height": 0.6
+      },
+      "minecraft:balloonable": {
+        "mass": 0.5
+      },
+      "minecraft:breathable": {
+        "totalSupply": 15,
+        "suffocateTime": 0
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:leashable": {
+        "soft_distance": 4.0,
+        "hard_distance": 6.0,
+        "max_distance": 10.0
+      },
+      "minecraft:health": {
+        "value": 20
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+			"minecraft:damage_sensor": {
+				"triggers": [
+					{
+						"on_damage": {
+							"filters": {
+								"all_of": [
+									{
+										"test": "is_family",
+										"subject": "other",
+										"value": "player"
+									},
+									{
+										"test": "is_owner",
+										"subject": "other",
+										"value": true
+									}
+								]
+							}
+						},
+						"deals_damage": false
+					}
+				]
+			},
+			"minecraft:movement": {
+				"value": 0.1
+			},
+			"minecraft:flying_speed": {
+				"value": 0.1
+			},
+			"minecraft:navigation.hover": {
+				"can_path_over_water": true,
+				"can_sink": false,
+				"can_pass_doors": false,
+				"can_path_from_air": true,
+				"avoid_water": true,
+				"avoid_damage_blocks": true,
+				"avoid_sun": false
+			},
+      "minecraft:movement.hover": {},
+      "minecraft:follow_range": {
+        "value": 1024
+      },
+      "minecraft:ambient_sound_interval": {
+        "value": 5.0,
+        "range": 5.0,
+        "event_name": "ambient",
+        "event_names": [
+          {
+            "event_name": "ambient.tame",
+            "condition": "query.is_using_item"
+          },
+          {
+            "event_name": "ambient",
+            "condition": "!query.is_using_item"
+          }
+        ]
+      },
+      "minecraft:jump.static": {},
+			"minecraft:can_fly": {},
+			"minecraft:physics": {
+				"has_gravity": false
+			},
+			"minecraft:pushable": {
+				"is_pushable": true,
+				"is_pushable_by_piston": true
+			},
+			"minecraft:vibration_listener": {},
+			"minecraft:conditional_bandwidth_optimization": {
+			},
+      "minecraft:game_event_movement_tracking": {
+        "emit_flap": true
+      },
+			"minecraft:inventory": {
+				"inventory_size": 1
+			},
+			"minecraft:interact": {
+				"interactions": [
+					{
+						"on_interact": {
+							"filters": {
+								"all_of": [
+									{
+										"test": "is_family",
+										"subject": "other",
+										"value": "player"
+									}
+								]
+							}
+						},
+						"give_item": true,
+						"take_item": true,
+						"interact_text": "action.interact.allay"
+					}
+				]
+			},
+			"minecraft:behavior.panic": {
+				"priority": 1,
+				"speed_multiplier": 2.0
+			},
+      "minecraft:behavior.go_and_give_items_to_noteblock": {
+        "priority": 3,
+        "run_speed": 8,
+        "throw_sound": "item_thrown",
+        "on_item_throw": [
+          {
+            "event": "pickup_item_delay",
+            "target": "self"
+          }
+        ]
+      },
+      "minecraft:behavior.go_and_give_items_to_owner": {
+        "priority": 4,
+        "run_speed": 8,
+        "throw_sound": "item_thrown",
+        "on_item_throw": [
+          {
+            "event": "pickup_item_delay",
+            "target": "self"
+          }
+        ]
+      },
+      "minecraft:behavior.stay_near_noteblock": {
+        "priority": 5,
+        "speed": 8,
+        "start_distance": 16,
+        "stop_distance": 4
+      },
+      "minecraft:behavior.follow_owner": {
+        "priority": 6,
+        "speed_multiplier": 8,
+        "start_distance": 16,
+        "stop_distance": 4,
+        "can_teleport": false,
+        "ignore_vibration": false
+      },
+			"minecraft:behavior.float": {
+				"priority": 7
+			},
+			"minecraft:behavior.look_at_player": {
+				"priority": 8,
+				"target_distance": 6.0,
+				"probability": 0.02
+			},
+      "minecraft:behavior.random_look_around": {
+        "priority": 8
+      },
+      "minecraft:behavior.random_hover": {
+				"priority": 9,
+				"xz_dist": 8,
+				"y_dist": 8,
+				"y_offset": -1,
+				"interval": 1,
+				"hover_height": [ 1, 4 ]
+			}
+		},
+    "events": {
+      "pickup_item_delay": {
+        "remove": {
+          "component_groups": [
+            "pickup_item"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "pickup_item_delay"
+          ]
+        }
+      },
+      "pickup_item_delay_complete": {
+        "remove": {
+          "component_groups": [
+            "pickup_item_delay"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "pickup_item"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "pickup_item"
+          ]
+        }
+      }
+    }
+	}
+}

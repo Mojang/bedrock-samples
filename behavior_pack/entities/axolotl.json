@@ -1,0 +1,448 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:axolotl",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+
+    "component_groups": {
+      "attack_cooldown": {
+        "minecraft:attack_cooldown": {
+          "attack_cooldown_time": 120.0,
+          "attack_cooldown_complete_event": {
+            "event": "attack_cooldown_complete_event",
+            "target": "self"
+          }
+        }
+      },
+      "axolotl_lucy": {
+        "minecraft:variant": { "value": 0 }
+      },
+      "axolotl_cyan": {
+        "minecraft:variant": { "value": 1 }
+      },
+      "axolotl_gold": {
+        "minecraft:variant": { "value": 2 }
+      },
+      "axolotl_wild": {
+        "minecraft:variant": { "value": 3 }
+      },
+      "axolotl_blue": {
+        "minecraft:variant": { "value": 4 }
+      },
+
+      "axolotl_baby": {
+        "minecraft:is_baby": {
+        },
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:ageable": {
+          "duration": 1200,
+          "feed_items": "tropical_fish_bucket",
+          "transform_to_item": "water_bucket:0",
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.follow_parent": {
+          "priority": 5,
+          "speed_multiplier": 1.1
+        }
+      },
+      "axolotl_adult": {
+        "minecraft:experience_reward": {
+          "on_bred": "Math.Random(1,7)",
+          "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
+        },
+        "minecraft:behavior.breed": {
+          "priority": 1,
+          "speed_multiplier": 1.0
+        },
+        "minecraft:breedable": {
+          "require_tame": false,
+          "breed_items": "tropical_fish_bucket",
+          "transform_to_item": "water_bucket:0",
+          "breeds_with": {
+            "mate_type": "minecraft:axolotl",
+            "baby_type": "minecraft:axolotl",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "mutation_factor": {
+            "variant": 0.00083 // roughly 1/1200
+          }
+        }
+      },
+      
+      "axolotl_in_water": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": { "test": "in_water", "operator": "!=", "value": true },
+              "event": "start_drying_out"
+            }
+          ]
+        }
+      },
+      "axolotl_dried": {
+        "minecraft:damage_over_time": {
+          "damage_per_hurt": 1,
+          "time_between_hurt": 0
+        }
+      },
+      "axolotl_on_land": {
+        "minecraft:drying_out_timer": {
+          "total_time": 300,
+          "water_bottle_refill_time": 90,
+          "dried_out_event": {
+            "event": "dried_out"
+          },
+          "stopped_drying_out_event": {
+            "event": "stop_drying_out"
+          },
+          "recover_after_dried_out_event": {
+            "event": "recover_after_dried_out"
+          }
+        }
+      },
+      "axolotl_on_land_in_rain": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": { "test": "in_water_or_rain", "operator": "!=", "value": true },
+              "event": "start_drying_out"
+            },
+            {
+              "filters": { "test": "in_water", "operator": "==", "value": true },
+              "event": "enter_water"
+            }
+          ]
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:type_family": {
+        "family": [ "axolotl", "mob" ]
+      },
+      "minecraft:collision_box": {
+        "width": 0.75,
+        "height": 0.42
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0,
+        "breathes_water": true,
+        "breathes_air": true,
+        "generates_bubbles": false
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:health": {
+        "value": 14
+      },
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "lightning",
+          "deals_damage": true,
+          "damage_multiplier": 2000.0
+        }
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:navigation.generic": {
+        "is_amphibious": true,
+        "can_path_over_water": true,
+        "can_swim": true,
+        "can_walk": true,
+        "can_sink": false,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:movement.amphibious": {
+        "max_turn": 15.0
+      },
+      "minecraft:movement": {
+        "value": 0.1
+      },
+      "minecraft:underwater_movement": {
+        "value": 0.2
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:leashable": {
+        "soft_distance": 4.0,
+        "hard_distance": 6.0,
+        "max_distance": 10.0
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:attack": {
+        "damage": 2
+      },
+      "minecraft:combat_regeneration": {},
+
+      "minecraft:behavior.play_dead": {
+        "priority": 0,
+        "duration": 10,
+        "force_below_health": 8,
+        "random_start_chance": 0.33,
+        "random_damage_range": [ 0, 2 ],
+        "damage_sources": [
+          "contact",
+          "entity_attack",
+          "entity_explosion",
+          "magic",
+          "projectile",
+          "thorns",
+          "wither"
+        ],
+        "apply_regeneration": true,
+        "filters": { "test": "in_water", "operator": "==", "value": true }
+      },
+      "minecraft:behavior.tempt": {
+        "priority": 2,
+        "speed_multiplier": 1.1,
+        "can_tempt_vertically": true,
+        "items": [
+          "tropical_fish_bucket"
+        ]
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 3,
+        "must_see": true,
+        "reselect_targets": true,
+        "within_radius": 20.0,
+        "must_see_forget_duration": 17.0,
+        "entity_types": [
+          {
+            "filters": {
+              "all_of": [
+                { "test": "in_water", "subject": "other", "value": true },
+                { "test": "has_component", "subject": "self", "operator": "!=", "value": "minecraft:attack_cooldown" },
+                {
+                  "any_of": [
+                    { "test": "is_family", "subject": "other", "value": "squid" },
+                    { "test": "is_family", "subject": "other", "value": "fish" },
+                    { "test": "is_family", "subject": "other", "value": "tadpole" }
+                  ]
+                }
+              ]
+            },
+            "max_dist": 8
+          },
+          {
+            "filters": {
+              "all_of": [
+                { "test": "in_water", "subject": "other", "value": true },
+                {
+                  "any_of": [
+                    { "test": "is_family", "subject": "other", "value": "drowned" },
+                    { "test": "is_family", "subject": "other", "value": "guardian" },
+                    { "test": "is_family", "subject": "other", "value": "guardian_elder" }
+                  ]
+                }
+              ]
+            },
+            "max_dist": 8
+          }
+        ]
+      },
+      "minecraft:behavior.melee_attack": {
+        "priority": 4,
+        "on_kill": {
+            "event": "killed_enemy_event",
+            "target": "self"
+        }
+      },
+      "minecraft:behavior.move_to_water": {
+        "priority": 6,
+        "search_range": 16,
+        "search_height": 5,
+        "search_count": 1,
+        "goal_radius": 0.1
+      },
+      "minecraft:behavior.swim_idle": {
+        "priority": 7,
+        "idle_time": 5.0,
+        "success_rate": 0.05
+      },
+      "minecraft:behavior.random_swim": {
+        "priority": 8,
+        "interval": 0,
+        "xz_dist": 30,
+        "y_dist": 15
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 9,
+        "interval": 100
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 10,
+        "target_distance": 6.0,
+        "probability": 0.02
+      }
+    },
+
+    "events": {
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "add": {
+              "component_groups": [
+                "axolotl_adult",
+                "axolotl_in_water"
+              ]
+            }
+          },
+          {
+            "randomize": [
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": [ "axolotl_cyan" ]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": [ "axolotl_gold" ]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": [ "axolotl_lucy" ]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": [ "axolotl_wild" ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "attack_cooldown_complete_event": {
+        "remove": {
+          "component_groups": [
+            "attack_cooldown"
+          ]
+        }
+      },
+      "killed_enemy_event": {
+        "add": {
+          "component_groups": [
+            "attack_cooldown"
+          ]
+        }
+      },
+      "minecraft:entity_born": {
+        "sequence": [
+          {
+            "remove": {
+              "component_groups": [
+                "axolotl_adult"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "axolotl_baby",
+                "axolotl_in_water"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "!=",
+              "value": "minecraft:variant"
+            },
+            "add": { "component_groups": [ "axolotl_blue" ] }
+          }
+        ]
+      },
+
+      "minecraft:ageable_grow_up": {
+        "remove": { "component_groups": [ "axolotl_baby" ] },
+        "add": { "component_groups": [ "axolotl_adult" ] }
+      },
+
+      "stop_drying_out": {
+        "remove": {
+          "component_groups": [
+            "axolotl_on_land",
+            "axolotl_dried"
+          ]
+        },
+        "add": {
+          "component_groups": [ "axolotl_on_land_in_rain" ]
+        }
+      },
+      "start_drying_out": {
+        "remove": {
+          "component_groups": [
+            "axolotl_on_land_in_rain",
+            "axolotl_in_water"
+          ]
+        },
+        "add": {
+          "component_groups": [ "axolotl_on_land" ]
+        }
+      },
+      "dried_out": {
+        "add": {
+          "component_groups": [ "axolotl_dried" ]
+        }
+      },
+      "recover_after_dried_out": {
+        "remove": {
+          "component_groups": [ "axolotl_dried" ]
+        }
+      },
+      "enter_water": {
+        "remove": {
+          "component_groups": [
+            "axolotl_on_land",
+            "axolotl_on_land_in_rain",
+            "axolotl_dried"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "axolotl_in_water"
+          ]
+        }
+      }
+    }
+  }
+}

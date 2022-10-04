@@ -1,0 +1,931 @@
+{
+  "format_version": "1.17.20",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:zombie_villager",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "become_zombie_villager_v2": {
+        "minecraft:transformation": {
+          "into": "minecraft:zombie_villager_v2",
+          "keep_level": false
+        }
+      },
+      "baby": {
+        "minecraft:experience_reward": {
+          "on_death": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0"
+        },
+        "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:movement": {
+          "value": 0.35
+        }
+      },
+
+      "adult": {
+        "minecraft:experience_reward": {
+          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
+        },
+        "minecraft:movement": {
+          "value": 0.23
+        },
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [ 0.0, 1.1, -0.35 ]
+          }
+        },
+        "minecraft:behavior.mount_pathing": {
+          "priority": 5,
+          "speed_multiplier": 1.25,
+          "target_dist": 0.0,
+          "track_target": true
+        }
+      },
+
+      "jockey": {
+        "minecraft:behavior.find_mount": {
+          "priority": 1,
+          "within_radius": 16
+        }
+      },
+
+      "can_break_doors": {
+        "minecraft:annotation.break_door": {
+        }
+      },
+
+      "from_abandoned_village": {
+        "minecraft:navigation.walk": {
+          "is_amphibious": true,
+          "can_pass_doors": true,
+          "can_open_doors": true,
+          "avoid_water": true,
+          "avoid_sun": true
+        },
+        "minecraft:behavior.flee_sun": {
+          "priority": 4,
+          "speed_multiplier": 1
+        }
+      },
+
+      "to_villager": {
+        "minecraft:transformation": {
+          "into": "minecraft:villager",
+          "begin_transform_sound": "remedy",
+          "transformation_sound": "unfect",
+          "delay": {
+            "value": 100,
+            "block_assist_chance": 0.01,
+            "block_radius": 4,
+            "block_chance": 0.3,
+            "block_types": [
+              "minecraft:bed",
+              "minecraft:iron_bars"
+            ]
+          }
+        },
+        "minecraft:spell_effects": {
+          "add_effects": [
+            {
+              "effect": "strength",
+              "duration": 100
+            },
+            {
+              "effect": "heal",
+              "duration": 100
+            }
+          ],
+          "remove_effects": "weakness"
+        },
+        "minecraft:is_shaking": {
+        }
+      },
+
+      "farmer": {
+        "minecraft:type_family": {
+          "family": [ "farmer", "zombie", "zombie_villager", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 0
+        }
+      },
+      "fisherman": {
+        "minecraft:type_family": {
+          "family": [ "fisherman", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 0
+        }
+      },
+      "shepherd": {
+        "minecraft:type_family": {
+          "family": [ "shepherd", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 0
+        }
+      },
+      "fletcher": {
+        "minecraft:type_family": {
+          "family": [ "fletcher", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 0
+        }
+      },
+
+      "librarian": {
+        "minecraft:type_family": {
+          "family": [ "librarian", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 1
+        }
+      },
+
+      "cartographer": {
+        "minecraft:type_family": {
+          "family": [ "cartographer", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 1
+        }
+      },
+
+      "cleric": {
+        "minecraft:type_family": {
+          "family": [ "cleric", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 2
+        }
+      },
+
+      "armorer": {
+        "minecraft:type_family": {
+          "family": [ "armorer", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 3
+        }
+      },
+      "weaponsmith": {
+        "minecraft:type_family": {
+          "family": [ "weaponsmith", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 3
+        }
+      },
+      "toolsmith": {
+        "minecraft:type_family": {
+          "family": [ "toolsmith", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 3
+        }
+      },
+
+      "butcher": {
+        "minecraft:type_family": {
+          "family": [ "butcher", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 4
+        }
+      },
+      "leatherworker": {
+        "minecraft:type_family": {
+          "family": [ "leatherworker", "zombie_villager", "zombie", "undead", "monster", "mob" ]
+        },
+        "minecraft:variant": {
+          "value": 4
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      // Zombie_villager Components
+      "minecraft:navigation.walk": {
+        "is_amphibious": true,
+        "can_pass_doors": true,
+        "can_break_doors": true,
+        "avoid_sun": false
+      },
+      "minecraft:movement.basic": {
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0,
+        "breathes_water": true
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/zombie.json"
+      },
+      "minecraft:equip_item": {
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 1.9
+      },
+      "minecraft:burns_in_daylight": {},
+
+      "minecraft:health": {
+        "value": 20,
+        "max": 20
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:attack": {
+        "damage": 3
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:shareables": {
+        "items": [
+          {
+            "item": "minecraft:netherite_sword",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 0
+          },
+          {
+            "item": "minecraft:diamond_sword",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 2
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 3
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 4
+          },
+          {
+            "item": "minecraft:wooden_sword",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 5
+          },
+          {
+            "item": "minecraft:netherite_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 0
+          },
+          {
+            "item": "minecraft:diamond_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 1
+          },
+          {
+            "item": "minecraft:iron_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 2
+          },
+          {
+            "item": "minecraft:chainmail_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 3
+          },
+          {
+            "item": "minecraft:golden_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 4
+          },
+          {
+            "item": "minecraft:leather_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 5
+          },
+          {
+            "item": "minecraft:turtle_helmet",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 6
+          },
+          {
+            "item": "minecraft:skull:0",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 7
+          },
+          {
+            "item": "minecraft:skull:1",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 7
+          },
+          {
+            "item": "minecraft:carved_pumpkin",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 7
+          },
+          {
+            "item": "minecraft:netherite_chestplate",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 0
+          },
+          {
+            "item": "minecraft:diamond_chestplate",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 1
+          },
+          {
+            "item": "minecraft:iron_chestplate",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 2
+          },
+          {
+            "item": "minecraft:chainmail_chestplate",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 3
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 4
+          },
+          {
+            "item": "minecraft:leather_chestplate",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 5
+          },
+          {
+            "item": "minecraft:netherite_leggings",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 0
+          },
+          {
+            "item": "minecraft:diamond_leggings",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 1
+          },
+          {
+            "item": "minecraft:iron_leggings",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 2
+          },
+          {
+            "item": "minecraft:chainmail_leggings",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 3
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 4
+          },
+          {
+            "item": "minecraft:leather_leggings",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 5
+          },
+          {
+            "item": "minecraft:netherite_boots",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 0
+          },
+          {
+            "item": "minecraft:diamond_boots",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 1
+          },
+          {
+            "item": "minecraft:iron_boots",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 2
+          },
+          {
+            "item": "minecraft:chainmail_boots",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 3
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 4
+          },
+          {
+            "item": "minecraft:leather_boots",
+            "want_amount": 1,
+            "surplus_amount": 1,
+            "priority": 5
+          }
+        ]
+      },
+
+      "minecraft:interact": {
+        "interactions": {
+          // Curing the villager
+          "on_interact": {
+            "filters": {
+              "all_of": [
+                {
+                  "test": "has_equipment",
+                  "domain": "hand",
+                  "subject": "other",
+                  "value": "golden_apple"
+                },
+                {
+                  "test": "has_component",
+                  "subject": "self",
+                  "value": "minecraft:effect.weakness"
+                }
+              ]
+            },
+            "event": "villager_converted",
+            "target": "self"
+          },
+          "use_item": true,
+          "interact_text": "action.interact.cure"
+        }
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      // Zombie_villager Behaviors
+      "minecraft:behavior.melee_attack": {
+        "priority": 6
+      },
+      "minecraft:behavior.equip_item": {
+        "priority": 3
+      },
+      "minecraft:behavior.stomp_turtle_egg": {
+        "priority": 4,
+        "speed_multiplier": 1,
+        "search_range": 10,
+        "search_height": 2,
+        "goal_radius": 1.14,
+        "interval": 20
+      },
+      "minecraft:behavior.pickup_items": {
+        "priority": 8,
+        "max_dist": 3,
+        "goal_radius": 2,
+        "speed_multiplier": 1.0,
+        "pickup_based_on_chance": true,
+        "can_pickup_any_item": true,
+        "excluded_items": [
+          "minecraft:glow_ink_sac"
+        ]
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 9,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 10,
+        "look_distance": 6,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 11
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 1
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "must_see": true,
+        "reselect_targets": true,
+        "entity_types": [
+          {
+            "filters": {
+              "any_of": [
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "player"
+                },
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "snowgolem"
+                },
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "irongolem"
+                }
+              ]
+            },
+            "max_dist": 35
+          },
+          {
+            "filters": {
+              "any_of": [
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "villager"
+                },
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "wandering_trader"
+                }
+              ]
+            },
+            "max_dist": 35,
+            "must_see": false
+          },
+          {
+            "filters": {
+              "all_of": [
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "baby_turtle"
+                },
+                {
+                  "test": "in_water",
+                  "subject": "other",
+                  "operator": "!=",
+                  "value": true
+                }
+              ]
+            },
+            "max_dist": 35
+          }
+        ]
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      }
+    },
+
+    "events": {
+      "villager_converted": {
+        "remove": {
+        },
+        "add": {
+          "component_groups": [
+            "to_villager"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "filters": { "test": "has_component", "operator": "!=", "value": "minecraft:variant" },
+            "randomize": [
+              {
+                "weight": 9500,
+                "remove": {
+                },
+                "add": {
+                  "component_groups": [
+                    "adult"
+                  ]
+                }
+              },
+              {
+                "weight": 425,
+                "remove": {
+                },
+                "add": {
+                  "component_groups": [
+                    "baby"
+                  ]
+
+                }
+              },
+              {
+                "weight": 75,
+                "remove": {
+                },
+                "add": {
+                  "component_groups": [
+                    "baby",
+                    "jockey"
+                  ]
+
+                }
+              }
+            ]
+          },
+          {
+            "filters": { "test": "has_component", "operator": "!=", "value": "minecraft:variant"
+            },
+            "randomize": [
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "farmer" ] }
+              },
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "fisherman" ] }
+              },
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "shepherd" ] }
+              },
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "fletcher" ] }
+              },
+              {
+                "weight": 20,
+                "add": { "component_groups": [ "librarian" ] }
+              },
+              {
+                "weight": 20,
+                "add": { "component_groups": [ "cartographer" ] }
+              },
+              {
+                "weight": 20,
+                "add": { "component_groups": [ "cleric" ] }
+              },
+              {
+                "weight": 6,
+                "add": { "component_groups": [ "armorer" ] }
+              },
+              {
+                "weight": 6,
+                "add": { "component_groups": [ "weaponsmith" ] }
+              },
+              {
+                "weight": 6,
+                "add": { "component_groups": [ "toolsmith" ] }
+              },
+              {
+                "weight": 10,
+                "add": { "component_groups": [ "butcher" ] }
+              },
+              {
+                "weight": 10,
+                "add": { "component_groups": [ "leatherworker" ] }
+              }
+            ]
+          },
+          {
+            "randomize": [
+              {
+                "weight": 10,
+                "add": {
+                  "component_groups": [ "can_break_doors" ]
+                }
+              },
+              {
+                "weight": 90
+              }
+            ]
+          }
+        ]
+      },
+
+      "minecraft:entity_transformed": {
+        "filters": { "test": "has_component", "operator": "!=", "value": "minecraft:variant" },
+        "sequence": [
+          // Transform baby villager to baby zombie
+          {
+            "filters": { "test": "has_component", "subject": "other", "value": "minecraft:is_baby" },
+            "add": { "component_groups": [ "baby" ] }
+          },
+          // Transform adult villager to adult zombie
+          {
+            "filters": {  "test": "has_component",  "subject": "other", "operator": "!=", "value": "minecraft:is_baby" },
+            "add": { "component_groups": [ "adult" ] }
+          },
+          // Transform farmer zombie to farmer villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "farmer" },
+            "add": { "component_groups": [ "farmer" ] }
+          },
+          // Transform fisherman zombie to fisherman villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "fisherman" },
+            "add": { "component_groups": [ "fisherman" ] }
+          },
+          // Transform shepherd zombie to shepherd villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "shepherd" },
+            "add": { "component_groups": [ "shepherd" ] }
+          },
+          // Transform fletcher zombie to fletcher villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "fletcher" },
+            "add": { "component_groups": [ "fletcher" ] }
+          },
+          // Transform librarian zombie to librarian villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "librarian" },
+            "add": { "component_groups": [ "librarian" ] }
+          },
+          // Transform cartographer zombie to cartographer villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "cartographer" },
+            "add": { "component_groups": [ "cartographer" ] }
+          },
+          // Transform cleric zombie to cleric villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "cleric" },
+            "add": { "component_groups": [ "cleric" ] }
+          },
+          // Transform armorer zombie to armorer villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "armorer" },
+            "add": { "component_groups": [ "armorer" ] }
+          },
+          // Transform weaponsmith zombie to weaponsmith villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "weaponsmith" },
+            "add": { "component_groups": [ "weaponsmith" ] }
+          },
+          // Transform toolsmith zombie to toolsmith villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "toolsmith" },
+            "add": { "component_groups": [ "toolsmith" ] }
+          },
+          // Transform butcher zombie to butcher villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "butcher" },
+            "add": { "component_groups": [ "butcher" ] }
+          },
+          // Transform leatherworker zombie to leatherworker villager
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "leatherworker" },
+            "add": { "component_groups": [ "leatherworker" ] }
+          }
+        ]
+      },
+
+      "minecraft:become_cleric": {
+        "add": { "component_groups": [ "cleric" ] }
+      },
+
+      "from_village": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "!=",
+              "value": "minecraft:variant"
+            },
+            "randomize": [
+              {
+                "weight": 9500,
+                "remove": {
+                },
+                "add": {
+                  "component_groups": [
+                    "adult"
+                  ]
+                }
+              },
+              {
+                "weight": 425,
+                "remove": {
+                },
+                "add": {
+                  "component_groups": [
+                    "baby"
+                  ]
+
+                }
+              },
+              {
+                "weight": 75,
+                "remove": {
+                },
+                "add": {
+                  "component_groups": [
+                    "baby",
+                    "jockey"
+                  ]
+
+                }
+              }
+            ]
+          },
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "!=",
+              "value": "minecraft:variant"
+            },
+            "randomize": [
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "farmer" ] }
+              },
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "fisherman" ] }
+              },
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "shepherd" ] }
+              },
+              {
+                "weight": 5,
+                "add": { "component_groups": [ "fletcher" ] }
+              },
+              {
+                "weight": 20,
+                "add": { "component_groups": [ "librarian" ] }
+              },
+              {
+                "weight": 20,
+                "add": { "component_groups": [ "cartographer" ] }
+              },
+              {
+                "weight": 20,
+                "add": { "component_groups": [ "cleric" ] }
+              },
+              {
+                "weight": 6,
+                "add": { "component_groups": [ "armorer" ] }
+              },
+              {
+                "weight": 6,
+                "add": { "component_groups": [ "weaponsmith" ] }
+              },
+              {
+                "weight": 6,
+                "add": { "component_groups": [ "toolsmith" ] }
+              },
+              {
+                "weight": 10,
+                "add": { "component_groups": [ "butcher" ] }
+              },
+              {
+                "weight": 10,
+                "add": { "component_groups": [ "leatherworker" ] }
+              }
+            ]
+          },
+          { "add": { "component_groups": [ "from_abandoned_village" ] } }
+        ]
+      }
+    }
+  }
+}

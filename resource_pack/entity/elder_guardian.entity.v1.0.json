@@ -1,0 +1,56 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:elder_guardian",
+      "materials": {
+        "default": "guardian",
+        "ghost": "guardian_ghost"
+      },
+      "textures": {
+        "default": "textures/entity/guardian",
+        "elder": "textures/entity/guardian_elder",
+        "beam": "textures/entity/guardian_beam"
+      },
+      "geometry": {
+        "default": "geometry.guardian",
+        "ghost": "geometry.guardian"
+      },
+      "animations": {
+        "setup": "animation.guardian.setup",
+        "spikes": "animation.guardian.spikes.v1.0",
+        "swim": "animation.guardian.swim",
+        "look_at_target": "animation.common.look_at_target",
+        "move_eye": "animation.guardian.move_eye.v1.0"
+      },
+      "scripts": {
+        "initialize": [
+          "variable.spike_animation_speed = 0.0;",
+          "variable.tail_animation_speed = 0.0;",
+          "variable.tail_swim = 0.0;"
+        ],
+        "pre_animation": [
+          "variable.spike_shake = Math.sin(query.life_time * 2000)/50;",
+          "variable.spike_animation_speed = query.life_time < 0.1 ? 0.0 : (!query.is_in_water ? (Math.round(Math.sin(query.life_time * 2000)) == 0.0 ? (Math.random(0.0, 1.0)) : (variable.spike_animation_speed)) : (query.is_moving ? (variable.spike_animation_speed - variable.spike_animation_speed * 0.06) : (variable.spike_animation_speed + (1.0 - variable.spike_animation_speed) * 0.06)));",
+          "variable.spike_extension = (1.0 - variable.spike_animation_speed) * 0.55;",
+          "variable.tail_animation_speed = query.life_time < 0.1 ? 0.0 : (!query.is_in_water ? 2.0 : query.is_moving ? (variable.tail_animation_speed < 0.5 ? 4.0 : variable.tail_animation_speed + (0.5 - variable.tail_animation_speed) * 0.1) : variable.tail_animation_speed + (0.125 - variable.tail_animation_speed) * 0.2);",
+          "variable.tail_swim = query.life_time < 0.1 ? 0.0 : (variable.tail_swim + variable.tail_animation_speed);",
+          "variable.tail_base_angle = Math.sin(variable.tail_swim*20.0);"
+        ],
+        "scale": "2.35",
+        "animate": [
+          "setup",
+          "spikes",
+          "swim",
+          "look_at_target",
+          "move_eye"
+        ]
+      },
+      "render_controllers": [ "controller.render.guardian" ],
+      "spawn_egg": {
+        "texture": "spawn_egg",
+        "texture_index": 36
+      }
+    }
+  }
+}

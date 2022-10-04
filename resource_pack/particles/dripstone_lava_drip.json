@@ -1,0 +1,72 @@
+{
+  "format_version": "1.10.0",
+  "particle_effect": {
+    "description": {
+      "identifier": "minecraft:stalactite_lava_drip_particle",
+      "basic_render_parameters": {
+        "material": "particles_alpha",
+        "texture": "textures/particle/particles"
+      }
+    },
+    "events": {
+      "hit_ground": {
+        "sound_effect": {
+          "event_name": "drip.lava.pointed_dripstone"
+        }
+      }
+    },
+    "components": {
+      "minecraft:emitter_rate_manual": {
+        "max_particles": 50
+      },
+      "minecraft:emitter_lifetime_expression": {
+        "activation_expression": 1,
+        "expiration_expression": 0
+      },
+      "minecraft:emitter_shape_point": {
+        "offset": [ 0.0, 0.1, 0.0 ]
+      },
+      "minecraft:particle_initialization": {
+        "per_update_expression": "variable.stuck_time = 2.0;",
+        "per_render_expression": "variable.stuck_time = 2.0;"
+      },
+      "minecraft:particle_initial_speed": 0.0,
+      "minecraft:particle_lifetime_expression": {
+        "max_lifetime": 5.0
+      },
+      "minecraft:particle_motion_dynamic": {
+        "linear_acceleration": [ 0.0, -19.6, 0 ],
+        "linear_drag_coefficient": "variable.stuck_time = 2.0; return variable.particle_age < variable.stuck_time ? 277 : 0.01;"
+      },
+      "minecraft:particle_motion_collision": {
+        "coefficient_of_restitution": 0.1,
+        "collision_drag": 10.0,
+        "collision_radius": 0.01,
+        "events": [
+          {
+            "event": "hit_ground",
+            "min_speed": 0.5
+          }
+        ]
+      },
+      "minecraft:particle_appearance_billboard": {
+        "size": [ 0.15, 0.15 ],
+        "facing_camera_mode": "lookat_xyz",
+        "uv": {
+          "texture_width": 128,
+          "texture_height": 128,
+          "uv": [ 8, 56 ],
+          "uv_size": [ 8, 8 ]
+        }
+      },
+      "minecraft:particle_appearance_tinting": {
+        "color": [
+          1.0,
+          "0.8 / (variable.stuck_time - (variable.stuck_time-variable.particle_age) + 0.8)",
+          "0.2 / (variable.stuck_time - (variable.stuck_time-variable.particle_age) + 0.4)",
+          1.0
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,245 @@
+/********************************************************
+*   (c) Mojang. All rights reserved                      *
+*   (c) Microsoft. All rights reserved.                  *
+*********************************************************/
+{
+  "namespace": "library_modal",
+
+  "modal_button@common_buttons.light_text_button": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$button_mapping",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$button_mapping",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "modal_text_content": {
+    "type": "label",
+    "layer": 1,
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "size": [ "100% - 4px", "default" ],
+    "offset": [ 2, 2 ],
+    "color": "$f_color_format",
+    "text": "$modal_text"
+  },
+
+  "modal_ok@library_modal.modal_button": {
+    "$button_mapping": "button.ok",
+    "$button_text": "gui.ok"
+  },
+
+  "modal_cancel@library_modal.modal_button": {
+    "$button_mapping": "button.cancel",
+    "$button_text": "gui.cancel"
+  },
+
+  "in_game_prompt@common_dialogs.main_panel_two_buttons": {
+    "$show_close_button": false,
+    "$child_control": "library_modal.modal_text_content",
+    "$top_button_panel": "library_modal.modal_ok",
+    "$bottom_button_panel": "library_modal.modal_cancel",
+    "$modal_text": "library.prompt.inGameLink",
+    "bindings": [
+      {
+        "binding_name": "#show_in_game_prompt",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "fetch_error@common_dialogs.main_panel_one_button": {
+    "$show_close_button": false,
+    "$button_panel": "library_modal.modal_ok",
+    "$child_control": "library_modal.modal_text_content",
+    "$modal_text": "library.fetchingItem.failed",
+    "bindings": [
+      {
+        "binding_name": "#show_fetch_error",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "content": {
+    "type": "panel",
+    "size": [ 250, 150 ],
+    "controls": [
+      { "fetch@library_modal.fetch_error": {} },
+      { "ingame@library_modal.in_game_prompt": {} }
+    ]
+  },
+
+  // Wrap input panel to catch input so user must press modal button (or esc) to dismiss
+  "content_wrapper": {
+    "type": "input_panel",
+    "controls": [
+      { "content@library_modal.content": {} }
+    ]
+  },
+
+  "background": {
+    "type": "image",
+    "texture": "textures/ui/Banners",
+    "alpha": 0.4,
+    "layer": -1
+  },
+
+  "library_modal_screen@common.base_screen": {
+    "$screen_content": "library_modal.content_wrapper",
+    "$screen_bg_content": "library_modal.background",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.menu_exit",
+        "mapping_type": "global"
+      }
+    ]
+  },
+
+  "text_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "90%", "100%" ],
+    "anchor_from": "center",
+    "anchor_to": "center"
+  },
+
+  "edu_icon": {
+    "type": "image",
+    "texture": "textures/ui/eduicon"
+  },
+
+  "continue_button@library_modal.modal_button": {
+    "$button_mapping": "button.continue",
+    "$button_text": "gui.continue"
+  },
+
+  "paragraph": {
+    "size": [ "100%", "default" ],
+    "type": "label",
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "color": "$dark_button_default_text_color",
+    "layer": 1,
+    "shadow": false,
+    "$welcome_text|default": "",
+    "text": "$welcome_text",
+    "font_type": "smooth"
+  },
+
+  "welcome_text_panel@library_modal.text_panel": {
+    "size": [ "100%-12px", "100%c" ],
+    "controls": [
+      { "padding_1@common.empty_panel": { "size": [ "100%", 10 ] } },
+      {
+        "paragraph_1_wrapper": {
+          "size": [ "100%", 40 ],
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "controls": [
+            { "edu_icon@library_modal.edu_icon": { "size": [ 40, "100%" ] } },
+            { "stack_buffer1@common.empty_panel": { "size": [ "2%", "100%" ] } },
+            {
+              "paragraph_1_panel": {
+                "type": "panel",
+                "size": [ "fill", "100%" ],
+                "controls": [
+                  {
+                    "paragraph_1@library_modal.paragraph": {
+                      "anchor_from": "center",
+                      "anchor_to": "center",
+                      "$welcome_text": "library.welcome.1"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      { "padding_2@common.empty_panel": { "size": [ "100%", 10 ] } },
+      { "paragraph_two@library_modal.paragraph": { "$welcome_text": "library.welcome.2" } },
+      { "padding_3@common.empty_panel": { "size": [ "100%", 10 ] } },
+      {
+        "paragraph_three@library_modal.paragraph": {
+          // This part mentions "beta" and "in progress" wording that is not allowed by ios certification
+          "ignored":"$is_ios",
+          "$welcome_text": "library.welcome.3"
+        }
+      }
+    ]
+  },
+
+  "welcome_scrolling_panel@common.scrolling_panel": {
+    "$scroll_size": [ 6, "100% - 4px" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "$scrolling_content": "library_modal.welcome_text_panel",
+    "$scrolling_content_anchor_from": "top_middle",
+    "$scrolling_content_anchor_to": "top_middle",
+    "$scroll_bar_left_padding_size": [ 0, 0 ],
+    "$scroll_bar_right_padding_size": [ 2, 0 ],
+    "$show_background": false
+  },
+
+  "welcome_panel_content": {
+    "type": "panel",
+    "size": [ "70%", "85%" ],
+    "$background_fill_alpha|default": 1.0,
+    "controls": [
+      {
+        "background_panel@common.common_panel": {
+          "layer": 1,
+          "$dialog_background": "dialog_background_hollow_5",
+          "$fill_alpha": "$background_fill_alpha",
+          "$show_close_button": false
+        }
+      },
+      {
+        "welcome_scrolling_panel@library_modal.welcome_scrolling_panel": {
+          // SizeY: -15 for offset, -30 for button size, -15 to look nice and be safe
+          "size": [ "100%-16px", "100% - 15px - 30px - 15px" ],
+          "offset": [ 0, 15 ],
+          "layer": 2
+        }
+      },
+      {
+        "continue_button@library_modal.continue_button": {
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "size": [ "100%-12px", 30 ],
+          "offset": [ 0, -8 ]
+        }
+      }
+    ]
+  },
+
+  "welcome_panel@common.input_panel": {
+    "layer": 15,
+    "size": [ "100%", "100%" ],
+    // Stop mouse scroll from controlling scrollbar underneath
+    "modal": true,
+    "bindings": [
+      {
+        "binding_name": "#welcome",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "welcome@library_modal.welcome_panel_content": {
+          "layer": 1,
+          "$pressed_button_name": "button.download_cancel"
+        }
+      }
+    ]
+  }
+}

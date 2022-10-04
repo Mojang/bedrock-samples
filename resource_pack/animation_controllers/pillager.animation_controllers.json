@@ -1,0 +1,78 @@
+{
+	"format_version" : "1.10.0",
+  "animation_controllers": {
+    "controller.animation.pillager.attack": {
+      "initial_state": "default",
+      "states": {
+        "charge": {
+          "animations": [ "crossbow_charge" ],
+          "transitions": [
+            {
+              "default": "variable.attack_state == 0"
+            },
+            {
+              "hold": "variable.attack_state == 1"
+            }
+          ]
+        },
+        "default": {
+          "transitions": [
+            {
+              "hold": "variable.attack_state == 1"
+            },
+            {
+              "charge": "variable.attack_state == 2"
+            }
+          ]
+        },
+        "hold": {
+          "animations": [ "crossbow_hold" ],
+          "transitions": [
+            {
+              "default": "variable.attack_state == 0"
+            },
+            {
+              "charge": "variable.attack_state == 2"
+            }
+          ]
+        }
+      }
+    },
+    "controller.animation.pillager.root": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "blend_transition": 0.2,
+          "blend_via_shortest_path": true,
+          "animations": [
+            "controller_humanoid_base_pose",
+            "controller_look_at_target",
+            "controller_move",
+            "controller_riding",
+            "controller_attack",
+            "controller_bob",
+            "controller_pillager_attack"
+          ],
+          "transitions": [
+            {
+              "celebrating": "query.is_celebrating"
+            }
+          ]
+        },
+        "celebrating": {
+          "animations": [
+            "celebrating",
+            { "riding.legs": "query.is_riding" }
+          ],
+          "blend_transition": 0.2,
+          "blend_via_shortest_path": true,
+          "transitions": [
+            {
+              "default": "!query.is_celebrating"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

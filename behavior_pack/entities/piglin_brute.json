@@ -1,0 +1,377 @@
+{
+  "format_version": "1.18.20",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:piglin_brute",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+
+    "component_groups": {
+      "zombification_sensor": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "in_nether",
+              "subject": "self",
+              "operator": "==",
+              "value": false
+            },
+            "event": "start_zombification_event"
+          }
+        }
+      },
+
+      "start_zombification": {
+        "minecraft:is_shaking": {},
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "in_nether",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "event": "stop_zombification_event"
+          }
+        },
+        "minecraft:timer": {
+          "looping": false,
+          "time": 15,
+          "time_down_event": {
+            "event": "become_zombie_event"
+          }
+        }
+      },
+
+      "become_zombie": {
+        "minecraft:transformation": {
+          "into": "minecraft:zombie_pigman",
+          "transformation_sound" : "converted_to_zombified",
+          "keep_level": true,
+          "preserve_equipment": true
+        }
+      },
+
+      "melee_unit": {
+        "minecraft:behavior.melee_attack": {
+          "priority": 4,
+          "speed_multiplier": 1,
+          "track_target": true
+        },
+        "minecraft:attack": {
+          "damage": 7
+        },
+        "minecraft:equipment": {
+          "table": "loot_tables/entities/piglin_brute_gear.json"
+        },
+        "minecraft:variant": {
+          "value": 1
+        }
+      },
+
+      "angry": {
+        "minecraft:angry": {
+          "duration": 30,
+          "broadcast_anger": false,
+          "broadcast_anger_on_attack": false,
+          "broadcast_anger_on_being_attacked": true,
+          "broadcast_range": 16,
+          "broadcast_targets": [
+            "piglin" // we want to broadcast to both normal piglins and piglin_brute
+          ],
+          "calm_event": {
+            "event": "become_calm_event",
+            "target": "self"
+          },
+          "filters": {
+            "all_of": [
+              {
+                "test": "is_family",
+                "subject": "other",
+                "operator": "!=",
+                "value": "piglin"
+              }
+            ]
+          },
+          "angry_sound": "angry",
+          "sound_interval": {
+            "range_min": 2.0,
+            "range_max": 5.0
+          }
+        }
+      },
+
+      "alert_for_attack_targets": {
+        "minecraft:behavior.nearest_prioritized_attackable_target": {
+          "priority": 3,
+          "within_radius": 12.0,
+          "persist_time": 2.0,
+          "must_see": true,
+          "entity_types": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "max_dist": 12,
+              "priority":  0
+            },
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "wither"
+              },
+              "max_dist": 12,
+              "priority": 1
+            }
+          ]
+        }
+      },
+
+      "take_target_as_response_to_block_break": {
+        "minecraft:behavior.nearest_attackable_target": {
+          "priority": 3,
+          "entity_types": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "max_dist": 16
+            }
+          ]
+        }
+      },
+      "go_back_to_spawn": {
+        "minecraft:behavior.go_home": {
+          "priority": 6,
+          "interval": 200,
+          "speed_multiplier": 0.6,
+          "goal_radius": 4.0,
+          "on_failed": [
+            {
+              "event": "go_back_to_spawn_failed",
+              "target": "self"
+            }
+          ]
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 1.9
+      },
+      "minecraft:type_family": {
+        "family": [
+          "piglin",
+          "adult_piglin",
+          "piglin_brute",
+          "monster"
+        ]
+      },
+      "minecraft:home": {
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      },
+      "minecraft:experience_reward": {
+        "on_death": "query.last_hit_by_player ? 20 : 0"
+      },
+      
+      "minecraft:on_target_acquired": {
+        "event": "become_angry_event",
+        "target": "self"
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:health": {
+        "value": 50,
+        "max": 50
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/piglin.json"
+      },
+      "minecraft:movement": {
+        "value": 0.35
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "can_open_doors": true
+      },
+      "minecraft:annotation.open_door": {
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:nameable": {},
+      "minecraft:despawn": {
+        "filters": {
+          "any_of": [
+            {
+              "all_of": [
+                {
+                  "test": "is_persistent",
+                  "value": false
+                },
+                {
+                  "test": "distance_to_nearest_player",
+                  "operator": ">",
+                  "value": 54
+                }
+              ]
+            },
+            {
+              "all_of": [
+                {
+                  "test": "is_persistent",
+                  "value": false
+                },
+                {
+                  "test": "inactivity_timer",
+                  "subject": "self",
+                  "value": 30
+                },
+                {
+                  "test": "random_chance",
+                  "value": 800
+                },
+                {
+                  "test": "distance_to_nearest_player",
+                  "operator": ">",
+                  "value": 32
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 1
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 0.6
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "look_distance": 8
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:follow_range": {
+        "value": 64
+      }
+    },
+
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "zombification_sensor",
+            "alert_for_attack_targets",
+            "melee_unit",
+            "go_back_to_spawn"
+          ]
+        }
+      },
+      "stop_zombification_event": {
+        "add": {
+          "component_groups": [
+            "zombification_sensor"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "start_zombification"
+          ]
+        }
+      },
+      "start_zombification_event": {
+        "add": {
+          "component_groups": [
+            "start_zombification"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "zombification_sensor"
+          ]
+        }
+      },
+      "become_angry_event": {
+        "add": {
+          "component_groups": [
+            "angry"
+          ]
+        }
+      },
+      "become_calm_event": {
+        "remove": {
+          "component_groups": [
+            "angry"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "alert_for_attack_targets"
+          ]
+        }
+      },
+      "become_zombie_event": {
+        "add": {
+          "component_groups": [
+            "become_zombie"
+          ]
+        }
+      },
+      "important_block_destroyed_event": {
+        "remove": {
+          "component_groups": [
+            "alert_for_attack_targets"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "take_target_as_response_to_block_break"
+          ]
+        }
+      },
+      "go_back_to_spawn_failed": {
+        "remove": {
+          "component_groups": [
+            "go_back_to_spawn"
+          ]
+        }
+      }
+    }
+  }
+}

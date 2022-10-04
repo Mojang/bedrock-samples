@@ -1,0 +1,110 @@
+{
+  "namespace": "content_log",
+
+  "anim_content_log_txt_alpha": {
+    "anim_type": "alpha",
+    "easing": "in_quart",
+    "duration": 1,
+    "from": 1,
+    "to": 0
+  },
+
+  "anim_content_log_txt_wait": {
+    "anim_type": "wait",
+    "duration": "$content_log_item_lifetime",
+    "next": "@content_log.anim_content_log_txt_alpha"
+  },
+
+  "anim_content_log_bg_alpha": {
+    "anim_type": "alpha",
+    "easing": "in_quart",
+    "destroy_at_end": "content_log_grid_item",
+    "duration": 1,
+    "from": 0.5,
+    "to": 0
+  },
+
+  "anim_content_log_bg_wait": {
+    "anim_type": "wait",
+    "duration": "$content_log_item_lifetime",
+    "next": "@content_log.anim_content_log_bg_alpha"
+  },
+
+  "content_log_label": {
+    "type": "label",
+    "layer": 31,
+    "text": "#text",
+    "font_type": "smooth",
+    "size": [ "100%", "default" ],
+    "shadow": true,
+    "localize": false,
+    "color": "$chat_text_color",
+    "anims": [
+      "@content_log.anim_content_log_txt_wait"
+    ],
+    "bindings": [
+      {
+        "binding_name": "#content_log_text",
+        "binding_name_override": "#text",
+        "binding_type": "collection",
+        "binding_collection_name": "content_log_text_grid",
+        "binding_condition": "once"
+      }
+    ]
+  },
+
+  "content_log_grid_item": {
+    "type": "panel",
+    "layer": 1,
+    "size": [ "100%-2px", "100%c" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      {
+        "content_log_background": {
+          "type": "image",
+          "texture": "textures/ui/Black",
+          "alpha": 0.5,
+          "size": [ "100%", "100%c" ],
+          "anims": [
+            "@content_log.anim_content_log_bg_wait"
+          ],
+          "controls": [
+            {
+              "content_log_text@content_log_label": {
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "offset": [ 2, 0 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "content_log_panel": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%c" ],
+    "max_size": [ "100%", "50%" ],
+
+    "controls": [
+      {
+        "stack_panel": {
+          "type": "stack_panel",
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left",
+          "factory": {
+            "name": "content_log_item_factory",
+            "max_children_size": 50,
+            "control_ids": {
+              "content_log_item": "content_log_item@content_log.content_log_grid_item"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

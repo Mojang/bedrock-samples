@@ -1,0 +1,1156 @@
+{
+  "namespace": "sidebar_navigation",
+
+  "empty_panel": {
+    "type": "panel",
+    "size": [ "100%", 0 ]
+  },
+
+  "empty_fill_x_panel": {
+    "type": "panel",
+    "size": [ "fill", "100%" ]
+  },
+
+  "empty_default_panel@common.empty_panel": {
+    "size": [ 0, 0 ]
+  },
+
+  "vertical_padding_panel@common.empty_panel": {
+    "size": [ "100%", 2 ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // optional fields:
+  //   - $sidebar_bg_color : color desired from bg
+  "sidebar_bg": {
+    "type": "image",
+    "texture": "textures/ui/white_background",
+    "$sidebar_bg_color|default": "$sidebar_bg_color",
+    "color": "$sidebar_bg_color",
+    "fill": true,
+    "keep_ratio": false
+  },
+
+  "sidebar_divider": {
+    "type": "image",
+    "size": [ "100%", 2 ],
+    "layer": 3,
+    "texture": "textures/ui/sidebar_icons/side_panel_divider",
+    "fill": true,
+    "keep_ratio": false
+  },
+
+  "sidebar_divider_panel@common.empty_panel": {
+    "size": [ "100%", 6 ],
+    "controls": [
+      {
+        "sidebar_divider@sidebar_navigation.sidebar_divider": {
+          "size": [ "100%", 2 ]
+        }
+      }
+    ]
+  },
+
+  "toggle_content": {
+    "type": "panel",
+
+    "controls": [
+      { "toggle_content@$sidebar_toggle_content": {} }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - size : desired size
+  //   - $scrolling_content : ui control panel to use in scrolling area
+  //
+  "sidebar_section_scroll_panel@common.scrolling_panel": {
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$scrolling_pane_size": [ "100%", "100%" ],
+    "$scroll_size": [ 5, "100% - 8px" ],
+    "$scroll_bar_left_padding_size": [ 2, 0 ],
+    "$scroll_bar_right_padding_size": [ 0, 0 ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_bg_content : ui control to use as content
+  //
+  // optional fields:
+  //   - $sidebar_bg_color : color desired from bg
+  "sidebar_bg_content_panel@sidebar_navigation.sidebar_bg": {
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+
+    "$sidebar_bg_content_control|default": "common.empty_panel",
+    "controls": [
+      {
+        "sidebar_bg_content@$sidebar_bg_content_control": {}
+      }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_factory_collection_name : colletion name : strign
+  // 
+  // optional fields
+  //   - $sidebar_nav_toggle_image : image path : string : if not provided then a binding will be provided
+  "sidebar_nav_toggle_image": {
+    "type": "image",
+    "$sidebar_nav_toggle_image_size|default": [ 14, 14 ],
+    "size": "$sidebar_nav_toggle_image_size",
+    "layer": 3,
+
+    "$sidebar_nav_toggle_image_anchor|default": "center",
+    "anchor_from": "$sidebar_nav_toggle_image_anchor",
+    "anchor_to": "$sidebar_nav_toggle_image_anchor",
+
+    "$sidebar_nav_toggle_image_grayscale|default": false,
+    "grayscale": "$sidebar_nav_toggle_image_grayscale",
+
+    "$sidebar_nav_toggle_image|default": "",
+    "$sidebar_nav_toggle_image_binds|default": [],
+    "variables": [
+      {
+        "requires": "($sidebar_nav_toggle_image = '')",
+        "$sidebar_nav_toggle_image_binds": [
+          {
+            "binding_type": "collection_details"
+          },
+          {
+            "binding_type": "$toggle_parent_collection_details",
+            "binding_collection_name": "$toggle_parent_collection_details_name",
+            "binding_collection_prefix": "$toggle_parent_collection_details_prefix"
+          },
+          {
+            "binding_type": "collection",
+            "binding_collection_name": "$sidebar_factory_collection_name",
+            "binding_name": "#sidebar_nav_image",
+            "binding_name_override": "#texture"
+          },
+          {
+            "binding_type": "collection",
+            "binding_collection_name": "$sidebar_factory_collection_name",
+            "binding_name": "#sidebar_nav_image_file_system",
+            "binding_name_override": "#texture_file_system"
+          },
+          {
+            "binding_type": "collection",
+            "binding_collection_name": "$sidebar_factory_collection_name",
+            "binding_name": "#sidebar_nav_image_bilinear_enabled",
+            "binding_name_override": "#bilinear"
+          }
+        ]
+      }
+    ],
+
+    "texture": "$sidebar_nav_toggle_image",
+    "bindings": "$sidebar_nav_toggle_image_binds"
+  },
+
+  "sidebar_nav_toggle_image_panel": {
+    "type": "panel",
+    "$sidebar_nav_toggle_image_panel_size|default": [ "100%c", "100%" ],
+    "size": "$sidebar_nav_toggle_image_panel_size",
+
+    "$gamepad_helper_icon|default": "sidebar_navigation.empty_default_panel",
+    "controls": [
+      { "sidebar_nav_toggle_image@sidebar_navigation.sidebar_nav_toggle_image": {} },
+      { "gamepad_helper_icon@$gamepad_helper_icon": {} }
+    ]
+  },
+
+  "gamepad_helper_icon_start_toggle@common.gamepad_helper_start": {
+    "$hide_description|default": true,
+
+    "variables": [
+      {
+        "requires": "$is_ps4",
+        "$start_gamepad_helper_offset": [ -5, 2 ],
+        "$gamepad_helper_icon_size": [ 18, 18 ]
+      },
+      {
+        "requires": "(not $is_ps4)",
+        "$start_gamepad_helper_offset": [ -8, -3 ]
+      }
+    ],
+
+    "offset": "$start_gamepad_helper_offset"
+  },
+
+  "verbose_view_toggle_content": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%" ],
+    "$gamepad_helper_icon": "sidebar_navigation.gamepad_helper_icon_start_toggle",
+
+    "controls": [
+      {
+        "left_padding": {
+          "type": "panel",
+          "size": [ 12, "100%" ]
+        }
+      },
+      {
+        "sidebar_nav_toggle_image@sidebar_navigation.sidebar_nav_toggle_image_panel": {
+          "$sidebar_nav_toggle_image_anchor": "left_middle"
+        }
+      }
+    ]
+  },
+
+  "sidebar_toggle_bg@common_buttons.button_image": {
+    "$sidebar_toggle_bg_bindings|default": [],
+    "$sidebar_toggle_bg_property_bag|default": {},
+    "variables": [
+      {
+        "requires": "$toggle_checked",
+        "$sidebar_toggle_bg_bindings": [
+          {
+            "binding_type": "$toggle_parent_collection_details",
+            "binding_collection_name": "$toggle_parent_collection_details_name",
+            "binding_collection_prefix": "$toggle_parent_collection_details_prefix"
+          },
+          {
+            "binding_type": "collection",
+            "binding_collection_name": "$sidebar_factory_collection_name",
+            "binding_name": "#dropdown_checked_color",
+            "binding_name_override": "#color"
+          }
+        ],
+        "$sidebar_toggle_bg_property_bag": {
+          "#expanded_color": "$sidebar_dropdown_expanded_color",
+          "#selected_color": "$sidebar_option_selected_color"
+        }
+      }
+    ],
+    "property_bag": "$sidebar_toggle_bg_property_bag",
+    "bindings": "$sidebar_toggle_bg_bindings"
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $toggle_binding_type : binging type
+  //   - $toggle_grid_collection_name : collection name : required if binging type == collection
+  //   - $toggle_state_binding_name : binding name for state
+  //
+  //  optional fields:
+  //   - $toggle_name : toggle event name
+  //   - $hover_texture : texture path 
+  //   - $button_content : toggle content control
+  //   - $button_alpha : alpha color for toggle bg texture
+  //   - $default_checked_texture_color : color for default checked bg
+  "sidebar_toggle@common_toggles.dark_content_toggle": {
+    "$sidebar_toggle_size|default": [ "100%", 23 ],
+    "size": "$sidebar_toggle_size",
+    "$toggle_name|default": "toggle.sidebar_option_selection",
+
+    "$default_focus_precedence": -10,
+    "$button_image_size": [ "100%", "100%" ],
+    "$button_content": "sidebar_navigation.toggle_content",
+    "$button_content_size": [ "100%", "100%" ],
+
+    "$unchecked_locked_texture": "textures/ui/banners_no_border",
+    "$checked_locked_texture": "textures/ui/banners_no_border",
+    "$default_texture": "textures/ui/white_background",
+    "$hover_texture": "textures/ui/white_background",
+    "$pressed_texture": "textures/ui/White",
+    "$pressed_no_hover_texture": "textures/ui/White",
+
+    "$default_texture_color": "$sidebar_bg_color",
+    "$default_checked_texture_color": "$sidebar_option_selected_color",
+    "$hover_texture_color": "$sidebar_default_hover_color",
+    "$hover_checked_texture_color": "$sidebar_default_hover_color",
+    "$hover_border_visible": false,
+    "$default_border_visible": false,
+
+    "$button_image_fill": true,
+    "$enable_hover_event_mapping": true,
+    "$toggle_hover_event_mapping": "button.dropdown_nav_toggle_on_hover",
+    "$toggle_parent_collection_details": "collection_details",
+    "$toggle_parent_collection_details_name": "$sidebar_section_collection_name",
+    "$toggle_parent_collection_details_prefix": "$sidebar_section_collection_prefix",
+    "$pressed_button_name": "toggle.sidebar_option_selection"
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $toggle_binding_type : binging type
+  //   - $toggle_grid_collection_name : collection name : required if binging type == collection
+  //   - $toggle_state_binding_name : binding name for state
+  "sidebar_option_toggle@sidebar_navigation.sidebar_toggle": {
+    "$border_color": "$f_color_format",
+
+    "$toggle_tts_header_binding_type": "collection",
+    "$toggle_tts_header_binding_collection_name": "$sidebar_factory_collection_name",
+    "$toggle_tts_header": "#sidebar_toggle_tts"
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $toggle_binding_type : binging type
+  //   - $toggle_grid_collection_name : collection name : required if binging type == collection
+  //   - $toggle_state_binding_name : binding name for state
+  "simple_sidebar_toggle@sidebar_navigation.sidebar_option_toggle": {
+    "$false_border_visible": false,
+    "$sidebar_nav_toggle_image_grayscale": false,
+
+    "$sidebar_toggle_content": "sidebar_navigation.sidebar_nav_toggle_image",
+    "$toggle_state_binding_name": "#simple_sidebar_option_toggle_check",
+
+    "$enable_focus_enabled_bind": true,
+    "$focus_enabled_binding_name": "(not #is_using_gamepad)"
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $toggle_binding_type : binging type
+  //   - $toggle_grid_collection_name : collection name : required if binging type == collection
+  //   - $toggle_state_binding_name : binding name for state
+  "verbose_toggle@sidebar_navigation.sidebar_option_toggle": {
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+
+    "$sidebar_toggle_content": "common_toggles.toggle_content_panel",
+    "$toggle_content_panel_size": [ "100% - 13px", "100% - 6px" ],
+    "$toggle_content_panel_offset": [ -4, 0 ],
+    "$toggle_content_panel_anchor": "right_middle",
+    "$content_toggle_image_panel": "sidebar_navigation.sidebar_nav_toggle_image_panel",
+    "$content_toggle_label_size": [ "100%", 12 ],
+    "$content_toggle_label_max_size": [ "100%", 12 ],
+    "$content_toggle_label_offset": [ 0, 2 ],
+    "$content_toggle_label_binding_type": "collection",
+    "$content_toggle_label": "#sidebar_option_label",
+    "$toggle_state_binding_name": "#verbose_sidebar_option_toggle_check",
+
+    "$enable_focus_id_bind": true,
+    "$focus_id_binding_name": "#verbose_option_focus_id",
+    "$focus_id": "verbose_option"
+  },
+
+  "verbose_sidebar_option@sidebar_navigation.verbose_toggle": {
+    "$ignore_content_toggle_icon": true
+  },
+
+  "verbose_expand_option@sidebar_navigation.verbose_sidebar_option": {
+    "$ignore_content_toggle_image": true,
+    "$default_texture_alpha": 0,
+    "$hover_border_visible": true
+  },
+
+  /////////////////////////////////////////////////////
+  //  Verbose dropdown toggle controls
+  "verbose_dropdown_option@sidebar_navigation.verbose_toggle": {
+    "$toggle_name": "toggle.sidebar_option_dropdown",
+    "$content_toggle_icon_panel_size": [ 7, "100%" ],
+    "$content_toggle_icon_size": [ 7, 7 ],
+    "$content_toggle_icon": "#dropdown_toggle_icon",
+
+    "$button_image": "sidebar_navigation.sidebar_toggle_bg",
+
+    "$content_toggle_icon_bindings": [
+      {
+        "binding_type": "$toggle_parent_collection_details",
+        "binding_collection_name": "$toggle_parent_collection_details_name",
+        "binding_collection_prefix": "$toggle_parent_collection_details_prefix"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "$sidebar_factory_collection_name",
+        "binding_name": "#dropdown_toggle_texture",
+        "binding_name_override": "#texture"
+      }
+    ],
+    "$enable_hover_event_mapping": true,
+    "$toggle_hover_event_mapping": "button.dropdown_nav_toggle_on_hover"
+  },
+
+  "verbose_dropdown_expanded_option@sidebar_navigation.verbose_dropdown_option": {
+    "$ignore_content_toggle_image": true,
+
+    "$enable_focus_id_bind": true,
+    "$focus_id_binding_name": "#expand_option_focus_id",
+    "$focus_id": "first_expand_option"
+  },
+
+  "verbose_sidebar_expand_section_bg@sidebar_navigation.sidebar_bg": {
+    "layer": 1,
+    "$sidebar_bg_color": "$sidebar_expanded_section_bg_color"
+  },
+
+  "verbose_sidebar_expand_section_panel@sidebar_navigation.sidebar_section": {
+    "size": [ 122, "100%" ],
+
+    "$sidebar_section_name": "verbose_expand_section_scroll_panel",
+    "$sidebar_section_control": "sidebar_navigation.sidebar_section_scroll_panel",
+
+    "$ignore_sidebar_section_left_edge": false,
+    "$sidebar_section_left_edge_color": "$sidebar_verbose_expand_border_color",
+    "$sidebar_section_right_edge_color": "$sidebar_verbose_expand_border_color",
+
+    "$scrolling_content": "sidebar_navigation.verbose_expand_section_panel",
+    "$scroll_background_image_control": "sidebar_navigation.verbose_sidebar_expand_section_bg",
+    "$sidebar_factory_collection_name": "verbose_expand_section_option"
+  },
+
+  "verbose_expand_section_panel@sidebar_navigation.sidebar_option_factory_panel": {
+    "focus_container": true,
+    "use_last_focus": true,
+    "focus_wrap_enabled": false,
+    "focus_navigation_mode_left": "none",
+    "focus_navigation_mode_down": "contained",
+    "focus_navigation_mode_up": "contained",
+    "focus_navigation_mode_right": "custom",
+    "focus_container_custom_right": [
+      {
+        "other_focus_container_name": "scrolling_content",
+        "focus_id_inside": "expand_option"
+      }
+    ],
+
+    "$sidebar_option_factory_binding_type": "collection",
+    "$sidebar_option_factory_collection_name": "$sidebar_section_collection_name",
+
+    "$sidebar_factory_control_ids": {
+      "defaultNavOption": "sidebar_navigation.verbose_expand_option",
+      "defaultNavListOption": "sidebar_navigation.verbose_dropdown_expanded_option",
+      "defaultNavButton": "sidebar_navigation.verbose_nav_button_panel",
+      "fill": "sidebar_navigation.empty_default_panel",
+      "line": "sidebar_navigation.sidebar_divider_panel",
+      "padding": "sidebar_navigation.vertical_padding_panel"
+    }
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $toggle_binding_type : binging type
+  //   - $toggle_grid_collection_name : collection name : required if binging type == collection
+  //   - $toggle_state_binding_name : binding name for state
+  "verbose_view_toggle@sidebar_navigation.sidebar_toggle": {
+    "$border_visible": false,
+    "$button_content": "sidebar_navigation.verbose_view_toggle_content",
+    "$focus_id": "verbose_toggle",
+    "$default_focus_precedence": -9,
+    "$sidebar_nav_toggle_image": "textures/ui/sidebar_icons/menu_threebars",
+
+    "$sidebar_nav_toggle_image_size": [ 10, 10 ],
+    "$toggle_name": "toggle.sidebar_verbose_toggle",
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#sidebar_verbose_toggle_check",
+    "$default_checked_texture_alpha": 0,
+
+    "$toggle_tts_header_binding_type": "global",
+    "$toggle_tts_header": "#verbose_toggle_tts",
+
+    "$enable_focus_enabled_bind": true,
+    "$focus_enabled_binding_name": "(not #is_using_gamepad)"
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_factory_control_ids : control id array
+  //   - $sidebar_factory_collection_name : string
+  //   - $sidebar_factory_collection_binding_name : bind name string
+  "sidebar_option_factory": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+
+    "collection_name": "$sidebar_factory_collection_name",
+
+    "$sidebar_option_factory_binding_type|default": "global",
+    "$sidebar_option_factory_collection_name|default": "",
+
+    "$toggle_binding_type": "collection",
+    "$toggle_property_bag_binding_type": "collection",
+    "$toggle_grid_collection_name": "$sidebar_factory_collection_name",
+    "$toggle_state_binding_name": "#sidebar_option_toggle_check",
+    "$toggle_collection_details_type": "collection_details",
+    "$toggle_collection_detail_name": "$sidebar_factory_collection_name",
+
+    "factory": {
+      "name": "sidebar_factory",
+      "control_ids": "$sidebar_factory_control_ids",
+      "factory_variables": [
+        "$sidebar_factory_collection_name",
+        "$sidebar_section_collection_name",
+        "$sidebar_section_collection_prefix",
+        "$toggle_binding_type",
+        "$toggle_property_bag_binding_type",
+        "$toggle_grid_collection_name",
+        "$toggle_state_binding_name",
+        "$toggle_collection_details_type",
+        "$toggle_collection_detail_name"
+      ]
+    },
+
+    "bindings": [
+      {
+        "binding_condition": "visible",
+        "binding_type": "$sidebar_option_factory_binding_type",
+        "binding_collection_name": "$sidebar_option_factory_collection_name",
+        "binding_name": "$sidebar_factory_collection_binding_name",
+        "binding_name_override": "#collection_length"
+      }
+    ]
+  },
+
+  "sidebar_option_factory_panel": {
+    "type": "input_panel",
+    "size": ["100%", "100%c"],
+    "controls": [
+      { "sidebar_option_factory@sidebar_navigation.sidebar_option_factory": {} }
+    ],
+
+    "$ignore_exit_button_mapping|default": false,
+    "button_mappings": [
+      {
+        "ignored": "$ignore_exit_button_mapping",
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "button.exit_verbose_state",
+        "mapping_type": "global",
+        "consume_event": false
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "$sidebar_section_collection_name",
+        "binding_collection_prefix": "$sidebar_section_collection_prefix"
+      }
+    ]
+  },
+
+  "verbose_button_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "button_label": {
+          "type": "label",
+          "size": [ "100%", "default" ],
+          "layer": 5,
+          "color": "$text_color",
+          "text_alignment": "center",
+          "text": "$button_text_binding_name",
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "$sidebar_factory_collection_name",
+              "binding_name": "$button_text_binding_name"
+            },
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "$sidebar_section_collection_name",
+              "binding_collection_prefix": "$sidebar_section_collection_prefix"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "verbose_button@common_buttons.dark_content_button": {
+    "size": [ "100% - 14px", "100% - 2px" ],
+    "$button_focus_precedence": -1,
+    "$pressed_button_name": "button.select_nav_option",
+    "$button_content": "sidebar_navigation.verbose_button_content",
+    "$button_text_binding_name": "#sidebar_option_label",
+    "$default_button_texture": "textures/ui/sidebar_icons/button_panel",
+    "$hover_button_texture": "textures/ui/sidebar_icons/side_drawer_button_hover_focused",
+    "$pressed_button_texture": "textures/ui/sidebar_icons/side_drawer_button_selected",
+
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "$sidebar_factory_collection_name"
+      },
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "$sidebar_section_collection_name",
+        "binding_collection_prefix": "$sidebar_section_collection_prefix"
+      }
+    ]
+  },
+
+  "verbose_nav_button_panel": {
+    "type": "panel",
+    "size": [ "100%", 26 ],
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "bindings": [
+      {
+        "binding_name": "(not #is_simple_sidebar_state_active)",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "verbose_nav_button@sidebar_navigation.verbose_button": {} }
+    ]
+  },
+
+  "verbose_screen_nav_button@common_buttons.dark_content_button": {
+    "size": [ "100% - 14px", "100% - 2px" ],
+    "$pressed_button_name": "button.select_screen_nav_button_option",
+    "$button_content": "sidebar_navigation.verbose_button_content",
+    "$button_text_binding_name": "#sidebar_screen_nav_screen_button_label",
+    "$default_button_texture": "textures/ui/sidebar_icons/button_panel",
+    "$hover_button_texture": "textures/ui/sidebar_icons/side_drawer_button_selected",
+    "$pressed_button_texture": "textures/ui/sidebar_icons/side_drawer_button_selected",
+
+    "bindings": [
+      {
+        "binding_name": "#is_screen_nav_button_visible",
+        "binding_name_override": "#visible"
+      },
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "$sidebar_factory_collection_name"
+      },
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "$sidebar_section_collection_name",
+        "binding_collection_prefix": "$sidebar_section_collection_prefix"
+      }
+    ]
+  },
+
+  "verbose_screen_nav_option_panel": {
+    "type": "panel",
+    "size": [ "100%", 26 ],
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "$sidebar_section_collection_name": "sidebar_section_collection",
+    "$sidebar_section_collection_prefix": "sidebar_section",
+    "bindings": [
+      {
+        "binding_name": "#is_verbose_sidebar_nav_button_visible",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "verbose_nav_button@sidebar_navigation.verbose_screen_nav_button": {} }
+    ]
+  },
+
+  "sidebar_option_factory_scroll_panel@sidebar_navigation.sidebar_section_scroll_panel": {
+    "size": [ "100%", "65%" ],
+    "$scrolling_content": "sidebar_navigation.sidebar_option_factory_panel",
+    "$scroll_background_image_control": "sidebar_navigation.verbose_sidebar_expand_section_bg",
+    "$sidebar_factory_collection_name": "verbose_expand_section_option"
+  },
+
+  "sidebar_screen_nav_option_factory_panel": {
+    "ignored": "$store_disabled",
+    "type": "panel",
+    "size": [ "100%", "35% - 26px" ],
+    "controls": [
+      { "button@sidebar_navigation.verbose_screen_nav_option_panel": {} }
+    ]
+  },
+
+  "root_section_content_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "verbose_view_toggle@sidebar_navigation.verbose_view_toggle": {} },
+      { "sidebar_option_factory@sidebar_navigation.sidebar_option_factory_scroll_panel": {} },
+      { "verbose_sidebar_screen_Nav@sidebar_navigation.sidebar_screen_nav_option_factory_panel": {} }
+    ]
+  },
+
+  "edge_bar": {
+    "type": "image",
+    "size": [ 1, "100%" ],
+    "layer": 1,
+    "texture": "textures/ui/White",
+    "fill": true
+  },
+
+  "sidebar_section": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%" ],
+
+    "$sidebar_section_control|default": "sidebar_navigation.root_section",
+
+    "$ignore_sidebar_section_left_edge|default": true,
+
+    "controls": [
+      {
+        "left_edge_bar@sidebar_navigation.edge_bar": {
+          "ignored": "$ignore_sidebar_section_left_edge",
+
+          "$sidebar_section_left_edge_color|default": "$sidebar_verbose_expand_border_color",
+          "color": "$sidebar_section_left_edge_color"
+        }
+      },
+      {
+        "$sidebar_section_name@$sidebar_section_control": {
+          "size": [ "fill", "100%" ]
+        }
+      },
+      {
+        "right_edge_bar@sidebar_navigation.edge_bar": {
+          "$sidebar_section_right_edge_color|default": "black",
+          "color": "$sidebar_section_right_edge_color"
+        }
+      }
+    ]
+  },
+
+  "root_section@sidebar_navigation.sidebar_section_scroll_panel": {
+    "$scrolling_content": "sidebar_navigation.root_section_content_panel",
+    "$show_background": false,
+    "bindings": [
+      {
+        "binding_name": "#is_sidebar_nav_ready",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "verbose_root_section@sidebar_navigation.sidebar_section": {
+    "size": "$sidebar_view_size",
+    "$sidebar_section_name": "verbose_root_section_content",
+
+    "focus_container": true,
+    "use_last_focus": true,
+    "focus_wrap_enabled": false,
+    "focus_navigation_mode_left": "contained",
+    "focus_navigation_mode_down": "contained",
+    "focus_navigation_mode_up": "contained",
+    "focus_navigation_mode_right": "custom",
+    "focus_container_custom_right": [
+      {
+        "other_focus_container_name": "scrolling_content",
+        "focus_id_inside": "expand_option"
+      }
+    ],
+
+    "$sidebar_option_factory_binding_type": "collection",
+    "$sidebar_option_factory_collection_name": "$sidebar_section_collection_name",
+
+    "$sidebar_factory_collection_name": "verbose_root_section_option"
+  },
+
+  "simple_root_section": {
+    "type": "panel",
+    "size": "$sidebar_view_size",
+
+    "$ignore_exit_button_mapping": true,
+
+    // this bind is needed to make sure focus goes to the content view
+    "bindings": [
+      {
+        "binding_name": "#is_simple_sidebar_state_active",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "root_section@sidebar_navigation.root_section": {
+          "size": [ "100%", "100%" ]
+        }
+      }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_view_size : size of the sidebar view
+  //   - $sidebar_factory_control_ids : control id array
+  //   - $sidebar_factory_collection_name : string
+  //   - $sidebar_factory_collection_binding_name : bind name string
+  "sidebar_section_factory_panel@sidebar_navigation.sidebar_bg": {
+    "size": [ "100%c", "100%" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      {
+        "sidebar_section_factory": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%c", "100%" ],
+
+          "focus_container": true,
+          "use_last_focus": true,
+          "focus_wrap_enabled": false,
+          "focus_navigation_mode_left": "contained",
+          "focus_navigation_mode_down": "contained",
+          "focus_navigation_mode_up": "contained",
+          "focus_navigation_mode_right": "none",
+
+          "$sidebar_section_collection_prefix": "sidebar_section",
+          "$sidebar_section_collection_name": "sidebar_section_collection",
+          "collection_name": "$sidebar_section_collection_name",
+          "factory": {
+            "name": "sidebar_factory",
+            "control_ids": {
+              "simple_root_section": "sidebar_navigation.simple_root_section",
+              "verbose_root_section": "sidebar_navigation.verbose_root_section",
+              "expanded_section": "sidebar_navigation.verbose_sidebar_expand_section_panel"
+            },
+            "factory_variables": [
+              "$sidebar_factory_collection_name",
+              "$sidebar_section_collection_name",
+              "$sidebar_section_collection_prefix",
+              "$sidebar_view_size",
+              "$sidebar_factory_collection_binding_name",
+              "$sidebar_factory_control_ids"
+            ]
+          },
+
+          "bindings": [
+            {
+              "binding_name": "#sidebar_sections",
+              "binding_name_override": "#collection_length"
+            },
+            {
+              "binding_name": "$section_visibility_binding_name",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_view_size : size of the sidebar view
+  //   - $sidebar_factory_control_ids : control id array
+  //   - $sidebar_factory_collection_name : string
+  //   - $sidebar_factory_collection_binding_name : bind name string
+  //
+  // optional fields:
+  //   - $ignore_verbose_view_exit : bool
+  "sidebar_view_content_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "$ignore_verbose_view_exit|default": true,
+    "controls": [
+      {
+        "sidebar_view@sidebar_navigation.sidebar_section_factory_panel": {}
+      },
+      {
+        "verbose_view_exit@common_store.close_bg_panel": {
+          "ignored": "$ignore_verbose_view_exit",
+          "size": [ "100%", "100%" ],
+          "layer": 1,
+          "alpha": 0.6,
+          "$close_bg_exit_button_name": "button.exit_verbose_state_bg"
+        }
+      }
+    ]
+  },
+
+  "verbose_sidebar_view_modal@common.modal_area_panel_base": {
+    "size": [ "100%", "100%" ],
+    "bindings": [
+      {
+        "binding_name": "$section_visibility_binding_name",
+        "binding_name_override": "#visible",
+        "binding_condition": "always"
+      },
+      {
+        "binding_name": "$section_visibility_binding_name",
+        "binding_name_override": "#modal",
+        "binding_condition": "always"
+      }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_up",
+        "to_button_id": "button.menu_up",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_down",
+        "to_button_id": "button.menu_down",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_left",
+        "to_button_id": "button.menu_left",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_right",
+        "to_button_id": "button.menu_right",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.controller_start",
+        "to_button_id": "button.toggle_verbose_state",
+        "mapping_type": "global"
+      }
+    ]
+  },
+
+  "sidebar_views": {
+    "ignored": "(not $is_sidebar_navigation_enabled)",
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+
+    "$ignore_inventory_button": "$is_sidebar_navigation_enabled",
+
+    "visible": "$sidebar_ignore_page_loading",
+    "property_bag": {
+      "#visible": "$sidebar_ignore_page_loading"
+    },
+
+    "bindings": "$sidebar_page_loading_binds",
+
+    "controls": [
+      {
+        "simple_sidebar_view@sidebar_navigation.sidebar_view_content_panel": {
+          "$sidebar_view_size": [ 32, "100%" ],
+
+          "$section_visibility_binding_name": "#is_simple_sidebar_state_active",
+
+          "$sidebar_factory_collection_binding_name": "#simple_sidebar_factory_collection",
+          "$sidebar_factory_collection_name": "simple_sidebar_collection",
+          "$sidebar_factory_control_ids": {
+            "defaultNavOption": "sidebar_navigation.simple_sidebar_toggle",
+            "defaultNavListOption": "sidebar_navigation.simple_sidebar_toggle",
+            "defaultNavButton": "sidebar_navigation.empty_panel",
+            "fill": "sidebar_navigation.empty_panel",
+            "line": "sidebar_navigation.sidebar_divider_panel",
+            "padding": "sidebar_navigation.empty_panel"
+          },
+
+          "bindings": [
+            {
+              "binding_name": "$section_visibility_binding_name",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      { //wrap this in a modal
+        "verbose_side_bar_view_modal@sidebar_navigation.verbose_sidebar_view_modal": {
+          "size": [ "100%", "100%" ],
+          "layer": "$sidebar_layer",
+
+          "$section_visibility_binding_name": "(not #is_simple_sidebar_state_active)",
+          "$section_visibility_modality_binding_name": null,
+
+          "controls": [
+            {
+              "verbose_sidebar_view@sidebar_navigation.sidebar_view_content_panel": {
+                "$ignore_verbose_view_exit": false,
+                "$sidebar_view_size": [ 142, "100%" ],
+
+                "$sidebar_factory_collection_binding_name": "#verbose_sidebar_factory_collection",
+                "$sidebar_factory_collection_name": "verbose_sidebar_collection",
+                "$sidebar_factory_control_ids": {
+                  "defaultNavOption": "sidebar_navigation.verbose_sidebar_option",
+                  "defaultNavListOption": "sidebar_navigation.verbose_dropdown_option",
+                  "defaultNavButton": "sidebar_navigation.verbose_nav_button_panel",
+                  "fill": "sidebar_navigation.empty_default_panel",
+                  "line": "sidebar_navigation.sidebar_divider_panel",
+                  "padding": "sidebar_navigation.vertical_padding_panel"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "sidebar_empty_panel": {
+    "type": "panel",
+    "ignored": "(not $is_sidebar_navigation_enabled)",
+    "size": [ 32, "100%" ],
+    "bindings": [
+      {
+        "binding_name": "#is_sidebar_nav_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_main_view_content : ui control to use for area right of sidebar
+  "content_view": {
+    "type": "panel",
+    "focus_container": true,
+    "use_last_focus": false,
+    "focus_wrap_enabled": false,
+    "focus_navigation_mode_down": "contained",
+    "focus_navigation_mode_up": "contained",
+    "focus_navigation_mode_right": "contained",
+
+    "$main_content_focus_container_left": "custom",
+    "$main_content_focus_container_left_custom": [
+      {
+        "other_focus_container_name": "content_view",
+        "focus_id_inside": "controller_hover_open_button"
+      }
+    ],
+
+    "controls": [
+      {
+        "content_view_stack": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "100%" ],
+
+          "$sidebar_main_view_content|default": "sidebar_navigation.empty_fill_x_panel",
+
+          "bindings": "$sidebar_page_loading_binds",
+          "controls": [
+            {
+              "sidebar_empty_panel@sidebar_navigation.sidebar_empty_panel": {
+                "controls": [
+                  {
+                    // this is here to handle opening opening the verbose view 
+                    // when simple sidebar is given focus
+                    "controller_hover_open_panel": {
+                      "type": "panel",
+                      "visible": false,
+                      "bindings": [
+                        {
+                          "binding_name": "(not #page_loading_visible)",
+                          "binding_name_override": "#visible",
+                          "binding_condition": "always"
+                        }
+                      ],
+                      "controls": [
+                        {
+                          "controller_hover_open_button@common.button": {
+                            "size": [ "100%", "100%" ],
+                            "layer": "($sidebar_layer + 10)",
+                            "default_focus_precedence": 1,
+                            "pressed_control": "",
+                            "bindings": [
+                              {
+                                "binding_name": "#is_controller_hover_visible",
+                                "binding_name_override": "#visible"
+                              },
+                              {
+                                "binding_name": "#is_using_gamepad",
+                                "binding_name_override": "#focus_enabled"
+                              }
+                            ],
+                            "button_mappings": [
+                              {
+                                "to_button_id": "button.controller_hover_open_verbose_view",
+                                "mapping_type": "pressed"
+                              }
+                            ],
+                            "controls": [
+                              { "default@common.empty_panel": {} },
+                              { "hover@common.empty_panel": {} }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            { "divider@sidebar_navigation.edge_bar": { "color": "black" } },
+            {
+              // This is an input panel so that this object gains focus while the screen loads.
+              // Once the screen loads, this object will turn off focus enabled and be removed from
+              // the focus manager. This will cause the focus manager to find the closest button under
+              // it and not give focus to the sidebar.
+              "main_view_content": {
+                "type": "input_panel",
+                "size": [ "fill", "100%" ],
+
+                "focus_container": true,
+                "use_last_focus": true,
+                "focus_wrap_enabled": false,
+                "focus_navigation_mode_down": "contained",
+                "focus_navigation_mode_right": "contained",
+                "focus_navigation_mode_left": "$main_content_focus_container_left",
+                "focus_container_custom_left": "$main_content_focus_container_left_custom",
+                "tts_skip_message": true,
+                "tts_skip_children": true,
+                "default_focus_precedence": 20,
+
+                "controls": [
+                  { "screen_content@$sidebar_main_view_content": {} }
+                ],
+
+                "focus_enabled": "(not $sidebar_ignore_page_loading)",
+                "bindings": [
+                  {
+                    "ignored": "$sidebar_ignore_page_loading",
+                    "binding_name": "#page_loading_visible",
+                    "$main_content_fo": null,
+                    "binding_name_override": "#focus_enabled",
+                    "binding_condition": "always"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // required fields:
+  //   - $sidebar_main_view_content : ui control to use for area right of sidebar
+  "sidebar_view": {
+    "type": "input_panel",
+    "size": [ "100%", "100%" ],
+
+    "$sidebar_layer": 300,
+    "$sidebar_ignore_page_loading|default": false,
+    "$sidebar_page_loading_binds": [
+      {
+        "ignored": "$sidebar_ignore_page_loading",
+        "binding_name": "(not #page_loading_visible)",
+        "binding_name_override": "#visible",
+        "binding_condition": "always"
+      }
+    ],
+
+    "button_mappings": [
+      {
+        "from_button_id": "button.controller_start",
+        "to_button_id": "button.toggle_verbose_state",
+        "mapping_type": "global"
+      }
+    ],
+
+    "controls": [
+      { "sidebar_content@sidebar_navigation.sidebar_views": {} },
+      { "content_view@sidebar_navigation.content_view": {} },
+      {
+        "progress_loading@common_store.progress_loading": {
+          "ignored": "$sidebar_ignore_page_loading",
+          "$baseLayer": "($sidebar_layer + 100)",
+          "bindings": [
+            {
+              "binding_name": "#page_loading_visible",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
+            },
+            {
+              "binding_name": "#page_loading_finished",
+              "binding_condition": "visible"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

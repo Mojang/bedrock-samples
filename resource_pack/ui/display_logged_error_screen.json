@@ -1,0 +1,178 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "display_logged_error",
+
+  // Error popup
+
+  "display_logged_error_modal@common_dialogs.main_panel_two_buttons": {
+    "layer": 100, // This should always be on top - follow modal popup pattern
+    "size": [ 200, 165 ],
+    "$child_control": "display_logged_error.error_message_stack",
+    "$text_name": "Errors detected!",
+    "$top_button_panel|default": "display_logged_error.details_button",
+    "$bottom_button_panel|default": "display_logged_error.dismiss_button",
+    "$show_close_button": false
+  },
+
+  "error_message_stack": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "error_message": {
+          "type": "label",
+          "size": [ "100%", "default" ],
+          "layer": 1,
+          "text": "Errors detected! Press 'Details' for more information and attach the error log to the bug report.",
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "error_count": {
+          "type": "label",
+          "size": [ "100%", "default" ],
+          "layer": 1,
+          "text": "#error_count_message",
+          "color": "$body_text_color",
+          "bindings": [
+            {
+              "binding_name": "#error_count_message"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "input_blocking_button_base@common_buttons.light_text_button": {
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed",
+        "button_up_right_of_first_refusal": true
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "focused",
+        "button_up_right_of_first_refusal": true
+      }
+    ]
+  },
+
+  "details_button@display_logged_error.input_blocking_button_base": {
+    "$pressed_button_name": "button.show_error_details",
+    "$button_text": "store.itemDetail.back"
+  },
+
+  "dismiss_button@display_logged_error.input_blocking_button_base": {
+    "$pressed_button_name": "button.dismiss",
+    "$button_text": "gui.hide"
+  },
+
+  // Error details screen
+
+  "error_details_modal@common_dialogs.main_panel_two_buttons": {
+    "layer": 100, // This should always be on top - follow modal popup pattern
+    "$child_control": "display_logged_error.error_stack_scrolling_panel",
+    "$text_name": "Error details",
+    "$top_button_panel|default": "display_logged_error.copy_path_button",
+    "$bottom_button_panel|default": "display_logged_error.hide_error_details_button",
+    "$show_close_button": false
+  },
+
+  "copy_path_button@display_logged_error.input_blocking_button_base": {
+    "$pressed_button_name": "button.copy_log_path_to_clipboard",
+    "$button_text": "Copy log file path to clipboard"
+  },
+
+  "hide_error_details_button@display_logged_error.input_blocking_button_base": {
+    "$pressed_button_name": "button.hide_error_details",
+    "$button_text": "gui.close"
+  },
+
+  "error_stack_scrolling_panel@common.scrolling_panel": {
+    "layer": 2,
+    "size": [ "100%", "100%" ],
+    "$scrolling_pane_size": [ "100%", "100%" ],
+    "$scrolling_content": "display_logged_error.error_stack",
+    "$scroll_view_port_size": [ "100% - 4px", "100% - 4px" ],
+    "$scroll_view_port_size_touch": [ "100% - 4px", "100% - 4px" ],
+    "$scroll_view_port_offset": [ 2, 2 ],
+    "$scroll_view_port_offset_touch": [ 2, 2 ],
+    "$scroll_size": [ 5, "100%-2px" ],
+    "$scroll_size_touch": [ 5, "100%-2px" ],
+    "$background_size": [ "100%", "100%" ],
+    "$background_size_touch": [ "100%", "100%" ],
+    "$show_background": false
+  },
+
+  "error_stack": {
+    "type": "stack_panel",
+    "collection_name": "display_logged_errors",
+    "factory": {
+      "name": "display_logged_errors",
+      "control_ids": {
+        "error_short": "@display_logged_error.error_short",
+        "error_expanded": "@display_logged_error.error_expanded"
+      }
+    },
+    "bindings": [
+      {
+        "binding_name": "#error_content",
+        "binding_name_override": "#collection_length"
+      }
+    ]
+  },
+
+  "error_base": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
+    "controls": [
+      {
+        "error_message": {
+          "type": "label",
+          "size": "$label_size",
+          "text": "#error_message",
+          "color": "$body_text_color",
+          "bindings": [
+            {
+              "binding_name": "#error_message",
+              "binding_type": "collection",
+              "binding_collection_name": "display_logged_errors"
+            }
+          ]
+        }
+      },
+      {
+        "expand_button@display_logged_error.input_blocking_button_base": {
+          "$pressed_button_name": "button.expand",
+          "size": [ 45, 20 ],
+          "$button_text": "#error_expand_label",
+          "$button_text_binding_type": "collection",
+          "$button_text_grid_collection_name": "display_logged_errors",
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "display_logged_errors"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "error_short@display_logged_error.error_base": {
+    "$label_size": [ "fill", 20 ]
+  },
+
+  "error_expanded@display_logged_error.error_base": {
+    "$label_size": [ "fill", "default" ]
+  }
+}

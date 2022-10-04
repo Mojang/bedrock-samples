@@ -1,0 +1,242 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+{
+  "namespace": "grindstone_pocket",
+
+  "background_image": {
+    "type": "image",
+    "size": [ "85%", "85%" ],
+    "texture": "textures/ui/background_panel"
+  },
+
+  "repair_title_label": {
+    "type": "label",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "text": "container.repairAndDisenchant",
+    "color": "$title_text_color"
+  },
+
+  "grindstone_middle_panel": {
+    "type": "panel",
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "size": [ 32, 67 ],
+    "controls": [
+      {
+        "input_slot@common.pocket_ui_large_container_item": {
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [ 0, 1 ],
+
+          "$item_collection_name": "grindstone_input_items"
+        }
+      },
+      {
+        "additional_slot@common.pocket_ui_large_container_item": {
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ 0, -1 ],
+
+          "$item_collection_name": "grindstone_additional_items"
+        }
+      }
+    ]
+  },
+
+  "slots_panel": {
+    "type": "panel",
+    "size": [ 142, 83 ],
+    "controls": [
+      {
+        "grindstone_middle_panel@grindstone_pocket.grindstone_middle_panel": {
+          "type": "panel",
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle"
+        }
+      },
+      {
+        "arrow": {
+          "type": "image",
+          "texture": "textures/ui/arrow_large",
+          "size": [ 22, 15 ],
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "controls": [
+            {
+              "cross_out": {
+                "type": "image",
+                "layer": 1,
+                "texture": "textures/ui/crossout",
+                "bindings": [
+                  {
+                    "binding_name": "#cross_out_icon",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "result_slot@common.pocket_ui_large_container_item": {
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle",
+          "$item_collection_name": "grindstone_result_items",
+          "$button_ref": "grindstone.grindstone_output_slot_button"
+        }
+      }
+    ]
+  },
+
+  "grindstone_contents_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      {
+        "repair_title_label@grindstone_pocket.repair_title_label": {
+          "offset": [ 0, -50 ]
+        }
+      },
+      {
+        "slots_panel@grindstone_pocket.slots_panel": {
+        }
+      }
+    ]
+  },
+
+  "inventory_grid": {
+    "type": "grid",
+    "grid_rescaling_type": "horizontal",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ "100%", "default" ],
+    "maximum_grid_items": 36,
+    "collection_name": "combined_hotbar_and_inventory_items",
+    "grid_item_template": "common.pocket_ui_container_item",
+    "$item_collection_name": "combined_hotbar_and_inventory_items"
+  },
+
+  "inventory_content": {
+    "type": "panel",
+    "size": [ "100%-5px", "100%-5px" ],
+    "offset": [ "5px", "2px" ],
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "controls": [
+      {
+        "scrolling_panel@common.scrolling_panel": {
+          "$scrolling_pane_size": [ "100%", "100%-2px" ],
+          "$scrolling_content": "grindstone_pocket.inventory_grid",
+          "$scroll_box_mouse_image_control": "common-classic.button_state_default",
+          "$scroll_size": [ "8px", "100%" ]
+        }
+      }
+    ]
+  },
+
+  
+  "header": {
+    "type": "panel",
+    "size": [ "100%", 28 ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "texture": "textures/ui/header_bar_2"
+        }
+      },
+      { "legacy_pocket_close_button@common.legacy_pocket_close_button": { "offset": [ -3, 3 ] } },
+      {
+        "panel": {
+          "type": "panel",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "controls": [
+            {
+              "title_label": {
+                "type": "label",
+                "color": "$pocket_title_text_color",
+                "text": "tile.grindstone.name",
+                "layer": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // Layout Content Panels //
+
+  "inventory_and_grindstone_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "inventory_half_screen": {
+          "type": "panel",
+          "size": [ "50%", "100%" ],
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+
+          "controls": [
+            { "inventory_content@grindstone_pocket.inventory_content": {} }
+          ]
+        }
+      },
+      {
+        "grindstone_half_screen": {
+          "type": "panel",
+          "size": [ "50%", "100%" ],
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle",
+
+          "controls": [
+            { "grindstone_content@grindstone_pocket.grindstone_contents_panel": {} }
+          ]
+        }
+      }
+    ]
+  },
+
+  "header_and_content_stack_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "85%", "85%" ],
+    "controls": [
+      { "header@grindstone_pocket.header": { "layer": 2 } },
+      {
+        "inventory_and_grindstone_panel@grindstone_pocket.inventory_and_grindstone_panel": {
+          "size": [ "100%", "fill" ]
+        }
+      }
+    ]
+  },
+
+  // Screen
+
+  "grindstone_panel": {
+    "type": "panel",
+    "controls": [
+      { "bg@grindstone_pocket.background_image": {} },
+      { "root_panel@common.root_panel": { "size": [ "85%", "85%" ], "layer": 1 } },
+      { "header_and_content_stack_panel@grindstone_pocket.header_and_content_stack_panel": {} },
+
+      { "container_gamepad_helpers@common.container_gamepad_helpers": { "layer": 2 } },
+      { "inventory_selected_icon_button@common.inventory_selected_icon_button": {} },
+      { "hold_icon@common.inventory_take_progress_icon_button": {} },
+      { "flying_item_renderer@common.flying_item_renderer": {} },
+      { "selected_item_details_factory@common.selected_item_details_factory": {} },
+      {
+        "item_lock_notification_factory@common.item_lock_notification_factory": {
+          "$offset": [ 0, "85%" ]
+        }
+      }
+    ]
+  }
+}

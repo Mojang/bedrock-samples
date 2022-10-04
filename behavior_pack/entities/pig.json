@@ -1,0 +1,324 @@
+{
+  "format_version": "1.18.10",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:pig",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "minecraft:pig_baby": {
+        "minecraft:is_baby": {
+        },
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:ageable": {
+          "duration": 1200,
+          "feed_items": [ "carrot", "beetroot", "potato" ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        },
+
+        "minecraft:behavior.follow_parent": {
+          "priority": 6,
+          "speed_multiplier": 1.1
+        }
+      },
+
+      "minecraft:pig_transform": {
+        "minecraft:transformation": {
+          "into": "minecraft:pig_zombie",
+          "delay": 0.5
+        }
+      },
+
+      "minecraft:pig_adult": {
+        "minecraft:experience_reward": {
+          "on_bred": "Math.Random(1,7)",
+          "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/pig.json"
+        },
+        "minecraft:behavior.breed": {
+          "priority": 4,
+          "speed_multiplier": 1.0
+        },
+        "minecraft:breedable": {
+          "require_tame": false,
+          "breeds_with": {
+            "mate_type": "minecraft:pig",
+            "baby_type": "minecraft:pig",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "breed_items": [ "carrot", "beetroot", "potato" ]
+        }
+      },
+
+      "minecraft:pig_unsaddled": {
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle"},
+                "event": "minecraft:on_saddled"
+              },
+              "use_item": true,
+              "play_sounds": "saddle",
+              "interact_text": "action.interact.saddle"
+            }
+          ]
+        },
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [ 0.0, 0.63, 0.0 ]
+          }
+        }
+      },
+
+      "minecraft:pig_saddled": {
+        "minecraft:is_saddled": {
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/pig_saddled.json"
+        },
+        "minecraft:boostable": {
+          "speed_multiplier": 2.0,
+          "duration": 3.0,
+          "boost_items": [
+            {
+              "item": "carrotOnAStick",
+              "damage": 2,
+              "replace_item": "fishing_rod"
+            }
+          ]
+        },
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "seats": {
+            "position": [ 0.0, 0.63, 0.0 ]
+          }
+        },
+        "minecraft:item_controllable": {
+          "control_items": "carrotOnAStick"
+        },
+        "minecraft:behavior.controlled_by_player": {
+          "priority": 0
+        }
+      }
+    },
+
+
+    "components": {
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "on_damage": {
+            "filters": [
+              {
+                "test": "is_family",
+                "subject": "other",
+                "value": "lightning"
+              },
+              {
+                "test": "is_difficulty",
+                "operator": "!=",
+                "value": "peaceful"
+              }
+            ],
+            "event": "become_zombie"
+          },
+          "deals_damage": false
+        }
+      },
+      "minecraft:type_family": {
+        "family": [ "pig", "mob" ]
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:health": {
+        "value": 10,
+        "max": 10
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:movement.basic": {
+
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:collision_box": {
+        "width": 0.9,
+        "height": 0.9
+      },
+      "minecraft:leashable": {
+        "soft_distance": 4.0,
+        "hard_distance": 6.0,
+        "max_distance": 10.0
+      },
+      "minecraft:balloonable": {
+        "mass": 0.9
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:behavior.mount_pathing": {
+        "priority": 1,
+        "speed_multiplier": 1.25,
+        "target_dist": 0.0,
+        "track_target": true
+      },
+      "minecraft:behavior.float": {
+        "priority": 2
+      },
+      "minecraft:behavior.panic": {
+        "priority": 3,
+        "speed_multiplier": 1.25
+      },
+      "minecraft:behavior.tempt": {
+        "priority": 5,
+        "speed_multiplier": 1.2,
+        "items": [
+          "potato",
+          "carrot",
+          "beetroot",
+          "carrotOnAStick"
+        ]
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 1.0
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "look_distance": 6.0,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+	    "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      }
+    },
+
+
+    "events": {
+      "become_zombie": {
+        "remove": {
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:pig_transform"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "randomize": [
+          {
+            "weight": 95,
+            "trigger": "minecraft:spawn_adult"
+          },
+          {
+            "weight": 5,
+            "remove": {
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:pig_baby"
+              ]
+
+            }
+          }
+        ]
+      },
+
+      "minecraft:entity_born": {
+        "remove": {
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:pig_baby"
+          ]
+        }
+      },
+
+      "minecraft:ageable_grow_up": {
+        "remove": {
+          "component_groups": [
+            "minecraft:pig_baby"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:pig_adult",
+            "minecraft:pig_unsaddled"
+          ]
+        }
+      },
+
+      "minecraft:on_saddled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:pig_unsaddled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:pig_saddled"
+          ]
+        }
+      },
+      "minecraft:spawn_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:pig_adult",
+            "minecraft:pig_unsaddled"
+          ]
+        }
+      }
+    }
+  }
+}
