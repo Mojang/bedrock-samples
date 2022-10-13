@@ -962,7 +962,9 @@
     "bindings": [
       {
         "binding_type": "collection_details",
-        "binding_collection_name": "gift_promotion_collection_items"
+        "binding_collection_name": "gift_promotion_collection_items",
+        "binding_name": "(not #platform_restricted)",
+        "binding_name_override": "#enabled"
       }
     ],
     "controls": [
@@ -978,7 +980,7 @@
                 "controls": [
                   {
                     "key_art_frame@common.focus_border_black": {
-                      "size": [ "100%c + 1.1249px", "100%" ], // additive px based on aspect up the tree
+                      "size": [ "100%cm + 1.1249px", "100%" ], // additive px based on aspect up the tree
                       "anchor_from": "top_left",
                       "anchor_to": "top_left",
                       "layer": 2,
@@ -987,6 +989,22 @@
                           "sizing_panel": {
                             "type": "panel",
                             "size": [ "177.78%y", "100% - 2px" ] //rounded width based on height
+                          }
+                        },
+                        {
+                          "platform_restricted_warning_image": {
+                            "type": "image",
+                            "size": [ 10, 20 ],
+                            "layer": 5,
+                            "texture": "textures/ui/WarningGlyph",
+                            "bindings": [
+                              {
+                                "binding_type": "collection",
+                                "binding_collection_name": "gift_promotion_collection_items",
+                                "binding_name": "(#platform_restricted)",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
                           }
                         }
                       ]
@@ -1095,6 +1113,56 @@
         "promo_button@promo_timeline.promo_button": {
           "size": [ "100% - 4px", "100% - 4px" ]
         }
+      },
+      {
+        "platform_restricted_error_multi_item@promo_timeline.platform_restricted_error": {}
+      }
+    ]
+  },
+
+  "platform_restricted_error": {
+    "type": "panel",
+    "size": [ "100% - 4px", "100% - 4px" ],
+    "layer": 18,
+    "controls": [
+      {
+        "platform_restricted_error_button@common.button": {
+          "$pressed_button_name": "button.platform_restricted",
+          "controls": [
+            {
+              "default": {
+                "type": "panel",
+                "size": [ "100%", "100%" ],
+                "layer": 5
+              }
+            },
+            {
+              "hover@common.square_image_border_white": {}
+            },
+            {
+              "pressed": {
+                "type": "panel",
+                "size": [ "100%, 100%" ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "white_overlay_to_gray_out": {
+          "type": "image",
+          "size": [ "100%", "100%" ],
+          "texture": "textures/ui/button_borderless_light",
+          "alpha": 0.5
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "gift_promotion_collection_items",
+        "binding_name": "#platform_restricted",
+        "binding_name_override": "#visible"
       }
     ]
   },
@@ -2376,18 +2444,56 @@
         }
       },
       {
-        "promo_item_action_text@common.minecraftTenLabel": {
-          "size": [ "default", "default" ],
-          "offset": [ 0, -1 ],
-          "text": "#promo_item_action_button_text",
-          "color": "$text_color",
-          "bindings": [
+        "promo_item_action_text_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%c", "100%" ],
+          "controls": [
             {
-              "binding_name": "(not #world_download_info_visible)",
-              "binding_name_override": "#visible"
+              "warning_image_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "bindings": [
+                  {
+                    "binding_name": "#platform_restricted_item",
+                    "binding_name_override": "#visible"
+                  }
+                ],
+                "controls": [
+                  {
+                    "platform_restricted_warning_image": {
+                      "type": "image",
+                      "size": [ 7, 11 ],
+                      "offset": [ 0, -1 ],
+                      "layer": 20,
+                      "texture": "textures/ui/WarningGlyph"
+                    }
+                  },
+                  {
+                    "padding": {
+                      "type": "panel",
+                      "size": [ 4, "100%" ]
+                    }
+                  }
+                ]
+              }
             },
             {
-              "binding_name": "#promo_item_action_button_text"
+              "promo_item_action_text@common.minecraftTenLabel": {
+                "size": [ "default", "default" ],
+                "offset": [ 0, -1 ],
+                "text": "#promo_item_action_button_text",
+                "color": "$text_color",
+                "bindings": [
+                  {
+                    "binding_name": "(not #world_download_info_visible)",
+                    "binding_name_override": "#visible"
+                  },
+                  {
+                    "binding_name": "#promo_item_action_button_text"
+                  }
+                ]
+              }
             }
           ]
         }
@@ -2542,6 +2648,22 @@
                   {
                     "binding_name": "#promo_action_button_visible",
                     "binding_name_override": "#visible"
+                  },
+                  {
+                    "binding_name": "(not #platform_restricted_item)",
+                    "binding_name_override": "#enabled"
+                  }
+                ]
+              }
+            },
+            {
+              "platform_restricted_error_single_item@promo_timeline.platform_restricted_error": {
+                "size": [ "100%", 22 ],
+                "layer": 25,
+                "bindings": [
+                  {
+                    "binding_name": "#platform_restricted_item",
+                    "binding_name_override": "#visible"
                   }
                 ]
               }
@@ -2563,7 +2685,7 @@
           "$pressed_button_name": "button.item_pdp",
           "bindings": [
             {
-              "binding_name": "#promo_lower_button_visible",
+              "binding_name": "(not #platform_restricted_item)",
               "binding_name_override": "#visible"
             },
             {
