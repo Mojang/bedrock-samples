@@ -409,27 +409,65 @@
   "gamepad_hotkey_helpers": {
     "type": "panel",
     "size": [ "100%", "100%" ],
-    "$hide_description": true,
+    
     "controls": [
       {
-        "gamepad_y@common.gamepad_helper_y": {
-          "offset": [ 0, "-50% - 9px" ]
+        "quick_select_gamepad_helpers": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "$hide_description": true,
+          "bindings": [
+            {
+              "binding_name": "#are_gamepad_quick_select_helpers_visible",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "controls": [
+            {
+              "gamepad_y@common.gamepad_helper_y": {
+                "offset": [ 0, "-50% - 9px" ]
+              }
+            },
+            {
+              "gamepad_b@common.gamepad_helper_b": {
+                "offset": [ "50% + 9px", 0 ]
+              }
+            },
+            {
+              "gamepad_a@common.gamepad_helper_a": {
+                "offset": [ 0, "50% + 9px" ]
+              }
+            },
+            {
+              "gamepad_x@common.gamepad_helper_x": {
+                "offset": [ "-50% - 9px", 0 ]
+              }
+            }
+          ]
         }
       },
       {
-        "gamepad_b@common.gamepad_helper_b": {
-          "offset": [ "50% + 9px", 0 ]
+        "analog_select_gamepad_helper_panel": {
+          "type": "panel",
+          "size": [ "100%c", "100%c" ],
+          "offset": [ 0, "50% + 9px" ],
+          "$icon_description_bind_type": "none",
+          "bindings": [
+            {
+              "binding_name": "(not #are_gamepad_quick_select_helpers_visible)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "controls": [
+            { "analog_select_gamepad_helper@common.gamepad_helper_a": { "$icon_description_bind": "emote_wheel.gamepad_helper.select" } }
+          ]
         }
-      },
+      }
+    ],
+    "bindings": [
       {
-        "gamepad_a@common.gamepad_helper_a": {
-          "offset": [ 0, "50% + 9px" ]
-        }
-      },
-      {
-        "gamepad_x@common.gamepad_helper_x": {
-          "offset": [ "-50% - 9px", 0 ]
-        }
+        "binding_name": "#is_emote_gamepad_helper_visible",
+        "binding_name_override": "#visible"
       }
     ]
   },
@@ -477,7 +515,9 @@
     "$slice_count|default": 1,
     "$inner_radius|default": 0.0,
     "$outer_radius|default": 1.0,
-    "$button_name|default": "",
+    "$select_button_name|default": "",
+    "$hover_button_name|default": "",
+    "$analog_button_name|default": "",
     "$iterate_left_button_name|default": "button.iterate_selection_left",
     "$iterate_right_button_name|default": "button.iterate_selection_right",
     "slice_count": "$slice_count",
@@ -486,10 +526,13 @@
 
     "focus_enabled": true,
 
-    "button_name": "$button_name",
+    "select_button_name": "$select_button_name",
+    "hover_button_name": "$hover_button_name",
+    "analog_button_name": "$analog_button_name",
+
     "iterate_left_button_name": "$iterate_left_button_name",
     "iterate_right_button_name": "$iterate_right_button_name",
-    "initial_button_slice": -1,
+    "initial_button_slice": 0,
     "$button_focus_precedence|default": 0,
     "default_focus_precedence": "$button_focus_precedence",
 
@@ -512,11 +555,21 @@
     "button_mappings": [
       {
         "from_button_id": "button.menu_select",
-        "to_button_id": "$button_name",
+        "to_button_id": "$select_button_name",
         "mapping_type": "pressed"
       },
       {
-        "to_button_id": "$button_name",
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$select_button_name",
+        "mapping_type": "focused"
+      },
+      {
+        "from_button_id": "$analog_button_name",
+        "to_button_id": "$analog_button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "to_button_id": "$hover_button_name",
         "mapping_type": "pressed"
       },
       {
@@ -576,7 +629,9 @@
     "inner_radius": 0.35,
     "outer_radius": 1.0,
     "$slice_count": 4,
-    "$button_name": "button.emote_selected",
+    "$select_button_name": "button.emote_selected",
+    "$hover_button_name": "button.emote_hovered",
+    "$analog_button_name": "button.emote_hovered_via_analog",
 
     "$button_focus_precedence": 10,
     "focus_identifier": "emote_wheel",
