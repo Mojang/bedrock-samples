@@ -6,226 +6,98 @@
 {
   "namespace": "general_section",
 
-  // PROFILE button & section
-
-  "profile_button@settings_common.section_toggle_base": {
-    "$toggle_view_binding_name": "profile_button_toggle",
-    "$glyph_texture": "textures/ui/profile_glyph",
-    "$glyph_color_texture": "textures/ui/profile_glyph_color",
+  // GENERAL button & section
+  "general_button@settings_common.section_toggle_base": {
+    "$toggle_view_binding_name": "general_button_toggle",
+    "$glyph_texture": "textures/ui/world_glyph",
+    "$glyph_color_texture": "textures/ui/world_glyph_color",
     "$glyph_size": [ 11, 12 ],
-    "$button_text": "options.profile",
+    "$button_text": "options.general",
     "$toggle_property_bag": {
-      "#panel_title": "options.profileTitle"
+      "#panel_title": "options.generalTitle"
     }
   },
 
-  "view_account_errors_button_content": {
-    "type": "label",
-    "size": [ "default", "default" ],
-    "color": "$dark_body_text_color",
-    "text": "options.accountErrorButton"
-  },
-  "switch_accounts_button_content": {
-    "type": "stack_panel",
-    "orientation": "horizontal",
-    "size": [ "100%", "100%" ],
-    "controls": [
-      {
-        "padded_icon@common.empty_panel": {
-          "size": [ "100%c + 10px", "100%c" ],
-          "controls": [
-            {
-              "icon": {
-                "type": "image",
-                "texture": "textures/ui/switch_accounts",
-                "size": [ 29, 10 ],
-                "offset": [ 2, 2 ]
-              }
-            }
-          ]
-        }
-      },
-      {
-        "padded_label@common.empty_panel": {
-          "size": [ "100%c + 6px", "100%" ],
-          "controls": [
-            {
-              "label": {
-                "type": "label",
-                "size": [ "default", "default" ],
-                "color": "$dark_body_text_color",
-                "text": "accounts.switch"
-              }
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  "switch_accounts_panel": {
-    "type": "stack_panel",
-    "orientation": "vertical",
-
-    "size": [ "100%", "100%c" ],
-    "controls": [
-      {
-        "name_label": {
-          "type": "label",
-          "color": "$main_header_text_color",
-          "localize": false,
-          "text": "#ad_account_name",
-          "bindings": [
-            {
-              "binding_name": "#ad_account_name"
-            }
-          ]
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingSwitchAccounts": {
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "switch_accounts@common_buttons.light_content_button": {
-          "size": [ "100%", "24px" ],
-          "enabled": "$is_pregame",
-          // Smaller size to allow the parent element to act as padding
-          "$button_size_override": [ "100%", "100% - 4px" ],
-          "$button_content": "general_section.switch_accounts_button_content",
-          "$pressed_button_name": "button.switch_accounts"
-        }
-      }
-    ]
-  },
-
-  "profile_section": {
+  "general_tab_section": {
     "type": "stack_panel",
     "size": [ "100%", "100%c" ],
     "anchor_from": "top_left",
     "anchor_to": "top_left",
     "$spatialPatternsPadding": [ "100%", 8 ],
     "$paddingLineDivider": [ "100%", 16 ],
-    "$hide_login_button": "($win10_edition or not $is_xboxlive_enabled)",
     "bindings": [
       {
         "binding_type": "view",
-        "source_control_name": "profile_button_toggle",
+        "source_control_name": "general_button_toggle",
         "source_property_name": "#toggle_state",
         "target_property_name": "#visible"
       }
     ],
     "controls": [
       {
-        "switch_accounts@general_section.switch_accounts_panel": {
-          "ignored": "$ignore_profile_switch_account_button"
+        "network_label_header": {
+          "type": "label",
+          "text": "options.networkSettings",
+          "color": "$sub_header_text_color"
         }
       },
 
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
-        "paddingUseSSO": {
-          "ignored": "$ignore_profile_sso_toggle",
+        "paddingCrossPlatform": {
+          "ignored": "(not $supports_cross_platform_play_toggle)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
       },
 
       {
-        "use_sso@settings_common.option_toggle": {
-          "ignored": "$ignore_profile_sso_toggle",
-          "$option_label": "options.adUseSingleSignOn",
-          "$option_binding_name": "#ad_use_single_sign_on",
-          "$toggle_name": "ad_use_single_sign_on"
+        "cross_platform_enabled_toggle@settings_common.option_toggle": {
+          "ignored": "(not $supports_cross_platform_play_toggle)",
+          "$option_label": "options.crossPlatformPlay",
+          "$option_binding_name": "#crossplatform_toggle",
+          "$option_enabled_binding_name": "#crossplatform_toggle_enabled",
+          "$toggle_name": "crossplatform_toggle"
         }
       },
 
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
-        "paddingNameControls": {
-          "ignored": "$education_edition",
+        "paddingCellularData": {
+          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition or $education_edition_china)",
           "type": "panel",
-          "size": "$spatialPatternsPadding",
-          "bindings": [
-            {
-              "binding_name": "#can_change_name",
-              "binding_name_override": "#visible"
-            }
-          ]
+          "size": "$spatialPatternsPadding"
         }
       },
 
       {
-        "name_controls@settings_common.option_custom_control": {
-          "ignored": "$education_edition",
-          "$option_label": "options.name",
-          "$control_name": "general_section.name_controls",
-          "bindings": [
-            {
-              "binding_name": "#can_change_name",
-              "binding_name_override": "#visible"
-            }
-          ]
+        "mobile_data_option_toggle@settings_common.option_toggle": {
+          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition or $education_edition_china)",
+          "$option_label": "options.allowCellularData",
+          "$option_binding_name": "#allow_cellular_data",
+          "$option_enabled_binding_name": "#allow_cellular_data_enabled",
+          "$toggle_name": "allow_cellular_data",
+          "$has_option_description": true,
+          "$option_description": "options.allowCellularData.message"
         }
       },
 
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
-        "paddingSignInControls": {
-          "ignored": "$education_edition",
+        "paddingWebSockets": {
+          "ignored": "($console_edition or $education_edition_china)",
           "type": "panel",
-          "size": "$spatialPatternsPadding",
-          "bindings": [
-            {
-              "binding_name": "#not_logged_in",
-              "binding_name_override": "#visible"
-            }
-          ]
+          "size": "$spatialPatternsPadding"
         }
       },
 
       {
-        "signin_controls@settings_common.option_custom_control": {
-          "$control_name": "general_section.signin_controls",
-          "ignored": "$education_edition",
-          "bindings": [
-            {
-              "binding_name": "#not_logged_in",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingGamerTagControls": {
-          "type": "panel",
-          "size": "$spatialPatternsPadding",
-          "bindings": [
-            {
-              "binding_name": "#logged_in",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-
-      {
-        "gamertag_controls@settings_common.option_custom_control": {
-          "$show_option_label": false,
-          "$control_name": "general_section.gamertag_controls",
-          "bindings": [
-            {
-              "binding_name": "#logged_in",
-              "binding_name_override": "#visible"
-            }
-          ]
+        "websocket_option_toggle@settings_common.option_toggle": {
+          "$option_label": "options.websocketEncryption",
+          "$option_binding_name": "#websocket_encryption",
+          "$option_enabled_binding_name": "#websocket_encryption_enabled",
+          "$toggle_name": "websocket_encryption",
+          "ignored": "($console_edition or $education_edition_china)"
         }
       },
 
@@ -270,63 +142,6 @@
 
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
-        "paddingCrossPlatform": {
-          "ignored": "(not $supports_cross_platform_play_toggle)",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "cross_platform_enabled_toggle@settings_common.option_toggle": {
-          "ignored": "(not $supports_cross_platform_play_toggle)",
-          "$option_label": "options.crossPlatformPlay",
-          "$option_binding_name": "#crossplatform_toggle",
-          "$option_enabled_binding_name": "#crossplatform_toggle_enabled",
-          "$toggle_name": "crossplatform_toggle"
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingCellularData": {
-          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition or $education_edition_china)",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "option_toggle_0@settings_common.option_toggle": {
-          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition or $education_edition_china)",
-          "$option_label": "options.allowCellularData",
-          "$option_binding_name": "#allow_cellular_data",
-          "$option_enabled_binding_name": "#allow_cellular_data_enabled",
-          "$toggle_name": "allow_cellular_data"
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingWebSockets": {
-          "ignored": "($console_edition or $education_edition_china)",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "option_toggle_1@settings_common.option_toggle": {
-          "$option_label": "options.websocketEncryption",
-          "$option_binding_name": "#websocket_encryption",
-          "$option_enabled_binding_name": "#websocket_encryption_enabled",
-          "$toggle_name": "websocket_encryption",
-          "ignored": "($console_edition or $education_edition_china)"
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
         "paddingTrustedSkins": {
           "type": "panel",
           "size": "$spatialPatternsPadding"
@@ -358,63 +173,6 @@
           "property_bag": {
             "#hyperlink": "https://aka.ms/minecraftedusupport"
           }
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingFileStorageDropdown": {
-          "ignored": "($is_holographic and $is_reality_mode)",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "file_storage_dropdown@settings_common.option_dropdown": {
-          "$option_label": "options.filelocation.title",
-          "ignored": "($is_holographic and $is_reality_mode)",
-          "visible": "($storage_location_switch_enabled and not $gear_vr)",
-          "$dropdown_content": "general_section.file_storage_location_content",
-          "$dropdown_area": "content_area",
-          "$dropdown_name": "file_storage_location",
-          "$option_enabled_binding_name": "#file_storage_location_enabled",
-          "$options_dropdown_toggle_label_binding": "#file_storage_location_toggle_label",
-          "$dropdown_scroll_content_size": [ "100%", "200%" ]
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingClearMSAToken": {
-          "ignored": "($education_edition or not $is_pregame or not ($thirdpartyconsole or $is_android or $is_ios))",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "clear_msa_token": {
-          "ignored": "($education_edition or not $is_pregame or not ($thirdpartyconsole or $is_android or $is_ios))",
-          "type": "panel",
-          "size": [ "100%", 32 ],
-          "controls": [
-            {
-              "clear_msa_token_button@settings_common.action_button": {
-                "$pressed_button_name": "button.clear_msa_token_button",
-                "$button_text": "xbox.dev_wrongSandboxSigninFailed.button.clearXbl",
-                "anchor_from": "top_right",
-                "anchor_to": "top_right",
-                "offset": [ 0, 2 ],
-                "bindings": [
-                  {
-                    "binding_name": "#not_logged_in",
-                    "binding_name_override": "#visible"
-                  }
-                ]
-              }
-            }
-          ]
         }
       },
 
@@ -505,52 +263,6 @@
         "credits_button@settings_common.action_button": {
           "$pressed_button_name": "button.credits",
           "$button_text": "options.credits"
-        }
-      },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
-      {
-        "paddingUnlinkMSAAccount": {
-          "ignored": "((not $is_pregame) or (not $is_ps4))",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-
-      {
-        "unlink_msa_account@settings_common.action_button": {
-          // (never show in game) AND (never show unless its PS4)
-          "ignored": "((not $is_pregame) or (not $is_ps4))",
-          "$pressed_button_name": "button.unlink_msa",
-          "$button_text": "options.unlink_msa.button",
-          "bindings": [
-            {
-              "binding_name": "#logged_in",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-
-      {
-        "paddingDeleteAccount": {
-          "ignored": "((not $is_pregame) or (not $is_ios))",
-          "type": "panel",
-          "size": "$spatialPatternsPadding"
-        }
-      },
-      {
-        "delete_account@settings_common.action_button": {
-          // (never show in game) AND (never show unless its iOS)
-          "ignored": "((not $is_pregame) or (not $is_ios))",
-          "$pressed_button_name": "button.delete_account",
-          "$button_text": "options.delete_account.button",
-          "bindings": [
-            {
-              "binding_name": "#logged_in",
-              "binding_name_override": "#visible"
-            }
-          ]
         }
       },
 
@@ -782,54 +494,6 @@
               }
             },
             {
-              "device_id_label": {
-                "type": "label",
-                "size": [ "100%", "default" ],
-                "color": "$body_text_color",
-                "offset": [ 2, 0 ],
-                "anchor_from": "top_left",
-                "anchor_to": "top_left",
-                "text": "#device_id",
-                "bindings": [
-                  {
-                    "binding_name": "#device_id"
-                  }
-                ]
-              }
-            },
-            {
-              "MinecraftAccount_id_label": {
-                "type": "label",
-                "color": "$body_text_color",
-                "offset": [ 2, 0 ],
-                "size": [ "100%", "default" ],
-                "anchor_from": "top_left",
-                "anchor_to": "top_left",
-                "text": "#MinecraftAccount_id",
-                "bindings": [
-                  {
-                    "binding_name": "#MinecraftAccount_id"
-                  }
-                ]
-              }
-            },
-            {
-              "commerce_id_label": {
-                "type": "label",
-                "color": "$body_text_color",
-                "offset": [ 2, 0 ],
-                "size": [ "100%", "default" ],
-                "anchor_from": "top_left",
-                "anchor_to": "top_left",
-                "text": "#commerce_id",
-                "bindings": [
-                  {
-                    "binding_name": "#commerce_id"
-                  }
-                ]
-              }
-            },
-            {
               "treatment_ids_label": {
                 "type": "label",
                 "color": "$body_text_color",
@@ -874,6 +538,368 @@
                   }
                 ]
               }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // ACCOUNT button & section
+
+  "account_button@settings_common.section_toggle_base": {
+    "$toggle_view_binding_name": "account_button_toggle",
+    "$glyph_texture": "textures/ui/profile_glyph",
+    "$glyph_color_texture": "textures/ui/profile_glyph_color",
+    "$glyph_size": [ 11, 12 ],
+    "$button_text": "options.account",
+    "$toggle_property_bag": {
+      "#panel_title": "options.accountTitle"
+    }
+  },
+
+  "view_account_errors_button_content": {
+    "type": "label",
+    "size": [ "default", "default" ],
+    "color": "$dark_body_text_color",
+    "text": "options.accountErrorButton"
+  },
+
+  "switch_accounts_button_content": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      {
+        "padded_icon@common.empty_panel": {
+          "size": [ "100%c + 10px", "100%c" ],
+          "controls": [
+            {
+              "icon": {
+                "type": "image",
+                "texture": "textures/ui/switch_accounts",
+                "size": [ 29, 10 ],
+                "offset": [ 2, 2 ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padded_label@common.empty_panel": {
+          "size": [ "100%c + 6px", "100%" ],
+          "controls": [
+            {
+              "label": {
+                "type": "label",
+                "size": [ "default", "default" ],
+                "color": "$dark_body_text_color",
+                "text": "accounts.switch"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "switch_accounts_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "name_label": {
+          "type": "label",
+          "color": "$main_header_text_color",
+          "localize": false,
+          "text": "#ad_account_name",
+          "bindings": [
+            {
+              "binding_name": "#ad_account_name"
+            }
+          ]
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingSwitchAccounts": {
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+
+      {
+        "switch_accounts@common_buttons.light_content_button": {
+          "size": [ "100%", "24px" ],
+          "enabled": "$is_pregame",
+          // Smaller size to allow the parent element to act as padding
+          "$button_size_override": [ "100%", "100% - 4px" ],
+          "$button_content": "general_section.switch_accounts_button_content",
+          "$pressed_button_name": "button.switch_accounts"
+        }
+      }
+    ]
+  },
+
+  "account_section": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$spatialPatternsPadding": [ "100%", 8 ],
+    "$paddingLineDivider": [ "100%", 16 ],
+    "$hide_login_button": "($win10_edition or not $is_xboxlive_enabled)",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "account_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "switch_accounts@general_section.switch_accounts_panel": {
+          "ignored": "$ignore_profile_switch_account_button"
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingUseSSO": {
+          "ignored": "$ignore_profile_sso_toggle",
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+
+      {
+        "use_sso@settings_common.option_toggle": {
+          "ignored": "$ignore_profile_sso_toggle",
+          "$option_label": "options.adUseSingleSignOn",
+          "$option_binding_name": "#ad_use_single_sign_on",
+          "$toggle_name": "ad_use_single_sign_on"
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingNameControls": {
+          "ignored": "$education_edition",
+          "type": "panel",
+          "size": "$spatialPatternsPadding",
+          "bindings": [
+            {
+              "binding_name": "#can_change_name",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      {
+        "name_controls@settings_common.option_custom_control": {
+          "ignored": "$education_edition",
+          "$option_label": "options.name",
+          "$control_name": "general_section.name_controls",
+          "bindings": [
+            {
+              "binding_name": "#can_change_name",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingSignInControls": {
+          "ignored": "$education_edition",
+          "type": "panel",
+          "size": "$spatialPatternsPadding",
+          "bindings": [
+            {
+              "binding_name": "#not_logged_in",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      {
+        "signin_controls@settings_common.option_custom_control": {
+          "$control_name": "general_section.signin_controls",
+          "ignored": "$education_edition",
+          "bindings": [
+            {
+              "binding_name": "#not_logged_in",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingGamerTagControls": {
+          "type": "panel",
+          "size": "$spatialPatternsPadding",
+          "bindings": [
+            {
+              "binding_name": "#logged_in",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      {
+        "gamertag_controls@settings_common.option_custom_control": {
+          "$show_option_label": false,
+          "$control_name": "general_section.gamertag_controls",
+          "bindings": [
+            {
+              "binding_name": "#logged_in",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingClearMSAToken": {
+          "ignored": "($education_edition or not $is_pregame or not ($thirdpartyconsole or $is_android or $is_ios))",
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+
+      {
+        "clear_msa_token": {
+          "ignored": "(not ($nx_os and $is_pregame))",
+          "visible": "($nx_os and $is_pregame)",
+          "type": "panel",
+          "size": [ "100%", 32 ],
+          "controls": [
+            {
+              "clear_msa_token_button@settings_common.action_button": {
+                "$pressed_button_name": "button.clear_msa_token_button",
+                "$button_text": "xbox.dev_wrongSandboxSigninFailed.button.clearXbl",
+                "anchor_from": "top_right",
+                "anchor_to": "top_right",
+                "offset": [ 0, 2 ],
+                "bindings": [
+                  {
+                    "binding_name": "#not_logged_in",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
+      {
+        "paddingUnlinkMSAAccount": {
+          "ignored": "((not $is_pregame) or (not $is_ps4))",
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+
+      {
+        "unlink_msa_account@settings_common.action_button": {
+          // (never show in game) AND (never show unless its PS4)
+          "ignored": "((not $is_pregame) or (not $is_ps4))",
+          "$pressed_button_name": "button.unlink_msa",
+          "$button_text": "options.unlink_msa.button",
+          "bindings": [
+            {
+              "binding_name": "#logged_in",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      {
+        "paddingDeleteAccount": {
+          "ignored": "((not $is_pregame) or (not $is_ios))",
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+      {
+        "delete_account@settings_common.action_button": {
+          // (never show in game) AND (never show unless its iOS)
+          "ignored": "((not $is_pregame) or (not $is_ios))",
+          "$pressed_button_name": "button.delete_account",
+          "$button_text": "options.delete_account.button",
+          "bindings": [
+            {
+              "binding_name": "#logged_in",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      {
+        "paddingInfoLabels": {
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+      {
+        "device_id_label": {
+          "type": "label",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color",
+          "offset": [ 2, 0 ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "text": "#device_id",
+          "bindings": [
+            {
+              "binding_name": "#device_id"
+            }
+          ]
+        }
+      },
+      {
+        "MinecraftAccount_id_label": {
+          "type": "label",
+          "color": "$body_text_color",
+          "offset": [ 2, 0 ],
+          "size": [ "100%", "default" ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "text": "#MinecraftAccount_id",
+          "bindings": [
+            {
+              "binding_name": "#MinecraftAccount_id"
+            }
+          ]
+        }
+      },
+      {
+        "commerce_id_label": {
+          "type": "label",
+          "color": "$body_text_color",
+          "offset": [ 2, 0 ],
+          "size": [ "100%", "default" ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "text": "#commerce_id",
+          "bindings": [
+            {
+              "binding_name": "#commerce_id"
             }
           ]
         }
@@ -2182,22 +2208,8 @@
         }
       },
       {
-        "upscaling_toggle@settings_common.option_toggle": {
-          "ignored": "($is_holographic and $win10_edition)",
-          "$option_label": "options.upscaling",
-          "$option_binding_name": "#graphics_upscaling",
-          "$option_enabled_binding_name": "#graphics_upscaling_enabled",
-          "$toggle_name": "graphics_upscaling",
-          "controls": [
-            {
-              "rtx_disabled_option_upsell@general_section.rtx_disabled_option_upsell": {
-                "$rtx_disabled_option_upsell_visible": "#rtx_upscale_disabled_option_upsell_visible",
-                "$rtx_disabled_option_is_hovered_button_event": "button.rtx_upscale_disabled_option_is_hovered",
-                "$rtx_disabled_option_upsell_tooltip_visible": "#rtx_upscale_disabled_option_upsell_tooltip_visible"
-              }
-            },
-            { "option_generic_core@settings_common.option_generic_core": {} }
-          ]
+        "upscaling_toggle@general_section.upscaling_toggle": {
+          "ignored": "$dev_new_video_settings"
         }
       },
       {
@@ -2312,41 +2324,13 @@
         }
       },
       {
-        "max_framerate_slider@settings_common.option_slider": {
-          "ignored": "($is_publish)",
-          "$option_label": "#max_framerate_slider_label",
-          "$slider_name": "max_framerate",
-          "$slider_value_binding_name": "#max_framerate",
-          "$slider_tts_text_value": "#max_framerate_text_value",
-          "$option_enabled_binding_name": "#max_framerate_enabled",
-          "$slider_steps_binding_name": "#max_framerate_steps",
-          "$label_bindings": [
-            {
-              "binding_name": "$option_label"
-            }
-          ]
+        "max_framerate_slider@general_section.max_framerate_slider": {
+          "ignored": "$dev_new_video_settings"
         }
       },
       {
-        "msaa_slider@settings_common.option_slider": {
-          "ignored": "($is_holographic or $is_win10_arm)",
-          "$option_label": "#msaa_slider_label",
-          "$slider_name": "msaa",
-          "$slider_value_binding_name": "#msaa",
-          "$slider_tts_text_value": "#msaa_text_value",
-          "$option_enabled_binding_name": "#msaa_enabled",
-          "$slider_steps_binding_name": "#msaa_steps",
-          "$label_bindings": [
-            {
-              "binding_name": "$option_label"
-            }
-          ],
-          "bindings": [
-            {
-              "binding_name": "#show_msaa",
-              "binding_name_override": "#visible"
-            }
-          ]
+        "msaa_slider@general_section.msaa_slider": {
+          "ignored": "$dev_new_video_settings"
         }
       },
       {
@@ -2431,6 +2415,58 @@
           }
         }
       }
+    ]
+  },
+
+  "max_framerate_slider@settings_common.option_slider": {
+    "ignored": "($is_publish)",
+    "$option_label": "#max_framerate_slider_label",
+    "$slider_name": "max_framerate",
+    "$slider_value_binding_name": "#max_framerate",
+    "$slider_tts_text_value": "#max_framerate_text_value",
+    "$option_enabled_binding_name": "#max_framerate_enabled",
+    "$slider_steps_binding_name": "#max_framerate_steps",
+    "$label_bindings": [
+      {
+        "binding_name": "$option_label"
+      }
+    ]
+  },
+  "msaa_slider@settings_common.option_slider": {
+    "ignored": "($is_holographic or $is_win10_arm)",
+    "$option_label": "#msaa_slider_label",
+    "$slider_name": "msaa",
+    "$slider_value_binding_name": "#msaa",
+    "$slider_tts_text_value": "#msaa_text_value",
+    "$option_enabled_binding_name": "#msaa_enabled",
+    "$slider_steps_binding_name": "#msaa_steps",
+    "$label_bindings": [
+      {
+        "binding_name": "$option_label"
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#show_msaa",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+  "upscaling_toggle@settings_common.option_toggle": {
+    "ignored": "($is_holographic and $win10_edition)",
+    "$option_label": "options.upscaling",
+    "$option_binding_name": "#graphics_upscaling",
+    "$option_enabled_binding_name": "#graphics_upscaling_enabled",
+    "$toggle_name": "graphics_upscaling",
+    "controls": [
+      {
+        "rtx_disabled_option_upsell@general_section.rtx_disabled_option_upsell": {
+          "$rtx_disabled_option_upsell_visible": "#rtx_upscale_disabled_option_upsell_visible",
+          "$rtx_disabled_option_is_hovered_button_event": "button.rtx_upscale_disabled_option_is_hovered",
+          "$rtx_disabled_option_upsell_tooltip_visible": "#rtx_upscale_disabled_option_upsell_tooltip_visible"
+        }
+      },
+      { "option_generic_core@settings_common.option_generic_core": {} }
     ]
   },
 
@@ -3985,7 +4021,7 @@
     "type": "label",
     "text": "options.darknessEffectModifier.message",
     "size": [ "100%", "default" ],
-    "color": "$light_button_locked_text_color"
+    "color": "$option_description_text_color"
   },
 
   "notification_duration_label": {
@@ -3999,7 +4035,7 @@
     "type": "label",
     "text": "options.notificationDuration.message",
     "size": [ "100%", "default" ],
-    "color": "$light_button_locked_text_color"
+    "color": "$option_description_text_color"
   },
 
   "accessibility_section": {
@@ -6108,6 +6144,17 @@
         }
       },
       {
+        "option_dropdown_identity_mode@settings_common.option_dropdown": {
+          "$option_label": "options.dev_identityMode",
+          "$dropdown_content": "general_section.dev_identityMode_content",
+          "$option_enabled_binding_name": "#dev_identity_mode_dropdown_enabled",
+          "$dropdown_area": "content_area",
+          "$dropdown_name": "dev_identity_mode_dropdown",
+          "$options_dropdown_toggle_label_binding": "#dev_identity_mode_dropdown_toggle_label",
+          "$dropdown_scroll_content_size": [ "100%", "200%" ]
+        }
+      },
+      {
         "option_toggle_9@settings_common.option_toggle": {
           "$option_label": "options.dev_renderMobInfoState",
           "$option_binding_name": "#dev_render_mob_info_state",
@@ -6237,7 +6284,7 @@
       },
       {
         "edu_demo@settings_common.option_toggle": {
-          "ignored": "(not $education_edition)",
+          "ignored": "(not $education_edition) or $creator_build",
           "$option_label": "options.dev_eduDemo",
           "$option_binding_name": "#dev_edu_demo",
           "$option_enabled_binding_name": "#dev_edu_demo_enabled",
@@ -6246,7 +6293,7 @@
       },
       {
         "option_toggle_ad_debug_panel@settings_common.option_toggle": {
-          "ignored": "(not $education_edition)",
+          "ignored": "(not $education_edition) or $creator_build",
           "$option_label": "options.dev_ad_show_debug_panel",
           "$option_binding_name": "#show_ad_debug_panel_button",
           "$option_enabled_binding_name": "#show_ad_debug_panel_button_enabled",
@@ -6255,7 +6302,7 @@
       },
       {
         "ad_token_refresh_threshold@settings_common.option_slider": {
-          "ignored": "(not $education_edition)",
+          "ignored": "(not $education_edition) or $creator_build",
           "$option_label": "#ad_token_refresh_threshold_slider_label",
           "$slider_name": "ad_token_refresh_threshold",
           "$slider_value_binding_name": "#ad_token_refresh_threshold",
@@ -6489,8 +6536,7 @@
       },
       {
         "education_env_dropdown@settings_common.option_dropdown": {
-          "ignored": "(not $education_edition)",
-
+          "ignored": "(not $education_edition) or $creator_build",
           "$option_label": "options.dev_education_services_environment",
           "$dropdown_content": "general_section.dev_education_environment_dropdown_content",
           "$dropdown_area": "content_area",
@@ -6502,8 +6548,7 @@
       },
       {
         "azurenotebooks_env_dropdown@settings_common.option_dropdown": {
-          "ignored": "(not $education_edition)",
-
+          "ignored": "(not $education_edition) or $creator_build",
           "$option_label": "options.dev_azure_notebooks_environment",
           "$dropdown_content": "general_section.dev_azure_notebooks_environment_dropdown_content",
           "$dropdown_area": "content_area",
@@ -6833,6 +6878,7 @@
       },
       {
         "option_discovery_environment@settings_common.option_dropdown": {
+          "$ignored": "$creator_build",
           "$option_label": "options.discoveryEnvironment",
           "$dropdown_content": "general_section.dev_discovery_environment_dropdown_content",
           "$dropdown_area": "content_area",
@@ -7205,6 +7251,42 @@
         }
       },
       {
+        "option_reset_on_start@settings_common.option_toggle": {
+          "$option_label": "options.resetOnStart",
+          "$option_binding_name": "#reset_on_start",
+          "$option_enabled_binding_name": "#reset_on_start_enabled",
+          "$toggle_name": "reset_on_start"
+        }
+      },
+      {
+        "option_slider_drag_dwell@settings_common.option_slider": {
+          "$option_label": "#dwell_before_drag_time_slider_label",
+          "$slider_name": "dwell_before_drag_time",
+          "$slider_value_binding_name": "#dwell_before_drag_time",
+          "$slider_tts_text_value": "#dwell_before_drag_time_text_value",
+          "$option_enabled_binding_name": "#dwell_before_drag_time_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "$option_label"
+            }
+          ]
+        }
+      },
+      {
+        "option_slider_stack_splitting@settings_common.option_slider": {
+          "$option_label": "#stack_splitting_trigger_time_slider_label",
+          "$slider_name": "stack_splitting_trigger_time",
+          "$slider_value_binding_name": "#stack_splitting_trigger_time",
+          "$slider_tts_text_value": "#stack_splitting_trigger_time_text_value",
+          "$option_enabled_binding_name": "#stack_splitting_trigger_time_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "$option_label"
+            }
+          ]
+        }
+      },
+      {
         "option_resizable_ui@settings_common.option_toggle": {
           "$option_label": "options.resizableUI",
           "$option_binding_name": "#resizable_ui",
@@ -7477,12 +7559,6 @@
       },
       {
         "@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#transport_layer_nethernet_mpsd",
-          "$radio_label_text": "options.dev_transport_layer.nethernet_mpsd"
-        }
-      },
-      {
-        "@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#transport_layer_nethernet_websockets",
           "$radio_label_text": "options.dev_transport_layer.nethernet_websockets"
         }
@@ -7659,6 +7735,22 @@
         "dev_chunkMapMode_server_debug_display@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#chunk_map_mode_server_chunk_debug_display_state",
           "$radio_label_text": "options.dev_chunk_map_mode_server_chunk_debug_display_state"
+        }
+      }
+    ]
+  },
+  "dev_identityMode_content@settings_common.option_radio_dropdown_group": {
+    "$radio_buttons": [
+      {
+        "dev_identityMode_adal@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#identity_mode_adal",
+          "$radio_label_text": "options.dev_identity_mode_adal"
+        }
+      },
+      {
+        "dev_identityMode_oneauth@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#identity_mode_oneauth",
+          "$radio_label_text": "options.dev_identity_mode_oneauth"
         }
       }
     ]

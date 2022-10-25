@@ -1,3 +1,4 @@
+
 {
   "namespace": "common_store",
 
@@ -1374,9 +1375,10 @@
                   {
                     "text": {
                       "type": "label",
-                      "size": [ "100%", "default" ],
+                      "size": [ "100%", "100%" ],
                       "color": "$body_text_color",
                       "font_type": "smooth",
+                      "font_scale_factor": 0.7,
                       "text": "#realms_expiration_label",
                       "bindings": [
                         {
@@ -2895,10 +2897,20 @@
                 "size": [ "100%c", 12 ],
                 "controls": [
                   {
-                    "sales_markdown_percentage_panel@common_store.store_offer_sales_markdown_percentage_panel": {}
-                  },
-                  {
                     "markdown_panel@common_store.offer_price_markdown_panel": {
+                      "$offer_price_binding": [
+                        {
+                          "binding_type": "$store_factory_collection_details",
+                          "binding_collection_name": "$store_factory_collection_name",
+                          "binding_collection_prefix": "$store_factory_collection_prefix"
+                        },
+                        {
+                          "binding_type": "$offer_binding_type",
+                          "binding_name": "#offer_full_price",
+                          "binding_collection_name": "$offer_collection_name"
+                        }
+                      ],
+                      "$strike_through_text_bindings": [],
                       "$offer_price_offset": [ 0, 3 ]
                     }
                   },
@@ -2908,24 +2920,27 @@
                       "size": [ 2, "100%" ]
                     }
                   }
-                ],
-                "bindings": [
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  },
-                  {
-                    "binding_type": "$offer_binding_type",
-                    "binding_name": "#offer_markdown_visible",
-                    "binding_collection_name": "$offer_collection_name",
-                    "binding_name_override": "#visible"
-                  }
                 ]
               }
             },
             {
-              "offer_prompt_panel@common_store.store_offer_prompt_panel": {}
+              "store_offer_prompt_panel": {
+                "type": "panel",
+                "size": [ "100%c", 12 ],
+                "controls": [
+                  {
+                    "offer_free_text": {
+                      "type": "label",
+                      "color": "$coin_color",
+                      "size": [ "default", 10 ],
+                      "offset": [ 0, 0.5 ],
+                      "text": "store.free",
+                      "font_type": "smooth",
+                      "layer": 4
+                    }
+                  }
+                ]
+              }
             },
             {
               "padding_to_right": {
@@ -4198,6 +4213,7 @@
     "size": [ "default", 10 ],
     "max_size": [ "100%", 10 ],
     "text": "#title_label",
+    "enable_profanity_filter": false,
     "color": "$body_text_color",
     "font_type": "smooth",
     "layer": 1,
@@ -5514,9 +5530,8 @@
           "offset": "$offer_price_offset",
           "text": "#offer_full_price",
           "font_type": "smooth",
-          "tts_override_control_value": "#tts_overrride_offer_full_price",
           "layer": 4, // place behind sale banner when possible
-          "bindings": [
+          "$offer_price_binding|default": [
             {
               "binding_type": "$store_factory_collection_details",
               "binding_collection_name": "$store_factory_collection_name",
@@ -5539,12 +5554,14 @@
               "binding_collection_name": "$offer_collection_name"
             }
           ],
+          "bindings": "$offer_price_binding",
+
           "controls": [
             {
               "text_strike_through@common_store.text_strike_through": {
                 "size": [ "100% + 2px", 0.5 ],
                 "offset": "$offer_price_strikethru_offset",
-                "bindings": [
+                "$strike_through_text_bindings|default": [
                   {
                     "binding_type": "$store_factory_collection_details",
                     "binding_collection_name": "$store_factory_collection_name",
@@ -5556,7 +5573,8 @@
                     "binding_collection_name": "$offer_collection_name",
                     "binding_name_override": "#visible"
                   }
-                ]
+                ],
+                "bindings": "$strike_through_text_bindings"
               }
             }
           ]
@@ -5570,6 +5588,7 @@
     "$offer_title_size|default": [ "100%", 10 ],
     "size": "$offer_title_size",
     "text": "#title_label",
+    "enable_profanity_filter": false,
     "text_alignment": "left",
     "color": "$body_text_color",
     "font_type": "smooth",
@@ -7192,6 +7211,7 @@
                       "type": "label",
                       "size": [ "100%", 10 ],
                       "text": "#title_label",
+                      "enable_profanity_filter": false,
                       "color": "$body_text_color",
                       "font_type": "smooth",
                       "layer": 1,

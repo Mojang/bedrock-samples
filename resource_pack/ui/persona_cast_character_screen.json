@@ -2,14 +2,24 @@
   "namespace": "persona_cast_character_screen",
 
   "popup_dialog__cast_character_preview@persona_cast_character_screen.popup_dialog__cast_character_select": {
-    "$is_preview_version": true
+    "$character_cast_prompt_title": "menu.character_cast.preview_title",
+    "$close_button_to_button_id": "button.close_entry_prompt_dialog",
+    "$bottom_button_controls": [
+      {
+        "close_button@common_buttons.light_text_button": {
+          "size": [ "100%", "100%" ],
+          "$pressed_button_name": "button.close_entry_prompt_dialog",
+          "$button_text": "gui.close"
+        }
+      }
+    ]
   },
 
   "popup_dialog__cast_character_select@popup_dialog.popup_dialog": {
     "size": [ "100%", "100%" ],
     "layer": 500,
     "$section_content_size": [ "100%", "100% - 16px" ],
-    "$close_button_to_button_id": "button.close_dialog",
+    "$close_button_to_button_id": "button.cast_back",
     "button_mappings": [
       {
         "from_button_id": "button.menu_cancel",
@@ -66,7 +76,7 @@
           "anchor_from": "center",
           "anchor_to": "center",
           "$show_close_button": true,
-          "size": [ "113%y", "80%" ]
+          "size": [ "116%y", "90%" ]
         }
       }
     ]
@@ -75,6 +85,9 @@
   "popup_cast_character_select_bg@common_dialogs.dialog_background_hollow_2": {
     "size": [ "100%", "50%" ],
     "$section_content_size": [ "100%", "100% - 16px" ],
+
+    "$character_cast_prompt_title|default": "menu.character_cast.select_title",
+
     "controls": [
       {
         "top_bar": {
@@ -89,7 +102,7 @@
             {
               "title_panel": {
                 "type": "label",
-                "text": "menu.cast_select_title",
+                "text": "$character_cast_prompt_title",
                 "layer": 2,
                 "offset": [ 0, 8 ],
                 "color": "$profile_create_character_selected_color",
@@ -97,11 +110,7 @@
                 "anchor_to": "top_middle"
               }
             },
-            {
-              "close_button_holder@common_dialogs.common_close_button_holder": {
-                "$close_button_to_button_id": "button.close_dialog"
-              }
-            }
+            { "close_button_holder@common_dialogs.common_close_button_holder": {} }
           ]
         }
       },
@@ -110,20 +119,22 @@
       },
       {
         "popup_bottom_bar": {
-          "type": "stack_panel",
+          "type": "panel",
           "size": [ "95%", 32 ],
           "offset": [ 0, -6 ],
+          "layer": 50,
           "anchor_from": "bottom_middle",
           "anchor_to": "bottom_middle",
-          "orientation": "horizontal",
 
-          "$is_preview_version|default": false,
           "$bottom_button_controls|default": [
             {
               "select_button@common_buttons.light_text_button": {
-                "size": [ "63%", "100%" ],
+                "size": [ "100%", "100%" ],
                 "$pressed_button_name": "button.cast_select",
                 "$button_text": "gui.select",
+                "$focus_override_down": "FOCUS_OVERRIDE_STOP",
+                "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+                "$focus_override_right": "FOCUS_OVERRIDE_STOP",
                 "bindings": [
                   {
                     "binding_name": "#cast_enabled_select",
@@ -131,36 +142,8 @@
                   }
                 ]
               }
-            },
-            {
-              "empty_space": {
-                "type": "panel",
-                "size": [ 2, 0 ]
-              }
-            },
-            {
-              "back_button@common_buttons.light_text_button": {
-                "size": [ "37%", "100%" ],
-                "$pressed_button_name": "button.cast_back",
-                "$button_text": "gui.back"
-              }
             }
           ],
-          "variables": [
-            {
-              "requires": "$is_preview_version",
-              "$bottom_button_controls": [
-                {
-                  "continue_button@common_buttons.light_text_button": {
-                    "size": [ "100%", "100%" ],
-                    "$pressed_button_name": "button.cast_back",
-                    "$button_text": "gui.continue"
-                  }
-                }
-              ]
-            }
-          ],
-
           "controls": "$bottom_button_controls"
         }
       }
@@ -184,10 +167,15 @@
         }
       },
       {
-        "cast_grid@persona_cast_character_screen.cast_scroll_view_panel": {}
-      },
-      {
-        "skin_viewer_panel@persona_cast_character_screen.persona_cast_paper_doll_panel": {}
+        "main_content_horizontal_stack": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            { "cast_grid@persona_cast_character_screen.cast_scroll_view_panel": {} },
+            { "skin_viewer_panel@persona_cast_character_screen.persona_cast_paper_doll_panel": {} }
+          ]
+        }
       }
     ]
   },
@@ -196,20 +184,28 @@
     "anchor_to": "top_left",
     "anchor_from": "top_left",
     "$show_background": false,
-    "size": [ "66%", "100%" ],
+    "size": [ "62%", "100%" ],
+
+    "focus_container": true,
+    "focus_wrap_enabled": false,
+    "focus_navigation_mode_left": "stop",
+    "focus_navigation_mode_right": "stop",
+    "focus_navigation_mode_up": "stop",
+
     "$scroll_size": [ 5, "100% - 4px" ],
     "$scrolling_content": "persona_cast_character_screen.cast_grid_with_buttons",
     "$comment_panel_size": [ "40% - 1px", "100%c" ]
   },
 
   "cast_grid_with_buttons": {
-    "type": "panel",
+    "type": "stack_panel",
+    "orientation": "vertical",
     "size": [ "100%-1px", "100%c" ],
     "controls": [
       {
         "top_spacing": {
           "type": "panel",
-          "size": [ "100%", 4 ]
+          "size": [ "100%", 2 ]
         }
       },
       {
@@ -253,7 +249,22 @@
                 "anchor_from": "top_left",
                 "anchor_to": "top_left",
                 "texture": "textures/ui/White",
-                "color": "$dressing_room_dark_bg_color"
+                "color": "black",
+                "alpha": 0.8
+              }
+            },
+            {
+              "selected@persona.selected_border": {
+                "layer": 8,
+                "$enable_border": false,
+                "bindings": [
+                  {
+                    "binding_type": "collection",
+                    "binding_collection_name": "$cast_single_character_collection_name",
+                    "binding_name": "#cast_button_selected",
+                    "binding_name_override": "#visible"
+                  }
+                ]
               }
             },
             { "default@common.empty_panel": {} },
@@ -313,7 +324,6 @@
       }
     ],
     "bindings": [
-
       {
         "binding_name": "#cast_button_visible",
         "binding_name_override": "#visible",
@@ -364,69 +374,56 @@
   },
 
   "persona_cast_paper_doll_panel": {
+    "type": "panel",
+    "size": [ "fill", "100%" ],
+    "controls": [
+      { "preset_input_panel@persona_cast_character_screen.cast_character_screen_right_side_model": {} }
+    ]
+  },
+
+  "character_loading_anim@persona.loading_icon": {
+    "anchor_from": "center",
+    "anchor_to": "center"
+  },
+
+  "character_loading_anim_panel": {
+    "type": "image",
+    "size": [ "100%c + 12px", "100%c + 6px" ],
+    "texture": "textures/ui/Banners",
+    "layer": 600,
+    "controls": [
+      { "character_loading_anim@persona_cast_character_screen.character_loading_anim": {} }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#is_character_loading",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "cast_character_screen_right_side_model": {
     "type": "input_panel",
-    "size": [ "34%", "100%" ],
-    "layer": "$always_show_layer",
-    "anchor_to": "top_right",
-    "anchor_from": "top_right",
-    "gesture_tracking_button": "button.turn_doll",
-    "$always_show_layer": 500,
+    "size": [ "52%y", "100%" ],
+
+    "layer": 600,
+    "$skin_model_layer": 100,
+
     "always_handle_controller_direction": true,
+    "gesture_tracking_button": "button.turn_character_select_doll",
+    "$gesture_input_panel_control": "preset_input_panel",
+    "$skin_preview": "#cast_preview_skin",
+    "controls": [
+      { "skin_model_panel@persona.skin_viewer_panel_skin_model": {} },
+      { "skin_model_loading_anim@persona_cast_character_screen.character_loading_anim_panel": {} }
+    ],
     "button_mappings": [
       {
         "from_button_id": "button.menu_select",
-        "to_button_id": "button.turn_doll",
+        "to_button_id": "button.turn_character_select_doll",
         "mapping_type": "pressed",
         "button_up_right_of_first_refusal": true
       }
-    ],
-    "controls": [
-      {
-        "preset_panel@persona_cast_character_screen.persona_cast_preset_main_panel": {
-          "$preset_appearance_binding_name": "#cast_preview_skin",
-          "$preset_appearance_property_bag": {
-            "#preview_idx": 3,
-            "#in_cast_modal": true
-          }
-        }
-      }
-    ]
-  },
-
-  "persona_cast_preset_main_panel@persona_cast_character_screen.persona_cast_appearance_preset_panel": {
-    "size": [ "52%y", "100%" ],
-    "$preset_appearance_binding_name": "#appearance_preset_preview",
-    "$is_preset_appearance_using_gestures": true,
-    "$preset_gesture_source_control_name": "main_preset_persona",
-    "$preset_image_size": [ "100%", "100%" ],
-    "$preset_image": "textures/ui/profile_new_look",
-    "$select_preset_to_button_id": "button.cast_select",
-    "$preset_appearance_property_bag": {
-      "#preview_idx": 3
-    },
-    "bindings": [
-      {
-        "binding_name": "#center_preset_size",
-        "binding_condition": "always"
-      }
-    ]
-  },
-
-  "persona_cast_appearance_preset_panel": {
-    "type": "panel",
-    "offset": [ 0, -22 ],
-    "$preset_appearance_layer|default": 5,
-    "$is_preset_appearance_using_gestures|default": false,
-    "controls": [
-      {
-        "skin_renderer@profile.skin_model_renderer": {
-          "size": [ "115%", "115%" ],
-          "offset": [ 0, "-3%" ]
-        }
-      },
-      { "skin_select@profile.skin_select_button_input": {} },
-      { "skin_retry@profile.skin_retry_button": {} },
-      { "skin_loading@profile.skin_appearance_loading_panel": {} }
     ]
   }
 }
