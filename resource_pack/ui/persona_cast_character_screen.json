@@ -1,21 +1,87 @@
 {
   "namespace": "persona_cast_character_screen",
 
-  "popup_dialog__cast_character_preview@persona_cast_character_screen.popup_dialog__cast_character_select": {
-    "$character_cast_prompt_title": "menu.character_cast.preview_title",
-    "$close_button_to_button_id": "button.close_entry_prompt_dialog",
-    "$bottom_button_controls": [
+  "cast_modal_bottom_bar": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "95%", 32 ],
+    "offset": [ 0, -6 ],
+    "layer": 50,
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+
+    "$cast_modal_bottom_bar_controls|default": [],
+    "controls": "$cast_modal_bottom_bar_controls"
+  },
+
+  "cast_common_dialog_background@common_dialogs.dialog_background_hollow_2": {
+    "size": [ "100%", "100%" ],
+
+    "$inner_contents|default": "persona_cast_character_screen.cast_character_select_main",
+    "$inner_contents_size|default": [ "100% - 16px", "100% - 65px" ],
+    "$inner_contents_offset|default": [ 0, -9.5 ],
+
+    "controls": [
+      { "top_bar@persona_cast_character_screen.common_cast_modal_top_bar": {} },
       {
-        "close_button@common_buttons.light_text_button": {
-          "size": [ "100%", "100%" ],
-          "$pressed_button_name": "button.close_entry_prompt_dialog",
-          "$button_text": "gui.close"
+        "popup_inner_contents@$inner_contents": {
+          "size": "$inner_contents_size",
+          "offset": "$inner_contents_offset"
         }
+      },
+      { "cast_modal_bottom_bar@persona_cast_character_screen.cast_modal_bottom_bar": {} }
+    ]
+  },
+
+  "cast_modal_panel": {
+    "type": "input_panel",
+
+    "$show_close_button": true,
+
+    "controls": [
+      { "cast_preview_modal_content@persona_cast_character_screen.cast_common_dialog_background": {} }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.menu_select",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.menu_ok",
+        "mapping_type": "focused"
       }
     ]
   },
 
-  "popup_dialog__cast_character_select@popup_dialog.popup_dialog": {
+  "popup_dialog__cast_character_select@persona_cast_character_screen.common_dcast_popup_framework": {
+    "$cast_modal_bottom_bar_controls": [
+      {
+        "select_button@common_buttons.light_text_button": {
+          "size": [ "100%", "100%" ],
+          "$pressed_button_name": "button.cast_select",
+          "$button_text": "gui.select",
+          "$focus_override_down": "FOCUS_OVERRIDE_STOP",
+          "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+          "$focus_override_right": "FOCUS_OVERRIDE_STOP",
+          "bindings": [
+            {
+              "binding_name": "#cast_enabled_select",
+              "binding_name_override": "#enabled"
+            }
+          ]
+        }
+      }
+    ],
+
+    "controls": [
+      { "background@persona_cast_character_screen.common_background_blocker": {} },
+      { "popup_background@persona_cast_character_screen.cast_modal_panel": { "size": [ "57%", "88%" ] } }
+    ]
+  },
+
+  "common_dcast_popup_framework@popup_dialog.popup_dialog": {
     "size": [ "100%", "100%" ],
     "layer": 500,
     "$section_content_size": [ "100%", "100% - 16px" ],
@@ -60,110 +126,31 @@
         "mapping_type": "global",
         "scope": "view"
       }
-    ],
-    "controls": [
-      {
-        "background@profile.modal_window_input_blocker": {
-          "controls": [
-            {
-              "modal_background_button": {
-                "type": "button",
-                "size": [ "100%", "100%" ],
-                "button_mappings": [
-                  {
-                    "from_button_id": "button.menu_select",
-                    "to_button_id": "$close_button_to_button_id",
-                    "mapping_type": "pressed"
-                  },
-                  {
-                    "from_button_id": "button.menu_ok",
-                    "to_button_id": "$close_button_to_button_id",
-                    "mapping_type": "focused"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      },
-      {
-        "popup_background@persona_cast_character_screen.popup_cast_character_select_bg": {
-          "anchor_from": "center",
-          "anchor_to": "center",
-          "$show_close_button": true,
-          "size": [ "116%y", "90%" ],
-          "min_size": [ 297, 256 ],
-          "max_size": [ 464, 400 ]
-        }
-      }
     ]
   },
 
-  "popup_cast_character_select_bg@common_dialogs.dialog_background_hollow_2": {
-    "size": [ "100%", "50%" ],
-    "$section_content_size": [ "100%", "100% - 16px" ],
-
+  "common_cast_modal_top_bar": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%c" ],
+    "layer": 2,
+    "$close_button_offset": [ 0, 0 ],
+    "$use_compact_close_button": false,
     "$character_cast_prompt_title|default": "menu.character_cast.select_title",
-
     "controls": [
       {
-        "top_bar": {
-          "type": "panel",
-          "anchor_from": "top_left",
-          "anchor_to": "top_left",
-          "size": [ "100%", "100%c" ],
+        "title_panel": {
+          "type": "label",
+          "text": "$character_cast_prompt_title",
           "layer": 2,
-          "$close_button_offset": [ 0, 0 ],
-          "$use_compact_close_button": false,
-          "controls": [
-            {
-              "title_panel": {
-                "type": "label",
-                "text": "$character_cast_prompt_title",
-                "layer": 2,
-                "offset": [ 0, 8 ],
-                "color": "$profile_create_character_selected_color",
-                "anchor_from": "top_middle",
-                "anchor_to": "top_middle"
-              }
-            },
-            { "close_button_holder@common_dialogs.common_close_button_holder": {} }
-          ]
+          "offset": [ 0, 8 ],
+          "color": "$profile_create_character_selected_color",
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle"
         }
       },
-      {
-        "popup_inner_contents@persona_cast_character_screen.cast_character_select_main": {}
-      },
-      {
-        "popup_bottom_bar": {
-          "type": "panel",
-          "size": [ "95%", 32 ],
-          "offset": [ 0, -6 ],
-          "layer": 50,
-          "anchor_from": "bottom_middle",
-          "anchor_to": "bottom_middle",
-
-          "$bottom_button_controls|default": [
-            {
-              "select_button@common_buttons.light_text_button": {
-                "size": [ "100%", "100%" ],
-                "$pressed_button_name": "button.cast_select",
-                "$button_text": "gui.select",
-                "$focus_override_down": "FOCUS_OVERRIDE_STOP",
-                "$focus_override_left": "FOCUS_OVERRIDE_STOP",
-                "$focus_override_right": "FOCUS_OVERRIDE_STOP",
-                "bindings": [
-                  {
-                    "binding_name": "#cast_enabled_select",
-                    "binding_name_override": "#enabled"
-                  }
-                ]
-              }
-            }
-          ],
-          "controls": "$bottom_button_controls"
-        }
-      }
+      { "close_button_holder@common_dialogs.common_close_button_holder": {} }
     ]
   },
 
@@ -175,12 +162,12 @@
     "offset": [ 0, -9.5 ],
     "controls": [
       {
-        "background_image": {
+        "modal_inner_background": {
           "type": "image",
           "size": [ "100%", "100%" ],
           "texture": "textures/ui/White",
           "color": "black",
-          "alpha": 0.8
+          "alpha": 1.0
         }
       },
       {
@@ -209,17 +196,16 @@
     "focus_navigation_mode_right": "stop",
     "focus_navigation_mode_up": "stop",
 
-    "$scroll_size": [ 5, "100% - 4px" ],
-    "$scrolling_content": "persona_cast_character_screen.cast_grid_with_buttons",
-    "$comment_panel_size": [ "40% - 1px", "100%c" ],
-    "$scroll_view_port_size|default": [ "100% - 2px", "100%" ],
-    "$scroll_view_port_size_touch|default": [ "100% - 2px", "100%" ]
+    "$scroll_size": [ 2, "100% - 4px" ],
+    "$scrolling_content": "persona_cast_character_screen.cast_grid_panel",
+    "$scroll_view_port_size": [ "100%", "100%" ],
+    "$scroll_view_port_size_touch": [ "100%", "100%" ]
   },
 
   "cast_grid_with_buttons": {
     "type": "stack_panel",
     "orientation": "vertical",
-    "size": [ "100%-1px", "100%c" ],
+    "size": [ "100% - 4px", "100%c" ],
     "controls": [
       {
         "top_spacing": {
@@ -235,7 +221,6 @@
           "grid_dimension_binding": "#cast_character_options_dimensions",
           "collection_name": "cast_character_options",
           "$cast_single_character_collection_name": "cast_character_options",
-
           "bindings": [
             {
               "binding_type": "global",
@@ -250,6 +235,15 @@
           "size": [ "100%", 1 ]
         }
       }
+    ]
+  },
+
+  "cast_grid_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "min_size": [ "100%", "100%c" ],
+    "controls": [
+      { "cast_grid@persona_cast_character_screen.cast_grid_with_buttons": {} }
     ]
   },
 
@@ -463,6 +457,520 @@
         "to_button_id": "button.turn_character_select_doll",
         "mapping_type": "pressed",
         "button_up_right_of_first_refusal": true
+      }
+    ]
+  },
+
+  "common_background_blocker@profile.modal_window_input_blocker": {
+    "controls": [
+      {
+        "modal_background_button": {
+          "type": "button",
+          "size": [ "100%", "100%" ],
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "$close_button_to_button_id",
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "$close_button_to_button_id",
+              "mapping_type": "focused"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "common_preview_page_framework@persona_cast_character_screen.common_dcast_popup_framework": {
+    "$close_button_to_button_id": "button.close_entry_prompt_dialog",
+    "$character_cast_prompt_title": "menu.character_cast.ftue_title",
+
+    "$cast_modal_bottom_bar_controls": [
+      {
+        "left_bottom_button@common_buttons.light_text_button": {
+          "size": [ "fill", "100%" ],
+          "$pressed_button_name": "button.cast_left_select",
+          "$left_button_text|default": "",
+          "$button_text": "$left_button_text",
+          "$focus_override_down": "FOCUS_OVERRIDE_STOP",
+          "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+          "bindings": [
+            {
+              "binding_name": "#cast_enabled_select",
+              "binding_name_override": "#enabled"
+            }
+          ]
+        }
+      },
+      {
+        "padding": {
+          "type": "panel",
+          "size": [ 4, "100%" ]
+        }
+      },
+      {
+        "right_bottom_button@common_buttons.light_text_button": {
+          "size": [ "fill", "100%" ],
+          "$pressed_button_name": "button.cast_right_select",
+          "$right_button_text|default": "",
+          "$button_text": "$right_button_text",
+          "$focus_override_down": "FOCUS_OVERRIDE_STOP",
+          "$focus_override_right": "FOCUS_OVERRIDE_STOP",
+          "bindings": [
+            {
+              "binding_name": "#cast_enabled_select",
+              "binding_name_override": "#enabled"
+            }
+          ]
+        }
+      }
+    ],
+
+    "controls": [
+      { "background@persona_cast_character_screen.common_background_blocker": {} },
+      { "cast_preview_modal@persona_cast_character_screen.cast_modal_panel": { "size": [ "71.40625%", "85.0198%" ] } }
+    ],
+
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "$close_button_to_button_id",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.menu_ok",
+        "mapping_type": "focused"
+      },
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.menu_select",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_left",
+        "to_button_id": "button.menu_left",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_right",
+        "to_button_id": "button.menu_right",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_up",
+        "to_button_id": "button.menu_up",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_down",
+        "to_button_id": "button.menu_down",
+        "mapping_type": "global",
+        "scope": "view"
+      }
+    ]
+  },
+
+  "cast_preview_page_one@persona_cast_character_screen.common_preview_page_framework": {
+    "$left_button_text": "dr.button.ok",
+    "$right_button_text": "menu.character_cast.see_how_to_select_one",
+    "$inner_contents": "persona_cast_character_screen.cast_preview_page_one_inner_section"
+  },
+
+  "cast_preview_page_two@persona_cast_character_screen.common_preview_page_framework": {
+    "$left_button_text": "gui.back",
+    "$right_button_text": "menu.character_cast.go_to_dressing_room",
+    "$inner_contents": "persona_cast_character_screen.cast_preview_page_two_inner_section"
+  },
+
+  "cast_preview_page_one_inner_section": {
+    "type": "panel",
+    "controls": [
+      {
+        "modal_inner_background": {
+          "type": "image",
+          "size": [ "100%", "100%" ],
+          "texture": "textures/ui/White",
+          "color": "black",
+          "alpha": 1.0
+        }
+      },
+      {
+        "cast_content": {
+          "type": "input_panel",
+          "size": [ "100%", "100%" ],
+          "next_sub_page_button_name": "button.cast_subpage_right",
+          "prev_sub_page_button_name": "button.cast_subpage_left",
+          "$cast_image_subpage": "cast_subpage_indicator",
+          "button_mappings": [
+            {
+              "from_button_id": "button.cast_subpage_left",
+              "to_button_id": "button.cast_subpage_left",
+              "mapping_type": "global",
+              "scope": "view"
+            },
+            {
+              "from_button_id": "button.cast_subpage_right",
+              "to_button_id": "button.cast_subpage_right",
+              "mapping_type": "global",
+              "scope": "view"
+            },
+            {
+              "from_button_id": "button.menu_tab_left",
+              "to_button_id": "button.cast_subpage_left",
+              "mapping_type": "global",
+              "scope": "view"
+            },
+            {
+              "from_button_id": "button.menu_tab_right",
+              "to_button_id": "button.cast_subpage_right",
+              "mapping_type": "global",
+              "scope": "view"
+            }
+          ],
+          "controls": [
+            {
+              "cast_image": {
+                "type": "image_cycler",
+                "size": [ "178%y", "100%" ],
+                "max_size": [ "100%", "100%" ],
+                "target_cycler_name": "cast_content",
+                "images": [
+                  "textures/ui/default_cast/ftue/00_dcast_lineup.png",
+                  "textures/ui/default_cast/ftue/01_dcast_lineup_zuri.png",
+                  "textures/ui/default_cast/ftue/02_dcast_lineup_noor.png",
+                  "textures/ui/default_cast/ftue/03_dcast_lineup_kai.png",
+                  "textures/ui/default_cast/ftue/04_dcast_lineup_ari.png",
+                  "textures/ui/default_cast/ftue/05_dcast_lineup_steve.png",
+                  "textures/ui/default_cast/ftue/06_dcast_lineup_alex.png",
+                  "textures/ui/default_cast/ftue/07_dcast_lineup_efe.png",
+                  "textures/ui/default_cast/ftue/08_dcast_lineup_makena.png",
+                  "textures/ui/default_cast/ftue/09_dcast_lineup_sunny.png"
+                ]
+              }
+            },
+            {
+              "cast_vertical_panel": {
+                "type": "stack_panel",
+                "orientation": "vertical",
+                "anchor_from": "bottom_left",
+                "anchor_to": "bottom_left",
+                "size": [ "100%", "34%" ],
+                "controls": [
+                  {
+                    "controls_label_panel": {
+                      "type": "panel",
+                      "size": [ "100%", "100%c" ],
+                      "controls": [
+                        {
+                          "controls_label": {
+                            "type": "label_cycler",
+                            "target_cycler_name": "cast_content",
+                            "layer": 2,
+                            "offset": [ 0, 8 ],
+                            "text_labels": [
+                              "menu.character_cast.ftue_page1",
+                              "skin.Standard.Zuri",
+                              "skin.Standard.Noor",
+                              "skin.Standard.Kai",
+                              "skin.Standard.Ari",
+                              "skin.Standard.Steve",
+                              "skin.Standard.Alex",
+                              "skin.Standard.Efe",
+                              "skin.Standard.Makena",
+                              "skin.Standard.Sunny"
+                            ],
+                            "text": "menu.character_cast.ftue_page1"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "buffer_panel": {
+                      "type": "panel",
+                      "size": [ "100%", 6 ]
+                    }
+                  },
+                  { "controls_shoulder_button_display_panel@persona_cast_character_screen.ftue_subpage_indicator_panel": {} }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "chevron_image_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "chevron_image@common.chevron_image": { "color": "$text_color" } }
+    ]
+  },
+
+  "chevron_button@common_buttons.light_content_button": {
+    "consume_event": false,
+    "$button_content": "persona_cast_character_screen.chevron_image_panel",
+
+    "$use_right_chevron|default": false,
+    "$chevron_visible_source_control|default": "gamepad_helper_left_bumper",
+    "$chevron_image_name|default": "textures/ui/chevron_left",
+    "variables": [
+      {
+        "requires": "$use_right_chevron",
+        "$chevron_visible_source_control": "gamepad_helper_right_bumper",
+        "$chevron_image_name": "textures/ui/chevron_right"
+      }
+    ],
+
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed",
+        "scope": "global"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "focused",
+        "scope": "global"
+      }
+    ],
+
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "$chevron_visible_source_control",
+        "source_property_name": "(not #visible)",
+        "target_property_name": "#visible",
+        "resolve_sibling_scope": true
+      }
+    ]
+  },
+
+  "shift_page_panel": {
+    "type": "panel",
+    "size": [ 30, "100%" ],
+    "$focus_wrap_enabled": false,
+    "controls": [
+      {
+        "centering_panel": {
+          "type": "panel",
+          "size": [ "100%", 25 ],
+          "controls": "$shift_page_controls"
+        }
+      }
+    ]
+  },
+
+  "shift_page_left_panel@persona_cast_character_screen.shift_page_panel": {
+    "$pressed_button_name": "button.cast_subpage_left",
+
+    "$focus_id": "shift_page_left_button",
+    "$focus_override_right": "shift_page_right_button",
+    "$focus_override_up": "FOCUS_OVERRIDE_STOP",
+
+    "$shift_page_controls": [
+      { "gamepad_helper_left_bumper@common.gamepad_helper_left_bumper": {} },
+      { "left_chevron_button@persona_cast_character_screen.chevron_button": {} }
+    ]
+  },
+
+  "shift_page_right_panel@persona_cast_character_screen.shift_page_panel": {
+    "$pressed_button_name": "button.cast_subpage_right",
+    "$use_right_chevron": true,
+
+    "$focus_id": "shift_page_right_button",
+    "$focus_override_left": "shift_page_left_button",
+    "$focus_override_up": "FOCUS_OVERRIDE_STOP",
+
+    "$shift_page_controls": [
+      { "gamepad_helper_right_bumper@common.gamepad_helper_right_bumper": {} },
+      { "right_chevron_button@persona_cast_character_screen.chevron_button": {} }
+    ]
+  },
+
+  "horizontal_8px_padding": {
+    "type": "panel",
+    "size": [ 8, "100%" ]
+  },
+
+  "horizontal_20px_padding": {
+    "type": "panel",
+    "size": [ 20, "100%" ]
+  },
+
+  "ftue_subpage_indicator_panel": {
+    "type": "panel",
+    "size": [ "100%", "fill" ],
+    "controls": [
+      {
+        "controls_shoulder_button_display": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            { "left_padding@persona_cast_character_screen.horizontal_20px_padding": {} },
+            { "left_shoulder_button_panel@persona_cast_character_screen.shift_page_left_panel": {} },
+            { "left_shoulder_button_padding@persona_cast_character_screen.horizontal_8px_padding": {} },
+            {
+              "page_indicator_grid": {
+                "type": "grid_page_indicator",
+                "size": [ "fill", "100%" ],
+                "grid_item_template": "persona_cast_character_screen.indiviaul_cast_page_indicator",
+                "grid_item_when_current": "panel_when_current_page",
+                "grid_item_when_not_current": "panel_when_not_current_page",
+                "collection_name": "cast_page_indicator",
+                "$cast_grid_subpage_indicator": "cast_grid_page_indicator",
+                "cycler_manager_size_control_target": "cast_content" //"cast_image"
+              }
+            },
+            { "right_shoulder_button_padding@persona_cast_character_screen.horizontal_8px_padding": {} },
+            { "right_shoulder_button_panel@persona_cast_character_screen.shift_page_right_panel": {} },
+            { "right_padding@persona_cast_character_screen.horizontal_20px_padding": {} }
+          ]
+        }
+      }
+    ]
+  },
+
+  "indiviaul_cast_page_indicator": {
+    "type": "panel",
+    "size": [ "fill", "100%" ],
+    "alpha": 0.8,
+    "controls": [
+      {
+        "panel_when_current_page": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            {
+              "panel_with_padding": {
+                "type": "panel",
+                "size": [ 6, 6 ],
+                "controls": [
+                  {
+                    "cast_dot": {
+                      "type": "image",
+                      "size": [ 4, 4 ],
+                      "texture": "textures/ui/White",
+                      "color": "white"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "panel_when_not_current_page": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            {
+              "panel_with_padding": {
+                "type": "panel",
+                "size": [ 6, 6 ],
+                "controls": [
+                  {
+                    "cast_dot": {
+                      "type": "image",
+                      "size": [ 4, 4 ],
+                      "texture": "textures/ui/White",
+                      "alpha": 0.5
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "cast_preview_page_two_inner_section": {
+    "type": "panel",
+    "$instruction_text_size": "normal",
+    "controls": [
+      {
+        "background_image": {
+          "type": "image",
+          "size": [ "100%", "100%" ],
+          "texture": "textures/ui/default_cast/ftue/how_to_page",
+          "alpha": 1.0,
+          "fill": true
+        }
+      },
+      {
+        "bottom_text_stack_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "24%" ],
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left",
+          "controls": [
+            {
+              "left_buffer_panel": {
+                "type": "panel",
+                "size": [ 2, "100%" ]
+              }
+            },
+            {
+              "left_side_text_panel": {
+                "type": "panel",
+                "size": [ "fill", "100%" ],
+                "controls": [
+                  {
+                    "left_size_label": {
+                      "size": [ "100%", "100%" ],
+                      "layer": 2,
+                      "type": "label",
+                      "font_size": "$instruction_text_size",
+                      "color": "$generic_button_text_color",
+                      "text": "menu.character_cast.ftue_page2_left"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "middle_buffer_panel": {
+                "type": "panel",
+                "size": [ 10, "100%" ]
+              }
+            },
+            {
+              "right_side_text_panel": {
+                "type": "panel",
+                "size": [ "fill", "100%" ],
+                "controls": [
+                  {
+                    "right_size_label": {
+                      "size": [ "100%-2px", "100%" ],
+                      "offset": [ 2, 0 ],
+                      "layer": 2,
+                      "type": "label",
+                      "font_size": "$instruction_text_size",
+                      "color": "$generic_button_text_color",
+                      "text": "menu.character_cast.ftue_page2_right"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
       }
     ]
   }

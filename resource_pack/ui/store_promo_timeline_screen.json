@@ -317,7 +317,7 @@
               }
             },
             {
-              "row_image@promo_timeline.store_row_image": {}
+              "row_image@promo_timeline.promo_image_panel": {}
             }
           ]
         }
@@ -341,30 +341,102 @@
     ]
   },
 
-  "store_row_image": {
+  "promo_image_panel": {
     "type": "image",
     "layer": 3,
-    "visible": false,
-    "size": [ 194, 80 ],
-    "bindings": [
+    "size": [ 194, "100%c" ],
+    "controls": [
       {
-        "binding_name": "#image_is_ready",
-        "binding_name_override": "#visible"
+        "button_image_panel@promo_timeline.promo_button_image_panel": {
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_name": "(#store_row_image_animation_name = '')", // static image is visible if no animation is available
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
       },
       {
-        "binding_name": "#store_row_image_texture_name",
-        "binding_name_override": "#texture"
-      },
-      {
-        "binding_name": "#store_row_image_texture_filepath",
-        "binding_name_override": "#texture_file_system"
-      },
-      {
-        "binding_type": "$store_factory_collection_details",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_collection_prefix": "$store_factory_collection_prefix"
+        "button_animated_panel@promo_timeline.promo_button_image_panel": {
+          "$promo_button_image_content": "promo_timeline.promo_button_animation",
+          "$promo_texture_binding_name": "#store_row_image_animation_name",
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_name": "(not (#store_row_image_animation_name = ''))", // animation is visible if service response contains animation field
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
       }
     ]
+  },
+
+  "promo_button_image_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "$promo_button_image_content|default": "promo_timeline.promo_button_image",
+    "$promo_texture_binding_name|default": "#store_row_image_texture_name",
+    "controls": [
+      {
+        "button_image@$promo_button_image_content": {
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_name": "#image_is_ready",
+              "binding_name_override": "#visible"
+            },
+            {
+              "binding_name": "$promo_texture_binding_name",
+              "binding_name_override": "#texture"
+            },
+            {
+              "binding_name": "#store_row_image_texture_filepath",
+              "binding_name_override": "#texture_file_system"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "promo_button_image": {
+    "type": "image",
+    "size": [ 194, 80 ],
+    "texture": "$promo_texture_binding_name",
+    "allow_debug_missing_texture": false,
+    "layer": 1
+  },
+
+  "promo_button_animation": {
+    "type": "image",
+    "texture": "$promo_texture_binding_name",
+    "size": [ 194, 120 ],
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "offset": [ 0, 0 ],
+    "layer": 50,
+    "uv_size": [ 194, 120 ],
+    "uv": "@promo_timeline.wishlist_rabbit_ui_animation",
+    "disable_anim_fast_forward": true
+  },
+
+  "wishlist_rabbit_ui_animation": {
+    "anim_type": "aseprite_flip_book",
+    "initial_uv": [ 0, 0 ]
   },
 
   "banner_button@common_buttons.new_ui_width_fitting_button_panel": {
