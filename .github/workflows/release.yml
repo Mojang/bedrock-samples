@@ -23,8 +23,10 @@ jobs:
 
           if [[ "${{ env.RELEASE_VERSION }}" == "v${LATEST}" ]]; then
               echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+              echo "RELEASE_NAME=${{ env.RELEASE_VERSION }}-preview" >> $GITHUB_OUTPUT
           else
               echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+              echo "RELEASE_NAME=${{ env.RELEASE_VERSION }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Zip contents
@@ -51,6 +53,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          name: ${{ steps.check_prerelease.outputs.RELEASE_NAME }}
           prerelease: ${{ steps.check_prerelease.outputs.PRERELEASE }}
           fail_on_unmatched_files: true
           files: |
