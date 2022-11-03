@@ -1,30 +1,65 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Generate release
 
-# Controls when the workflow will run
-on:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+on:  
+  push:
+    tags:
+      - '*'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+   createrelease:
+    name: Create release
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Check if pre-release
+        id: check_prerelease
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          LATEST=`cat versions.json | jq -r '.latest.version'`
+
+          if [[ "${{ env.RELEASE_VERSION }}" == "v${LATEST}" ]]; then
+              echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+          else
+              echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Zip contents
+        run: |
+
+          # Zip resource pack
+          cd resource_pack/
+          zip -r resource_pack.zip .
+          mv resource_pack.zip ../
+          cd ..
+
+          # Zip behaviour pack
+          cd behaviour_pack/
+          zip -r behaviour_pack.zip .
+          mv behaviour_pack.zip ../
+          cd ..
+
+          # Zip documentation
+          cd documentation/
+          zip -r documentation.zip .
+          mv documentation.zip ../
+          cd ..
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: ${{ steps.check_prerelease.outputs.PRERELEASE }}
+          fail_on_unmatched_files: true
+          files: |
+            resource_pack.zip
+            behaviour_pack.zip
+            documentation.zip
+
+      - name: Cleanup
+        run: |
+          rm resource_pack.zip
+          rm behaviour_pack.zip
+          rm documentation.zip    
