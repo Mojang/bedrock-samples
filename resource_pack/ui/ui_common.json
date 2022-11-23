@@ -1501,7 +1501,7 @@
         "from_button_id": "button.menu_select",
         "to_button_id": "$text_edit_box_selected_to_button_id",
         "handle_select": true,
-        "handle_deselect": true,
+        "handle_deselect": false,
         "mapping_type": "pressed"
       },
       {
@@ -1926,7 +1926,7 @@
         "from_button_id": "button.menu_select",
         "to_button_id": "$text_edit_box_selected_to_button_id",
         "handle_select": true,
-        "handle_deselect": true,
+        "handle_deselect": false,
         "mapping_type": "pressed"
       },
       {
@@ -1975,7 +1975,7 @@
         "from_button_id": "button.menu_select",
         "to_button_id": "$text_edit_box_selected_to_button_id",
         "handle_select": true,
-        "handle_deselect": true,
+        "handle_deselect": false,
         "mapping_type": "pressed"
       },
       {
@@ -3314,6 +3314,20 @@
                     "binding_name_override": "#hover_text",
                     "binding_type": "collection",
                     "binding_collection_name": "$item_collection_name"
+                  }
+                ]
+              }
+            },
+            {
+              "bundle_tooltip@common.bundle_tooltip": {
+                "layer": 29,
+                "$hover_text_binding_name|default": "#hover_text",
+                "bindings": [
+                  {
+                    "binding_name": "$hover_text_binding_name",
+                    "binding_name_override": "#hover_text",
+                    "binding_type": "collection",
+                    "binding_collection_name": "$item_collection_name"
                   },
                   {
                     "binding_name": "#hover_items_id",
@@ -3350,7 +3364,7 @@
     "type": "panel",
     "controls": [
       {
-        "hover_text@common.hover_text": {
+        "bundle_tooltip@common.bundle_tooltip": {
           "alpha": "@common.bundle_popup_text_fade_out",
           "layer": 29,
           "$hover_text_binding_name|default": "#hover_text",
@@ -3400,6 +3414,13 @@
   "hover_text": {
     "type": "custom",
     "renderer": "hover_text_renderer",
+    "layer": 5,
+    "allow_clipping": false
+  },
+
+  "bundle_tooltip": {
+    "type": "custom",
+    "renderer": "bundle_renderer",
     "layer": 5,
     "allow_clipping": false
   },
@@ -4193,6 +4214,7 @@
     "$view_port_size_touch|default": [ "100%", "100%" ],
     "$scroll_bar_contained_touch|default": true,
     "$scroll_size_touch|default": [ 4, "100%" ],
+    "$wider_scroll_area|default": false,
 
     // The images used for the background, scroll track, and scroll box (for
     // mouse and for touch) can be overridden by specifying
@@ -4210,7 +4232,17 @@
       {
         "scroll_touch@common.scrolling_panel_base": {
           "ignored": "(not $touch)",
-          "size": "$scrolling_pane_size_touch",
+          "variables": [
+            {
+              "requires": "$wider_scroll_area",
+              "$pane_size_touch": "$scrolling_pane_size_touch"
+            },
+            {
+              "requires": "(not $wider_scroll_area)",
+              "$pane_size_touch": "$scrolling_pane_size"
+            }
+          ],
+          "size": "$pane_size_touch",
           "offset": "$scrolling_pane_offset",
           "$scroll_bar_contained": "$scroll_bar_contained_touch",
           "$use_touch_mode": true,
@@ -4850,7 +4882,8 @@
     "$scroll_view_port_size_touch": [ "100% - 18px", "100% - 2px" ],
     "$scroll_view_port_offset": [ 1, 1 ],
     "$scroll_view_port_offset_touch": [ 0, 1 ],
-    "$scroll_box_size": [ 4, "100%"],
+    "$scroll_box_size": [ 4, "100%" ],
+    "$wider_scroll_area": true,
 
     "$scroll_bar_right_padding_size": [ 0, 0 ],
     "$scroll_background_image_control": "common.container_scroll_background_image",
@@ -6789,6 +6822,50 @@
         }
       }
     ]
+  },
+
+  "common_cycler": {
+    "$next_page_button_event|default": "button.cast_subpage_right",
+    "$prev_page_button_event|default": "button.cast_subpage_left",
+    "next_sub_page_button_name": "$next_page_button_event",
+    "prev_sub_page_button_name": "$prev_page_button_event",
+
+    "button_mappings": [
+      {
+        "from_button_id": "$prev_page_button_event",
+        "to_button_id": "$prev_page_button_event",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "$next_page_button_event",
+        "to_button_id": "$next_page_button_event",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_tab_left",
+        "to_button_id": "$prev_page_button_event",
+        "mapping_type": "global",
+        "scope": "view"
+      },
+      {
+        "from_button_id": "button.menu_tab_right",
+        "to_button_id": "$next_page_button_event",
+        "mapping_type": "global",
+        "scope": "view"
+      }
+    ]
+  },
+
+  "image_cycler@common.common_cycler": {
+    "type": "image_cycler",
+    "images": "$image_cycler_images"
+  },
+
+  "text_cycler@common.common_cycler": {
+    "type": "label_cycler",
+    "text_labels": "$text_cycler_labels"
   }
 
 }
