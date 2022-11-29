@@ -5,7 +5,14 @@
             "identifier": "minecraft:bee",
             "is_spawnable": true,
             "is_summonable": true,
-            "is_experimental": false
+            "is_experimental": false,
+            "properties": {
+                "minecraft:has_nectar": {
+                    "type": "bool",
+                    "client_sync": true,
+                    "default": "query.had_component_group('has_nectar')"
+                }
+            }
         },
         "component_groups": {
             "bee_baby": {
@@ -216,7 +223,6 @@
                 }
             },
             "has_nectar": {
-                "minecraft:is_charged": {},
                 "minecraft:grows_crop": {
                     "charges": 10,
                     "chance": 0.03
@@ -317,8 +323,8 @@
                                         ]
                                     },
                                     { // Assume we are already going home if we have nectar
-                                        "test": "has_component",
-                                        "value": "minecraft:is_charged",
+                                        "test": "bool_property",
+                                        "domain": "minecraft:has_nectar",
                                         "operator": "!="
                                     },
                                     { // Assume we are already going home if we have nectar
@@ -591,6 +597,9 @@
                         "shelter_detection",
                         "escape_fire"
                     ]
+                },
+                "set_property": {
+                    "minecraft:has_nectar": false 
                 }
             },
             "hive_destroyed": {
@@ -643,6 +652,9 @@
                         "has_nectar",
                         "abort_shelter_detection"
                     ]
+                },
+                "set_property": {
+                    "minecraft:has_nectar": false
                 }
             },
             "minecraft:hive_full": {
@@ -727,6 +739,9 @@
                         "has_nectar",
                         "default_sound"
                     ]
+                },
+                "set_property": {
+                    "minecraft:has_nectar": true
                 }
             },
             "find_hive_event": {
@@ -746,9 +761,9 @@
                 "sequence": [
                     {
                        "filters": {
-                           "test": "has_component",
+                           "test": "bool_property",
                            "operator": "!=",
-                           "value": "minecraft:is_charged"
+                           "domain": "minecraft:has_nectar"
                        },
                        "remove": {
                            "component_groups": [
@@ -764,8 +779,8 @@
                     },
                     {
                        "filters": {
-                           "test": "has_component",
-                           "value": "minecraft:is_charged"
+                           "test": "bool_property",
+                           "domain": "minecraft:has_nectar"
                        },
                        "remove": {
                            "component_groups": [
