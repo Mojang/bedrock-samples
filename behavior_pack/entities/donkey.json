@@ -157,13 +157,33 @@
             {
               "slot": 0,
               "item": "saddle",
-              "accepted_items": ["saddle"],
+              "accepted_items": [ "saddle" ],
               "on_equip": {
                 "event": "minecraft:donkey_saddled"
               },
               "on_unequip": {
                 "event": "minecraft:donkey_unsaddled"
               }
+            }
+          ]
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "play_sounds": "armor.equip_generic",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_sneaking", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "equip_item_slot": 0,
+              "interact_text": "action.interact.equip"
             }
           ]
         },
@@ -238,8 +258,25 @@
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test" :  "is_family", "subject" : "other", "value" :  "player"},
-                    { "test" :  "has_equipment", "domain": "hand","subject" : "other", "value" :  "chest"}
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_sneaking", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "equip_item_slot": 0,
+              "interact_text": "action.interact.saddle"
+            },
+            {
+              "play_sounds": "armor.equip_generic",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_sneaking", "subject": "other", "value": false },
+                    { "test": "has_equipment", "domain": "hand", "subject": "other", "value": "chest" }
                   ]
                 },
                 "event": "minecraft:on_chest",
@@ -254,7 +291,26 @@
 
       "minecraft:donkey_chested": {
         "minecraft:is_chested": {
-
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "play_sounds": "armor.equip_generic",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_sneaking", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "equip_item_slot": 0,
+              "interact_text": "action.interact.saddle"
+            }
+          ]
         }
       },
 
@@ -291,7 +347,12 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -375,7 +436,7 @@
       "minecraft:behavior.random_look_around": {
         "priority": 8
       },
-	  "minecraft:physics": {
+      "minecraft:physics": {
       },
       "minecraft:pushable": {
         "is_pushable": true,
