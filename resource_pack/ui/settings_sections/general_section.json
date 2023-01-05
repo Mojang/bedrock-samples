@@ -602,6 +602,28 @@
       }
     ]
   },
+  "sign_out_button_content": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      {
+        "padded_label@common.empty_panel": {
+          "size": [ "100%c + 6px", "100%" ],
+          "controls": [
+            {
+              "label": {
+                "type": "label",
+                "size": [ "default", "default" ],
+                "color": "$dark_body_text_color",
+                "text": "accounts.signOut"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
 
   "switch_accounts_panel": {
     "type": "stack_panel",
@@ -644,6 +666,25 @@
     ]
   },
 
+  "sign_out_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "sign_out@common_buttons.light_content_button": {
+          "size": [ "100%", "24px" ],
+          "enabled": "$is_pregame",
+          // Smaller size to allow the parent element to act as padding
+          "$button_size_override": [ "100%", "100% - 4px" ],
+          "$button_content": "general_section.sign_out_button_content",
+          "$pressed_button_name": "button.sign_out"
+        }
+      }
+    ]
+  },
+
   "account_section": {
     "type": "stack_panel",
     "size": [ "100%", "100%c" ],
@@ -660,14 +701,16 @@
         "target_property_name": "#visible"
       }
     ],
-    "controls": [
+    "controls": [      
+      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
-        "switch_accounts@general_section.switch_accounts_panel": {
-          "ignored": "$ignore_profile_switch_account_button"
+        "use_edu_remember_me@settings_common.option_toggle": {
+          "ignored": "$ignore_profile_sso_toggle",
+          "$option_label": "options.adEduRememberMe",
+          "$option_binding_name": "#ad_edu_remember_me",
+          "$toggle_name": "ad_edu_remember_me"
         }
       },
-
-      // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingUseSSO": {
           "ignored": "$ignore_profile_sso_toggle",
@@ -685,11 +728,13 @@
         }
       },
       {
-        "use_edu_remember_me@settings_common.option_toggle": {
-          "ignored": "$ignore_profile_sso_toggle",
-          "$option_label": "options.adEduRememberMe",
-          "$option_binding_name": "#ad_edu_remember_me",
-          "$toggle_name": "ad_edu_remember_me"
+        "switch_accounts@general_section.switch_accounts_panel": {
+          "ignored": "$ignore_profile_switch_account_button"
+        }
+      },
+      {
+        "sign_out@general_section.sign_out_panel": {
+          "ignored": "$ignore_profile_sign_out_button"
         }
       },
 
@@ -892,22 +937,6 @@
           "bindings": [
             {
               "binding_name": "#MinecraftAccount_id"
-            }
-          ]
-        }
-      },
-      {
-        "commerce_id_label": {
-          "type": "label",
-          "color": "$body_text_color",
-          "offset": [ 2, 0 ],
-          "size": [ "100%", "default" ],
-          "anchor_from": "top_left",
-          "anchor_to": "top_left",
-          "text": "#commerce_id",
-          "bindings": [
-            {
-              "binding_name": "#commerce_id"
             }
           ]
         }
@@ -1503,7 +1532,7 @@
         "copy_coordinate_section_stack_panel": {
           "type": "stack_panel",
           "visible": "$supports_clipboard_set",
-          "controls":[
+          "controls": [
             {
               "content_log_section_label": {
                 "type": "label",
@@ -1522,7 +1551,6 @@
                 "$option_label": "options.copyCoordinateUI",
                 "$option_binding_name": "#copy_coordinate_ui",
                 "$toggle_name": "copy_coordinate_ui"
-                
               }
             }
           ]
@@ -4247,15 +4275,6 @@
         }
       },
       {
-        "input_hint_toggle@settings_common.option_toggle": {
-          "ignored": "(not $education_edition)",
-          "$option_label": "options.showInputHints",
-          "$option_binding_name": "#show_input_hints",
-          "$option_enabled_binding_name": "#show_input_hints_enabled",
-          "$toggle_name": "show_input_hints"
-        }
-      },
-      {
         "notification_duration_options_panel": {
           "type": "stack_panel",
           "size": [ "100%", "100%c" ],
@@ -6236,18 +6255,6 @@
         }
       },
       {
-        "option_dropdown_identity_mode@settings_common.option_dropdown": {
-          "ignored": "((not $education_edition) or $is_android)",
-          "$option_label": "options.dev_identityMode",
-          "$dropdown_content": "general_section.dev_identityMode_content",
-          "$option_enabled_binding_name": "#dev_identity_mode_dropdown_enabled",
-          "$dropdown_area": "content_area",
-          "$dropdown_name": "dev_identity_mode_dropdown",
-          "$options_dropdown_toggle_label_binding": "#dev_identity_mode_dropdown_toggle_label",
-          "$dropdown_scroll_content_size": [ "100%", "200%" ]
-        }
-      },
-      {
         "option_toggle_9@settings_common.option_toggle": {
           "$option_label": "options.dev_renderMobInfoState",
           "$option_binding_name": "#dev_render_mob_info_state",
@@ -7829,6 +7836,12 @@
   "dev_chunkMapMode_content@settings_common.option_radio_dropdown_group": {
     "$radio_buttons": [
       {
+        "dev_chunkMapMode_off@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#chunk_map_mode_off",
+          "$radio_label_text": "options.dev_chunk_map_mode_off"
+        }
+      },
+      {
         "dev_chunkMapMode_client@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#chunk_map_mode_client",
           "$radio_label_text": "options.dev_chunk_map_mode_client"
@@ -7850,22 +7863,6 @@
         "dev_chunkMapMode_server_debug_display@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#chunk_map_mode_server_chunk_debug_display_state",
           "$radio_label_text": "options.dev_chunk_map_mode_server_chunk_debug_display_state"
-        }
-      }
-    ]
-  },
-  "dev_identityMode_content@settings_common.option_radio_dropdown_group": {
-    "$radio_buttons": [
-      {
-        "dev_identityMode_adal@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#identity_mode_adal",
-          "$radio_label_text": "options.dev_identity_mode_adal"
-        }
-      },
-      {
-        "dev_identityMode_oneauth@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#identity_mode_oneauth",
-          "$radio_label_text": "options.dev_identity_mode_oneauth"
         }
       }
     ]
