@@ -373,7 +373,7 @@
       {
         "keyboard_1@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ 0, "-50% - 10px" ],
+          "offset": [ 0, "-50%y - 50% - 3px" ],
           "$keyboard_character": "keyboard.keyName.1",
           "$text_color": "$generic_button_text_color"
         }
@@ -381,7 +381,7 @@
       {
         "keyboard_2@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ "50% + 20px", 0 ],
+          "offset": [ "50%x + 50% + 3px", 0 ],
           "$keyboard_character": "keyboard.keyName.2",
           "$text_color": "$generic_button_text_color"
         }
@@ -389,7 +389,7 @@
       {
         "keyboard_3@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ 0, "50% + 10px" ],
+          "offset": [ 0, "50%y + 50% + 3px" ],
           "layer": 3,
           "$keyboard_character": "keyboard.keyName.3",
           "$text_color": "$generic_button_text_color"
@@ -398,7 +398,7 @@
       {
         "keyboard_4@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ "-50% - 20px", 0 ],
+          "offset": [ "-50%x - 50% - 3px", 0 ],
           "$keyboard_character": "keyboard.keyName.4",
           "$text_color": "$generic_button_text_color"
         }
@@ -422,25 +422,38 @@
               "binding_name_override": "#visible"
             }
           ],
+
+          "$gamepad_face_right_helper|default": "gamepad_helper_b",
+          "$gamepad_face_down_helper|default": "gamepad_helper_a",
+          "variables": [
+            {
+              // on switch we need to reverse a/b gamepad helpers since the client bases the gamepad helpers
+              // based on what the button does (ie. select/cancel) and not by location on the controller
+              "requires": "$nx_os",
+              "$gamepad_face_right_helper": "gamepad_helper_a",
+              "$gamepad_face_down_helper": "gamepad_helper_b"
+            }
+          ],
+
           "controls": [
             {
               "gamepad_y@common.gamepad_helper_y": {
-                "offset": [ 0, "-50% - 9px" ]
+                "offset": [ 0, "-50%y - 50% + 3px" ]
               }
             },
             {
-              "gamepad_b@common.gamepad_helper_b": {
-                "offset": [ "50% + 19px", 0 ]
+              "gamepad_b@common.$gamepad_face_right_helper": {
+                "offset": [ "50%x + 50% - 3px", 0 ]
               }
             },
             {
-              "gamepad_a@common.gamepad_helper_a": {
-                "offset": [ 0, "50% + 9px" ]
+              "gamepad_a@common.$gamepad_face_down_helper": {
+                "offset": [ 0, "50%y + 50% - 3px" ]
               }
             },
             {
               "gamepad_x@common.gamepad_helper_x": {
-                "offset": [ "-50% - 19px", 0 ]
+                "offset": [ "-50%x - 50% + 3px", 0 ]
               }
             }
           ]
@@ -525,6 +538,16 @@
     "$gamepad_top_button_name|default": "('button.select_' + $gamepad_top_emote_name)",
     "$gamepad_left_button_name|default": "('button.select_' + $gamepad_left_emote_name)",
     "$gamepad_right_button_name|default": "('button.select_' + $gamepad_right_emote_name)",
+
+    "variables": [
+      {
+        // on switch we need to reverse a/b button events since the client bases the gamepad helpers
+        // based on what the button does (ie. select/cancel) and not by location on the controller
+        "requires": "$nx_os",
+        "$gamepad_right_button_name|default": "('button.select_' + $gamepad_bottom_emote_name)",
+        "$gamepad_bottom_button_name|default": "('button.select_' + $gamepad_right_emote_name)"
+      }
+    ],
 
     "$select_button_name|default": "",
     "$hover_button_name|default": "",
@@ -644,9 +667,6 @@
     "$hover_button_name": "button.emote_hovered",
     "$analog_button_name": "button.emote_hovered_via_analog",
     "$ignore_touch_labels|default": false,
-
-    "size": [ "110%", "110%" ],
-
     "$button_focus_precedence": 10,
     "focus_identifier": "emote_wheel",
     "focus_change_left": "FOCUS_OVERRIDE_STOP",
@@ -664,8 +684,8 @@
           "$emote_slot_index": 0,
           "$emote_slot_name": "$gamepad_top_emote_name",
           "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_0",
-          "$emote_image_offset": [ 0, "-30%" ],
-          "$emote_touch_label_offset": [ 0, "-50% - 3px" ],
+          "$emote_image_offset": [ 0, "-33%" ],
+          "$emote_touch_label_offset": [ 0, "-50%y - 50% - 3px" ],
           "$emote_touch_label_alignment": "center",
           "$emote_touch_label_ignore": "$ignore_touch_labels"
         }
@@ -686,8 +706,8 @@
           "$emote_slot_index": 2,
           "$emote_slot_name": "$gamepad_bottom_emote_name",
           "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_2",
-          "$emote_image_offset": [ 0, "30%" ],
-          "$emote_touch_label_offset": [ 0, "50% + 3px" ],
+          "$emote_image_offset": [ 0, "33%" ],
+          "$emote_touch_label_offset": [ 0, "50%y + 50% + 3px" ],
           "$emote_touch_label_alignment": "center",
           "$emote_touch_label_ignore": "$ignore_touch_labels"
         }
@@ -724,7 +744,7 @@
   },
 
   "emote_wheel_panel@common_dialogs.main_panel": {
-    "size": [ "100%y", "100%" ],
+    "size": [ "100%", "100%" ],
 
     "$gamepad_top_emote_name": "emote_slot_0",
     "$gamepad_right_emote_name": "emote_slot_1",
@@ -751,7 +771,8 @@
       {
         "emote_wheel_content_panel": {
           "type": "panel",
-          "size": [ "89.51%y", "100% - 40px" ],
+          "size": [ "75%", "75%" ],
+
           "controls": [
             { "gamepad_helpers@persona_common.gamepad_hotkey_helpers": {} },
             { "keyboard_helpers@persona_common.keyboard_hotkey_helpers": {} },

@@ -1,6 +1,57 @@
 {
   "namespace": "toast_screen",
 
+  "popup_anim_wait": {
+    "anim_type": "wait",
+    "duration": "$display_time",
+    "next": "@toast_screen.popup_anim_end"
+  },
+
+  "popup_anim_start": {
+    "anim_type": "offset",
+    "easing": "spring",
+    "from": [ 0, 0 ],
+    "to": "$popup_distance",
+    "duration": "$transition_in_time",
+    "next": "@toast_screen.popup_anim_wait"
+  },
+
+  "popup_anim_end": {
+    "anim_type": "offset",
+    "easing": "in_sine",
+    "to": [ 0, 0 ],
+    "from": "$popup_distance",
+    "duration": "$transition_out_time",
+    "destroy_at_end": "popup",
+    "end_event": "toast_end"
+  },
+
+  "chat_popup_anim_wait": {
+    "anim_type": "wait",
+    "duration": "$display_time",
+    "next": "@toast_screen.chat_popup_anim_end"
+  },
+
+  "chat_popup_anim_start": {
+    "anim_type": "offset",
+    "easing": "spring",
+    "from": [ 0, 0 ],
+    "to": [ 0, 48 ],
+    "duration": "$transition_in_time",
+    "next": "@toast_screen.chat_popup_anim_wait"
+  },
+
+  "chat_popup_anim_end": {
+    "anim_type": "offset",
+    "easing": "in_sine",
+    "to": [ 0, 0 ],
+    "from": [ 0, 48 ],
+    "duration": "$transition_out_time",
+    "destroy_at_end": "popup",
+    "end_event": "toast_end"
+  },
+
+
   "toast_image": {
     "type": "image",
     "size": [ 13, 13 ],
@@ -111,36 +162,23 @@
   },
 
   "popup@common.input_panel": {
-    "consume_hover_events": true,
-    "prevent_touch_input": true,
     "$toast_anchor_from|default": "top_middle",
     "$toast_anchor_to|default": "bottom_middle",
-    "$toast_offset|default": "#toast_offset_binding",
+    "$toast_offset|default": [ 0, 0 ],
     "anchor_from": "$toast_anchor_from",
     "anchor_to": "$toast_anchor_to",
     "size": "$popup_size",
     "offset": "$toast_offset",
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim_start"
+    ],
     "$alpha_anims|default": [],
-    "bindings": [
-      {
-        "binding_name": "$toast_offset",
-        "binding_name_override": "#offset",
-        "binding_condition": "always"
-      }
-    ],
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.swiping",
-        "mapping_type": "pressed",
-        "button_up_right_of_first_refusal": true
-      }
-    ],
     "controls": [
       {
         "background": {
           "type": "image",
-          "texture": "textures/ui/greyBorder"
+          "texture": "textures/ui/greyBorder",
+          "anims": "$alpha_anims"
         }
       },
       {
@@ -209,7 +247,8 @@
           ]
         }
       }
-    ]
+    ],
+    "anims": "$offset_anims"
   },
 
 
@@ -404,7 +443,6 @@
   },
 
   "toast_screen@common.base_screen": {
-    "always_accepts_input": true,
     "send_telemetry": false,
     "screen_not_flushable": true,
     "render_game_behind": true,
