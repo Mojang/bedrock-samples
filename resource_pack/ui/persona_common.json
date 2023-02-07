@@ -242,7 +242,7 @@
   "emote_label": {
     "ignored": "(not #visible)",
     "type": "label",
-    "size": [ "100%", 100 ],
+    "size": [ "100%", "default" ],
     "text_alignment": "center",
     "color": "$dark_button_default_text_color"
   },
@@ -271,13 +271,13 @@
 
   "emote_image@common.empty_panel": {
     "layer": 2,
-    "size": [ "100%c", "100%c" ],
+    "size": [ "100%", "100%" ],
     "controls": [
       {
         "empty": {
           "type": "image",
           "texture": "textures/ui/icon_none",
-          "size": [ 14, 14 ],
+          "size": [ "100%", "100%" ],
           "property_bag": "$property_bag",
           "bindings": [
             {
@@ -290,7 +290,7 @@
       {
         "emote_preview": {
           "type": "panel",
-          "size": [ 42, 42 ],
+          "size": [ "100%", "100%" ],
           "property_bag": "$property_bag",
           "bindings": [
             {
@@ -373,7 +373,7 @@
       {
         "keyboard_1@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ 0, "-50% - 10px" ],
+          "offset": [ 0, "-50%y - 50% - 3px" ],
           "$keyboard_character": "keyboard.keyName.1",
           "$text_color": "$generic_button_text_color"
         }
@@ -381,7 +381,7 @@
       {
         "keyboard_2@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ "50% + 10px", 0 ],
+          "offset": [ "50%x + 50% + 3px", 0 ],
           "$keyboard_character": "keyboard.keyName.2",
           "$text_color": "$generic_button_text_color"
         }
@@ -389,7 +389,7 @@
       {
         "keyboard_3@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ 0, "50% + 10px" ],
+          "offset": [ 0, "50%y + 50% + 3px" ],
           "layer": 3,
           "$keyboard_character": "keyboard.keyName.3",
           "$text_color": "$generic_button_text_color"
@@ -398,7 +398,7 @@
       {
         "keyboard_4@common.keyboard_helper_keys": {
           "size": "$keyboard_helper_size",
-          "offset": [ "-50% - 10px", 0 ],
+          "offset": [ "-50%x - 50% - 3px", 0 ],
           "$keyboard_character": "keyboard.keyName.4",
           "$text_color": "$generic_button_text_color"
         }
@@ -409,7 +409,7 @@
   "gamepad_hotkey_helpers": {
     "type": "panel",
     "size": [ "100%", "100%" ],
-    
+
     "controls": [
       {
         "quick_select_gamepad_helpers": {
@@ -422,25 +422,38 @@
               "binding_name_override": "#visible"
             }
           ],
+
+          "$gamepad_face_right_helper|default": "gamepad_helper_b",
+          "$gamepad_face_down_helper|default": "gamepad_helper_a",
+          "variables": [
+            {
+              // on switch we need to reverse a/b gamepad helpers since the client bases the gamepad helpers
+              // based on what the button does (ie. select/cancel) and not by location on the controller
+              "requires": "$nx_os",
+              "$gamepad_face_right_helper": "gamepad_helper_a",
+              "$gamepad_face_down_helper": "gamepad_helper_b"
+            }
+          ],
+
           "controls": [
             {
               "gamepad_y@common.gamepad_helper_y": {
-                "offset": [ 0, "-50% - 9px" ]
+                "offset": [ 0, "-50%y - 50% + 3px" ]
               }
             },
             {
-              "gamepad_b@common.gamepad_helper_b": {
-                "offset": [ "50% + 9px", 0 ]
+              "gamepad_b@common.$gamepad_face_right_helper": {
+                "offset": [ "50%x + 50% - 3px", 0 ]
               }
             },
             {
-              "gamepad_a@common.gamepad_helper_a": {
-                "offset": [ 0, "50% + 9px" ]
+              "gamepad_a@common.$gamepad_face_down_helper": {
+                "offset": [ 0, "50%y + 50% - 3px" ]
               }
             },
             {
               "gamepad_x@common.gamepad_helper_x": {
-                "offset": [ "-50% - 9px", 0 ]
+                "offset": [ "-50%x - 50% + 3px", 0 ]
               }
             }
           ]
@@ -480,6 +493,7 @@
   //   - $wheel_state_texture : string : texture path
   //   - $emote_image_offset : vec2
   //   - $emote_touch_label_offset : vec2
+  //   - $emote_touch_label_ignore : bool
   //
   /////////////////////////////////////////////////////////////
   "emote_wheel_slot_content": {
@@ -490,6 +504,7 @@
       },
       {
         "image_0@persona_common.emote_image": {
+          "size": [ "30%", "30%" ],
           "offset": "$emote_image_offset",
           "$property_bag": {
             "#index": "$emote_slot_index"
@@ -498,6 +513,7 @@
       },
       {
         "touch_label_0@persona_common.touch_name_label": {
+          "ignored": "$emote_touch_label_ignore",
           "offset": "$emote_touch_label_offset",
           "text_alignment": "$emote_touch_label_alignment",
           "property_bag": {
@@ -512,9 +528,27 @@
     "type": "selection_wheel",
     "size": [ "100%", "100%" ],
 
+    "always_handle_controller_direction": true,
+
     "$slice_count|default": 1,
     "$inner_radius|default": 0.0,
     "$outer_radius|default": 1.0,
+
+    "$gamepad_bottom_button_name|default": "('button.select_' + $gamepad_bottom_emote_name)",
+    "$gamepad_top_button_name|default": "('button.select_' + $gamepad_top_emote_name)",
+    "$gamepad_left_button_name|default": "('button.select_' + $gamepad_left_emote_name)",
+    "$gamepad_right_button_name|default": "('button.select_' + $gamepad_right_emote_name)",
+
+    "variables": [
+      {
+        // on switch we need to reverse a/b button events since the client bases the gamepad helpers
+        // based on what the button does (ie. select/cancel) and not by location on the controller
+        "requires": "$nx_os",
+        "$gamepad_right_button_name|default": "('button.select_' + $gamepad_bottom_emote_name)",
+        "$gamepad_bottom_button_name|default": "('button.select_' + $gamepad_right_emote_name)"
+      }
+    ],
+
     "$select_button_name|default": "",
     "$hover_button_name|default": "",
     "$analog_button_name|default": "",
@@ -559,11 +593,6 @@
         "mapping_type": "pressed"
       },
       {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "$select_button_name",
-        "mapping_type": "focused"
-      },
-      {
         "from_button_id": "$analog_button_name",
         "to_button_id": "$analog_button_name",
         "mapping_type": "pressed"
@@ -574,51 +603,56 @@
       },
       {
         "from_button_id": "button.controller_secondary_select",
-        "to_button_id": "button.select_emote_slot_0",
+        "to_button_id": "$gamepad_top_button_name",
         "mapping_type": "global"
       },
       {
         "from_button_id": "button.menu_cancel",
-        "to_button_id": "button.select_emote_slot_1",
+        "to_button_id": "$gamepad_right_button_name",
         "input_mode_condition": "gamepad_and_not_gaze",
         "mapping_type": "pressed"
       },
       {
         "from_button_id": "button.menu_ok",
-        "to_button_id": "button.select_emote_slot_2",
+        "to_button_id": "$gamepad_bottom_button_name",
         "mapping_type": "global"
       },
       {
         "from_button_id": "button.menu_clear",
-        "to_button_id": "button.select_emote_slot_3",
+        "to_button_id": "$gamepad_left_button_name",
         "mapping_type": "global"
       },
       {
         "from_button_id": "button.slot1",
-        "to_button_id": "button.select_emote_slot_0",
+        "to_button_id": "$gamepad_top_button_name",
         "mapping_type": "global"
       },
       {
         "from_button_id": "button.slot2",
-        "to_button_id": "button.select_emote_slot_1",
+        "to_button_id": "$gamepad_right_button_name",
         "mapping_type": "global"
       },
       {
         "from_button_id": "button.slot3",
-        "to_button_id": "button.select_emote_slot_2",
+        "to_button_id": "$gamepad_bottom_button_name",
         "mapping_type": "global"
       },
       {
         "from_button_id": "button.slot4",
-        "to_button_id": "button.select_emote_slot_3",
+        "to_button_id": "$gamepad_left_button_name",
         "mapping_type": "global"
       }
     ],
     "property_bag": {
       "#hover_slice": 0
     },
-    "$selection_wheel_bindings|default": [],
-    "bindings": "$selection_wheel_bindings"
+
+    "bindings": [
+      {
+        "binding_name": "#init_selection_wheel_input_mode",
+        "binding_condition": "once"
+      }
+    ]
   },
 
   /* ============================================================
@@ -632,7 +666,7 @@
     "$select_button_name": "button.emote_selected",
     "$hover_button_name": "button.emote_hovered",
     "$analog_button_name": "button.emote_hovered_via_analog",
-
+    "$ignore_touch_labels|default": false,
     "$button_focus_precedence": 10,
     "focus_identifier": "emote_wheel",
     "focus_change_left": "FOCUS_OVERRIDE_STOP",
@@ -648,60 +682,80 @@
       {
         "emote_slot_0_content@persona_common.emote_wheel_slot_content": {
           "$emote_slot_index": 0,
-          "$emote_slot_name": "emote_slot_0",
+          "$emote_slot_name": "$gamepad_top_emote_name",
           "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_0",
-          "$emote_image_offset": [ 0, "-33.57%" ],
+          "$emote_image_offset": [ 0, "-33%" ],
           "$emote_touch_label_offset": [ 0, "-50%y - 50% - 3px" ],
-          "$emote_touch_label_alignment": "center"
+          "$emote_touch_label_alignment": "center",
+          "$emote_touch_label_ignore": "$ignore_touch_labels"
         }
       },
       {
         "emote_slot_1_content@persona_common.emote_wheel_slot_content": {
           "$emote_slot_index": 1,
-          "$emote_slot_name": "emote_slot_1",
+          "$emote_slot_name": "$gamepad_right_emote_name",
           "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_1",
-          "$emote_image_offset": [ "32.8125%", 0 ],
+          "$emote_image_offset": [ "33%", 0 ],
           "$emote_touch_label_offset": [ "50%x + 50% + 3px", 0 ],
-          "$emote_touch_label_alignment": "left"
+          "$emote_touch_label_alignment": "left",
+          "$emote_touch_label_ignore": "$ignore_touch_labels"
         }
       },
       {
         "emote_slot_2_content@persona_common.emote_wheel_slot_content": {
           "$emote_slot_index": 2,
-          "$emote_slot_name": "emote_slot_2",
+          "$emote_slot_name": "$gamepad_bottom_emote_name",
           "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_2",
-          "$emote_image_offset": [ 0, "33.57%" ],
+          "$emote_image_offset": [ 0, "33%" ],
           "$emote_touch_label_offset": [ 0, "50%y + 50% + 3px" ],
-          "$emote_touch_label_alignment": "center"
+          "$emote_touch_label_alignment": "center",
+          "$emote_touch_label_ignore": "$ignore_touch_labels"
         }
       },
       {
         "emote_slot_3_content@persona_common.emote_wheel_slot_content": {
           "$emote_slot_index": 3,
-          "$emote_slot_name": "emote_slot_3",
+          "$emote_slot_name": "$gamepad_left_emote_name",
           "$wheel_state_texture": "textures/ui/emote_wheel_updated_select_3",
-          "$emote_image_offset": [ "-32.8125%", 0 ],
+          "$emote_image_offset": [ "-33%", 0 ],
           "$emote_touch_label_offset": [ "-50%x - 50% - 3px", 0 ],
-          "$emote_touch_label_alignment": "right"
+          "$emote_touch_label_alignment": "right",
+          "$emote_touch_label_ignore": "$ignore_touch_labels"
         }
       }
     ],
     "state_controls": [
-      "default_state",
-      "emote_slot_0",
-      "emote_slot_1",
-      "emote_slot_2",
-      "emote_slot_3"
+      {
+        "control_name": "default_state"
+      },
+      {
+        "control_name": "$gamepad_top_emote_name"
+      },
+      {
+        "control_name": "$gamepad_right_emote_name"
+      },
+      {
+        "control_name": "$gamepad_bottom_emote_name"
+      },
+      {
+        "control_name": "$gamepad_left_emote_name"
+      }
     ]
   },
 
   "emote_wheel_panel@common_dialogs.main_panel": {
-    "size": [ "100%y", "100%" ],
+    "size": [ "100%", "100%" ],
+
+    "$gamepad_top_emote_name": "emote_slot_0",
+    "$gamepad_right_emote_name": "emote_slot_1",
+    "$gamepad_bottom_emote_name": "emote_slot_2",
+    "$gamepad_left_emote_name": "emote_slot_3",
+
     "controls": [
       {
         "emote_name@persona_common.emote_label": {
-          "size": [ 35, 35 ],
-          "offset": [ 0, "7%" ],
+          "size": [ 35, "default" ],
+          "max_size": [ 35, 35 ],
           "text": "#emote_name",
           "layer": 10,
           "font_type": "smooth",
@@ -717,7 +771,8 @@
       {
         "emote_wheel_content_panel": {
           "type": "panel",
-          "size": [ "89.51%y", "100% - 40px" ],
+          "size": [ "75%", "75%" ],
+
           "controls": [
             { "gamepad_helpers@persona_common.gamepad_hotkey_helpers": {} },
             { "keyboard_helpers@persona_common.keyboard_hotkey_helpers": {} },

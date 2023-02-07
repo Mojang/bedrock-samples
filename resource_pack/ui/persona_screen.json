@@ -3205,7 +3205,7 @@
               "binding_collection_name": "color_collection"
             }
           ]
-        }        
+        }
       }
     ]
   },
@@ -6710,53 +6710,65 @@
     "$close_button_to_button_id": "button.emote_slot_popup_close"
   },
 
-  "emote_assign_replace_button@common_buttons.light_text_button": {
-    "size": [ "100% - 18px", 21 ],
-    "$button_offset": [ 0, -2 ],
-    "$anchor": "bottom_middle",
-    "$pressed_button_name": "button.emote_assign_replace",
-    "$button_text": "#emote_popup_assign_replace_text",
-    "$button_text_binding_type": "global",
-    "$focus_id": "emote_assign_replace_button",
-    "bindings": [
-      {
-        "binding_name": "#emote_popup_assign_replace_enabled",
-        "binding_name_override": "#enabled"
-      },
-      {
-        "binding_name": "(not #is_using_gamepad)",
-        "binding_name_override": "#visible"
-      }
-    ]
+  "emote_wheel_content@persona_common.emote_wheel_panel": {
+    "$gamepad_helper_visible_binding_name": "#is_using_gamepad",
+    "size": [ "100%", "100%" ],
+    "layer": 2
   },
 
-  "emote_equip_slot_content@common.empty_panel": {
+  "emote_equip_slot_content": {
+    "type": "panel",
+    // shrink size to that of the content section of popup
+    "size": [ "100% - 16px", "100% - 31px" ],
+    // center control to the content section of popup
+    "offset": [ 0, 7 ],
+
     "$close_button_visible_binding_type": "global",
+
     "controls": [
-      { "close@common.close_button": { } },
-      {
-        "emote_wheel_content@persona_common.emote_wheel_panel": {
-          "$gamepad_helper_visible_binding_name": "#is_using_gamepad",
-          "size": [ "100% - 18px", "100% - 50px" ],
-          "layer": 2,
-          "anchor_from": "top_middle",
-          "anchor_to": "top_middle",
-          "offset": [ 0, 24 ]
-        }
-      },
+      { "close@common.close_button": {} },
       {
         "cancel@persona.close_emote_popup_controller": {
           "size": [ 50, 20 ],
           "anchor_from": "bottom_right",
           "anchor_to": "bottom_right",
-          "offset": [ -18, -16 ]
+          "offset": [ -12, -8 ]
         }
       },
       {
-        "assign_replace_button@persona.emote_assign_replace_button": {
-          "anchor_from": "bottom_middle",
-          "anchor_to": "bottom_middle",
-          "offset": [ 0, -9 ]
+        "emote_wheel_prompt_content@common.squaring_panel": {
+          "$squaring_panel_content": "persona.emote_wheel_content"
+        }
+      }
+    ]
+  },
+
+  "popup_emote_wheel_dialog": {
+    "type": "panel",
+    "controls": [
+      {
+        "popup_background@persona.popup_dialog_bg": {
+          "$persona_popup_title_text": "#emote_popup_title",
+          "$persona_popup_title_size": [ "100% - 20px", "default" ],
+          "$persona_popup_title_font_type": "default",
+          "$show_close_button": false,
+          "$dialog_content": "persona.emote_equip_slot_content",
+
+          "$dialog_size|default": [ "60%", "90%" ],
+
+          "variables": [
+            {
+              "requires": "(($pocket_edition or $is_ios) and $touch)",
+              "$dialog_size": [ "88%", "90%" ]
+            }
+          ],
+          "size": "$dialog_size",
+
+          "$persona_popup_title_bindings": [
+            {
+              "binding_name": "#emote_popup_title"
+            }
+          ]
         }
       }
     ]
@@ -6765,6 +6777,7 @@
   "popup_dialog__emote_equip_slot_editor@popup_dialog.popup_dialog": {
     "size": [ "100%", "100%" ],
     "layer": 990,
+    "gamepad_deflection_mode": true,
     "$section_content_size": [ "100%", "100% - 16px" ],
     "$close_button_to_button_id": "button.close_dialog",
     "button_mappings": [
@@ -6784,31 +6797,18 @@
         "mapping_type": "global"
       }
     ],
+
     "controls": [
       {
         "background_image": {
           "type": "image",
-          "size": [ "100%", "100% + 64px" ],
+          "size": [ "100%", "100%" ],
           "texture": "textures/ui/White",
           "color": "$dressing_room_dark_bg_color",
           "alpha": 0.8
         }
       },
-      {
-        "popup_background@persona.popup_dialog_bg": {
-          "$persona_popup_title_text": "#emote_popup_title",
-          "$persona_popup_title_size": [ "100% - 20px", "default" ],
-          "$persona_popup_title_font_type": "default",
-          "$show_close_button": false,
-          "$dialog_content": "persona.emote_equip_slot_content",
-          "size": [ "107%y", "80%" ],
-          "$persona_popup_title_bindings": [
-            {
-              "binding_name": "#emote_popup_title"
-            }
-          ]
-        }
-      }
+      { "popup_emote_wheel_dialog@persona.popup_emote_wheel_dialog": {} }
     ]
   },
 
