@@ -25,11 +25,18 @@
         "crossbow_rocket": "geometry.crossbow_rocket"
       },
       "animations": {
-        "wield": "animation.crossbow.wield"
+        "wield": "animation.crossbow.wield",
+        "wield_first_person_pull": "animation.crossbow.wield_first_person_pull"
       },
       "scripts": {
+        "pre_animation": [
+          "variable.charge_amount = math.clamp((query.main_hand_item_max_duration - (query.main_hand_item_use_duration - query.frame_alpha + 1.0)) / 10.0, 0.0, 1.0f);"
+        ],
         "animate": [
-          "wield"
+          "wield",
+          {
+            "wield_first_person_pull": "query.main_hand_item_use_duration > 0.0f && c.is_first_person"
+          }
         ]
       },
       "render_controllers": [ "controller.render.crossbow" ]
