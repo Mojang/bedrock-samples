@@ -164,6 +164,11 @@
     "texture": "textures/ui/icon_preview"
   },
 
+  "info_glyph_icon@icon_image": {
+    "size": [ 14, 14 ],
+    "texture": "textures/ui/blue_info_glyph"
+  },
+
   "right_icon@icon_image": {
     "size": [ 4, 7 ],
     "color": "$dressing_room_dark_button_color",
@@ -243,7 +248,7 @@
   "skin_viewer_panel_skin_model": {
     "type": "panel",
     "size": [ "51%y", "110%" ], // 5x base dimensions [20, 39]
-    "max_size":  ["100%", "100%"],
+    "max_size": [ "100%", "100%" ],
     "$model_offset|default": [ 0, "-15%" ],
     "controls": [
       {
@@ -353,11 +358,38 @@
               }
             },
             {
-              "preview_skin_mouse@persona.preview_skin_full": {
-                "size": [ 22, "100%x" ],
+              "right_side_button_stack_panel": {
+                "type": "stack_panel",
+                "size": [ "100%c", "100%" ],
+                "orientation": "horizontal",
                 "anchor_to": "bottom_right",
                 "anchor_from": "bottom_right",
-                "$focus_id": "skin_preview_button"
+                "controls": [
+                  {
+                    "info_button@persona.info_button": {
+                      "size": [ 22, 22 ],
+                      "$focus_id": "info_button",
+                      "bindings": [
+                        {
+                          "binding_name": "#restricted_info_visible",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "pad": {
+                      "type": "panel",
+                      "size": [ 2, "100%" ]
+                    }
+                  },
+                  {
+                    "preview_skin_mouse@persona.preview_skin_full": {
+                      "size": [ 22, 22 ],
+                      "$focus_id": "skin_preview_button"
+                    }
+                  }
+                ]
               }
             }
           ]
@@ -371,6 +403,59 @@
             {
               "binding_name": "#persona_is_updating",
               "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "popup_dialog__restricted_content_popup@popup_dialog.popup_dialog": {
+    "size": [ "100%", "100%" ],
+    "layer": 96, // Must be usable on top of skin rotation input panel which has layer of 90
+    "$scrolling_content": "common.empty_panel",
+    "$confirm_button_text": "dr.button.ok",
+    "controls": [
+      {
+        "popup@common.dialog_background_hollow_2": {
+          "size": [ "46%", "56%" ],
+          "controls": [
+            { "modal@persona.popup_frame_background": {} },
+            {
+              "title_label": {
+                "type": "label",
+                "text": "dr.modal.restricted_content_title",
+                "layer": 1,
+                "offset": [ 0, 8 ],
+                "color": "$profile_create_character_selected_color",
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle"
+              }
+            },
+            { "Ok_button@persona.differences_popup_ok_button": {} },
+            {
+              "popup_dialog_message": {
+                "type": "label",
+                "layer": 2,
+                "size": [ "100% - 18px", "default" ],
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle",
+                "offset": [ 0, 25 ],
+                "text_alignment": "center",
+                "text": "dr.modal.restricted_content_text",
+                "color": "$dressing_room_right_side_default_text_color"
+              }
+            },
+            {
+              "image": {
+                "type": "image",
+                "size": [ "60%", "50%x" ],
+                "layer": 2,
+                "texture": "textures/ui/warning_sad_steve",
+                "anchor_from": "bottom_middle",
+                "anchor_to": "bottom_middle",
+                "offset": [ 0, -43 ]
+              }
             }
           ]
         }
@@ -2760,6 +2845,13 @@
     "uv_size": [ 10, 10 ],
     "uv": "@persona.pick_axe_animation",
     "color": [ 1, 1, 1, 1 ]
+  },
+
+  "info_button@common_buttons.light_content_button": {
+    "layer": 92, // Must be usable on top of skin rotation input panel which has layer of 90
+    "$button_content": "persona.info_glyph_icon",
+    "$button_size_override": [ 22, 22 ],
+    "$pressed_button_name": "button.info_popup"
   },
 
   "preview_skin_full@common_buttons.light_content_button": {
@@ -7015,7 +7107,8 @@
             "switch_character_skin_screens": "@persona.popup_dialog__switch_persona_and_classic_skin",
             "custom_skin_info": "@persona.popup_dialog__custom_skin_info",
             "realms_plus_extra_info": "@persona.popup_dialog__realms_plus_extra_info",
-            "emote_equip_slot_editor": "@persona.popup_dialog__emote_equip_slot_editor"
+            "emote_equip_slot_editor": "@persona.popup_dialog__emote_equip_slot_editor",
+            "restricted_content_popup": "@persona.popup_dialog__restricted_content_popup"
           }
         }
       }
