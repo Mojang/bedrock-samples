@@ -517,13 +517,6 @@
         "to_button_id": "button.exit_verbose_state",
         "mapping_type": "global",
         "consume_event": false
-      },
-      {
-        "ignored": "$ignore_close_verbose_button_mapping",
-        "from_button_id": "button.menu_right",
-        "to_button_id": "button.exit_verbose_state",
-        "mapping_type": "global",
-        "consume_event": false
       }
     ],
     "bindings": [
@@ -859,7 +852,61 @@
     "$ignore_verbose_view_exit|default": true,
     "controls": [
       {
-        "sidebar_view@sidebar_navigation.sidebar_section_factory_panel": {}
+        "view_stack_panel": {
+          "type": "stack_panel",
+          "size": [ "100%", "100%" ],
+          "orientation": "horizontal",
+          "controls": [
+            {
+              "sidebar_view@sidebar_navigation.sidebar_section_factory_panel": {}
+            },
+            {
+              // this is here to handle closing the verbose view
+              "controller_hover_close_panel": {
+                "type": "panel",
+                "size": [ "fill%", "100%" ],
+                "visible": false,
+                "bindings": [
+                  {
+                    "binding_name": "(not #page_loading_visible)",
+                    "binding_name_override": "#visible",
+                    "binding_condition": "always"
+                  }
+                ],
+                "controls": [
+                  {
+                    "controller_hover_close_button@common.button": {
+                      "size": [ "100%", "100%" ],
+                      "layer": 299,
+                      "default_focus_precedence": -20,
+                      "pressed_control": "",
+                      "bindings": [
+                        {
+                          "binding_name": "#is_controller_close_hover_visible",
+                          "binding_name_override": "#visible"
+                        },
+                        {
+                          "binding_name": "#is_using_gamepad",
+                          "binding_name_override": "#focus_enabled"
+                        }
+                      ],
+                      "button_mappings": [
+                        {
+                          "to_button_id": "button.controller_hover_close_verbose_view",
+                          "mapping_type": "pressed"
+                        }
+                      ],
+                      "controls": [
+                        { "default@common.empty_panel": {} },
+                        { "hover@common.empty_panel": {} }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
       },
       {
         "verbose_view_exit@common_store.close_bg_panel": {

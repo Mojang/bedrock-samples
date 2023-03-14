@@ -1,5 +1,5 @@
 {
-  "format_version": "1.16.0",
+  "format_version": "1.19.60",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:witch",
@@ -106,6 +106,58 @@
         "attack_interval_max": 3,
         "attack_radius": 10.0
       },
+      "minecraft:shooter": {
+        "power" : 0.75,
+        "def": "minecraft:splash_potion",
+        "aux_val" : 23,   // harming
+        "sound" : "throw",
+        "projectiles" : [
+          {
+            "def" : "minecraft:splash_potion",
+            "aux_val" : 17, // slowness
+            "filters" : {
+              "all_of" : [
+                { "test" : "target_distance", "subject" : "self", "value" : 8.0, "operator" : ">="},
+                {
+                  "none_of":[
+                    { "test": "has_mob_effect", "subject": "other", "value": "slowness" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "def" : "minecraft:splash_potion",
+            "aux_val" : 25, // poison
+            "filters" : {
+              "all_of" : [
+                { "test" : "actor_health", "subject" : "other", "value" : 8, "operator" : ">="},
+                {
+                  "none_of": [
+                    { "test": "has_mob_effect", "subject": "other", "value": "poison" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "def" : "minecraft:splash_potion",
+            "aux_val" : 34, // weakness
+            "filters" : {
+              "all_of" : [
+                { "test" : "target_distance", "subject" : "self", "value" : 3, "operator" : "<="},
+                {
+                  "none_of":[
+                    { "test": "has_mob_effect", "subject": "other", "value": "weakness" }
+                  ]
+                }
+              ]
+            },
+            "chance" : 0.25
+          }
+        ],
+        "magic" : true
+      },
       "minecraft:behavior.random_stroll": {
         "priority": 4,
         "speed_multiplier": 1.0
@@ -117,6 +169,69 @@
       "minecraft:behavior.random_look_around": {
         "priority": 5,
         "look_distance": 8.0
+      },
+      "minecraft:behavior.drink_potion": {
+        "priority": 1,
+        "speed_modifier": -0.25,
+        "potions": [
+          {
+            "id": 19, // Water breathing
+            "chance": 0.15,
+            "filters": {
+              "all_of": [
+                { "test": "is_underwater", "subject": "self", "value": true },
+                {
+                  "none_of": [
+                    { "test": "has_mob_effect", "subject": "self", "value": "water_breathing" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": 12, // Fire resistance
+            "chance": 0.15,
+            "filters": {
+              "all_of": [
+                {
+                  "any_of": [
+                    { "test": "on_fire", "subject": "self", "value": true },
+                    { "test": "on_hot_block", "subject": "self", "value": true }
+                  ]
+                },
+                {
+                  "none_of": [
+                    { "test": "has_mob_effect", "subject": "self", "value": "fire_resistance" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": 21, // Healing
+            "chance": 0.05,
+            "filters": {
+              "all_of": [
+                { "test": "is_missing_health", "subject": "self", "value": true }
+              ]
+            }
+          },
+          {
+            "id": 14, // Swiftness
+            "chance": 0.25,
+            "filters": {
+              "all_of": [
+                { "test": "has_target", "subject": "self", "value": true },
+                {
+                  "none_of": [
+                    { "test": "has_mob_effect", "subject": "self", "value": "speed" }
+                  ]
+                },
+                { "test": "target_distance", "subject": "self", "value": 11.0, "operator": ">=" }
+              ]
+            }
+          }
+        ]
       },
       "minecraft:behavior.hurt_by_target": {
         "priority": 1
