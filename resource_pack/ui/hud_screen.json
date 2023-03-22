@@ -545,6 +545,7 @@
     "alpha": 0.65
   },
 
+
   "hotbar_slot_selected_image": {
     "type": "image",
     "texture": "textures/ui/selected_hotbar_slot",
@@ -1176,6 +1177,7 @@
       }
     ]
   },
+
 
   "hotbar_chooser": {
     "type": "panel",
@@ -1948,11 +1950,6 @@
 
   "tooltip_helper_icon_description": {
     "type": "label",
-    "$tooltip_helper_description_size|default": [ "fill", "default" ],
-    "size": "$tooltip_helper_description_size",
-    "$tooltip_helper_description_max_size|default": [ "fill", "default" ],
-    "max_size": "$tooltip_helper_description_max_size",
-
     "color": "$gamepad_description_text_color",
 
     "$tooltip_helper_description_shadow|default": true,
@@ -2014,27 +2011,6 @@
   "tooltip_helper": {
     "type": "stack_panel",
     "orientation": "horizontal",
-    "size": [ "100%", "100%cm" ],
-    "layer": 100,
-    "controls": [
-      { "icon@$icon_image_ref": { "layer": 2 } },
-      { "padding@common.empty_panel": { "size": [ 2, "100%sm" ] } },
-      {
-        "centerer": {
-          "type": "panel",
-          "size": [ "100%", "100%sm" ],
-          "layer": 1,
-          "controls": [
-            { "desc@hud.tooltip_helper_icon_description": {} }
-          ]
-        }
-      }
-    ]
-  },
-
-  "tooltip_helper_form_fitting": {
-    "type": "stack_panel",
-    "orientation": "horizontal",
     "size": [ "100%c", "100%cm" ],
     "layer": 100,
     "controls": [
@@ -2059,16 +2035,10 @@
     "$tooltip_description_offset": "$keyboard_description_offset"
   },
 
-  "keyboard_tooltip_helper_form_fitting@hud.tooltip_helper_form_fitting": {
-    "ignored": "(not $education_edition)",
-    "$keyboard_description_offset|default": [ 0, 1 ],
-    "$tooltip_description_offset": "$keyboard_description_offset"
-  },
-
   // Wrap in panel so @mixed_tooltip_helper doesn't override binds
   "mixed_tooltip_helper": {
     "type": "panel",
-    "size": [ "100%", "100%cm" ],
+    "size": [ "100%cm", "100%cm" ],
     "controls": [
       {
         "gamepad_tooltip@hud.tooltip_helper": {
@@ -2083,61 +2053,6 @@
       },
       {
         "keyboard_tooltip@hud.keyboard_tooltip_helper": {
-          "$icon_image_ref": "hud.base_keyboard_icon",
-          "bindings": [
-            {
-              "binding_name": "(not #is_gamepad_tip)",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      }
-    ],
-    "$tooltip_collection_name|default": "",
-    "$tooltip_collection_prefix|default": "",
-    "bindings": [
-      // Duplicate binding necessary when toggling visibility
-      // otherwise there is a delay when updating binds
-      //
-      // No condition has it update immediately when it
-      // becomes visible but won't update if the tooltip
-      // changes later.
-      //
-      // Always condition lets it change but has a delay in
-      // binding timing when it first becomes visible.
-      {
-        "binding_name": "#tooltip_visible",
-        "binding_name_override": "#visible",
-        "binding_type": "collection",
-        "binding_collection_name": "$tooltip_collection_name",
-        "binding_condition": "always"
-      },
-      {
-        "binding_name": "#tooltip_visible",
-        "binding_name_override": "#visible",
-        "binding_type": "collection",
-        "binding_collection_name": "$tooltip_collection_name"
-      }
-    ]
-  },
-
-  "mixed_tooltip_helper_form_fitting": {
-    "type": "panel",
-    "size": [ "100%cm", "100%cm" ],
-    "controls": [
-      {
-        "gamepad_tooltip@hud.tooltip_helper_form_fitting": {
-          "$icon_image_ref": "hud.base_icon_image",
-          "bindings": [
-            {
-              "binding_name": "#is_gamepad_tip",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-      {
-        "keyboard_tooltip@hud.keyboard_tooltip_helper_form_fitting": {
           "$icon_image_ref": "hud.base_keyboard_icon",
           "bindings": [
             {
@@ -2302,9 +2217,9 @@
     "type": "stack_panel",
     "anchor_from": "bottom_left",
     "anchor_to": "bottom_left",
-    "offset": [ 3, 0 ],
+    "offset": [ 5, 0 ],
     "layer": 100,
-    "size": [ "100%", "100%c" ],
+    "size": [ "100%cm", "100%c" ],
     "$tooltip_helper_description_shadow": false,
 
     "controls": [
@@ -2326,10 +2241,9 @@
                 "$tooltip_collection_name": "left_helper_collection",
                 "$tooltip_collection_prefix": "left_helpers",
                 "collection_name": "$tooltip_collection_name",
-                "$tooltip_helper_description_size": [ "default", 10 ],
                 "factory": {
                   "name": "left_tooltip_factory",
-                  "control_name": "hud.mixed_tooltip_helper_form_fitting"
+                  "control_name": "hud.mixed_tooltip_helper"
                 },
                 "bindings": [
                   {
@@ -2361,51 +2275,15 @@
       {
         "controls_toggle_label": {
           "type": "panel",
-          "size": [ "100%", "100%cm" ],
+          "size": [ "100%cm", "100%cm" ],
 
           "$tooltip_collection_name": "controls_toggle",
           "$gamepad_helper_visible_binding_type": "none",
           "$tip_description_background_visible": true,
-          "$tip_description_background_offset": [ 0, 0 ],
-          "$tooltip_helper_description_size": [ "default", 10 ],
+          "$tip_description_background_offset": [ -1, 0 ],
 
           "controls": [
             { "tip@hud.mixed_tooltip_helper": {} }
-          ]
-        }
-      },
-      {
-        "controls_inventory_label": {
-          "type": "panel",
-          "size": [ "100%", "100%cm" ],
-      
-          "$tooltip_collection_name": "controls_inventory_prompts_toggle",
-          "$gamepad_helper_visible_binding_type": "none",
-          "$tip_description_background_visible": true,
-          "$tip_description_background_offset": [ 0, 0 ],
-          "$tooltip_helper_description_size": [ "default", 10 ],
-      
-          "controls": [
-            { "tip@hud.mixed_tooltip_helper": {} }
-          ]
-        }
-      },
-      {
-        "controls_menu_label": {
-          "type": "panel",
-          "size": [ "100%", "100%cm" ],
-      
-          "$tooltip_collection_name": "controls_menu_prompts_toggle",
-          "$gamepad_helper_visible_binding_type": "none",
-          "$tip_description_background_visible": true,
-          "$tip_description_background_offset": [ 0, 0 ],
-          "$tooltip_helper_description_size": [ "default", "default" ],
-          "$tooltip_helper_description_max_size": ["50% - 125px", "20px"],
-      
-          "controls": [
-            {
-              "tip@hud.mixed_tooltip_helper": {}
-            }
           ]
         }
       }
@@ -2556,12 +2434,11 @@
       }
     ]
   },
-
   "right_helpers": {
     "type": "panel",
     "anchor_from": "bottom_right",
     "anchor_to": "bottom_right",
-    "size": [ "fill", "100%c" ],
+    "size": [ "100%c", "100%c" ],
     "max_size": [ "100%", "50%" ],
     "$tooltip_description_offset": [ -10, 0.5 ],
 
@@ -2569,7 +2446,7 @@
       {
         "requires": "$education_edition",
         "$tip_description_background_visible": true,
-        "$tip_description_background_offset": [ 0, 0 ],
+        "$tip_description_background_offset": [ -1, 0 ],
         "$tooltip_helper_description_shadow": false
       }
     ],
@@ -2578,7 +2455,7 @@
       {
         "stack_panel": {
           "type": "stack_panel",
-          "size": [ "100%", "100%c" ],
+          "size": [ "100%cm", "100%c" ],
           "min_size": [ 75, "100%c" ],
           "anchor_from": "bottom_right",
           "anchor_to": "bottom_right",
@@ -2586,7 +2463,6 @@
           "$tooltip_collection_name": "right_helper_collection",
           "$tooltip_collection_prefix": "right_helpers",
           "collection_name": "$tooltip_collection_name",
-          "$tooltip_helper_description_size": [ "default", 10 ],
           "factory": {
             "name": "right_tooltip_factory",
             "control_name": "hud.mixed_tooltip_helper"
@@ -2775,7 +2651,16 @@
           "ignored": "(not $is_editor_mode_enabled)"
         }
       },
-      { "curor_rend@cursor_renderer": {} },
+      {
+        "curor_rend@cursor_renderer": {
+          "bindings": [
+            {
+              "binding_name": "(not #on_new_death_screen)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
       {
         "game_tip@game_tip.game_tip_panel": {
           "$offset": [ 0, "-90px" ],
