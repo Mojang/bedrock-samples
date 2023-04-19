@@ -10,24 +10,24 @@
 
   "notificationcenter_icon": {
     "type": "image",
-    "texture": "textures/ui/notification_center",
+    "texture": "textures/ui/icon_bell",
     "layer": 3,
-    "size": [ 20, 20 ]
+    "size": [ 16, 16 ]
   },
 
-  "unread_notifications_background_icon": {
+  "unread_notification_icon": {
     "type": "image",
-    "texture": "textures/ui/unread_notifications_background",
+    "texture": "textures/ui/red_dot",
     "layer": 4,
     "anchor_from": "top_right",
     "anchor_to": "top_right",
-    "size": [ 22, 13 ],
+    "size": [ 7, 8 ],
     "bindings": [
       {
-        "binding_name": "#unread_notifications_background_icon"
+        "binding_name": "#unread_notification_icon"
       },
       {
-        "binding_name": "#unread_notifications_background_icon_visibility",
+        "binding_name": "#unread_notification_icon_visibility",
         "binding_name_override": "#visible"
       }
     ]
@@ -518,26 +518,48 @@
 
   "gathering_panel": {
     "type": "stack_panel",
-    "orientation": "horizontal",
+    "orientation": "vertical",
     "size": [ "100%", 60 ],
     "controls": [
       {
-        "pad@common.empty_panel": {
-          "size": [ 5, "100%" ]
-        }
-      },
-      {
-        "inner_panel": {
-          "type": "panel",
-          "anchor_to": "bottom_left",
-          "anchor_from": "bottom_left",
-          "size": [ "100% - 5px", 60 ],
+        "horizontal_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "fill" ],
           "controls": [
             {
-              "badge_and_caption@start.badge_and_caption": {}
+              "pad@common.empty_panel": {
+                "size": [ 5, "100%" ]
+              }
             },
             {
-              "gathering_button@start.gathering_button": {}
+              "inner_panel": {
+                "type": "panel",
+                "anchor_to": "bottom_left",
+                "anchor_from": "bottom_left",
+                "size": [ "100% - 5px", "100%" ],
+                "controls": [
+                  {
+                    "badge_and_caption@start.badge_and_caption": {}
+                  },
+                  {
+                    "gathering_button@start.gathering_button": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      // The gathering panel is stacked on top of either the upper or lower online buttons. This padding is only needed when the upper online buttons are visible.
+      {
+        "bottom_pad": {
+          "type": "panel",
+          "size": [ "100%", 5 ],
+          "bindings": [
+            {
+              "binding_name": "#upper_online_buttons_visible",
+              "binding_name_override": "#visible"
             }
           ]
         }
@@ -608,34 +630,16 @@
     "$pressed_button_name": "button.menu_notificationcenter"
   },
 
-  "notificationcenter_unread_text": {
-    "type": "label",
-    "color": "$tab_secondary_unchecked_text_color",
-    "shadow": false,
-    "text": "#notificationcenter_unread_count",
-    "bindings": [
-      {
-        "binding_name": "#notificationcenter_unread_count"
-      }
-    ]
-  },
-
   "notificationcenter_button_unread_panel": {
     "type": "panel",
     "anchor_from": "top_right",
     "anchor_to": "top_right",
-    "size": [ 8, 4 ],
-    "offset": [ 2, 3 ],
+    "size": [ 7, 8 ],
+    "offset":  [ 0, 1 ],
     "controls": [
       {
-        "background@start.unread_notifications_background_icon": {
-          "layer": 8,
-          "offset": [ 6, -5 ]
-        }
-      },
-      {
-        "text@start.notificationcenter_unread_text": {
-          "layer": 9
+        "background@start.unread_notification_icon": {
+          "layer": 8
         }
       }
     ]
@@ -693,9 +697,15 @@
     "size": [ "100%", "100%c" ],
     "controls": [
       {
+        "top_pad": {
+          "type": "panel",
+          "size": [ "100%", 5 ]
+        }
+      },
+      {
         "stacked_column": {
           "type": "stack_panel",
-          "size": [ "100%", 32 ],
+          "size": [ "100%", "100%c" ],
           "offset": [ "5%", 0 ],
           "anchor_from": "top_left",
           "anchor_to": "top_left",
@@ -717,8 +727,8 @@
             {
               "xbl_btn@start.column_frame": {
                 "ignored": "($nx_os or $is_ps4)",
-                "size": [ 94, 32 ],
-                "max_size": [ "95%", 32 ],
+                "size": [ 94, 25 ],
+                "max_size": [ "95%", 25 ],
                 "controls": [
                   { "xbl_signin_button@start.xbl_signin_button": {} }
                 ],
@@ -825,6 +835,12 @@
               }
             }
           ]
+        }
+      },
+      {
+        "bottom_pad": {
+          "type": "panel",
+          "size": [ "100%", 5 ]
         }
       }
     ],
