@@ -3366,7 +3366,7 @@
     "controls": [
       {
         "bundle_tooltip@common.bundle_tooltip": {
-          "alpha": "@common.bundle_popup_text_fade_out",
+          "alpha": 1,
           "layer": 29,
           "$hover_text_binding_name|default": "#hover_text",
           "bindings": [
@@ -3394,15 +3394,6 @@
     ]
   },
 
-  "bundle_popup_text_fade_out": {
-    "anim_type": "alpha",
-    "easing": "linear",
-    "duration": 1,
-    "from": 1,
-    "to": 0,
-    "destroy_at_end": "bundle_mode_popup_control"
-  },
-
   "pocket_ui_highlight_slot": {
     "type": "image",
     "texture": "textures/ui/pocket_ui_highlight_slot",
@@ -3413,8 +3404,10 @@
   },
 
   "hover_text": {
+    "$hover_text_max_width|default": 0, // A value greater than zero will result in line breaks being added to limit width
     "type": "custom",
     "renderer": "hover_text_renderer",
+    "hover_text_max_width": "$hover_text_max_width",
     "layer": 5,
     "allow_clipping": false
   },
@@ -3616,6 +3609,12 @@
         "binding_condition": "$item_renderer_binding_condition"
       },
       {
+        "binding_name": "#armor_trim_material",
+        "binding_type": "collection",
+        "binding_collection_name": "$item_collection_name",
+        "binding_condition": "$item_renderer_binding_condition"
+      },
+      {
         "binding_name": "#banner_patterns",
         "binding_condition": "visible",
         "binding_type": "collection",
@@ -3655,6 +3654,16 @@
       },
       {
         "binding_name": "#shield_is_active",
+        "binding_type": "collection",
+        "binding_collection_name": "$item_collection_name"
+      },
+      {
+        "binding_name": "#shield_base_color",
+        "binding_type": "collection",
+        "binding_collection_name": "$item_collection_name"
+      },
+      {
+        "binding_name": "#shield_base_color_hovered",
         "binding_type": "collection",
         "binding_collection_name": "$item_collection_name"
       },
@@ -3704,7 +3713,17 @@
         "binding_condition": "$item_renderer_binding_condition"
       },
       {
+        "binding_name": "#armor_trim_material",
+        "binding_type": "collection",
+        "binding_collection_name": "$item_collection_name"
+      },
+      {
         "binding_name": "#banner_patterns",
+        "binding_type": "collection",
+        "binding_collection_name": "$item_collection_name"
+      },
+      {
+        "binding_name": "#shield_base_color_hovered",
         "binding_type": "collection",
         "binding_collection_name": "$item_collection_name"
       },
@@ -3766,7 +3785,7 @@
           "type": "image",
           "size": [ "100%c + 8px", "100%c + 8px" ],
           "layer": 30,
-
+          "visible": "#visible",
           "alpha": "$alpha_anim",
           "texture": "textures/ui/purpleBorder",
 
@@ -3782,6 +3801,12 @@
             }
           ]
         }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#recipe_details_label",
+        "binding_name_override": "#visible"
       }
     ]
   },
@@ -4712,6 +4737,8 @@
       },
       {
         "item_button_ref@$button_ref": {
+          "focus_enabled": false,
+
           "tts_ignore_count": true,
           "tts_skip_message": true,
           "tts_inherit_siblings": true,
@@ -5131,8 +5158,18 @@
         "binding_condition": "always_when_visible"
       },
       {
+        "binding_name": "#inventory_selected_armor_trim_material",
+        "binding_name_override": "#armor_trim_material",
+        "binding_condition": "always_when_visible"
+      },
+      {
         "binding_name": "#inventory_selected_banner_patterns",
         "binding_name_override": "#banner_patterns",
+        "binding_condition": "always_when_visible"
+      },
+      {
+        "binding_name": "#shield_base_color_hovered",
+        "binding_name_override": "#shield_base_color",
         "binding_condition": "always_when_visible"
       },
       {
@@ -5663,6 +5700,19 @@
     "to": [ 0, 0 ],
     "play_event": "screen.entrance_pop",
     "end_event": "screen.entrance_end"
+  },
+
+  // This animation does nothing and is used to maintain the previous
+  // screen during a transition to a new one to avoid graphical glitches
+  // that may occur when no animation is used at all.
+  "screen_exit_animation_no_offset": {
+    "anim_type": "offset",
+    "easing": "out_cubic",
+    "duration": "$transition_time_pop",
+    "from": [ 0, 0 ],
+    "to": [ 0, 0 ],
+    "play_event": "screen.exit_pop",
+    "end_event": "screen.exit_end"
   },
 
   //container
