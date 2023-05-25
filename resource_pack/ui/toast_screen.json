@@ -115,15 +115,15 @@
     "prevent_touch_input": true, // for some reason this enables touch input for the toast panel
     "$toast_anchor_from|default": "top_middle",
     "$toast_anchor_to|default": "bottom_middle",
-    "$toast_offset|default": "#toast_offset_binding",
     "anchor_from": "$toast_anchor_from",
     "anchor_to": "$toast_anchor_to",
     "size": "$popup_size",
+    "$toast_offset|default": [ 0, 0 ],
     "offset": "$toast_offset",
     "$alpha_anims|default": [],
     "bindings": [
       {
-        "binding_name": "$toast_offset",
+        "binding_name": "#toast_offset_binding",
         "binding_name_override": "#offset",
         "binding_condition": "always"
       }
@@ -226,7 +226,7 @@
     "prevent_touch_input": true,
     "$toast_anchor_from|default": "top_right",
     "$toast_anchor_to|default": "bottom_right",
-    "$toast_offset|default": "#toast_offset_binding",
+    "$toast_offset|default": [ 0, 0 ],
     "offset": "$toast_offset",
     "anchor_from": "$toast_anchor_from",
     "anchor_to": "$toast_anchor_to",
@@ -235,7 +235,7 @@
     "gesture_tracking_button": "button.toast_interaction",
     "bindings": [
       {
-        "binding_name": "$toast_offset",
+        "binding_name": "#toast_offset_binding",
         "binding_name_override": "#offset",
         "binding_condition": "always"
       }
@@ -325,11 +325,11 @@
                   },
                   {
                     "title@toast_screen.toast_label": {
-                      "text": "#recipeToastTitle",
+                      "text": "#toast_title",
                       "size": [ "100%-10px", 10 ],
                       "bindings": [
                         {
-                          "binding_name": "#recipeToastTitle"
+                          "binding_name": "#toast_title"
                         }
                       ]
                     }
@@ -337,11 +337,11 @@
                   {
                     "description@toast_screen.toast_label": {
                       "size": [ "100%-10px", 10 ],
-                      "text": "#recipeToastDescription",
+                      "text": "#toast_subtitle",
                       "alpha": 0.8,
                       "bindings": [
                         {
-                          "binding_name": "#recipeToastDescription"
+                          "binding_name": "#toast_subtitle"
                         }
                       ]
                     }
@@ -361,7 +361,7 @@
     "type": "input_panel",
     "$toast_anchor_from": "bottom_middle",
     "$toast_anchor_to": "top_middle",
-    "$toast_offset|default": "#toast_offset_bind",
+    "$toast_offset|default": [ 0, 0 ],
     "offset": "$toast_offset",
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
@@ -371,7 +371,7 @@
     "gesture_tracking_button": "button.toast_interaction",
     "bindings": [
       {
-        "binding_name": "$toast_offset",
+        "binding_name": "#toast_offset_binding",
         "binding_name_override": "#offset",
         "binding_condition": "always"
       }
@@ -472,12 +472,12 @@
                   },
                   {
                     "title@toast_screen.toast_label": {
-                      "text": "#toastTitle",
+                      "text": "#toast_title",
                       "size": [ "100%-10px", 10 ],
                       "bindings": [
                         {
-                          "binding_name": "#toastTitle",
-                          "binding_name_override": "#toastTitle"
+                          "binding_name": "#toast_title",
+                          "binding_name_override": "#toast_title"
                         }
                       ]
                     }
@@ -678,6 +678,160 @@
     ]
   },
 
+  // JSON UI implementation of the Ore UI snackbar
+  "snackbar": {
+    "type": "panel",
+    "anchor_from": "bottom_middle",
+    "anchor_to": "top_middle",
+    "size": [ "100%c", "100%c" ],
+    "$toast_offset|default": [ 0, 0 ],
+    "offset": "$toast_offset",
+    "$snackbar_text_color": [ 1.0, 1.0, 1.0 ],
+    "$snackbar_background_color": [ 0.12, 0.12, 0.12 ],
+    "$snackbar_shadow_color": [ 0.0, 0.0, 0.0 ],
+    "bindings": [
+      {
+        "binding_name": "#toast_offset_binding",
+        "binding_name_override": "#offset",
+        "binding_condition": "always"
+      }
+    ],
+    "controls": [
+      {
+        "body": {
+          "type": "image",
+          "size": [ "100%c", "2px" ],
+          "texture": "textures/ui/White",
+          "color": "$snackbar_shadow_color",
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ "0px", "12px" ],
+          "$title_font_type|default": "default",
+          "$toast_shadow_alpha|default": "#toast_shadow_alpha_binding",
+          "alpha": "$toast_shadow_alpha",
+          "bindings": [
+            {
+              "binding_name": "$toast_shadow_alpha",
+              "binding_name_override": "#alpha",
+              "binding_condition": "always"
+            }
+          ],
+          "controls": [
+            {
+              "background": {
+                "type": "image",
+                "texture": "textures/ui/White",
+                "color": "$snackbar_background_color",
+                "size": [ "100%c", "12px" ],
+                "anchor_to": "bottom_middle",
+                "anchor_from": "top_middle",
+                "offset": [ "-2px", "0px" ],
+                "$toast_alpha|default": "#toast_alpha_binding",
+                "alpha": "$toast_alpha",
+                "bindings": [
+                  {
+                    "binding_name": "$toast_alpha",
+                    "binding_name_override": "#alpha",
+                    "binding_condition": "always"
+                  }
+                ],
+                "controls": [
+                  {
+                    "content": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "anchor_from": "center",
+                      "anchor_to": "center",
+                      "controls": [
+                        {
+                          "left_padding": {
+                            "type": "panel",
+                            "size": [ "4px", "12px" ]
+                          }
+                        },
+                        {
+                          "vertically_central_text": {
+                            "type": "stack_panel",
+                            "orientation": "vertical",
+                            "anchor_from": "center",
+                            "anchor_to": "center",
+                            "size": [ "100%c", "12px" ],
+                            "controls": [
+                              {
+                                "top_padding": {
+                                  "type": "panel",
+                                  "size": [ "0px", "1px" ]
+                                }
+                              },
+                              {
+                                "text": {
+                                  "type": "label",
+                                  "size": [ "default", "100%" ],
+                                  "line_padding": 1,
+                                  "font_size": "normal",
+                                  "font_type": "smooth",
+                                  "font_scale_factor": 0.8,
+                                  "anchor_from": "top_middle",
+                                  "anchor_to": "bottom_middle",
+                                  "text": "#toast_title",
+                                  "text_alignment": "center",
+                                  "color": "$snackbar_text_color",
+                                  "$toast_alpha|default": "#toast_alpha_binding",
+                                  "alpha": "$toast_alpha",
+                                  "shadow": false,
+                                  "bindings": [
+                                    {
+                                      "binding_name": "#toast_title"
+                                    },
+                                    {
+                                      "binding_name": "$toast_alpha",
+                                      "binding_name_override": "#alpha",
+                                      "binding_condition": "always"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "right_padding": {
+                            "type": "panel",
+                            "size": [ "3px", "12px" ] // seems necessary to add 1px in comparison to left padding to visually center the text
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "right_shadow": {
+                      "type": "image",
+                      "size": [ "2px", "100%-2px" ],
+                      "anchor_from": "top_right",
+                      "anchor_to": "top_left",
+                      "offset": [ "0px", "2px" ],
+                      "texture": "textures/ui/White",
+                      "color": "$snackbar_shadow_color",
+                      "$toast_shadow_alpha|default": "#toast_shadow_alpha_binding",
+                      "alpha": "$toast_shadow_alpha",
+                      "bindings": [
+                        {
+                          "binding_name": "$toast_shadow_alpha",
+                          "binding_name_override": "#alpha",
+                          "binding_condition": "always"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "toast_screen@common.base_screen": {
     "always_accepts_input": true,
     "send_telemetry": false,
@@ -705,7 +859,8 @@
         "recipe_unlocked": "recipe_unlocked@toast_screen.recipe_unlocked_popup",
         "recipe_unlocked_in_inventory": "recipe_unlocked_in_inventory@toast_screen.recipe_unlocked_in_inventory_popup",
         "splitscreen_join_popup": "splitscreen_join_popup@toast_screen.splitscreen_join_popup",
-        "formfitting_alpha_toast": "toast_screen.formfitting_alpha_toast"
+        "formfitting_alpha_toast": "toast_screen.formfitting_alpha_toast",
+        "snackbar": "snackbar@toast_screen.snackbar"
       }
     },
     "controls": [
