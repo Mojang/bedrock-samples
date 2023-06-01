@@ -7371,9 +7371,12 @@
     "$store_section_header_label_text|default": "#section_header",
     "$store_section_binding_condition|default": "always_when_visible",
     "$store_section_header_font_type|default": "default",
+    "$store_section_header_font_scalar|default": 1.0,
+    "$store_section_header_text_color": "#header_text_color",
     "text": "$store_section_header_label_text",
     "color": "$store_section_header_text_color",
     "font_type": "$store_section_header_font_type",
+    "font_scale_factor": "$store_section_header_font_scalar",
     "$store_section_header_label_bindings|default": [
       {
         "binding_type": "collection",
@@ -7386,6 +7389,27 @@
         "binding_name": "$store_section_header_visible_binding",
         "binding_name_override": "#visible",
         "binding_condition": "$store_section_binding_condition"
+      },
+      {
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#header_text_color",
+        "binding_condition": "once",
+        "binding_name_override": "#color"
+      },
+      {
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#header_font_type",
+        "binding_condition": "once",
+        "binding_name_override": "#font_type"
+      },
+      {
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#header_font_scalar",
+        "binding_condition": "once",
+        "binding_name_override": "#font_scale_factor"
       }
     ],
     "bindings": "$store_section_header_label_bindings"
@@ -7496,11 +7520,35 @@
         "row_header": {
           "type": "panel",
           "size": [ "100%", "100%cm" ],
-
           "controls": [
             {
+              "background": {
+                "type": "image",
+                "texture": "textures/ui/recolorable_background",
+                "size": [ "100%", "100%sm" ],
+                "color": "#header_bg_color",
+                "bindings": [
+                  {
+                    "binding_type": "$store_factory_binding_type",
+                    "binding_collection_name": "$store_factory_collection_name",
+                    "binding_name": "#header_bg_color",
+                    "binding_condition": "once",
+                    "binding_name_override": "#color"
+                  },
+                  {
+                    "binding_type": "$store_factory_binding_type",
+                    "binding_collection_name": "$store_factory_collection_name",
+                    "binding_name": "#show_background",
+                    "binding_condition": "once",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
               "label_panel": {
-                "type": "panel",
+                "type": "stack_panel",
+                "orientation": "horizontal",
                 "size": [ "100%", "100%cm" ],
                 "visible": false,
                 "anchor_from": "bottom_left",
@@ -7515,10 +7563,23 @@
                 ],
                 "controls": [
                   {
+                    "indent": {
+                      "type": "panel",
+                      "size": [ 12, 1 ],
+                      "bindings": [
+                        {
+                          "binding_type": "$store_factory_binding_type",
+                          "binding_collection_name": "$store_factory_collection_name",
+                          "binding_name": "#indent",
+                          "binding_condition": "once",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
                     "row_header_label@common_store.store_section_header_label": {
                       "size": [ "90% - 2px", 10 ],
-                      "$row_header_offset|default": [ 12, 1 ],
-                      "offset": "$row_header_offset",
                       "$store_section_header_visible_binding": "#hide_banner",
                       "$store_section_header_text_color": "$main_header_text_color",
                       "anchor_from": "bottom_left",
