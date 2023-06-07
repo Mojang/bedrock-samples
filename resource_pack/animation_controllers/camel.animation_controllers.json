@@ -1,0 +1,75 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.camel.general": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            { "idling": "!query.is_sitting" },
+            { "sitting": "query.is_sitting" }
+          ],
+          "blend_transition": 0.0
+        },
+        "idling": {
+          "transitions": [
+            { "moving": "variable.moving" },
+            { "sit_down": "query.is_sitting" },
+            { "dashing": "query.has_dash_cooldown && !query.is_on_ground && !query.is_in_water && !query.is_riding" }
+          ],
+          "blend_transition": 0.5
+        },
+        "moving": {
+          "animations": [
+            { "moving": "math.min(1.0, math.lerp(0.2, 1.5, query.modified_move_speed))" }
+          ],
+          "transitions": [
+            { "idling": "!variable.moving" },
+            { "sit_down": "query.is_sitting" },
+            { "dashing": "query.has_dash_cooldown && !query.is_on_ground && !query.is_in_water && !query.is_riding" }
+          ],
+          "blend_transition": 0.2
+        },
+        "sitting": {
+          "animations": [ "sitting" ],
+          "transitions": [
+            { "stand_up": "!query.is_sitting" }
+          ],
+          "blend_transition": 0.5
+        },
+        "sit_down": {
+          "animations": [ "sit_down" ],
+          "transitions": [
+            { "stand_up": "!query.is_sitting" }
+          ],
+          "blend_transition": 0.5
+        },
+        "stand_up": {
+          "animations": [ "stand_up" ],
+          "transitions": [
+            { "sit_down": "query.is_sitting" },
+            { "idling": "query.all_animations_finished" },
+            { "moving": "variable.moving" }
+          ],
+          "blend_transition": 0.5
+        },
+        "dashing": {
+          "animations": [ "dashing" ],
+          "transitions": [
+            { "idling": "(query.is_on_ground || query.is_in_water || query.is_riding) && !variable.moving" },
+            { "moving": "(query.is_on_ground || query.is_in_water || query.is_riding) && variable.moving" }
+          ],
+          "blend_transition": 0.5
+        }
+      }
+    },
+    "controller.animation.camel.idle": {
+      "initial_state": "idling",
+      "states": {
+        "idling": {
+          "animations": [ "idle" ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,387 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:sniffer",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": true
+    },
+    "component_groups": {
+      "sniffer_baby": {
+        "minecraft:is_baby": {
+        },
+        "minecraft:scale": {
+          "value": 0.45
+        },
+        "minecraft:ageable": {
+          "duration": 2400,
+          "feed_items": [
+            "torchflower_seeds"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      },
+      "sniffer_adult": {
+        "minecraft:behavior.breed": {
+          "priority": 3,
+          "speed_multiplier": 1.0
+        },
+        "minecraft:experience_reward": {
+          "on_bred": "Math.Random(1,7)",
+          "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
+        },
+        "minecraft:breedable": {
+          "require_tame": false,
+          "causes_pregnancy": true,
+          "breeds_with": [
+            {
+              "mate_type": "minecraft:sniffer",
+              "breed_event": {
+                "event": "on_pregnant",
+                "target": "self"
+              }
+            }
+          ],
+          "breed_items": [
+            "torchflower_seeds"
+          ]
+        }
+      },
+      "feeling_happy": {
+        "minecraft:behavior.feeling_happy": {
+          "priority": 5,
+          "cooldown_range": 0.0,
+          "duration_range": [ 2.0, 5.0 ],
+          "on_end": {
+            "event": "on_feeling_happy_end",
+            "target": "self"
+          }
+        }
+      },
+      "stand_up": {
+        "minecraft:behavior.rising": {
+          "priority": 2,
+          "cooldown_range": 0.0,
+          "duration_range": [ 2.0, 5.0 ],
+          "on_end": {
+            "event": "on_rising_end",
+            "target": "self"
+          }
+        }
+      },
+      "pushable": {
+        "minecraft:pushable": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      },
+      "sniffer_pregnant": {
+        "minecraft:spawn_entity": {
+          "entities": {
+            "min_wait_time": 0,
+            "max_wait_time": 0,
+            "spawn_sound": "plop",
+            "spawn_item": "sniffer_egg",
+            "spawn_item_event": {
+              "event": "on_egg_spawned",
+              "target": "self"
+            },
+            "single_use": true
+          }
+        },
+        "minecraft:is_pregnant": {}
+      },
+      "sniffer_search_and_dig": {
+        "minecraft:behavior.random_search_and_dig": {
+          "priority": 5,
+          "speed_multiplier": 1.25,
+          "find_valid_position_retries": 5,
+          "goal_radius": 2.0,
+          "search_range_xz": 20.0,
+          "search_range_y": 3,
+          "cooldown_range": 0.0,
+          "digging_duration_range": [ 8.0, 10.0 ],
+          "items": [
+            {
+              "item": "torchflower_seeds",
+              "weight": 1
+            },
+            {
+              "item": "pitcher_pod",
+              "weight": 1
+            }
+          ],
+          "spawn_item_after_seconds": 6.0,
+          "spawn_item_pos_offset": 2.25,
+          "on_searching_start": {
+            "event": "on_searching_start",
+            "target": "self"
+          },
+          "on_fail_during_searching": {
+            "event": "on_fail_during_searching",
+            "target": "self"
+          },
+          "on_digging_start": {
+            "event": "on_digging_start",
+            "target": "self"
+          },
+          "on_item_found": {
+            "event": "on_item_found",
+            "target": "self"
+          },
+          "on_fail_during_digging": {
+            "event": "on_fail_during_digging",
+            "target": "self"
+          },
+          "on_success": {
+            "event": "on_search_and_digging_success",
+            "target": "self"
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:behavior.panic": {
+        "priority": 1,
+        "speed_multiplier": 2
+      },
+      "minecraft:behavior.tempt": {
+        "priority": 4,
+        "speed_multiplier": 1.25,
+        "items": [
+          "torchflower_seeds"
+        ]
+      },
+      "minecraft:behavior.scenting": {
+        "priority": 6,
+        "cooldown_range": [ 400.0, 500.0 ],
+        "duration_range": 2.0,
+        "on_end": {
+          "event": "on_scenting_success",
+          "target": "self"
+        }
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "target_distance": 6.0,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:collision_box": {
+        "width": 1.9,
+        "height": 1.75
+      },
+      "minecraft:healable": {
+        "items": [
+          {
+            "item": "torchflower_seeds",
+            "heal_amount": 2
+          }
+        ]
+      },
+      "minecraft:leashable": {
+        "soft_distance": 4.0,
+        "hard_distance": 6.0,
+        "max_distance": 10.0
+      },
+      "minecraft:type_family": {
+        "family": [ "sniffer", "mob" ]
+      },
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:health": {
+        "value": 14
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:movement.basic": {
+      },
+      "minecraft:follow_range": {
+        "value": 64.0
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:movement": {
+        "value": 0.09
+      },
+      "minecraft:persistent": {
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "randomize": [
+          {
+            "weight": 95,
+            "trigger": "minecraft:spawn_adult"
+          },
+          {
+            "weight": 5,
+            "trigger": "minecraft:entity_born"
+          }
+        ]
+      },
+      "minecraft:spawn_adult": {
+        "add": {
+          "component_groups": [
+            "sniffer_adult",
+            "pushable"
+          ]
+        }
+      },
+      "minecraft:entity_born": {
+        "add": {
+          "component_groups": [
+            "sniffer_baby",
+            "pushable"
+          ]
+        }
+      },
+      "on_pregnant": {
+        "add": {
+          "component_groups": [
+            "sniffer_pregnant"
+          ]
+        }
+      },
+      "on_egg_spawned": {
+        "remove": {
+          "component_groups": [
+            "sniffer_pregnant"
+          ]
+        }
+      },
+      "minecraft:ageable_grow_up": {
+        "remove": {
+          "component_groups": [
+            "sniffer_baby"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "sniffer_adult"
+          ]
+        }
+      },
+      "on_scenting_success": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "has_component",
+              "subject": "self",
+              "operator": "!=",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "sniffer_search_and_dig"
+              ]
+            }
+          }
+        ]
+      },
+      "on_digging_start": {
+        "remove": {
+          "component_groups": [
+            "pushable"
+          ]
+        }
+      },
+      "on_item_found": {
+        "add": {
+          "component_groups": [
+            "feeling_happy"
+          ]
+        }
+      },
+      "on_feeling_happy_end": {
+        "remove": {
+          "component_groups": [
+            "feeling_happy"
+          ]
+        }
+      },
+      "on_fail_during_searching": {
+        "remove": {
+          "component_groups": [
+            "sniffer_search_and_dig"
+          ]
+        }
+      },
+      "on_fail_during_digging": {
+        "remove": {
+          "component_groups": [
+            "sniffer_search_and_dig"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "pushable",
+            "stand_up"
+          ]
+        }
+      },
+      "on_search_and_digging_success": {
+        "remove": {
+          "component_groups": [
+            "sniffer_search_and_digging"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "pushable",
+            "stand_up"
+          ]
+        }
+      },
+      "on_rising_end": {
+        "remove": {
+          "component_groups": [
+            "stand_up"
+          ]
+        }
+      }
+    }
+  }
+}
