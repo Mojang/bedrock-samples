@@ -1,6 +1,16 @@
 {
   "namespace": "toast_screen",
 
+  "popup_anim": {
+    "anim_type": "offset",
+    "easing": "linear",
+    "from": "$popup_distance_from",
+    "to": "$popup_distance_to",
+    "duration": "$transition_time",
+    "$anim_event_name|default": "toast_animation_finished",
+    "end_event": "$anim_event_name"
+  },
+
   "toast_image": {
     "type": "image",
     "size": [ 13, 13 ],
@@ -112,21 +122,17 @@
 
   "popup@common.input_panel": {
     "consume_hover_events": true,
-    "prevent_touch_input": true, // for some reason this enables touch input for the toast panel
+    "prevent_touch_input": true,
     "$toast_anchor_from|default": "top_middle",
     "$toast_anchor_to|default": "bottom_middle",
+    "$toast_offset|default": [ 0, 0 ],
+    "offset": "$toast_offset",
     "anchor_from": "$toast_anchor_from",
     "anchor_to": "$toast_anchor_to",
     "size": "$popup_size",
-    "$toast_offset|default": [ 0, 0 ],
-    "offset": "$toast_offset",
     "$alpha_anims|default": [],
-    "bindings": [
-      {
-        "binding_name": "#toast_offset_binding",
-        "binding_name_override": "#offset",
-        "binding_condition": "always"
-      }
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
     ],
     "button_mappings": [
       {
@@ -140,7 +146,8 @@
       {
         "background": {
           "type": "image",
-          "texture": "textures/ui/greyBorder"
+          "texture": "textures/ui/greyBorder",
+          "anims": "$alpha_anims"
         }
       },
       {
@@ -209,7 +216,8 @@
           ]
         }
       }
-    ]
+    ],
+    "anims": "$offset_anims"
   },
 
   "item_renderer": {
@@ -222,8 +230,6 @@
 
   "recipe_unlocked_popup": {
     "type": "input_panel",
-    "consume_hover_events": true,
-    "prevent_touch_input": true,
     "$toast_anchor_from|default": "top_right",
     "$toast_anchor_to|default": "bottom_right",
     "$toast_offset|default": [ 0, 0 ],
@@ -231,14 +237,10 @@
     "anchor_from": "$toast_anchor_from",
     "anchor_to": "$toast_anchor_to",
     "size": [ 165, 30 ],
-    "$alpha_anims|default": [],
     "gesture_tracking_button": "button.toast_interaction",
-    "bindings": [
-      {
-        "binding_name": "#toast_offset_binding",
-        "binding_name_override": "#offset",
-        "binding_condition": "always"
-      }
+    "$alpha_anims|default": [],
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
     ],
     "button_mappings": [
       {
@@ -252,8 +254,8 @@
       {
         "background": {
           "type": "image",
-          "texture": "textures/ui/greyBorder"
-          //"anims": "$alpha_anims"
+          "texture": "textures/ui/greyBorder",
+          "anims": "$alpha_anims"
         }
       },
       {
@@ -352,30 +354,28 @@
           ]
         }
       }
-    ]
+    ],
+    "anims": "$offset_anims"
   },
 
 
   // used when pocket-ui is enabled and is inside the inventory screen
-  "recipe_unlocked_in_inventory_popup": {
+  "recipe_unlocked_pocket_popup": {
     "type": "input_panel",
-    "$toast_anchor_from": "bottom_middle",
-    "$toast_anchor_to": "top_middle",
+    "$toast_anchor_from|default": "bottom_middle",
+    "$toast_anchor_to|default": "center",
     "$toast_offset|default": [ 0, 0 ],
     "offset": "$toast_offset",
-    "anchor_from": "bottom_middle",
-    "anchor_to": "bottom_middle",
+    "anchor_from": "$toast_anchor_from",
+    "anchor_to": "$toast_anchor_to",
     "layer": 20,
     "size": [ 150, 28 ],
-    "$alpha_anims|default": [],
     "gesture_tracking_button": "button.toast_interaction",
-    "bindings": [
-      {
-        "binding_name": "#toast_offset_binding",
-        "binding_name_override": "#offset",
-        "binding_condition": "always"
-      }
+    "$alpha_anims|default": [],
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
     ],
+    "anims": "$offset_anims",
     "button_mappings": [
       {
         "from_button_id": "button.menu_select",
@@ -625,8 +625,7 @@
     "from": 1.0,
     "to": 0.0,
     "duration": "$transition_out_time",
-    "destroy_at_end": "$toast_control",
-    "end_event": "toast_end"
+    "destroy_at_end": "$toast_control"
   },
 
   "fade_anim_wait": {
@@ -678,23 +677,39 @@
     ]
   },
 
+  "fade_anim_snackbar": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "from": "$popup_alpha_from",
+    "to": "$popup_alpha_to",
+    "duration": "$transition_time"
+  },
+
+  "fade_anim_snackbar_background": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "from": "$popup_background_alpha_from",
+    "to": "$popup_background_alpha_to",
+    "duration": "$transition_time"
+  },
+
   // JSON UI implementation of the Ore UI snackbar
   "snackbar": {
     "type": "panel",
     "anchor_from": "bottom_middle",
-    "anchor_to": "top_middle",
+    "anchor_to": "center",
     "size": [ "100%c", "100%c" ],
-    "$toast_offset|default": [ 0, 0 ],
-    "offset": "$toast_offset",
     "$snackbar_text_color": [ 1.0, 1.0, 1.0 ],
     "$snackbar_background_color": [ 0.12, 0.12, 0.12 ],
     "$snackbar_shadow_color": [ 0.0, 0.0, 0.0 ],
-    "bindings": [
-      {
-        "binding_name": "#toast_offset_binding",
-        "binding_name_override": "#offset",
-        "binding_condition": "always"
-      }
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
+    ],
+    "$alpha_anims|default": [
+      "@toast_screen.fade_anim_snackbar"
+    ],
+    "$background_alpha_anims|default": [
+      "@toast_screen.fade_anim_snackbar_background"
     ],
     "controls": [
       {
@@ -706,16 +721,8 @@
           "anchor_from": "bottom_middle",
           "anchor_to": "bottom_middle",
           "offset": [ "0px", "12px" ],
+          "anims": "$background_alpha_anims",
           "$title_font_type|default": "default",
-          "$toast_shadow_alpha|default": "#toast_shadow_alpha_binding",
-          "alpha": "$toast_shadow_alpha",
-          "bindings": [
-            {
-              "binding_name": "$toast_shadow_alpha",
-              "binding_name_override": "#alpha",
-              "binding_condition": "always"
-            }
-          ],
           "controls": [
             {
               "background": {
@@ -726,15 +733,7 @@
                 "anchor_to": "bottom_middle",
                 "anchor_from": "top_middle",
                 "offset": [ "-2px", "0px" ],
-                "$toast_alpha|default": "#toast_alpha_binding",
-                "alpha": "$toast_alpha",
-                "bindings": [
-                  {
-                    "binding_name": "$toast_alpha",
-                    "binding_name_override": "#alpha",
-                    "binding_condition": "always"
-                  }
-                ],
+                "anims": "$alpha_anims",
                 "controls": [
                   {
                     "content": {
@@ -776,17 +775,11 @@
                                   "text": "#toast_title",
                                   "text_alignment": "center",
                                   "color": "$snackbar_text_color",
-                                  "$toast_alpha|default": "#toast_alpha_binding",
-                                  "alpha": "$toast_alpha",
                                   "shadow": false,
+                                  "anims": "$alpha_anims",
                                   "bindings": [
                                     {
                                       "binding_name": "#toast_title"
-                                    },
-                                    {
-                                      "binding_name": "$toast_alpha",
-                                      "binding_name_override": "#alpha",
-                                      "binding_condition": "always"
                                     }
                                   ]
                                 }
@@ -812,15 +805,7 @@
                       "offset": [ "0px", "2px" ],
                       "texture": "textures/ui/White",
                       "color": "$snackbar_shadow_color",
-                      "$toast_shadow_alpha|default": "#toast_shadow_alpha_binding",
-                      "alpha": "$toast_shadow_alpha",
-                      "bindings": [
-                        {
-                          "binding_name": "$toast_shadow_alpha",
-                          "binding_name_override": "#alpha",
-                          "binding_condition": "always"
-                        }
-                      ]
+                      "anims": "$background_alpha_anims"
                     }
                   }
                 ]
@@ -829,7 +814,8 @@
           ]
         }
       }
-    ]
+    ],
+    "anims": "$offset_anims"
   },
 
   "toast_screen@common.base_screen": {
@@ -857,7 +843,7 @@
         "popup": "popup@toast_screen.popup",
         "chat_popup": "chat_popup@toast_screen.chat_popup",
         "recipe_unlocked": "recipe_unlocked@toast_screen.recipe_unlocked_popup",
-        "recipe_unlocked_in_inventory": "recipe_unlocked_in_inventory@toast_screen.recipe_unlocked_in_inventory_popup",
+        "recipe_unlocked_pocket": "recipe_unlocked_pocket@toast_screen.recipe_unlocked_pocket_popup",
         "splitscreen_join_popup": "splitscreen_join_popup@toast_screen.splitscreen_join_popup",
         "formfitting_alpha_toast": "toast_screen.formfitting_alpha_toast",
         "snackbar": "snackbar@toast_screen.snackbar"
