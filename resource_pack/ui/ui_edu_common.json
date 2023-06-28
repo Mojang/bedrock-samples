@@ -361,6 +361,7 @@
   // Requires
   // - $title_text
   // - (if image): $title_has_image: true and $title_texture
+  // - (if templates screen): $title_is_templates_screen: true
   "edu_screen_header@common.top_bar": {
     "layer": 1,
     "controls": [
@@ -372,6 +373,7 @@
           "anchor_from": "top_left",
           "anchor_to": "top_left",
           "$title_has_image|default": false,
+          "$title_is_templates_screen|default": false,
           "controls": [
             {
               "back_item@edu_common.horizontal_stack_item": {
@@ -400,6 +402,32 @@
                       "texture": "$title_texture",
                       "$title_image_bindings|default": [],
                       "bindings": "$title_image_bindings"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "image_item_template@edu_common.horizontal_stack_item": {
+                "ignored": "(not $title_is_templates_screen)",
+                "controls": [
+                  {
+                    "image": {
+                      "size": [ "100%y", "100% - 4px" ],
+                      "type": "image",
+                      "texture": "textures/ui/storageIcon",
+                      "color": "$dark_glyph_toggle_default_color",
+                      "bindings": [],
+                      "controls": [
+                        {
+                          "image_color": {
+                            "size": [ "100%y", "100%" ],
+                            "type": "image",
+                            "texture": "textures/ui/storageIconColor",
+                            "bindings": []
+                          }
+                        }
+                      ]
                     }
                   }
                 ]
@@ -1697,6 +1725,134 @@
         "binding_type": "collection",
         "binding_collection_name": "$hotbar_collection_name",
         "binding_condition": "always"
+      }
+    ]
+  },
+
+  "view_toggle_content@edu_common": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", 16 ],
+    "controls": [
+      {
+        "button_image_templates": {
+          "size": [ "100%y - 2px", "100%" ],
+          "type": "image",
+          "visible": "$goingToTemplates",
+          "texture": "textures/ui/storageIcon",
+          "color": "$dark_glyph_toggle_default_color",
+          "controls": [
+            {
+              "image_color_templates": {
+                "size": [ "100%", "100%" ],
+                "type": "image",
+                "visible": "$goingToTemplates",
+                "texture": "textures/ui/storageIconColor"
+              }
+            }
+          ]
+        }
+      },
+      //Worlds icon is one complete image, so need 2 separate flows
+      {
+        "button_image_worlds": {
+          "size": [ "100%y - 2px", "100%" ],
+          "type": "image",
+          "visible": "(not $goingToTemplates)",
+          "texture": "textures/ui/worldsIcon"
+        }
+      },
+      {
+        "button_label_wrapper": {
+          "type": "panel",
+          "size": [ "100%c", "100%" ],
+          "controls": [
+            {
+              "button_label": {
+                "type": "label",
+                "offset": [ 4, 0 ],
+                "text": "$toggle_button_label",
+                "color": "$body_text_color"
+              }
+            }
+          ]
+        }
+      },
+      { "left_edge_text_padding@common.empty_panel": { "size": [ 4, "100%sm" ] } }
+    ]
+  },
+
+  "worlds_and_templates_search_bar": {
+    //Top level image background, holds a stack panel that organizes elements
+    "type": "image",
+    "size": [ "100%", 33 ],
+    "texture": "textures/ui/edu_worlds_search_bar",
+    "controls": [
+      {
+        "stack_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", 30 ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "controls": [
+            {
+              //Each element needs to be set in a wrapper panel to use offsets
+              "search_bar_wrapper": {
+                "type": "panel",
+                "size": [ "fill", 26 ],
+                "controls": [
+                  {
+                    "search_bar@common.text_edit_box": {
+                      "size": [ "100%", 26 ],
+                      "offset": [ 4, 3 ],
+                      "max_length": 50,
+                      "$placeholder_label_size": [ "100%", 10 ],
+                      // Variable expected to be overwritten where element is used
+                      "$place_holder_text": "$place_holder_text",
+                      "$text_box_name": "$text_box_name"
+                    }
+                  }
+                ]
+              }
+            },
+            //3px space + 4 offset of search_bar
+            //Will be updated with addition of sort button later
+            { "temp_padding@common.empty_panel": { "size": [ 7, "100%sm" ] } },
+            //Space for Sort dropdown
+            {
+              "view_toggle_background": {
+                "type": "image",
+                "size": [ "100%c", 32 ],
+                "texture": "textures/ui/edu_templates_button",
+                "controls": [
+                  {
+                    "stack_panel": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100%c", 26 ],
+                      "controls": [
+                        { "left_edge_padding@common.empty_panel": { "size": [ 4, "100%sm" ] } },
+                        {
+                          "view_toggle_button@common_buttons.dark_content_form_fitting_button": {
+                            "size": [ "100%c", 26 ],
+                            "$pressed_button_name": "button.view_toggle",
+                            "$button_offset": [ 0, 0 ],
+                            "$button_pressed_offset": [ 0, 0 ],
+                            "$toggle_button_label": "$toggle_button_label",
+                            "$goingToTemplates": "$goingToTemplates",
+                            "$button_content": "edu_common.view_toggle_content"
+                          }
+                        },
+                        { "right_edge_padding@common.empty_panel": { "size": [ 3, "100%sm" ] } }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
       }
     ]
   }

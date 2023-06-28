@@ -1481,7 +1481,6 @@
               "rarity_bar_panel@persona_common.rarity_bar": {
                 "size": [ "100%", 3 ],
                 "layer": 6,
-                "offset": [ -1, 0 ],
                 "bindings": [
                   {
                     "binding_type": "$store_factory_collection_details",
@@ -1553,29 +1552,29 @@
   "promotion_period_grid_panel": {
     "type": "panel",
     "size": [ "fill", "100%c" ],
+    "bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "gift_promotion_collection"
+      },
+      {
+        "binding_name": "#is_valid",
+        "binding_name_override": "#visible",
+        "binding_type": "collection",
+        "binding_collection_name": "gift_promotion_collection"
+      }
+    ],
     "controls": [
       {
         "promotion_offer_grid_image": {
           "type": "panel",
           "size": [ "100%", "100%cm" ],
           "layer": 1,
-          "bindings": [
-            {
-              "binding_type": "$store_factory_collection_details",
-              "binding_collection_name": "$store_factory_collection_name",
-              "binding_collection_prefix": "$store_factory_collection_prefix"
-            },
-            {
-              "binding_type": "collection_details",
-              "binding_collection_name": "gift_promotion_collection"
-            },
-            {
-              "binding_name": "#is_valid",
-              "binding_name_override": "#visible",
-              "binding_type": "collection",
-              "binding_collection_name": "gift_promotion_collection"
-            }
-          ],
           "controls": [
             {
               "item_selected_bg": {
@@ -2711,7 +2710,6 @@
             {
               "rarity_bar_panel@persona_common.rarity_bar": {
                 "size": [ "100%", 3 ],
-                "offset": [ -1, 0 ],
                 "layer": 6,
                 "anchor_from": "bottom_middle",
                 "anchor_to": "bottom_middle",
@@ -3062,19 +3060,82 @@
     ]
   },
 
-  "promo_pack_detail_panel": {
+  "offset_title_offer": {
     "type": "stack_panel",
-    "orientation": "vertical",
-    "size": [ "100%", "100%c" ],
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
     "controls": [
       {
+        "pad_0": {
+          "type": "panel",
+          "size": [ 4, "100%sm" ]
+        }
+      },
+      {
         "title_panel@promo_timeline.offer_title_panel": {}
+      }
+    ]
+  },
+
+  "offset_promo_timer": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
+    "controls": [
+      {
+        "pad_0": {
+          "type": "panel",
+          "size": [ 4, "100%sm" ]
+        }
       },
       {
         "promo_timer@promo_timeline.promo_timer_panel": {
           "$ignore_padding": false,
           "layer": 1
         }
+      }
+    ]
+  },
+
+  "offset_image_glyphs_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
+    "controls": [
+      {
+        "pad_0": {
+          "type": "panel",
+          "size": [ 4, "100%sm" ]
+        }
+      },
+      {
+        "smaller_panel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%-4px", "100%c" ],
+          "controls": [
+            {
+              "details@promo_timeline.image_glyphs_panel": {}
+            },
+            {
+              "description@promo_timeline.description_section_panel": {}
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "promo_pack_detail_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "offset_title_panel@promo_timeline.offset_title_offer": {}
+      },
+      {
+        "offsetted_promo_timer@promo_timeline.offset_promo_timer": {}
       },
       {
         "pad_0": {
@@ -3083,10 +3144,7 @@
         }
       },
       {
-        "details@promo_timeline.image_glyphs_panel": {}
-      },
-      {
-        "description@promo_timeline.description_section_panel": {}
+        "offsetted_details@promo_timeline.offset_image_glyphs_panel": {}
       },
       {
         "pad_1": {
@@ -3134,7 +3192,7 @@
 
   "promo_left_inner_bottom": {
     "type": "stack_panel",
-    "size": [ "100%", "100%c" ],
+    "size": [ "100% - 4px", "100%c" ],
     "orientation": "vertical",
     "anchor_to": "bottom_middle",
     "anchor_from": "bottom_middle",
@@ -3163,7 +3221,7 @@
                   },
                   {
                     "binding_type": "collection_details",
-                    "binding_collection_name": "gift_promotion_collection_items"                    
+                    "binding_collection_name": "gift_promotion_collection_items"
                   },
                   {
                     "binding_name": "#promo_action_button_visible",
@@ -3239,7 +3297,7 @@
   "promo_left_panel": {
     "type": "stack_panel",
     "orientation": "vertical",
-    "size": [ "fill", "56.25%x + 20.5px" ], //image aspect ratio + some buffer space
+    "size": [ "fill", "56.25%x + 18.2px" ], //image aspect ratio + some buffer space
     "anchor_to": "bottom_left",
     "anchor_from": "bottom_left",
     "controls": [
@@ -3247,7 +3305,22 @@
         "top@promo_timeline.promo_left_inner_top": {}
       },
       {
-        "bottom@promo_timeline.promo_left_inner_bottom": {}
+        "bottom_buttons_padded": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "100%cm" ],
+          "controls": [
+            {
+              "pad_0": {
+                "type": "panel",
+                "size": [ "4px", "100%sm" ]
+              }
+            },
+            {
+              "bottom@promo_timeline.promo_left_inner_bottom": {}
+            }
+          ]
+        }
       },
       {
         "padding": {
@@ -3680,7 +3753,7 @@
   },
 
   "promo_right_panel@common.scrolling_panel": {
-    "size": [ "fill", "100%sm - 4px" ],
+    "size": [ "fill", "100%sm - 6px" ],
     "$scrolling_pane_size": [ "100%", "100%" ],
     "$scrolling_pane_offset": [ 0, 0 ],
     "$scroll_size": [ 5, "100% - 8px" ],
@@ -3693,7 +3766,7 @@
   "promo_detail_panel": {
     "type": "stack_panel",
     "orientation": "horizontal",
-    "size": [ "100% - 8px", "100%cm" ],
+    "size": [ "100%", "100%cm" ],
     "controls": [
       {
         "detail@promo_timeline.promo_left_panel": {}
@@ -3730,14 +3803,36 @@
           "type": "factory",
           "control_ids": {
             "toast_message": "@promo_timeline.promo_popup_toast"
-          }
+          },
+          "factory_variables": [
+            "$store_factory_collection_details",
+            "$store_factory_collection_name",
+            "$store_factory_collection_prefix",
+            "$store_factory_binding_type"
+          ]
+        }
+      },
+      {
+        "character_loading_panel@persona.loading_icon": {
+          "anchor_to": "top_right",
+          "anchor_from": "top_right",
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_name": "#character_loading_in_progress",
+              "binding_name_override": "#visible"
+            }
+          ]
         }
       },
       {
         "skin_model_panel": {
           "type": "panel",
           "size": [ "100%", "100%" ],
-          "$input_progress_loading_binding_name": "#character_loading_in_progress",
           "controls": [
             {
               "skin_model": {
@@ -3801,9 +3896,9 @@
 
   "promo_popup_toast@persona.popup": {
     "layer": 100,
-    "$display_time": 0.75,
+    "$display_time": 2.0,
     "$transition_in_time": 0.15,
-    "$transition_out_time": 0.15,
+    "$transition_out_time": 0.30,
     "$popup_size": [ "100% - 4px", "100%cm" ],
     "$toast_text_offset": [ 0, 0 ],
     "$toast_text_alignment": "center",
@@ -3813,6 +3908,10 @@
     "$offset_anims": [],
     "$alpha_anims": [
       "@persona.popup_anim_start"
-    ]
+    ],
+    "$popup_title_binding_type": "$store_factory_binding_type",
+    "$popup_title_collection_name": "$store_factory_collection_name",
+    "$popup_title_collection_details": "collection_details",
+    "$popup_title_collection_prefix": "$store_factory_collection_prefix"
   }
 }
