@@ -256,7 +256,7 @@
     ]
   },
 
-  "scrolling_content_stack": {
+  "sdl_scrolling_content_stack": {
     "anchor_from": "top_left",
     "anchor_to": "top_left",
     "type": "stack_panel",
@@ -270,11 +270,53 @@
           "size": [ "100%", 4 ]
         }
       },
-      {
-        "store_factory@common_store.store_section_factory": {}
+      { "store_screen_layout_factory@common_store.store_section_factory": {} },
+      { "footer@common_store.footer": {} }
+    ]
+  },
+
+  "sdl_scrolling_section@common.scrolling_panel": {
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", "100%" ],
+    "$scrolling_pane_size": [ "100% - 2px", "100%" ],
+    "$scrolling_pane_offset": [ 2, 0 ],
+    "$scrolling_content": "store_layout.sdl_scrolling_content_stack",
+    "$scroll_bar_left_padding_size": [ 0, 0 ],
+    "$show_background": false,
+    "$bar_visible": false
+  },
+
+  "sdl_screen_layout_factory": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+
+    "$main_content_focus_container_left|default": "none",
+    "$main_content_focus_container_left_custom|default": {},
+
+    "collection_name": "screen_layout_collection",
+
+    "factory": {
+      "name": "sdl_screen_layout_factory",
+      "control_ids": {
+        "Generic": "@store_layout.sdl_scrolling_section",
+        "CharacterCreator": "@persona_sdl.character_creator_screen_layout"
       },
+      "factory_variables": [
+        "$main_content_focus_container_left",
+        "$main_content_focus_container_left_custom",
+        "$store_factory_clipping_event",
+        "$store_factory_collection_details",
+        "$store_factory_collection_name",
+        "$store_factory_collection_prefix"
+      ]
+    },
+    "bindings": [
       {
-        "footer@common_store.footer": {}
+        "binding_name": "#screen_layout_creation",
+        "binding_name_override": "#collection_length"
       }
     ]
   },
@@ -708,21 +750,18 @@
               "binding_condition": "always"
             }
           ],
-          "controls": [
+          "$main_panel_controls|default": [
+            { "sdl_scrolling_section@store_layout.sdl_scrolling_section": {} }
+          ],
+          "variables": [
             {
-              "offers@common.scrolling_panel": {
-                "anchor_from": "top_left",
-                "anchor_to": "top_left",
-                "size": [ "100%", "100%" ],
-                "$scrolling_pane_size": [ "100% - 2px", "100%" ],
-                "$scrolling_pane_offset": [ 2, 0 ],
-                "$scrolling_content": "store_layout.scrolling_content_stack",
-                "$scroll_bar_left_padding_size": [ 0, 0 ],
-                "$show_background": false,
-                "$bar_visible": false
-              }
+              "requires": "$is_persona_sdl_enabled",
+              "$main_panel_controls": [
+                { "sdl_screen_layout_factory@store_layout.sdl_screen_layout_factory": {} }
+              ]
             }
-          ]
+          ],
+          "controls": "$main_panel_controls"
         }
       },
       {

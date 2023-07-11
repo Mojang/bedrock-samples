@@ -490,15 +490,40 @@
   },
 
   /////////////////////////////////////////////
-  //// Realms redeem button control ////
+  //// Realms button controls ////
+  "realms_timer_banner@pdp.realms_plus_expiration": {
+    "size": [ "100%", 16 ]
+  },
+
+  "realms_savings_text": {
+    "type": "label",
+    "text": "#realms_saved_coins_label",
+    "size": [ "60%", 16 ],
+    "font_size": "small",
+    "font_scale_factor": 1.2,
+    "color": "$e_color_format", //yellow
+    "bindings": [
+      {
+        "binding_name": "#realms_redeem_button_visible",
+        "binding_name_override": "#visible"
+      },
+      {
+        "binding_name": "#realms_saved_coins_label",
+        "binding_type": "global"
+      }
+    ]
+  },
+
   "realms_redeem_button_content@common.empty_panel": {
+    "$realms_button_text|default": "",
+
     "controls": [
       {
         "realms_plus_icon@realmsPlus.markdown_background": {
           "size": [ "100% + 4px", "100%  + 4px" ],
           "$pack_icon_size": [ "100%", "100% - 2px" ],
           "$banner_size": [ 14, "100%" ],
-          "offset": [ "-2px", "2px"]
+          "offset": [ "-2px", "2px" ]
         }
       },
       {
@@ -508,8 +533,9 @@
           "size": [ "100%", 10 ],
           "max_size": [ "100%", "100%" ],
           "text_alignment": "center",
-          "text": "persona.realms.redeem",
-          "color": "$text_color"
+          "text": "$realms_button_text",
+          "color": "$text_color",
+          "offset": "$realms_button_text_offset"
         }
       }
     ]
@@ -517,11 +543,27 @@
 
   "realms_redeem_button@common_buttons.light_content_button": {
     "size": [ "40%", "100%" ],
+    "$realms_button_text_offset|default": [ 0, 0 ],
     "$pressed_button_name": "button.redeem_realms_item",
     "$button_content": "persona.realms_redeem_button_content",
+    "$realms_button_text": "persona.realms.redeem",
     "bindings": [
       {
         "binding_name": "#realms_redeem_button_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "realms_subscription_button@common_buttons.light_content_button": {
+    "size": [ "50%", "100%" ],
+    "$realms_button_text_offset|default": [ 8, 0 ],
+    "$pressed_button_name": "button.see_realms_subscription",
+    "$button_content": "persona.realms_redeem_button_content",
+    "$realms_button_text": "persona.realms.see.subscription",
+    "bindings": [
+      {
+        "binding_name": "#realms_subscription_button_visible",
         "binding_name_override": "#visible"
       }
     ]
@@ -688,13 +730,13 @@
   },
 
   "coin_purchase_panel@persona.purchase_button_panel": {
-    "size": [ "50%", "100%" ],
+    "size": [ "40%", "100%" ],
     "$purchase_panel_visible_binding": "#is_purchasable_item",
     "$purchase_button_control": "persona.offer_coin_purchase_button"
   },
 
   "real_money_purchase@persona.purchase_button_panel": {
-    "size": [ "50%", "100%" ],
+    "size": [ "40%", "100%" ],
     "$purchase_panel_visible_binding": "#is_currency_purchase_visible",
     "$purchase_button_control": "persona.offer_real_money_purchase_button"
   },
@@ -727,7 +769,6 @@
     "controls": [
       { "padding_0@persona.horizontal_1_padding": {} },
       { "coin_purchase_panel@persona.coin_purchase_panel": {} },
-      { "realms_redeem_button_panel@realms_redeem_button": {} },
       { "view_achievement_button@persona.achievement_button": {} },
       {
         "padding@persona.horizontal_1_padding": {
@@ -743,8 +784,11 @@
       { "classic_skin_equip@persona.classic_skin_equip_button_panel": {} },
       { "size_equip@persona.size_equip_button_panel": {} },
       { "collect_achievement_button@persona.collect_achievement_button": {} },
-      { "real_money_purchase_panel@real_money_purchase": {} },
-      { "padding_2@persona.horizontal_1_padding": {} }
+      { "real_money_purchase_panel@persona.real_money_purchase": {} },
+      { "realms_subscription_button_panel@persona.realms_subscription_button": {} },
+      { "realms_redeem_button_panel@persona.realms_redeem_button": {} },
+      { "padding_2@persona.horizontal_1_padding": {} },
+      { "realms_savings_text_label@persona.realms_savings_text": {} }
     ]
   },
 
@@ -1406,6 +1450,7 @@
       { "debug_information@persona.right_side_stack_debug_control": {} },
       { "dressing_room_skin_model@persona.dressing_room_right_side_model": {} },
       { "padding@persona.vertical_2_padding": {} },
+      { "realms_banner@persona.realms_timer_banner": {} },
 
       // below are the sub sections which dis/re-appear depending on context.
       { "getting_started@persona.persona_getting_started_panel": {} },
@@ -4304,6 +4349,30 @@
             {
               "pressed@persona.selected_border": {
                 "layer": 9
+              }
+            },
+            {
+              "realms_plus_icon@realmsPlus.markdown_background": {
+                "layer": 10,
+                "size": [ 10, 10 ],
+                "$pack_icon_size": [ "100%", "100% - 1px" ],
+                "$banner_size": [ 9, "100%" ],
+                "anchor_from": "bottom_left",
+                "anchor_to": "bottom_left",
+
+                "bindings": [
+                  {
+                    "binding_type": "$piece_section_collection_details",
+                    "binding_collection_name": "$piece_section_collection_name",
+                    "binding_collection_prefix": "$piece_section_collection_prefix"
+                  },
+                  {
+                    "binding_type": "collection",
+                    "binding_collection_name": "$persona_piece_collection_name",
+                    "binding_name": "#is_piece_realms_plus",
+                    "binding_name_override": "#visible"
+                  }
+                ]
               }
             },
             {
