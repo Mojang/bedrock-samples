@@ -1,4 +1,4 @@
-<h1>FEATURES DOCUMENTATION </br>Version: 1.20.30.21</h1>
+<h1>FEATURES DOCUMENTATION </br>Version: 1.20.30.22</h1>
 This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
@@ -647,7 +647,46 @@ Example use: Azalea tree.<br / ><textarea readonly="true" cols="55" rows="32">
 
 <h1><p id="minecraft:vegetation_patch_feature">minecraft:vegetation_patch_feature</p></h1>
 
-Feature type 'minecraft:vegetation_patch_feature' has not yet been documented.</br><a href="#Index">Back to top</a><br><br>
+'minecraft:vegetation_patch_feature' scatters a vegetation feature in an area. The vegetation feature’s appearance can be modified by adjusting the radius and depth that it will generate.</br>Succeeds if: At least one ground base block was placed.</br>Fails if: No ground base blocks were placed.</br><h2></h2>
+Example: A pool of clay with dripleaves.<br / ><textarea readonly="true" cols="69" rows="32">
+{
+        "format_version": "1.16.0",
+        "minecraft:vegetation_patch_feature": {
+          "description": {
+            "identifier": "custom:clay_pool_with_dripleaves_feature"
+          },
+          "replaceable_blocks": [
+            "minecraft:clay",
+            "minecraft:moss_block",
+            "minecraft:sand",
+            "minecraft:gravel",
+            "minecraft:dirt",
+            "minecraft:podzol",
+            "minecraft:dirt_with_roots",
+            "minecraft:grass",
+            "minecraft:mycelium",
+            "minecraft:stone",
+            "minecraft:cave_vines",
+            "minecraft:cave_vines_body_with_berries",
+            "minecraft:cave_vines_head_with_berries"
+          ],
+          "ground_block": "minecraft:clay",
+          "vegetation_feature": "minecraft:dripleaf_feature",
+          "surface": "floor",
+          "depth": 3,
+          "vertical_range": 5,
+          "vegetation_chance": 0.1,
+          "horizontal_radius": {
+            "range_min": 4,
+            "range_max": 8
+          },
+          "extra_deep_block_chance": 0.8,
+          "extra_edge_column_chance": 0.7,
+          "waterlogged": true
+        }
+      }
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
 
 <h1><p id="minecraft:weighted_random_feature">minecraft:weighted_random_feature</p></h1>
 
@@ -1827,18 +1866,18 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
           }
           array "replaceable_blocks"
           {
-               "<any array element>" : opt
+               "<any array element>" : opt // Blocks that can be replaced by the ground blocks on the patch.
           }
-           "ground_block"
-          feature_reference "vegetation_feature"
-          string "surface" : opt
-           "depth"
-          float "extra_deep_block_chance" : opt
-          int "vertical_range"
-          float "vegetation_chance" : opt
-           "horizontal_radius"
-          float "extra_edge_column_chance"<0.000000-*> : opt
-          bool "waterlogged" : opt
+           "ground_block" // Block used to create a base for the vegetation patch.
+          feature_reference "vegetation_feature" // Feature that will be placed by the patch.
+          string "surface" : opt // Determines if a vegetation patch will grow from the ceiling or the floor.
+           "depth" // Depth of the base covered by the ground blocks.
+          float "extra_deep_block_chance" : opt // Probability of putting the ground blocks one block deeper. Adds some randomness to the bottom of the patch.
+          int "vertical_range" // Vertical range used to determine a suitable surface position for the patch.
+          float "vegetation_chance" : opt // Probability of spawning vegetation on the patch. Larger numbers create a denser vegetation patch.
+           "horizontal_radius" // Horizontal area that the vegetation patch will cover.
+          float "extra_edge_column_chance"<0.000000-*> : opt // Probability of spawning vegetation on the edge of the patch radius.
+          bool "waterlogged" : opt // If true, waterlogs the positions occupied by the ground blocks.
       }
       object "minecraft:weighted_random_feature" : opt
       {
