@@ -2165,6 +2165,7 @@
       },
       {
         "fancy_clouds_toggle@settings_common.option_toggle": {
+          "ignored": "($new_video_settings)",
           "$option_label": "options.fancyskies",
           "$option_binding_name": "#fancy_skies",
           "$option_enabled_binding_name": "#fancy_skies_enabled",
@@ -2173,7 +2174,7 @@
       },
       {
         "smooth_lighting_toggle@settings_common.option_toggle": {
-          "ignored": "($is_holographic)",
+          "ignored": "($is_holographic or $new_video_settings)",
           "$option_label": "options.smooth_lighting",
           "$option_binding_name": "#smooth_lighting",
           "$option_enabled_binding_name": "#smooth_lighting_enabled",
@@ -2304,27 +2305,27 @@
         }
       },
       {
-        "beta_new_death_screen_toggle_input_panel@settings_common.option_toggle": {
+        "new_death_screen_toggle_input_panel@settings_common.option_toggle": {
           "type": "input_panel",
-          "ignored": "(not $pre_release or $education_edition)",
+          "ignored": "(not $is_publish or $education_edition)",
           "consume_hover_events": false,
           "focus_enabled": true,
-          "$beta_new_death_screen_toggle_disabled_is_hovered_button_event|default": "button.beta_new_death_screen_toggle_disabled_is_hovered",
+          "$new_death_screen_toggle_disabled_is_hovered_button_event|default": "button.new_death_screen_toggle_disabled_is_hovered",
           "button_mappings": [
             {
-              "to_button_id": "$beta_new_death_screen_toggle_disabled_is_hovered_button_event",
+              "to_button_id": "$new_death_screen_toggle_disabled_is_hovered_button_event",
               "mapping_type": "pressed"
             }
           ],
           "controls": [
             {
-              "beta_new_death_screen_toggle@settings_common.option_toggle": {
+              "new_death_screen_toggle@settings_common.option_toggle": {
                 "$option_label": "options.betaNewDeathScreenToggle",
-                "$option_binding_name": "#beta_new_death_screen_toggle",
-                "$toggle_name": "beta_new_death_screen_toggle",
-                "$option_enabled_binding_name": "#beta_new_death_screen_toggle_enabled",
+                "$option_binding_name": "#new_death_screen_toggle",
+                "$toggle_name": "new_death_screen_toggle",
+                "$option_enabled_binding_name": "#new_death_screen_toggle_enabled",
                 "controls": [
-                  { "beta_new_death_screen_toggle_disabled@general_section.beta_new_death_screen_toggle_disabled": {} },
+                  { "new_death_screen_toggle_disabled@general_section.new_death_screen_toggle_disabled": {} },
                   { "option_generic_core@settings_common.option_generic_core": {} }
                 ]
               }
@@ -2732,13 +2733,13 @@
 
   // Information popup for new death screen toggle
 
-  "beta_new_death_screen_toggle_disabled_image": {
+  "new_death_screen_toggle_disabled_image": {
     "type": "image",
     "size": [ 7, 11 ],
     "texture": "textures/ui/infobulb"
   },
 
-  "beta_new_death_screen_toggle_disabled_popup@common.static_tooltip_popup_with_image_and_text": {
+  "new_death_screen_toggle_disabled_popup@common.static_tooltip_popup_with_image_and_text": {
     "size": [ "100% - 4px", "100%cm + 8px" ],
     "anchor_from": "top_middle",
     "anchor_to": "bottom_middle",
@@ -2746,32 +2747,32 @@
     "$tooltip_popup_image": "textures/ui/infobulb",
     "$tooltip_button_binding_type": "global",
     "$tooltip_button_collection_name": "",
-    "$tooltip_popup_visible_binding|default": "$beta_new_death_screen_toggle_disabled_tooltip_visible",
-    "$tooltip_text_binding_name": "#beta_new_death_screen_toggle_disabled_tooltip_text",
+    "$tooltip_popup_visible_binding|default": "$new_death_screen_toggle_disabled_tooltip_visible",
+    "$tooltip_text_binding_name": "#new_death_screen_toggle_disabled_tooltip_text",
     "$tooltip_chevron_anchor": "bottom_right",
     "$tooltip_popup_chevron_offset": [ "-30%x", "100%y - 3px" ]
   },
 
-  "beta_new_death_screen_toggle_disabled": {
+  "new_death_screen_toggle_disabled": {
     "type": "panel",
     "size": [ "100%", 0 ],
     "anchor_from": "top_right",
     "anchor_to": "top_right",
-    "$beta_new_death_screen_toggle_disabled_visible|default": "#beta_new_death_screen_toggle_disabled_visible",
-    "$beta_new_death_screen_toggle_disabled_tooltip_visible|default": "#beta_new_death_screen_toggle_disabled_tooltip_visible",
+    "$new_death_screen_toggle_disabled_visible|default": "#new_death_screen_toggle_disabled_visible",
+    "$new_death_screen_toggle_disabled_tooltip_visible|default": "#new_death_screen_toggle_disabled_tooltip_visible",
     "controls": [
       {
-        "beta_new_death_screen_toggle_disabled_image@general_section.beta_new_death_screen_toggle_disabled_image": {
+        "new_death_screen_toggle_disabled_image@general_section.new_death_screen_toggle_disabled_image": {
           "offset": [ -14, 0 ],
           "anchor_from": "top_right",
           "anchor_to": "top_right"
         }
       },
-      { "beta_new_death_screen_toggle_disabled_popup@general_section.beta_new_death_screen_toggle_disabled_popup": {} }
+      { "new_death_screen_toggle_disabled_popup@general_section.new_death_screen_toggle_disabled_popup": {} }
     ],
     "bindings": [
       {
-        "binding_name": "$beta_new_death_screen_toggle_disabled_visible",
+        "binding_name": "$new_death_screen_toggle_disabled_visible",
         "binding_name_override": "#visible"
       }
     ]
@@ -6597,6 +6598,20 @@
       // Keep the three following options, developer console, assertions break,
       // and assertions dialog, at the top for the QA teams convenience
       {
+        "options_for_qa_convenience": {
+          "type": "label",
+          "text": "Quality Assurance Utility",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "options_for_qa_convenience_spacer": {
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
+      },
+      {
         "option_toggle_dev_console_button_0@settings_common.option_toggle": {
           "$option_label": "options.dev_showDevConsoleButton",
           "$option_binding_name": "#dev_show_dev_console_button",
@@ -6621,11 +6636,48 @@
         }
       },
       {
-        "option_dev_force_trial_mode@settings_common.option_toggle": {
-          "$option_label": "options.dev_force_trial_mode",
-          "$option_binding_name": "#dev_force_trial_mode",
-          "$option_enabled_binding_name": "#dev_force_trial_mode_enabled",
-          "$toggle_name": "dev_force_trial_mode"
+        "option_toggle_assertions_show_dialog_spacer": {
+          "type": "panel",
+          "size": [ "100%", 6 ]
+        }
+      },
+      {
+        "debug_overlay_pages_label": {
+          "type": "label",
+          "text": "Debug Overlay Pages",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "debug_overlay_button_panel@common.empty_panel": {
+          "size": [ "100%", "60%c" ],
+          "controls": [
+             {
+              "debug_overlay_previous_button@settings_common.action_button": {
+                "$pressed_button_name": "button.cycle_previous_debug_overlay_page",
+                "$button_text": "Previous Page",
+                "size": ["50%", 30],
+                "anchor_from": "top_left",
+                "anchor_to": "top_left"
+              }
+            },
+            {
+              "debug_overlay_next_button@settings_common.action_button": {
+                "$pressed_button_name": "button.cycle_next_debug_overlay_page",
+                "$button_text": "Next Page",
+                "size": ["50%", 30],
+                "anchor_from": "top_right",
+                "anchor_to": "top_right"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "pre_feature_toggles_label_spacer": {
+          "type": "panel",
+          "size": [ "100%", 6 ]
         }
       },
       {
@@ -7301,6 +7353,10 @@
       }
     ]
   },
+
+
+
+
 
   "marketplace_debug_button@settings_common.section_toggle_base": {
     "$toggle_view_binding_name": "marketplace_debug_button_toggle",
@@ -9154,7 +9210,13 @@
           "$option_label": "options.bloomEnable",
           "$option_binding_name": "#bloom_toggle",
           "$option_enabled_binding_name": "#bloom_toggle_enabled",
-          "$toggle_name": "bloom_toggle"
+          "$toggle_name": "bloom_toggle",
+          "bindings": [
+            {
+              "binding_name": "#graphics_mode_is_deferred",
+              "binding_name_override": "#visible"
+            }
+          ]
         }
       },
       {
@@ -9180,7 +9242,35 @@
             }
           ]
         }
-      }
+      },
+      {
+        "fancy_clouds_toggle@settings_common.option_toggle": {
+          "$option_label": "options.fancyskies",
+          "$option_binding_name": "#fancy_skies",
+          "$option_enabled_binding_name": "#fancy_skies_enabled",
+          "$toggle_name": "fancy_skies",
+          "bindings": [
+            {
+              "binding_name": "#graphics_mode_is_simple_or_fancy",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "smooth_lighting_toggle@settings_common.option_toggle": {
+          "$option_label": "options.smooth_lighting",
+          "$option_binding_name": "#smooth_lighting",
+          "$option_enabled_binding_name": "#smooth_lighting_enabled",
+          "$toggle_name": "smooth_lighting",
+          "bindings": [
+            {
+              "binding_name": "#graphics_mode_is_simple_or_fancy",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }     
     ]
   }
 }
