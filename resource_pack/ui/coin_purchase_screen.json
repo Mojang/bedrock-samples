@@ -851,8 +851,7 @@
 
   "price": {
     "type": "label",
-    "offset": [ 0, 2 ],
-    "size": [ "default", 14 ],
+    "size": [ "default", 10 ],
     "color": "$price_color",
     "text": "#price_text",
     "layer": 5,
@@ -1195,6 +1194,75 @@
     "layer": 1
   },
 
+  "bundle_description@common_store.text_style_label": {
+
+    "$text_style_label": "#coin_bundle_description_text",
+    "$tts_text_override_value": "#coin_bundle_description_text_tts",
+    "$text_style_font_type": "#coin_bundle_description_font_type",
+    "$text_style_font_size": "#coin_bundle_description_font_size",
+    "$text_style_font_color": "#coin_bundle_description_font_color",
+
+    "$text_style_label_bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "$offer_collection_details",
+        "binding_collection_name": "$offer_collection_name",
+        "binding_collection_prefix": "$offer_collection_prefix"
+      },
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "bundle_description",
+        "binding_collection_prefix": "bundle_description"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "bundle_description",
+        "binding_name": "$text_style_label"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "bundle_description",
+        "binding_name": "$tts_text_override_value",
+        "binding_condition": "once"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "bundle_description",
+        "binding_name": "$text_style_font_type",
+        "binding_name_override": "#font_type"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "bundle_description",
+        "binding_name": "$text_style_font_size",
+        "binding_name_override": "#font_scale_factor"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "bundle_description",
+        "binding_name": "$text_style_font_color",
+        "binding_name_override": "#color"
+      }
+    ]
+  },
+
+  // Maybe bind this instead?
+  "bundle_description_left@coin_purchase.bundle_description": {
+    "$text_style_alignment": "left"
+  },
+
+  "bundle_description_center@coin_purchase.bundle_description": {
+    "$text_style_alignment": "center"
+  },
+
+  "bundle_description_right@coin_purchase.bundle_description": {
+    "$text_style_alignment": "right"
+  },
+
   "bundle_coins_stack": {
     "type": "stack_panel",
     "orientation": "vertical",
@@ -1206,13 +1274,14 @@
     "controls": [
       {
         "content_panel": {
-          "type": "panel",
-          "size": [ "100%", 38 ],
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "fill" ],
           "controls": [
             {
               "text_stack": {
                 "type": "stack_panel",
-                "size": [ "default", "100%" ],
+                "size": [ "fill", "100%" ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left",
                 "orientation": "vertical",
@@ -1220,7 +1289,7 @@
                   {
                     "title_label": {
                       "type": "label",
-                      "size": [ "default", 10 ],
+                      "size": [ "100%", 10 ],
                       "font_type": "smooth",
                       "layer": 1,
                       "text": "#coin_bundle_title",
@@ -1246,14 +1315,29 @@
                     }
                   },
                   {
-                    "description_header_label": {
-                      "type": "label",
-                      "size": [ "default", 8 ],
-                      "font_scale_factor": 0.8,
-                      "font_type": "smooth",
-                      "layer": 1,
-                      "text": "#coin_bundle_description_header",
-                      "color": "$store_white_text_color",
+                    "description_section_factory": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "size": [ "100%", "fill" ],                      
+                      "collection_name": "bundle_description",
+                      "clips_children": true,
+                      "factory": {
+                        "name": "bundle_description_factory",
+                        "control_ids": {
+                          "bundle_description_left": "@coin_purchase.bundle_description_left",
+                          "bundle_description_center": "@coin_purchase.bundle_description_center",
+                          "bundle_description_right": "@coin_purchase.bundle_description_right"
+                        },
+                        "factory_variables": [
+                          "$offer_collection_details",
+                          "$offer_binding_type",
+                          "$offer_collection_name",
+                          "$offer_collection_prefix",
+                          "$store_factory_collection_details",
+                          "$store_factory_collection_prefix",
+                          "$store_factory_collection_name"
+                        ]
+                      },
                       "bindings": [
                         {
                           "binding_type": "$store_factory_collection_details",
@@ -1261,67 +1345,15 @@
                           "binding_collection_prefix": "$store_factory_collection_prefix"
                         },
                         {
-                          "binding_type": "$offer_binding_type",
-                          "binding_name": "#coin_bundle_description_header",
-                          "binding_collection_name": "$offer_collection_name"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "description_coin_label": {
-                      "type": "label",
-                      "layer": 3,
-                      "anchor_from": "bottom_left",
-                      "anchor_to": "bottom_left",
-                      "size": [ "default", 10 ],
-                      "text": "#coin_bundle_description_coin",
-                      "color": "$store_white_text_color", // this will get overwritten by the binding, but we need to specify this to pass json unit tests
-                      "tts_override_control_value": "#tts_coin_bundle_description_coin",
-                      "bindings": [
-                        {
-                          "binding_type": "$store_factory_collection_details",
-                          "binding_collection_name": "$store_factory_collection_name",
-                          "binding_collection_prefix": "$store_factory_collection_prefix"
+                          "binding_type": "$offer_collection_details",
+                          "binding_collection_name": "$offer_collection_name",
+                          "binding_collection_prefix": "$offer_collection_prefix"
                         },
                         {
-                          "binding_type": "$offer_binding_type",
-                          "binding_collection_name": "$offer_collection_name",
-                          "binding_name": "#coin_bundle_description_coin"
-                        },
-                        {
-                          "binding_type": "$offer_binding_type",
-                          "binding_collection_name": "$offer_collection_name",
-                          "binding_name": "#tts_coin_bundle_description_coin"
-                        },
-                        {
-                          "binding_type": "$offer_binding_type",
-                          "binding_collection_name": "$offer_collection_name",
-                          "binding_name": "#call_out_color",
-                          "binding_name_override": "#color"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "description_footer_label": {
-                      "type": "label",
-                      "size": [ "default", 8 ],
-                      "font_scale_factor": 0.8,
-                      "font_type": "smooth",
-                      "layer": 1,
-                      "text": "#coin_bundle_description_footer",
-                      "color": "$store_white_text_color",
-                      "bindings": [
-                        {
-                          "binding_type": "$store_factory_collection_details",
-                          "binding_collection_name": "$store_factory_collection_name",
-                          "binding_collection_prefix": "$store_factory_collection_prefix"
-                        },
-                        {
-                          "binding_type": "$offer_binding_type",
-                          "binding_collection_name": "$offer_collection_name",
-                          "binding_name": "#coin_bundle_description_footer"
+                          "binding_name": "#coin_bundle_description_section",
+                          "binding_name_override": "#collection_length",
+                          "binding_type": "$store_factory_binding_type",
+                          "binding_collection_name": "$store_factory_collection_name"
                         }
                       ]
                     }
@@ -1330,48 +1362,15 @@
               }
             },
             {
-              "thumbnail": { //just one thumbnail for now
-                "type": "image",
-                "size": [ "177.78%y", 38 ],
-                "max_size": [ "177.78%", 38 ],
-                "anchor_from": "right_middle",
-                "anchor_to": "right_middle",
-                "offset": [ "-14px", "0%" ],
-                "layer": 2,
-                "bilinear": true,
-                "bindings": [
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  },
-                  {
-                    "binding_type": "$offer_binding_type",
-                    "binding_collection_name": "$offer_collection_name",
-                    "binding_name": "#bundle_thumbnail_texture_name",
-                    "binding_name_override": "#texture"
-                  },
-                  {
-                    "binding_type": "$offer_binding_type",
-                    "binding_collection_name": "$offer_collection_name",
-                    "binding_name": "#bundle_thumbnail_texture_file_system",
-                    "binding_name_override": "#texture_file_system"
-                  },
-                  {
-                    "binding_type": "$offer_binding_type",
-                    "binding_collection_name": "$offer_collection_name",
-                    "binding_name": "#bundle_is_owned",
-                    "binding_name_override": "#grayscale"
-                  }
-                ],
+              "thumbnail_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
                 "controls": [
                   {
-                    "coin_image": {
+                    "thumbnail": { //just one thumbnail for now
                       "type": "image",
-                      "size": [ 36, 36 ],
-                      "anchor_from": "right_middle",
-                      "anchor_to": "top_middle",
-                      "layer": 3,
+                      "size": [ "177.78%y", "100% - 6px" ],
+                      "layer": 2,
                       "bilinear": true,
                       "bindings": [
                         {
@@ -1382,19 +1381,62 @@
                         {
                           "binding_type": "$offer_binding_type",
                           "binding_collection_name": "$offer_collection_name",
-                          "binding_name": "#bundle_coin_texture_name",
+                          "binding_name": "#bundle_thumbnail_texture_name",
                           "binding_name_override": "#texture"
                         },
                         {
                           "binding_type": "$offer_binding_type",
                           "binding_collection_name": "$offer_collection_name",
-                          "binding_name": "#bundle_coin_texture_file_system",
+                          "binding_name": "#bundle_thumbnail_texture_file_system",
                           "binding_name_override": "#texture_file_system"
+                        },
+                        {
+                          "binding_type": "$offer_binding_type",
+                          "binding_collection_name": "$offer_collection_name",
+                          "binding_name": "#bundle_is_owned",
+                          "binding_name_override": "#grayscale"
+                        }
+                      ],
+                      "controls": [
+                        {
+                          "coin_image": {
+                            "type": "image",
+                            "size": [ 36, 36 ],
+                            "anchor_from": "right_middle",
+                            "anchor_to": "top_middle",
+                            "layer": 3,
+                            "bilinear": true,
+                            "bindings": [
+                              {
+                                "binding_type": "$store_factory_collection_details",
+                                "binding_collection_name": "$store_factory_collection_name",
+                                "binding_collection_prefix": "$store_factory_collection_prefix"
+                              },
+                              {
+                                "binding_type": "$offer_binding_type",
+                                "binding_collection_name": "$offer_collection_name",
+                                "binding_name": "#bundle_coin_texture_name",
+                                "binding_name_override": "#texture"
+                              },
+                              {
+                                "binding_type": "$offer_binding_type",
+                                "binding_collection_name": "$offer_collection_name",
+                                "binding_name": "#bundle_coin_texture_file_system",
+                                "binding_name_override": "#texture_file_system"
+                              }
+                            ]
+                          }
                         }
                       ]
                     }
                   }
                 ]
+              }
+            },
+            {
+              "padding_0": {
+                "type": "panel",
+                "size": [ 14, "100%" ]
               }
             }
           ]
@@ -1414,7 +1456,8 @@
             {
               "currency_price_panel": {
                 "type": "image",
-                "size": [ "100% + 8px", 14 ],
+                "size": [ "100% + 10px", "100%" ],
+                "offset": [ 0, 1 ],
                 "layer": -4,
                 "texture": "textures/ui/bonus_banner",
                 "bindings": [
@@ -1461,10 +1504,6 @@
 
   "bundle_button_content": {
     "type": "panel",
-    "offset": [ 0, -3 ],
-    "anchor_from": "top_middle",
-    "anchor_to": "top_middle",
-    "size": [ "100% + 2px", "100%" ],
     "controls": [
       {
         "bundle_coins_stack@coin_purchase.bundle_coins_stack": {}
@@ -1472,20 +1511,17 @@
       {
         "call_out_background": {
           "type": "image",
-          "size": [ "100% + 2px", "100%" ],
+          "size": [ "100% + 4px", "100% + 4px" ],
           "layer": -8,
-          "anchor_from": "top_middle",
-          "anchor_to": "top_middle",
+          "tiled": "y",
           "texture": "textures/ui/bundle_wide_tile",
           "controls": [
             {
               "bevel": {
                 "type": "image",
-                "size": [ "100% + 2px", "100% + 6px" ],
+                "size": [ "100% + 2px", "100% + 2px" ],
                 "color": "$coin_screen_callout_bevel_color",
                 "layer": 9,
-                "anchor_from": "top_middle",
-                "anchor_to": "top_middle",
                 "texture": "textures/ui/coin_bevel"
               }
             }
@@ -1576,7 +1612,7 @@
 
   "bundle_stack_factory": {
     "type": "stack_panel",
-    "size": [ "100% - 4px", "62px" ],
+    "size": [ "100% - 4px", "72px" ],
     "orientation": "horizontal",
     "$offer_collection_details": "collection_details",
     "$offer_binding_type": "collection",

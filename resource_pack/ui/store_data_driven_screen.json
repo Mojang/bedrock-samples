@@ -279,12 +279,51 @@
     "anchor_from": "top_left",
     "anchor_to": "top_left",
     "size": [ "100%", "100%" ],
-    "$scrolling_pane_size": [ "100% - 2px", "100%" ],
-    "$scrolling_pane_offset": [ 2, 0 ],
+    "$scrolling_pane_size": [ "100% - 3px", "100%" ],
+    "$scrolling_pane_offset": [ 1, -1 ],
     "$scrolling_content": "store_layout.sdl_scrolling_content_stack",
     "$scroll_bar_left_padding_size": [ 0, 0 ],
     "$show_background": false,
     "$bar_visible": false
+  },
+
+  "character_creator_sdl_section": {
+    "type": "panel",
+    "size": [ "52%", "100%" ],
+    "layer": 2,
+    "$persona_dialog_content": "store_layout.sdl_scrolling_section",
+    "controls": [
+      {
+        "sdl_section@persona.dialog_background_object": { "size": [ "100%", "100% - 4px" ] }
+      }
+    ]
+  },
+
+  "character_creator_panel@common.horizontal_stack_panel": {
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "left_main_panel_padding@persona_sdl.horizontal_2_padding": {} },
+      { "character_creator_sdl_portion@store_layout.character_creator_sdl_section": {} },
+      { "middle_main_panel_padding@persona_sdl.horizontal_1_padding": {} },
+      { "right_main_panel@persona.right_side_stack": {} },
+      { "right_main_panel_padding@persona_sdl.horizontal_2_padding": {} }
+    ],
+    "bindings": [
+      {
+        "binding_name": "(not #expanded_appearance_visible)",
+        "binding_name_override": "#visible",
+        "binding_condition": "always"
+      }
+    ]
+  },
+
+  "character_creator_screen_layout": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "expanded_appearance_view@persona_sdl.expanded_appearance_view": {} },
+      { "character_creator_panel@store_layout.character_creator_panel": {} }
+    ]
   },
 
   "sdl_screen_layout_factory": {
@@ -302,7 +341,7 @@
       "name": "sdl_screen_layout_factory",
       "control_ids": {
         "Generic": "@store_layout.sdl_scrolling_section",
-        "CharacterCreator": "@persona_sdl.character_creator_screen_layout"
+        "CharacterCreator": "@store_layout.character_creator_screen_layout"
       },
       "factory_variables": [
         "$main_content_focus_container_left",
@@ -1197,7 +1236,9 @@
       {
         "main_panel@common_store.store_header_with_coins": {
           "$child_control": "store_layout.store_screen_main_panel",
-          "$button_text": "store.title"
+          "$button_text": "store.title",
+          "$top_status_and_coins_visible_binding_type": "global",
+          "$top_status_and_coins_visible_binding": "#coin_visible"
         }
       },
       {
@@ -1207,6 +1248,20 @@
             "no_store_connection": "@common_store.popup_dialog__no_store_connection",
             "restore_popup": "@common_store.popup_dialog__restore_popup",
             "restore_failed": "@common_store.popup_dialog__restore_failed"
+          }
+        }
+      },
+      {
+        "character_selector_dialog_factory": {
+          "type": "factory",
+          "control_ids": {
+            "difference_information": "@profile.popup_dialog__difference_information",
+            "difference_preview": "@profile.popup_dialog__preview_difference_information",
+            "delete_persona": "@profile.popup_dialog__delete_persona",
+            "create_persona": "@profile.popup_dialog__create_persona",
+            "cast_character_select_popup": "@persona_cast_character_screen.popup_dialog__cast_character_select",
+            "cast_character_preview_page_one": "@persona_cast_character_screen.cast_preview_page_one",
+            "cast_character_preview_page_two": "@persona_cast_character_screen.cast_preview_page_two"
           }
         }
       }
