@@ -2817,6 +2817,7 @@
                 "type": "input_panel",
                 "consume_hover_events": false,
                 "focus_enabled": true,
+                "tts_skip_message": true,
                 "button_mappings": [
                   {
                     "to_button_id": "button.rtx_warning_is_hovered",
@@ -2876,6 +2877,7 @@
                 "type": "input_panel",
                 "consume_hover_events": false,
                 "focus_enabled": true,
+                "tts_skip_message": true,
                 "button_mappings": [
                   {
                     "to_button_id": "button.vsync_tooltip_option_is_hovered",
@@ -2929,6 +2931,7 @@
                 "type": "input_panel",
                 "consume_hover_events": false,
                 "focus_enabled": true,
+                "tts_skip_message": true,
                 "button_mappings": [
                   {
                     "to_button_id": "button.accessibility_scaling_option_is_hovered",
@@ -2982,6 +2985,7 @@
                 "type": "input_panel",
                 "consume_hover_events": false,
                 "focus_enabled": true,
+                "tts_skip_message": true,
                 "button_mappings": [
                   {
                     "to_button_id": "button.improved_input_response_option_is_hovered",
@@ -3036,6 +3040,7 @@
                 "type": "input_panel",
                 "consume_hover_events": false,
                 "focus_enabled": true,
+                "tts_skip_message": true,
                 "$rtx_disabled_option_is_hovered_button_event|default": "button.rtx_disabled_option_is_hovered",
                 "button_mappings": [
                   {
@@ -3097,6 +3102,7 @@
             {
               "hover_detection_input_panel": {
                 "type": "input_panel",
+                "tts_skip_message": true,
                 "consume_hover_events": false,
                 "focus_enabled": true,
                 "$gui_scale_disabled_option_is_hovered_button_event|default": "button.gui_scale_disabled_option_is_hovered",
@@ -3930,6 +3936,44 @@
     "$toggle_property_bag": {
       "#panel_title": "options.viewSubscriptions"
     }
+  },
+
+  "view_subscriptions_prerelease_section": {
+    "type": "panel",
+    "size": [ "100% - 6px", "100%cm" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "view_subscriptions_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "black_background@general_section.background": {
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ 0, 3 ],
+          "size": [ "100%", "100%sm + 2px" ]
+        }
+      },
+      {
+        "renews_text": {
+          "type": "label",
+          "size": [ "100%", "default" ],
+          "color": "$main_header_text_color",
+          "font_type": "smooth",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "layer": 3,
+          "offset": [ 2, 4 ],
+          "text": "options.viewSubscriptions.prereleaseMessage"
+        }
+      }
+    ]
   },
 
   "view_subscriptions_section": {
@@ -6636,12 +6680,19 @@
         }
       },
       {
-        "option_toggle_assertions_show_dialog_spacer": {
-          "type": "panel",
-          "size": [ "100%", 6 ]
+        "option_dev_force_trial_mode@settings_common.option_toggle": {
+          "$option_label": "options.dev_force_trial_mode",
+          "$option_binding_name": "#dev_force_trial_mode",
+          "$option_enabled_binding_name": "#dev_force_trial_mode_enabled",
+          "$toggle_name": "dev_force_trial_mode"
         }
       },
       {
+        "option_dev_force_trial_mode_spacer": {
+          "type": "panel",
+          "size": [ "100%", 6 ]
+        }
+      },      {
         "debug_overlay_pages_label": {
           "type": "label",
           "text": "Debug Overlay Pages",
@@ -6653,11 +6704,11 @@
         "debug_overlay_button_panel@common.empty_panel": {
           "size": [ "100%", "60%c" ],
           "controls": [
-             {
+            {
               "debug_overlay_previous_button@settings_common.action_button": {
                 "$pressed_button_name": "button.cycle_previous_debug_overlay_page",
                 "$button_text": "Previous Page",
-                "size": ["50%", 30],
+                "size": [ "50%", 30 ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left"
               }
@@ -6666,7 +6717,7 @@
               "debug_overlay_next_button@settings_common.action_button": {
                 "$pressed_button_name": "button.cycle_next_debug_overlay_page",
                 "$button_text": "Next Page",
-                "size": ["50%", 30],
+                "size": [ "50%", 30 ],
                 "anchor_from": "top_right",
                 "anchor_to": "top_right"
               }
@@ -6771,6 +6822,17 @@
           "$options_dropdown_toggle_label_binding": "#dev_transport_layer_dropdown_toggle_label",
           "$option_enabled_binding_name": "#dev_transport_layer_dropdown_enabled",
           "$dropdown_scroll_content_size": [ "100%", "200%" ]
+        }
+      },
+      {
+        "option_dropdown_nethernet_logging_verbosity@settings_common.option_dropdown": {
+          "$option_label": "options.dev_nethernet_logging_verbosity",
+          "$dropdown_content": "general_section.dev_nethernet_logging_verbosity_dropdown_content",
+          "$dropdown_area": "content_area",
+          "$dropdown_name": "dev_nethernet_logging_verbosity_dropdown",
+          "$options_dropdown_toggle_label_binding": "#dev_nethernet_logging_verbosity_dropdown_toggle_label",
+          "$option_enabled_binding_name": "#dev_nethernet_logging_verbosity_dropdown_enabled",
+          "$dropdown_scroll_content_size":  ["100%", "200%" ]
         }
       },
       {
@@ -7222,15 +7284,6 @@
         }
       },
       {
-        "gathering_override@settings_common.option_text_edit": {
-          "$option_label": "options.dev.gathering_config_id_override",
-          "$option_binding_name": "#gathering_config_id_override_text_box",
-          "$option_enabled_binding_name": "#gathering_config_id_override_text_box_enabled",
-          "$max_text_edit_length": 40,
-          "$text_box_name": "gathering_config_id_override_text_box"
-        }
-      },
-      {
         "padding1": {
           "type": "panel",
           "size": [ "100%", 3 ]
@@ -7353,10 +7406,6 @@
       }
     ]
   },
-
-
-
-
 
   "marketplace_debug_button@settings_common.section_toggle_base": {
     "$toggle_view_binding_name": "marketplace_debug_button_toggle",
@@ -7592,6 +7641,239 @@
         "binding_type": "collection",
         "binding_collection_name": "marketplace_feature_toggles"
       }
+    ]
+  },
+
+  "gatherings_debug_button@settings_common.section_toggle_base": {
+    "$toggle_view_binding_name": "gatherings_debug_button_toggle",
+    "$glyph_texture": "textures/ui/onlineLight",
+    "$glyph_color_texture": "textures/ui/onlineLight",
+    "$glyph_size": [ 18, 18 ],
+    "$button_text": "options.dev_gatherings_section",
+    "$toggle_property_bag": {
+      "#panel_title": "options.dev_gatherings_section"
+    }
+  },
+
+  "gatherings_debug_section": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "gatherings_debug_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "gatherings_enabled_label": {
+          "type": "label",
+          "text": "#gatherings_enabled_label_text",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color",
+          "bindings": [
+            {
+              "binding_name": "#gatherings_enabled_label_text"
+            }
+          ]
+        }
+      },
+      {
+        "enable_gatherings_button@settings_common.action_button": {
+          "$pressed_button_name": "button.enable_gatherings",
+          "$button_text": "#enable_gatherings_button_text",
+          "$button_text_binding_type": "global",
+          "visible": false,
+          "bindings": [
+            {
+              "binding_name_override": "#visible",
+              "binding_name": "#gatherings_button_enabled"
+            }
+          ]
+        }
+      },
+      {
+        "spacer_1": {
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      },
+      {
+        "add_gathering_stack": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", 40 ],
+          "use_child_anchors": true,
+          "controls": [
+            {
+              "gathering_text_box@settings_common.option_text_edit": {
+                "size": [ "fill", "100%c" ],
+                "$option_label": "options.dev_gatherings_add_gathering",
+                "$option_binding_name": "#add_gathering_text_box",
+                "$option_enabled_binding_name": "#add_gathering_text_box_enabled",
+                "$max_text_edit_length": 40,
+                "$text_box_name": "add_gathering_text_box"
+              }
+            },
+            {
+              "add_button@common_buttons.light_text_button": {
+                "$pressed_button_name": "button.add_gathering",
+                "size": [ 40, "100%" ],
+                "$button_text": "options.dev_addLabel"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "spacer_2": {
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      },
+      {
+        "active_gathering_label": {
+          "type": "label",
+          "text": "#active_gathering_text",
+          "color": "$body_text_color",
+          "bindings": [
+            {
+              "binding_name": "#active_gathering_text"
+            }
+          ]
+        }
+      },
+      {
+        "spacer_3": {
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      },
+      {
+        "available_gatherings_section@available_gatherings_section": {}
+      }
+    ]
+  },
+
+  "gathering_grid_item_content": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "vertical",
+    "size": [ "100%", 29 ],
+    "offset": [ 5, 4 ],
+    "controls": [
+      {
+        "gathering_name": {
+          "type": "label",
+          "color": "$light_button_default_text_color",
+          "text": "#gathering_name",
+          "size": [ "100% - 8px", 10 ],
+          "bindings": [
+            {
+              "binding_name": "#gathering_name",
+              "binding_type": "collection",
+              "binding_collection_name": "$collection_binding_name",
+              "binding_condition": "always"
+            }
+          ]
+        }
+      },
+      {
+        "gathering_uuid": {
+          "type": "label",
+          "color": "$light_button_default_text_color",
+          "text": "#gathering_uuid",
+          "size": [ "100% - 8px", 10 ],
+          "bindings": [
+            {
+              "binding_name": "#gathering_uuid",
+              "binding_type": "collection",
+              "binding_collection_name": "$collection_binding_name",
+              "binding_condition": "always"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "gathering_item_template": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", 29 ],
+    "controls": [
+      {
+        "gathering_item_button@common_buttons.light_content_button": {
+          "$pressed_button_name": "select_gathering",
+          "size": [ "100%", 29 ],
+          "$button_content": "general_section.gathering_grid_item_content",
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "$collection_binding_name"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "available_gatherings_grid": {
+    "type": "grid",
+    "size": [ "100%", "default" ],
+    "grid_item_template": "general_section.gathering_item_template",
+    "grid_dimension_binding": "#gatherings_grid_dimension",
+    "$collection_binding_name": "gatherings_collection",
+    "collection_name": "gatherings_collection",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "bindings": [
+      {
+        "binding_name": "#gatherings_grid_dimension",
+        "binding_condition": "always"
+      }
+    ]
+  },
+
+  "available_gatherings_panel": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "vertical",
+    "size": "$available_gatherings_panel_size",
+    "controls": [
+      {
+        "available_label@settings_common.selector_group_label": {
+          "offset": [ 2, 0 ],
+          "text": "options.dev_gatherings_available_gatherings",
+          "layer": 2
+        }
+      },
+      { "gatherings_grid@available_gatherings_grid": {} },
+      {
+        "spacing_gap": {
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      }
+    ]
+  },
+
+  "available_gatherings_section": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "vertical",
+    "$available_gatherings_panel_size": [ "100% - 1px", "100%c" ],
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      { "available_gatherings_panel@available_gatherings_panel": {} }
     ]
   },
 
@@ -8199,14 +8481,6 @@
         }
       },
       {
-        "option_resizable_ui@settings_common.option_toggle": {
-          "$option_label": "options.resizableUI",
-          "$option_binding_name": "#resizable_ui",
-          "$option_enabled_binding_name": "#resizable_ui_enabled",
-          "$toggle_name": "resizable_ui"
-        }
-      },
-      {
         "reset_render_distance_warning_modal_label": {
           "type": "label",
           "text": "Render distance warning modal",
@@ -8711,6 +8985,46 @@
         "@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#transport_layer_nethernet_websockets",
           "$radio_label_text": "options.dev_transport_layer.nethernet_websockets"
+        }
+      }
+    ]
+  },
+  "dev_nethernet_logging_verbosity_dropdown_content@settings_common.option_radio_dropdown_group": {
+    "$radio_buttons": [
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_nethernet_logging_verbosity_disabled",
+          "$radio_label_text": "options.dev_nethernet_logging_verbosity.disabled"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_nethernet_logging_verbosity_criticalonly",
+          "$radio_label_text": "options.dev_nethernet_logging_verbosity.criticalonly"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_nethernet_logging_verbosity_error",
+          "$radio_label_text": "options.dev_nethernet_logging_verbosity.error"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_nethernet_logging_verbosity_warning",
+          "$radio_label_text": "options.dev_nethernet_logging_verbosity.warning"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_nethernet_logging_verbosity_information",
+          "$radio_label_text": "options.dev_nethernet_logging_verbosity.information"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_nethernet_logging_verbosity_verbose",
+          "$radio_label_text": "options.dev_nethernet_logging_verbosity.verbose"
         }
       }
     ]
@@ -9270,7 +9584,7 @@
             }
           ]
         }
-      }     
+      }
     ]
   }
 }

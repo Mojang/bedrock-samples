@@ -18,9 +18,14 @@
       },
       "scripts": {
         "pre_animation": [
-          "variable.moving = query.modified_move_speed > 0 || query.vertical_speed > 0;",
+          "variable.dash_cooldown = (!(variable.last_dash_cooldown ?? true) && query.has_dash_cooldown) ? 2.75 : ( variable.dash_cooldown ?? 0 );",
+          "variable.dash_cooldown = math.max(0, variable.dash_cooldown-query.delta_time);",
+          "variable.dash_cooldown_progress = (2.75 - variable.dash_cooldown) / 2.75;",
+          "variable.last_dash_cooldown = query.has_dash_cooldown;",
+
+          "variable.moving = query.modified_move_speed > 0.05 || query.vertical_speed > 0.05;",
           "variable.xTargetRot = math.clamp(query.target_x_rotation, -30, 30);",
-          "variable.xHeadRot = query.dash_cooldown_progress > 0 ? math.clamp(variable.xTargetRot + (45 * (1 - query.dash_cooldown_progress)), -25, 70) : variable.xTargetRot;",
+          "variable.xHeadRot = variable.dash_cooldown_progress > 0 ? math.clamp(variable.xTargetRot + (45 * (1 - variable.dash_cooldown_progress)), -25, 70) : variable.xTargetRot;",
           "variable.yHeadRot = math.clamp(query.target_y_rotation, -30, 30);"
         ]
       },
