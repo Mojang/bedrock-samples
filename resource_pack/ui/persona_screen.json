@@ -528,8 +528,21 @@
 
   /////////////////////////////////////////////
   //// Realms button controls ////
-  "realms_timer_banner@pdp.realms_plus_expiration": {
-    "size": [ "100%", 16 ]
+  "realms_timer_banner": {
+    "type": "panel",
+    "size": [ "100%", 16 ],
+    "controls": [
+      {
+        "realms_banner@pdp.realms_plus_expiration": {
+          "size": [ "100%", "100%" ]
+        }
+      },
+      {
+        "csub_banner@common_csb.csb_expiration_banner": {
+          "size": [ "100%", "100%" ]
+        }
+      }
+    ]
   },
 
   "realms_savings_text": {
@@ -538,11 +551,15 @@
     "size": [ "50%", 24 ],
     "font_size": "small",
     "font_scale_factor": 1.2,
-    "color": "$e_color_format", //yellow
+    "color": "$e_color_format",
     "bindings": [
       {
         "binding_name": "#realms_redeem_button_visible",
         "binding_name_override": "#visible"
+      },
+      {
+        "binding_name": "#realms_savings_color",
+        "binding_name_override": "#color"
       },
       {
         "binding_name": "#realms_saved_coins_label",
@@ -560,7 +577,27 @@
           "size": [ "100% + 4px", "100%  + 4px" ],
           "$pack_icon_size": [ "100%", "100% - 2px" ],
           "$banner_size": [ 14, "100%" ],
-          "offset": [ "-2px", "2px" ]
+          "offset": [ "-2px", "2px" ],
+          "bindings": [
+            {
+              "binding_name": "(not #csb_feature_enabled)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "csb_icon@common_csb.csb_icon_large": {
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "$pack_icon_size": [ "100%y", "100% + 10px" ],
+          "offset": [ "-2px", "0px" ],
+          "bindings": [
+            {
+              "binding_name": "#csb_feature_enabled",
+              "binding_name_override": "#visible"
+            }
+          ]
         }
       },
       {
@@ -729,7 +766,7 @@
   "subcategory_equip_button_panel@persona.equip_button_panel": {
     "size": [ "40%", "100%" ],
     "$equip_button_name": "button.equip_piece",
-    "$show_equip_button": "#is_offer_owned"
+    "$show_equip_button": "#is_subcategory_equip_button_visible"
   },
 
   "classic_skin_equip_button_panel@persona.equip_button_panel": {
@@ -770,7 +807,7 @@
   "coin_purchase_panel@persona.purchase_button_panel": {
     "size": [ "fill", "100%" ],
     "max_size": [ "40%", "100%" ],
-    "$purchase_panel_visible_binding": "#is_purchasable_item",
+    "$purchase_panel_visible_binding": "#is_coin_purchase_visible",
     "$purchase_button_control": "persona.offer_coin_purchase_button"
   },
 
@@ -849,6 +886,7 @@
   "common_title_text": {
     "type": "label",
     "color": "$dressing_room_right_side_default_text_color",
+    "layer": 2,
     "size": [ "100%", "100%" ],
     "text": "#right_panel_title",
     "font_type": "MinecraftTen",
@@ -2705,15 +2743,11 @@
                 "color": "$dressing_room_right_side_default_text_color",
                 "font_type": "MinecraftTen",
                 "offset": [ 0, -2 ],
-                "text": "#right_panel_title",
+                "text": "#skin_pack_title",
                 "text_alignment": "left",
                 "bindings": [
                   {
-                    "binding_name": "#right_panel_title"
-                  },
-                  {
-                    "binding_name": "#is_right_panel_classic_skin_pack_title_visible",
-                    "binding_name_override": "#visible"
+                    "binding_name": "#skin_pack_title"
                   }
                 ]
               }
@@ -4040,6 +4074,28 @@
               }
             },
             {
+              "new_offer_icon@common_store.status_new_offer_icon": {
+                "bindings": [
+                  {
+                    "binding_type": "$skin_binding_type",
+                    "binding_collection_name": "$skin_collection_name",
+                    "binding_name": "#is_skin_new",
+                    "binding_name_override": "#visible"
+                  },
+                  {
+                    "binding_type": "$skin_pack_collection_details",
+                    "binding_collection_name": "$skin_pack_collection_name",
+                    "binding_collection_prefix": "$skin_pack_collection_prefix"
+                  },
+                  {
+                    "binding_type": "$section_collection_details",
+                    "binding_collection_name": "$section_collection_name",
+                    "binding_collection_prefix": "$section_collection_prefix"
+                  }
+                ]
+              }
+            },
+            {
               "locked_icon@persona.lock_icon": {
                 "anchor_from": "bottom_right",
                 "anchor_to": "bottom_right",
@@ -4096,7 +4152,13 @@
                       "layer": 3,
                       "anchor_to": "bottom_left",
                       "anchor_from": "bottom_left",
-                      "offset": [ 0, -1 ]
+                      "offset": [ 0, -1 ],
+                      "bindings": [
+                        {
+                          "binding_name": "(not #csb_feature_enabled)",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
                     }
                   },
                   {
@@ -4104,7 +4166,29 @@
                       "layer": 4,
                       "anchor_to": "bottom_left",
                       "anchor_from": "bottom_left",
-                      "offset": [ 1, -2 ]
+                      "offset": [ 1, -2 ],
+                      "bindings": [
+                        {
+                          "binding_name": "(not #csb_feature_enabled)",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "csb_icon@common_csb.csb_icon_large": {
+                      "layer": 3,
+                      "$pack_icon_size": [ 8, 10 ],
+                      "offset": [ 1, 1 ],
+                      "anchor_from": "bottom_left",
+                      "anchor_to": "bottom_left",
+
+                      "bindings": [
+                        {
+                          "binding_name": "#csb_feature_enabled",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
                     }
                   }
                 ],
@@ -4448,6 +4532,29 @@
                     "binding_type": "collection",
                     "binding_collection_name": "$persona_piece_collection_name",
                     "binding_name": "#is_piece_realms_plus",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "csb_icon@common_csb.csb_icon_large": {
+                "layer": 10,
+                "$pack_icon_size": [ 8, 10 ],
+                "offset": [ "0px", "2px" ],
+                "anchor_from": "bottom_left",
+                "anchor_to": "bottom_left",
+
+                "bindings": [
+                  {
+                    "binding_type": "$piece_section_collection_details",
+                    "binding_collection_name": "$piece_section_collection_name",
+                    "binding_collection_prefix": "$piece_section_collection_prefix"
+                  },
+                  {
+                    "binding_type": "collection",
+                    "binding_collection_name": "$persona_piece_collection_name",
+                    "binding_name": "#is_piece_csb",
                     "binding_name_override": "#visible"
                   }
                 ]
@@ -6409,13 +6516,32 @@
   },
 
   "persona_realms_purchasable_skin_pack_grid_panel@common.vertical_stack_panel": {
-    "$persona_skin_pack_label_text": "sidebar.realmsPlus",
-
     "$skin_pack_collection_prefix": "realms_skin_pack",
     "$skin_collection_name": "realms_skin_collection",
 
     "controls": [
-      { "pack_label@persona.persona_skin_pack_label": {} },
+      {
+        "realms_pack_label@persona.persona_skin_pack_label": {
+          "$persona_skin_pack_label_text": "sidebar.realmsPlus",
+          "bindings": [
+            {
+              "binding_name": "(not #csb_feature_enabled)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "csb_pack_label@persona.persona_skin_pack_label": {
+          "$persona_skin_pack_label_text": "store.csb",
+          "bindings": [
+            {
+              "binding_name": "#csb_feature_enabled",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
       { "purchasable_packs_grid@persona.persona_skin_pack_grid": {} }
     ]
   },

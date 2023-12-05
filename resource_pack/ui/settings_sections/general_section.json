@@ -987,6 +987,24 @@
       },
 
       {
+        "paddingUseRemoteConnect": {
+          "ignored": "((not $google_os) and (not $is_ios))",
+          "type": "panel",
+          "size": "$spatialPatternsPadding"
+        }
+      },
+
+      {
+        "remote_connect_toggle@settings_common.option_toggle": {
+          "ignored": "((not $google_os) and (not $is_ios))",
+          "$option_label": "options.useRemoteConnect",
+          "$option_binding_name": "#use_remote_connect",
+          "$option_enabled_binding_name": "#use_remote_connect_enabled",
+          "$toggle_name": "use_remote_connect"
+        }
+      },
+
+      {
         "paddingInfoLabels": {
           "type": "panel",
           "size": "$spatialPatternsPadding"
@@ -2366,20 +2384,6 @@
         }
       },
       {
-        "vsync_toggle@settings_common.option_toggle": {
-          "ignored": "(not$microsoft_os or not$vsync_video_setting)",
-          "$option_label": "options.vsync",
-          "$option_binding_name": "#vsync",
-          "$option_enabled_binding_name": "#vsync_enabled",
-          "$toggle_name": "vsync",
-          "layer": 1,
-          "controls": [
-            { "vsync_tooltip_option@general_section.vsync_tooltip_option": {} },
-            { "option_generic_core@settings_common.option_generic_core": {} }
-          ]
-        }
-      },
-      {
         "gui_accessibility_scaling_toggle@settings_common.option_toggle": {
           "$option_label": "options.gui.accessibility.scaling",
           "$option_binding_name": "#gui_accessibility_scaling",
@@ -2836,60 +2840,6 @@
         "binding_name": "#rtx_render_distance_warning_visible",
         "binding_name_override": "#visible"
       }
-    ]
-  },
-
-  "vsync_tooltip_option_image": {
-    "type": "image",
-    "size": [ 7, 11 ],
-    "texture": "textures/ui/infobulb"
-  },
-
-  "vsync_tooltip_option_popup@common.static_tooltip_popup_with_image_and_text": {
-    "size": [ "100% - 4px", "100%cm + 8px" ],
-    "anchor_from": "top_middle",
-    "anchor_to": "bottom_middle",
-    "$tooltip_panel_offset": [ 0, -10 ],
-    "$tooltip_popup_image": "textures/ui/infobulb",
-    "$tooltip_button_binding_type": "global",
-    "$tooltip_button_collection_name": "",
-    "$tooltip_popup_visible_binding|default": "#vsync_tooltip_option_visible",
-    "$tooltip_text_binding_name": "#vsync_tooltip_option_text",
-    "$tooltip_chevron_anchor": "bottom_right",
-    "$tooltip_popup_chevron_offset": [ "-30%x", "100%y - 3px" ]
-  },
-
-  "vsync_tooltip_option": {
-    "type": "panel",
-    "size": [ "100%", 0 ],
-    "anchor_from": "top_right",
-    "anchor_to": "top_right",
-    "controls": [
-      {
-        "vsync_tooltip_option_image@general_section.vsync_tooltip_option_image": {
-          "offset": [ -14, 0 ],
-          "anchor_from": "top_right",
-          "anchor_to": "top_right",
-          "layer": 3,
-          "controls": [
-            {
-              "hover_detection_input_panel": {
-                "type": "input_panel",
-                "consume_hover_events": false,
-                "focus_enabled": true,
-                "tts_skip_message": true,
-                "button_mappings": [
-                  {
-                    "to_button_id": "button.vsync_tooltip_option_is_hovered",
-                    "mapping_type": "pressed"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      },
-      { "vsync_tooltip_option_popup@general_section.vsync_tooltip_option_popup": {} }
     ]
   },
 
@@ -3368,6 +3318,28 @@
     ]
   },
   */
+  "csb_info_label@common.minecraftTenLabel": {
+    "text": "options.viewSubscriptions.button.info",
+    "color": "$text_color",
+    "offset": [ 0, -1 ]
+  },
+
+  "csb_cancel_label@common.minecraftTenLabel": {
+    "text": "gui.cancel",
+    "color": "$text_color",
+    "offset": [ 0, -1 ]
+  },
+
+  "csb_buy_label@common.minecraftTenLabel": {
+    "text": "#csb_price_text",
+    "color": "$text_color",
+    "offset": [ 0, -1 ],
+    "bindings": [
+      {
+        "binding_name": "#csb_price_text"
+      }
+    ]
+  },
 
   "left_button_label@common.minecraftTenLabel": {
     "$left_button_text|default": "#left_button_text",
@@ -4093,6 +4065,332 @@
           ]
         }
       },
+      //csb purchased panel
+      {
+        "csb_purchased_container": {
+          "ignored": "$pre_release",
+          "type": "panel",
+          "size": [ "100%", "100px" ],
+          "controls": [
+            {
+              "fill": {
+                "type": "image",
+                "size": [ "100%", "100%" ],
+                "texture": "textures/ui/White",
+                "color": [ 0.15, 0.14, 0.14 ],
+                "keep_ratio": false,
+                "alpha": 1.0
+              }
+            },
+            {
+              "content_container": {
+                "ignored": "$pre_release",
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "size": [ "100%", "100px" ],
+                "controls": [
+                  {
+                    "padding_01": {
+                      "ignored": "$pre_release",
+                      "type": "panel",
+                      "size": [ 5, "100%" ]
+                    }
+                  },
+                  {
+                    "side_image_stack_left": {
+                      "ignored": "$pre_release",
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "size": [ "50%", "100%" ],
+                      "controls": [
+                        {
+                          "csb_image": {
+                            "type": "image",
+                            "size": [ "100%", "100%" ],
+                            "anchor_from": "top_right",
+                            "anchor_to": "center",
+                            "layer": 3,
+                            "texture": "textures/ui/csb_subscribe_banner"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "padding_02": {
+                      "ignored": "$pre_release",
+                      "type": "panel",
+                      "size": [ 2, "100%" ]
+                    }
+                  },
+                  //Right Stack
+                  {
+                    "side_stack_right": {
+                      "ignored": "$pre_release",
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_right",
+                      "size": [ "45%", "100px" ],
+                      "controls": [
+
+                        //Vertical stack
+                        {
+                          "interior_content_stack": {
+                            "ignored": "$pre_release",
+                            "type": "stack_panel",
+                            "orientation": "vertical",
+                            "size": [ "100%", "100%" ],
+                            "layer": 3,
+                            "controls": [
+                              {
+                                "panel_label": {
+                                  "type": "label",
+                                  "anchor_from": "top_right",
+                                  "anchor_to": "top_right",
+                                  "text": "options.csbHeading",
+                                  "font_type": "MinecraftTen",
+                                  "backup_font_type": "UIFont",
+                                  "color": "$generic_button_text_color",
+                                  "text_alignment": "left",
+                                  "font_scale_factor": 1.0,
+                                  "size": [ "100%", "10px" ]
+                                }
+                              },
+
+                              {
+                                "interior_top_padding": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 2 ]
+                                }
+                              },
+                              {
+                                "descriptionPanel": {
+                                  "ignored": "$pre_release",
+                                  "type": "stack_panel",
+                                  "anchor_to": "top_left",
+                                  "orientation": "vertical",
+                                  "size": [ "50%", "10px" ],
+                                  "controls": [
+                                    {
+                                      "interior_label_panel": {
+                                        "type": "panel",
+                                        "size": [ "100%", "100%" ],
+                                        "controls": [
+                                          {
+                                            "panel_label": {
+                                              "type": "label",
+                                              "text": "options.csbSubheading",
+                                              "$font_type": "MinecraftSeven",
+                                              "font_scale_factor": 0.5,
+                                              "max_size": [ "100%", "100%" ],
+                                              "color": "$0_color_format",
+                                              "text_alignment": "center",
+                                              "anchor_from": "center",
+                                              "anchor_to": "center",
+                                              "layer": 3
+                                            }
+                                          },
+                                          {
+                                            "background_panel": {
+                                              "type": "image",
+                                              "size": [ "default", "default" ],
+                                              "keep_ratio": false,
+                                              "texture": "textures/ui/White",
+                                              "color": [ 1, 0.85, 0.33 ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "interior_top_padding00": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 2 ]
+                                }
+                              },
+
+                              {
+                                "interior_top_padding01": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 2 ]
+                                }
+                              },
+                              {
+                                "ln_01_container": {
+                                  "type": "stack_panel",
+                                  "orientation": "horizontal",
+                                  "size": [ "100%", "20%+5px" ],
+                                  "controls": [
+                                    {
+                                      "bullet_01": {
+                                        "type": "label",
+                                        "text": "■",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.5,
+                                        "size": [ "10%", "100%" ]
+                                      }
+                                    },
+
+                                    {
+                                      "panel_details_ln1": {
+                                        "type": "label",
+                                        "anchor_from": "top_right",
+                                        "anchor_to": "top_right",
+                                        "text": "options.csbInfoLine01",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.8,
+                                        "size": [ "90%", "100%" ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "ln_02_container": {
+                                  "type": "stack_panel",
+                                  "orientation": "horizontal",
+                                  "size": [ "100%", "20%" ],
+                                  "controls": [
+                                    {
+                                      "bullet_02": {
+                                        "type": "label",
+                                        "text": "■",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.5,
+                                        "size": [ "10%", "100%" ]
+                                      }
+                                    },
+                                    {
+                                      "panel_details_ln3": {
+                                        "type": "label",
+                                        "anchor_from": "top_right",
+                                        "anchor_to": "top_right",
+                                        "text": "options.csbInfoLine02",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.8,
+                                        "size": [ "90%", "100%" ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "interior_top_padding02": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 1 ]
+                                }
+                              },
+                              {
+                                "csb_buttons": {
+                                  "type": "stack_panel",
+                                  "anchor_from": "bottom_right",
+                                  "orientation": "horizontal",
+                                  "size": [ "100%", "22%" ],
+                                  "controls": [
+                                    {
+                                      "csb_cancel_button@common_buttons.light_text_button": {
+                                        "size": [ "50% - 2px", "100%" ],
+                                        "$button_offset|default": [ 0, -2 ],
+                                        "$font_type": "MinecraftTen",
+                                        "$button_text": "gui.cancel",
+                                        "$pressed_button_name": "button.csb_cancel"
+                                      }
+                                    },
+                                    {
+                                      "padding_01": {
+                                        "ignored": "$pre_release",
+                                        "type": "panel",
+                                        "size": [ 3, "100%" ]
+                                      }
+                                    },
+                                    {
+                                      "csb_info_button@common_buttons.light_text_button": {
+                                        "size": [ "50% - 2px", "100%" ],
+                                        "$button_offset|default": [ 0, -2 ],
+                                        "$font_type": "MinecraftTen",
+                                        "$button_text": "options.viewSubscriptions.button.info",
+                                        "$pressed_button_name": "button.csb_info"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bottom_stack_padding": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ 5, "100%" ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#csb_purchased_panel_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+
+      {
+        "csb_purchased_lower_pad": {
+          "ignored": "$pre_release",
+          "type": "panel",
+          "size": [ "100%", 2 ]
+        }
+      },
+
+      {
+        "csbExpiration": {
+          "ignored": "$pre_release",
+          "type": "label",
+          "font_type": "smooth",
+          "text": "#csbPanel_purchase_expired_text",
+          "color": "$generic_button_text_color",
+          "text_alignment": "left",
+          "size": [ "100%", 10 ],
+          "bindings": [
+            {
+              "binding_name": "#csbPanel_purchase_expired_text"
+            }
+          ]
+        }
+      },
+      {
+        "csb_expiration_padding": {
+          "ignored": "$pre_release",
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
+      },
       {
         "additional_realms_subscriptions_grid": {
           "type": "stack_panel",
@@ -4223,6 +4521,328 @@
               "binding_name_override": "#visible",
               "binding_type": "collection",
               "binding_collection_name": "$realm_collection_name"
+            }
+          ]
+        }
+      },
+      {
+        "pad_8": {
+          "ignored": "$pre_release",
+          "type": "panel",
+          "size": [ "100%", 6 ]
+        }
+      },
+      //csb panel
+      {
+        "csb_container": {
+          "ignored": "$pre_release",
+          "type": "panel",
+          "size": [ "100%", "100px" ],
+          "controls": [
+            {
+              "fill": {
+                "type": "image",
+                "size": [ "100%", "100%" ],
+                "texture": "textures/ui/White",
+                "color": [ 0.15, 0.14, 0.14 ],
+                "keep_ratio": false,
+                "alpha": 1.0
+              }
+            },
+            {
+              "content_container": {
+                "ignored": "$pre_release",
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "size": [ "100%", "100px" ],
+                "controls": [
+                  {
+                    "padding_01": {
+                      "ignored": "$pre_release",
+                      "type": "panel",
+                      "size": [ 5, "100%" ]
+                    }
+                  },
+                  {
+                    "side_image_stack_left": {
+                      "ignored": "$pre_release",
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "size": [ "50%", "100%" ],
+                      "controls": [
+                        {
+                          "csb_image": {
+                            "type": "image",
+                            "size": [ "100%", "100%" ],
+                            "anchor_from": "top_right",
+                            "anchor_to": "center",
+                            "layer": 3,
+                            "texture": "textures/ui/csb_subscribe_banner"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "padding_02": {
+                      "ignored": "$pre_release",
+                      "type": "panel",
+                      "size": [ 2, "100%" ]
+                    }
+                  },
+                  //Right Stack
+                  {
+                    "side_stack_right": {
+                      "ignored": "$pre_release",
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "anchor_from": "top_right",
+                      "size": [ "45%", "100px" ],
+                      "controls": [
+
+                        //Vertical stack
+                        {
+                          "interior_content_stack": {
+                            "ignored": "$pre_release",
+                            "type": "stack_panel",
+                            "orientation": "vertical",
+                            "size": [ "100%", "100%" ],
+                            "layer": 3,
+                            "controls": [
+                              {
+                                "panel_label": {
+                                  "type": "label",
+                                  "anchor_from": "top_right",
+                                  "anchor_to": "top_right",
+                                  "text": "options.csbHeading",
+                                  "font_type": "MinecraftTen",
+                                  "backup_font_type": "UIFont",
+                                  "color": "$generic_button_text_color",
+                                  "text_alignment": "left",
+                                  "font_scale_factor": 1.0,
+                                  "size": [ "100%", "10px" ]
+                                }
+                              },
+
+                              {
+                                "interior_top_padding": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 2 ]
+                                }
+                              },
+                              {
+                                "descriptionPanel": {
+                                  "ignored": "$pre_release",
+                                  "type": "stack_panel",
+                                  "anchor_to": "top_left",
+                                  "orientation": "vertical",
+                                  "size": [ "50%", "10px" ],
+                                  "controls": [
+                                    {
+                                      "interior_label_panel": {
+                                        "type": "panel",
+                                        "size": [ "100%", "100%" ],
+                                        "controls": [
+                                          {
+                                            "panel_label": {
+                                              "type": "label",
+                                              "text": "options.csbSubheading",
+                                              "$font_type": "MinecraftSeven",
+                                              "font_scale_factor": 0.5,
+                                              "max_size": [ "100%", "100%" ],
+                                              "color": "$0_color_format",
+                                              "text_alignment": "center",
+                                              "anchor_from": "center",
+                                              "anchor_to": "center",
+                                              "layer": 3
+                                            }
+                                          },
+                                          {
+                                            "background_panel": {
+                                              "type": "image",
+                                              "size": [ "default", "default" ],
+                                              "keep_ratio": false,                                              
+                                              "texture": "textures/ui/White",
+                                              "color": [ 1, 0.85, 0.33 ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "interior_top_padding00": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 2 ]
+                                }
+                              },
+
+                              {
+                                "interior_top_padding01": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 2 ]
+                                }
+                              },
+                              {
+                                "ln_01_container": {
+                                  "type": "stack_panel",
+                                  "orientation": "horizontal",
+                                  "size": [ "100%", "20%+5px" ],
+                                  "controls": [
+                                    {
+                                      "bullet_01": {
+                                        "type": "label",
+                                        "text": "■",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.5,
+                                        "size": [ "10%", "100%" ]
+                                      }
+                                    },
+
+                                    {
+                                      "panel_details_ln1": {
+                                        "type": "label",
+                                        "anchor_from": "top_right",
+                                        "anchor_to": "top_right",
+                                        "text": "options.csbInfoLine01",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.8,
+                                        "size": [ "90%", "100%" ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "ln_02_container": {
+                                  "type": "stack_panel",
+                                  "orientation": "horizontal",
+                                  "size": [ "100%", "20%" ],
+                                  "controls": [
+                                    {
+                                      "bullet_02": {
+                                        "type": "label",
+                                        "text": "■",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.5,
+                                        "size": [ "10%", "100%" ]
+                                      }
+                                    },
+                                    {
+                                      "panel_details_ln3": {
+                                        "type": "label",
+                                        "anchor_from": "top_right",
+                                        "anchor_to": "top_right",
+                                        "text": "options.csbInfoLine02",
+                                        "font_type": "Minecraft",
+                                        "backup_font_type": "UIFont",
+                                        "color": "$generic_button_text_color",
+                                        "text_alignment": "left",
+                                        "font_scale_factor": 0.8,
+                                        "size": [ "90%", "100%" ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "interior_top_padding02": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ "100%", 1 ]
+                                }
+                              },
+                              {
+                                "csb_buttons": {
+                                  "type": "stack_panel",
+                                  "anchor_from": "bottom_right",
+                                  "orientation": "horizontal",
+                                  "size": [ "100%", "22%" ],
+                                  "controls": [
+                                    {
+                                      "csb_info_button@common_buttons.light_text_button": {
+                                        "size": [ "50% - 2px", "100%" ],
+                                        "$button_offset|default": [ 0, -2 ],
+                                        "$font_type": "MinecraftTen",
+                                        "$button_text": "options.viewSubscriptions.button.info",
+                                        "$pressed_button_name": "button.csb_info"
+                                      }
+                                    },
+                                    {
+                                      "padding_01": {
+                                        "ignored": "$pre_release",
+                                        "type": "panel",
+                                        "size": [ 3, "100%" ]
+                                      }
+                                    },
+                                    {
+                                      "buyButtonContainer": {
+                                        "ignored": "$pre_release",
+                                        "type": "panel",
+                                        "size": [ "50% - 2px", "100%" ],
+                                        "controls": [
+                                          {
+                                            "csb_buy_button@common_buttons.light_text_button": {
+                                              "size": [ "100%", "100%" ],
+                                              "$button_offset|default": [ 0, -2 ],
+                                              "$font_type": "MinecraftTen",
+                                              "$button_text": "#csb_price_text",
+                                              "$pressed_button_name": "button.csb_buy",
+                                              "bindings": [
+                                                {
+                                                  "binding_name": "#csb_price_text"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ],
+                                        "bindings": [
+                                          {
+                                            "binding_name": "#is_Eligible_Platform",
+                                            "binding_name_override":"#visible"
+                                          }
+
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "bottom_stack_padding": {
+                                  "ignored": "$pre_release",
+                                  "type": "panel",
+                                  "size": [ 5, "100%" ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#csb_buy_panel_visible",
+              "binding_name_override": "#visible"
             }
           ]
         }
@@ -6692,7 +7312,8 @@
           "type": "panel",
           "size": [ "100%", 6 ]
         }
-      },      {
+      },
+      {
         "debug_overlay_pages_label": {
           "type": "label",
           "text": "Debug Overlay Pages",
@@ -6832,7 +7453,7 @@
           "$dropdown_name": "dev_nethernet_logging_verbosity_dropdown",
           "$options_dropdown_toggle_label_binding": "#dev_nethernet_logging_verbosity_dropdown_toggle_label",
           "$option_enabled_binding_name": "#dev_nethernet_logging_verbosity_dropdown_enabled",
-          "$dropdown_scroll_content_size":  ["100%", "200%" ]
+          "$dropdown_scroll_content_size": [ "100%", "200%" ]
         }
       },
       {
@@ -7190,6 +7811,17 @@
       },
       {
         "mock_http_panel@general_section.mock_http_panel": {}
+      },
+      {
+        "vsync_dropdown@settings_common.option_dropdown": {
+          "$option_label": "options.vsync",
+          "$dropdown_content": "general_section.vysnc_dropdown_content",
+          "$dropdown_area": "content_area",
+          "$dropdown_name": "vsync_dropdown",
+          "$options_dropdown_toggle_label_binding": "#vsync_dropdown_toggle_label",
+          "$option_enabled_binding_name": "#vsync_dropdown_enabled",
+          "$dropdown_scroll_content_size": [ "100%", "200%" ]
+        }
       },
       {
         "option_dropdown_1@settings_common.option_dropdown": {
@@ -8425,9 +9057,9 @@
       {
         "option_toggle_force_new_player@settings_common.option_toggle": {
           "$option_label": "Force 'new player' mode",
-          "$option_binding_name": "#dev_force_new_player_mode",
-          "$option_enabled_binding_name": "#dev_force_new_player_mode_enabled",
-          "$toggle_name": "dev_force_new_player_mode"
+          "$option_binding_name": "#dev_force_new_player_flow",
+          "$option_enabled_binding_name": "#dev_force_new_player_flow_enabled",
+          "$toggle_name": "dev_force_new_player_flow"
         }
       },
       {
@@ -9249,6 +9881,28 @@
       }
     ]
   },
+  "vysnc_dropdown_content@settings_common.option_radio_dropdown_group": {
+    "$radio_buttons": [
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#vsync_off",
+          "$radio_label_text": "options.vsync.off"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#vsync_on",
+          "$radio_label_text": "options.vsync.on"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#vsync_adaptive",
+          "$radio_label_text": "options.vsync.adaptive"
+        }
+      }
+    ]
+  },
   "dev_identity_environment_dropdown_content@settings_common.option_radio_dropdown_group": {
     "$radio_buttons": [
       {
@@ -9520,11 +10174,17 @@
         }
       },
       {
-        "bloom_toggle@settings_common.option_toggle": {
-          "$option_label": "options.bloomEnable",
-          "$option_binding_name": "#bloom_toggle",
-          "$option_enabled_binding_name": "#bloom_toggle_enabled",
-          "$toggle_name": "bloom_toggle",
+        "bloom_strength@settings_common.option_slider": {
+          "$option_label": "#bloom_strength_slider_label",
+          "$slider_name": "bloom_strength",
+          "$slider_value_binding_name": "#bloom_strength",
+          "$slider_tts_text_value": "#bloom_strength_text_value",
+          "$option_enabled_binding_name": "#bloom_strength_enabled",
+          "$label_bindings": [
+            {
+              "binding_name": "$option_label"
+            }
+          ],
           "bindings": [
             {
               "binding_name": "#graphics_mode_is_deferred",
