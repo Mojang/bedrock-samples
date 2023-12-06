@@ -133,13 +133,33 @@
   "feed_icon": {
     "type": "image",
     "texture": "textures/ui/feedIcon",
-    "size": [ 22, 16 ]
+    "size": [ 22, 16 ],
+    "visible": "(not $is_realms_stories_enabled)"
   },
 
   "realms_stories_icon": {
     "type": "image",
     "texture": "textures/ui/realmsStoriesIcon",
     "size": [ 22, 22 ]
+  },
+
+  "realms_stories_icon_animated": {
+    "type": "image",
+    "texture": "textures/ui/realmsStoriesIconAnimated",
+    "size": [ 22, 22 ],
+    "uv_size": [ 22, 22 ],
+    "uv": "@play.anim_realms_stories_icon",
+    "disable_anim_fast_forward": true
+  },
+
+  "anim_realms_stories_icon": {
+    "anim_type": "flip_book",
+    "initial_uv": [ 0, 0 ],
+    "frame_count": 13,
+    "fps": 4,
+    "looping": false,
+    "easing": "linear",
+    "wait_until_rendered_to_play": true
   },
 
   "realms_slots_edit_icon": {
@@ -1030,18 +1050,55 @@
     ]
   },
 
-  "realms_feed_button@common_buttons.dark_glyph_button": {
-    "$pressed_button_name": "button.menu_realms_feed",
-    "variables": [
+  "realms_feed_button_content": {
+    "type": "image",
+    "controls": [
       {
-        "requires": "$is_realms_stories_enabled",
-        "$button_content": "play.realms_stories_icon"
+        "default_icon@play.realms_stories_icon": {
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_name": "($is_realms_stories_enabled and not #realms_unread_story_count_visible)",
+              "binding_name_override": "#visible",
+              "binding_collection_name": "$realms_worlds_collection_name"
+            }
+          ]
+        }
       },
       {
-        "requires": "(not $is_realms_stories_enabled)",
-        "$button_content": "play.feed_icon"
+        "unread_icon_active@play.realms_stories_icon_animated": {
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_name": "($is_realms_stories_enabled and #realms_unread_story_count_visible)",
+              "binding_name_override": "#visible",
+              "binding_collection_name": "$realms_worlds_collection_name"
+            }
+          ]
+        }
+      },
+      {
+        "old_feed_icon@play.feed_icon": {}
       }
-    ],
+    ]
+  },
+
+  "persistent_realms_feed_button_control@common_buttons.new_ui_button_panel": {
+    "$new_ui_button_texture": "$default_button_texture",
+    "$glyph_color": "$dark_glyph_default_color",
+    "$border_color": "$dark_border_default_color",
+    "$button_press_offset": [ 0, 0 ],
+    "$border_layer": 2,
+    "$border_alpha": 0,
+    "$button_image_alpha": 0,
+    "$content_alpha": 0,
+    "layer": 4,
+    "$button_content": "play.realms_feed_button_content"
+  },
+
+  "realms_feed_button@common_buttons.dark_glyph_button_with_custom_control": {
+    "$pressed_button_name": "button.menu_realms_feed",
+    "$custom_control": "play.persistent_realms_feed_button_control",
     "$button_tts_header": "#realms_feed_button_tts_header",
     "size": [ "100%y", "100%" ],
     "anchor_from": "top_right",
