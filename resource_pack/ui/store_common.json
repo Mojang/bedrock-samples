@@ -1524,6 +1524,118 @@
     "bilinear": true
   },
 
+  "csb_banner_icon": {
+    "type": "image",
+    "texture": "textures/ui/sidebar_icons/csb_sidebar_icon",
+    "size": [ "100%y", "100%" ],
+    "bilinear": true
+  },
+
+  "csb_expiration": {
+    "type": "panel",
+    "size": [ "100% - 0.05px", "20% + 1px" ],
+    "offset": [ 0.05, 0.5 ],
+    "visible": false,
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "controls": [
+      {
+        "background": {
+          "type": "image",
+          "size": [ "100%", "100%" ],
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "texture": "textures/ui/csbBannerBackground",
+          "tiled": "y",
+          "layer": 3
+        }
+      },
+      {
+        "contents": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100% - 2px", "100% - 2px" ],
+          "layer": 5,
+          "controls": [
+            {
+              "pad_0": {
+                "type": "panel",
+                "size": [ 1, "100%" ]
+              }
+            },
+            {
+              "csb_icon@common_store.csb_banner_icon": {}
+            },
+            {
+              "pad_1": {
+                "type": "panel",
+                "size": [ 2, "100%" ]
+              }
+            },
+            {
+              "text_panel": {
+                "type": "stack_panel",
+                "orientation": "vertical",
+                "size": [ "fill", "100%" ],
+                "controls": [
+                  {
+                    "padding_0": {
+                      "type": "panel",
+                      "size": [ "100%", 2 ]
+                    }
+                  },
+                  {
+                    "offset_text_panel": {
+                      "type": "panel",
+                      "size": [ "100%", "100%" ],
+                      "controls": [
+                        {
+                          "text": {
+                            "type": "label",
+                            "size": [ "100%", 10 ],
+                            "color": "$store_csb_expiration_text_color",
+                            "font_type": "smooth",
+                            "font_scale_factor": 0.9,
+                            "text": "#realms_expiration_label",
+                            "bindings": [
+                              {
+                                "binding_type": "$store_factory_collection_details",
+                                "binding_collection_name": "$store_factory_collection_name",
+                                "binding_collection_prefix": "$store_factory_collection_prefix"
+                              },
+                              {
+                                "binding_type": "$offer_binding_type",
+                                "binding_collection_name": "$offer_collection_name",
+                                "binding_name": "#realms_expiration_label"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "$offer_binding_type",
+        "binding_collection_name": "$offer_collection_name",
+        "binding_name": "#csb_expiration_banner_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
   "realms_plus_expiration": {
     "type": "panel",
     "size": [ "100%", "20% + 1px" ],
@@ -4073,6 +4185,9 @@
     "type": "panel",
     "size": [ "100%c", "100%c" ],
     "priority": 4,
+    "$subscription_offer_binding_type|default": "",
+    "$subscription_offer_collection_name|default": "",
+    "$subscription_chevron_offset|default": [ 0, 1.25 ],
     "bindings": [
       {
         "binding_type": "$store_factory_collection_details",
@@ -4080,9 +4195,9 @@
         "binding_collection_prefix": "$store_factory_collection_prefix"
       },
       {
-        "binding_type": "$offer_binding_type",
+        "binding_type": "$subscription_offer_binding_type",
+        "binding_collection_name": "$subscription_offer_collection_name",
         "binding_name": "#subscription_chevron_visibility",
-        "binding_collection_name": "$offer_collection_name",
         "binding_name_override": "#visible"
       }
     ],
@@ -4091,11 +4206,11 @@
         "subscription_chevron_panel": {
           "type": "panel",
           "size": [ 16, 12 ],
+          "offset": "$subscription_chevron_offset", // polish hack - aligns the banner to be flush with the bottom of the background panel
           "controls": [
             {
               "realmsPlus_chevron@realmsPlus_content.realms_plus_content_chevron": {
                 "layer": 10,
-                "offset": [ 0, 1.25 ], // polish hack - aligns the banner to be flush with the bottom of the background panel
                 "bindings": [
                   {
                     "binding_type": "$store_factory_collection_details",
@@ -4103,17 +4218,16 @@
                     "binding_collection_prefix": "$store_factory_collection_prefix"
                   },
                   {
-                    "binding_type": "$offer_binding_type",
+                    "binding_type": "$subscription_offer_binding_type",
+                    "binding_collection_name": "$subscription_offer_collection_name",
                     "binding_name": "#realms_chevron_visibility",
-                    "binding_collection_name": "$offer_collection_name",
                     "binding_name_override": "#visible"
                   }
                 ]
               }
             },
             {
-              "csb_label@common_store.csb_banner": {
-                "offset": [ 1, 1.25 ],
+              "csb_chevron@common_store.csb_banner": {
                 "layer": 10,
                 "bindings": [
                   {
@@ -4122,8 +4236,8 @@
                     "binding_collection_prefix": "$store_factory_collection_prefix"
                   },
                   {
-                    "binding_type": "$offer_binding_type",
-                    "binding_collection_name": "$offer_collection_name",
+                    "binding_type": "$subscription_offer_binding_type",
+                    "binding_collection_name": "$subscription_offer_collection_name",
                     "binding_name": "#csb_chevron_visibility",
                     "binding_name_override": "#visible"
                   }
@@ -4134,7 +4248,6 @@
               // Add yellow banner behind the Chevron, visible when we are in a sale (markdown)
               "sales_banner_background@common_store.markdown_banner": {
                 "size": [ "100%", "100%" ],
-                "offset": [ 0, 1.25 ],
                 "layer": 9,
                 "bindings": [
                   {
@@ -4143,9 +4256,9 @@
                     "binding_collection_prefix": "$store_factory_collection_prefix"
                   },
                   {
-                    "binding_type": "$offer_binding_type",
+                    "binding_type": "$subscription_offer_binding_type",
+                    "binding_collection_name": "$subscription_offer_collection_name",
                     "binding_name": "#offer_markdown_visible",
-                    "binding_collection_name": "$offer_collection_name",
                     "binding_name_override": "#visible"
                   }
                 ]
@@ -5858,7 +5971,15 @@
                 "anchor_from": "bottom_left",
                 "anchor_to": "bottom_left",
                 "layer": 2,
+                "use_priority": true,
                 "controls": [
+                  {
+                    "subscription_panel@common_store.subscription_chevron": {
+                      "$subscription_offer_collection_name": "$hero_offer_collection_name",
+                      "$subscription_offer_binding_type": "$hero_offer_binding_type",
+                      "$subscription_chevron_offset": [ -1, 1 ]
+                    }
+                  },
                   {
                     "sales_markdown_percentage_panel": {
                       "type": "panel",
@@ -5866,55 +5987,13 @@
                       "anchor_from": "left_middle",
                       "anchor_to": "left_middle",
                       "$timer_visible": true,
+                      "priority": 2,
                       "controls": [
-                        {
-                          "realmsPlus_chevron@realmsPlus_content.realms_plus_content_chevron": {
-                            "offset": [ -2, 1 ],
-                            "$default_state": false,
-                            "$hover_state": false,
-                            "$pressed_state": false,
-                            "layer": 10,
-                            "bindings": [
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              },
-                              {
-                                "binding_type": "$hero_offer_binding_type",
-                                "binding_name": "$realms_chevron_binding_name",
-                                "binding_collection_name": "$hero_offer_collection_name",
-                                "binding_name_override": "#visible"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "csb_chevron@common_store.csb_banner": {
-                            "offset": [ -4, 1 ],
-                            "layer": 10,
-                            "anchor_from": "bottom_left",
-                            "anchor_to": "bottom_left",
-                            "bindings": [
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              },
-                              {
-                                "binding_type": "$hero_offer_binding_type",
-                                "binding_name": "#csb_chevron_visibility",
-                                "binding_collection_name": "$hero_offer_collection_name",
-                                "binding_name_override": "#visible"
-                              }
-                            ]
-                          }
-                        },
                         {
                           "markdown_background@common_store.markdown_background": {
                             "layer": 9, // Needs to be a higher layer than the strikethru text
                             "$markdown_label": "common_store.hero_offer_sale_markdown",
-                            "offset": [ -2, 1 ],
+                            "offset": [ -1, 1 ],
                             "$icon_stack_visibility_collection": "$hero_offer_collection_name",
                             "$icon_stack_visibility_type": "$hero_offer_binding_type",
                             "bindings": [
@@ -5952,6 +6031,7 @@
                     "ratings_panel": {
                       "type": "panel",
                       "size": [ "100%c", "100%" ],
+                      "priority": 6,
                       "controls": [
                         {
                           "ratings@common_store.ratings_description": {
@@ -5982,6 +6062,7 @@
                   {
                     "rating_count_panel@common_store.store_rating_count_panel": {
                       "$rating_text_binding_type": "$hero_offer_binding_type",
+                      "priority": 5,
                       "$rating_text_collection_name": "$hero_offer_collection_name"
                     }
                   },
@@ -5989,6 +6070,7 @@
                     "pack_icon_panel": {
                       "type": "panel",
                       "size": [ "100%c", "100%" ],
+                      "priority": 3,
                       "controls": [
                         {
                           "pack_icon_stack@common_store.pack_icon_stack": {
@@ -6011,6 +6093,7 @@
                   {
                     "offer_price_markdown_panel@common_store.offer_price_markdown_panel": {
                       "$offer_binding_type": "$hero_offer_binding_type",
+                      "priority": 1,
                       "$offer_collection_name": "$hero_offer_collection_name"
                     }
                   },
@@ -6018,6 +6101,7 @@
                     "price_panel": {
                       "type": "panel",
                       "size": [ "100%c", "100%" ],
+                      "priority": 0,
                       "controls": [
                         {
                           "price@common_store.price_panel": {
@@ -7169,6 +7253,9 @@
             },
             {
               "realms_plus_expiration_banner@common_store.realms_plus_expiration": {}
+            },
+            {
+              "csb_expiration_banner@common_store.csb_expiration": { } 
             }
           ]
         }
@@ -7743,6 +7830,9 @@
                   },
                   {
                     "realms_plus_expiration_banner@common_store.realms_plus_expiration": {}
+                  },
+                  {
+                    "csb_plus_expiration_banner@common_store.csb_expiration": {}
                   }
                 ]
               }
@@ -7906,7 +7996,10 @@
                           }
                         },
                         {
-                          "subscription_panel@common_store.subscription_chevron": {}
+                          "subscription_panel@common_store.subscription_chevron": {
+                            "$subscription_offer_binding_type": "$offer_binding_type",
+                            "$subscription_offer_collection_name": "$offer_collection_name"
+                          }
                         },
                         {
                           "sales_banner": {
@@ -8247,6 +8340,13 @@
         "binding_name": "#header_font_scalar",
         "binding_condition": "once",
         "binding_name_override": "#font_scale_factor"
+      },
+      {
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#header_alignment",
+        "binding_condition": "once",
+        "binding_name_override": "#text_alignment"
       }
     ],
     "bindings": "$store_section_header_label_bindings"
@@ -8551,8 +8651,8 @@
                 "orientation": "horizontal",
                 "size": [ "100%", "100%cm" ],
                 "visible": false,
-                "anchor_from": "bottom_left",
-                "anchor_to": "bottom_left",
+                "anchor_from": "left_middle",
+                "anchor_to": "left_middle",
                 "bindings": [
                   {
                     "binding_type": "$store_factory_binding_type",
@@ -8577,12 +8677,19 @@
                     }
                   },
                   {
-                    "row_header_label@common_store.store_section_header_label": {
-                      "size": [ "90% - 2px", 10 ],
-                      "$store_section_header_visible_binding": "#hide_banner",
-                      "$store_section_header_text_color": "$main_header_text_color",
-                      "anchor_from": "bottom_left",
-                      "anchor_to": "bottom_left"
+                    "row_header_label_centering_panel": {
+                      "type": "panel",
+                      "size": [ "100%", "100%c" ],
+                      "controls": [
+                        {
+                          "row_header_label@common_store.store_section_header_label": {
+                            "size": [ "90% - 2px", 10 ],
+                            "offset": [ 0, -1 ],
+                            "$store_section_header_visible_binding": "#hide_banner",
+                            "$store_section_header_text_color": "$main_header_text_color"
+                          }
+                        }
+                      ]
                     }
                   },
                   {
@@ -9993,6 +10100,12 @@
                     "binding_collection_name": "$row_binding_collection_name",
                     "binding_name": "#assigned_color",
                     "binding_name_override": "#color"
+                  },
+                  {
+                    "binding_type": "collection",
+                    "binding_collection_name": "$row_binding_collection_name",
+                    "binding_name": "#assigned_alpha",
+                    "binding_name_override": "#alpha"
                   }
                 ]
               }

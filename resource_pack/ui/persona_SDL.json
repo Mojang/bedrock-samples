@@ -30,6 +30,11 @@
     "size": [ 6, "100%sm" ]
   },
 
+  "vertical_padding_1px": {
+    "type": "panel",
+    "size": [ "100%", 2 ]
+  },
+
   "vertical_padding_2px": {
     "type": "panel",
     "size": [ "100%", 2 ]
@@ -132,31 +137,334 @@
     ]
   },
 
+  "scroll_section@common.scrolling_panel": {
+    "size": [ "100%", "100%" ],
+    "$scrolling_pane_size": [ "100%", "100%" ],
+    "$scrolling_pane_offset": [ 0, 0 ],
+    "$scrolling_content_anchor_from": "top_middle",
+    "$scrolling_content_anchor_to": "top_middle",
+    "$scroll_size": [ 5, "100% - 8px" ],
+    "$scroll_bar_left_padding_size": [ 0, 0 ],
+    "$scroll_view_port_size": [ "100% - 8px", "100%" ],
+    "$show_background": false,
+    "$bar_visible": true,
+    "$scroll_bar_contained": true
+  },
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  // Color Picker
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  "color_picker_left_cycle@common_buttons.light_content_button": {
+    "$button_content": "persona_sdl.left_icon",
+    "$pressed_button_name": "button.swap_color_channel_left",
+    "$default_state_border_visible": false,
+    "$hover_state_border_visible": false,
+    "$pressed_state_border_visible": false,
+    "$locked_state_border_visible": false,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_tab_left",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "color_picker_right_cycle@common_buttons.light_content_button": {
+    "$button_content": "persona_sdl.right_icon",
+    "$pressed_button_name": "button.swap_color_channel_right",
+    "$default_state_border_visible": false,
+    "$hover_state_border_visible": false,
+    "$pressed_state_border_visible": false,
+    "$locked_state_border_visible": false,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_tab_right",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "global"
+      },
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "color_grid_icon": {
+    "type": "image",
+    "size": [ "100%", "100%" ],
+    "texture": "textures/ui/white_background",
+    "bindings": [
+      {
+        "binding_name": "#current_panel_color",
+        "binding_name_override": "#color",
+        "binding_type": "collection",
+        "binding_collection_name": "color_collection"
+      }
+    ],
+    "controls": [
+      {
+        "equipped@persona_sdl.equipped_border": {
+          "size": [ "100% + 2px", "100% + 2px" ],
+          "bindings": [
+            {
+              "binding_name": "#color_equipped",
+              "binding_name_override": "#visible",
+              "binding_type": "collection",
+              "binding_collection_name": "color_collection"
+            }
+          ]
+        }
+      },
+      {
+        "selected@persona_sdl.selected_border": {
+          "size": [ "100% + 2px", "100% + 2px" ],
+          "layer": 1,
+          "bindings": [
+            {
+              "binding_name": "#color_selected",
+              "binding_name_override": "#visible",
+              "binding_type": "collection",
+              "binding_collection_name": "color_collection"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "color_grid_item@common_buttons.light_content_button": {
+    "size": [ "17% - 2px", "100%x" ],
+    "layer": 3,
+
+    "$border_hover_layer": 10,
+    "$light_border_hover_color": "$dressing_room_hover_color", //hover focus border color
+    "$hover_button_texture": "textures/ui/button_borderless_light",
+    "$focus_border_size": [ "100% - 2px", "100% - 2px" ],
+    "$button_content_size": [ "100% - 4px", "100% - 4px" ],
+    "$button_pressed_offset": [ 0, 0 ],
+    "$button_content": "persona_sdl.color_grid_icon",
+    "$pressed_button_name": "button.change_piece_color",
+    "$focus_id": "color_grid_item",
+    "$button_focus_precedence": 20,
+    "$default_state_border_visible": false,
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "color_collection",
+        "binding_collection_prefix": "color"
+      }
+    ]
+  },
+
+  "color_grid": {
+    "type": "grid",
+    "size": [ "100% - 2px", "100%c + 2px" ],
+    "anchor_to": "top_middle",
+    "anchor_from": "top_middle",
+    "grid_item_template": "persona_sdl.color_grid_item",
+    "grid_rescaling_type": "horizontal",
+    "grid_dimension_binding": "#color_single_page_size",
+    "collection_name": "color_collection",
+    "bindings": [
+      {
+        "binding_name": "#color_single_page_size",
+        "binding_name_override": "#maximum_grid_items"
+      }
+    ]
+  },
+
+  "color_picker_content_panel@common.vertical_stack_panel": {
+    "size": [ "100%", "100%" ],
+    "bindings": [
+      {
+        "binding_name": "#show_color_picker",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "top_pad@persona_sdl.vertical_padding_2px": {} },
+      {
+        "top_bar@common.horizontal_stack_panel": {
+          "size": [ "100%", 20 ],
+          "controls": [
+            {
+              "cycle_left": {
+                "type": "panel",
+                "size": [ "100%y", "100%" ],
+                "controls": [
+                  {
+                    "button@persona_sdl.color_picker_left_cycle": {
+                      "layer": 2,
+                      "offset": [ 5, 0 ],
+                      "bindings": [
+                        {
+                          "binding_name": "#left_color_cycle_enabled",
+                          "binding_name_override": "#enabled"
+                        },
+                        {
+                          "binding_name": "#other_channels",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "left_bumper_panel@common.empty_panel": {
+                      "bindings": [
+                        {
+                          "binding_name": "#other_channels",
+                          "binding_name_override": "#visible"
+                        }
+                      ],
+                      "controls": [
+                        {
+                          "left_bumper@common.gamepad_helper_left_bumper": {
+                            "anchor_from": "top_middle",
+                            "anchor_to": "top_middle",
+                            "offset": [ 0, -20 ],
+                            "$hide_description": true,
+                            "bindings": [
+                              {
+                                "binding_name": "#gamepad_helper_visible",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            { "padding_0@persona_sdl.horizontal_2_padding": {} },
+            {
+              "title": {
+                "type": "panel",
+                "size": [ "fill", "100%" ],
+                "controls": [
+                  {
+                    "skin_title": {
+                      "type": "label",
+                      "size": [ "100%", "default" ],
+                      "max_size": [ "100%", "100%" ],
+                      "text": "#color_picker_title",
+                      "text_alignment": "center",
+                      "color": "$dressing_room_color_title",
+                      "layer": 2,
+                      "bindings": [
+                        {
+                          "binding_name": "#color_picker_title"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            { "padding_1@persona_sdl.horizontal_2_padding": {} },
+            {
+              "cycle_right": {
+                "type": "panel",
+                "size": [ "100%y", "100%" ],
+                "controls": [
+                  {
+                    "button@persona_sdl.color_picker_right_cycle": {
+                      "layer": 2,
+                      "offset": [ -5, 0 ],
+                      "bindings": [
+                        {
+                          "binding_name": "#right_color_cycle_enabled",
+                          "binding_name_override": "#enabled"
+                        },
+                        {
+                          "binding_name": "#other_channels",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "right_bumper_panel@common.empty_panel": {
+                      "bindings": [
+                        {
+                          "binding_name": "#other_channels",
+                          "binding_name_override": "#visible"
+                        }
+                      ],
+                      "controls": [
+                        {
+                          "right_bumper@common.gamepad_helper_right_bumper": {
+                            "anchor_from": "top_middle",
+                            "anchor_to": "top_middle",
+                            "offset": [ 0, -20 ],
+                            "$hide_description": true,
+                            "bindings": [
+                              {
+                                "binding_name": "#gamepad_helper_visible",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      { "middle_pad@persona_sdl.vertical_padding_2px": {} },
+      {
+        "grid_of_colors@persona_sdl.scroll_section": {
+          "size": [ "100%", "fill" ],
+          "anchor_to": "top_middle",
+          "anchor_from": "top_middle",
+          "$scrolling_content": "persona_sdl.color_grid"
+        }
+      }
+    ]
+  },
+
   /////////////////////////////////////////////////////////////////////////////////////////////////
   // Persona Height Options
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  "persona_height_options_row": {
+  "persona_size_option_stack": {
     "type": "stack_panel",
     "orientation": "vertical",
-    "size": [ "100%", "100%c" ],
+    "size": [ "100% - 6px", "100%c" ],
     "controls": [
       {
         "height_label": {
           "type": "label",
-          "text": "dr.body_size_label_text",
+          "font_type": "MinecraftTen",
+          "text": "$size_option_stack_title",
           "color": "$dressing_room_size_default_text_color"
         }
       },
-      {
-        "pad_0": {
-          "type": "panel",
-          "size": [ "100%", 2 ]
-        }
-      },
-      {
-        "body_size_option@persona_sdl.body_sizes": {}
-      }
+      { "pad_0@persona_sdl.vertical_padding_2px": {} },
+      { "size_option_stack@$size_option_stack_control": {} }
     ],
     "bindings": [
       {
@@ -167,35 +475,22 @@
     ]
   },
 
-  "persona_arm_size_options_row": {
-    "type": "stack_panel",
-    "orientation": "vertical",
+  "persona_size_options_row_base": {
+    "type": "panel",
     "size": [ "100%", "100%c" ],
     "controls": [
-      {
-        "arm_size_label": {
-          "type": "label",
-          "text": "dr.arm_size_label_text",
-          "color": "$dressing_room_size_default_text_color"
-        }
-      },
-      {
-        "pad_0": {
-          "type": "panel",
-          "size": [ "100%", 2 ]
-        }
-      },
-      {
-        "arm_size_option@persona_sdl.arm_sizes": {}
-      }
-    ],
-    "bindings": [
-      {
-        "binding_type": "$store_factory_collection_details",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_collection_prefix": "$store_factory_collection_prefix"
-      }
+      { "persona_arm_size_option_stack@persona_sdl.persona_size_option_stack": {} }
     ]
+  },
+
+  "persona_height_options_row@persona_sdl.persona_size_options_row_base": {
+    "$size_option_stack_title": "dr.body_size_label_text",
+    "$size_option_stack_control": "persona_sdl.body_sizes"
+  },
+
+  "persona_arm_size_options_row@persona_sdl.persona_size_options_row_base": {
+    "$size_option_stack_title": "dr.arm_size_label_text",
+    "$size_option_stack_control": "persona_sdl.arm_sizes"
   },
 
   "arm_sizes@persona_sdl.arm_size_option_grid": {
@@ -223,6 +518,7 @@
   "arm_size_option_grid@common.horizontal_stack_panel": {
     "collection_name": "$size_option_collection_name",
     "layer": 10,
+    "$size_option_panel_size": [ "25% - 3px", "100%" ],
     "bindings": [
       {
         "binding_type": "collection_details",
@@ -237,6 +533,7 @@
           "collection_index": 0
         }
       },
+      { "padding_1@persona_sdl.horizontal_padding_4px": {} },
       {
         "wide@persona_sdl.size_option_panel": {
           "$image_size": [ 16, 20 ],
@@ -263,18 +560,21 @@
           "collection_index": 0
         }
       },
+      { "padding_1@persona_sdl.horizontal_padding_4px": {} },
       {
         "small@persona_sdl.size_option_panel": {
           "$image_size": [ 18, 32.4 ],
           "collection_index": 1
         }
       },
+      { "padding_2@persona_sdl.horizontal_padding_4px": {} },
       {
         "medium@persona_sdl.size_option_panel": {
           "$image_size": [ 18, 36 ],
           "collection_index": 2
         }
       },
+      { "padding_3@persona_sdl.horizontal_padding_4px": {} },
       {
         "tall@persona_sdl.size_option_panel": {
           "$image_size": [ 18, 37.8 ],
@@ -286,7 +586,7 @@
 
   "size_option_panel": {
     "type": "panel",
-    "$size_option_panel_size|default": [ "25%", "100%" ],
+    "$size_option_panel_size|default": [ "fill", "100%" ],
     "size": "$size_option_panel_size",
     "controls": [
       {
@@ -314,7 +614,6 @@
             {
               "equipped@persona_sdl.equipped_border": {
                 "layer": 10,
-                "size": [ "100% + 2px", "100% + 2px" ],
                 "$enable_border": false,
                 "bindings": [
                   {
@@ -329,7 +628,6 @@
             {
               "selected@persona_sdl.selected_border": {
                 "layer": 8,
-                "size": [ "100% + 2px", "100% + 2px" ],
                 "$enable_border": false,
                 "bindings": [
                   {
@@ -373,8 +671,8 @@
 
   "size_option_content": {
     "type": "image",
+    "size": [ "100%", "100%" ],
     "texture": "textures/ui/slots_bg",
-    "size": [ "100% - 2px", "100%" ],
     "controls": [
       {
         "size_option_image": {
@@ -3542,15 +3840,14 @@
   },
 
   "classic_skin_stack_panel@common.vertical_stack_panel": {
-    "size": [ "100%", "100%c" ],
+    "size": [ "100% - 8px", "100%c" ],
 
     "clip_state_change_event": "skin_pack_collector_clip_change_event",
 
     "controls": [
       { "skin_packs@persona_sdl.persona_skin_pack_grid": {} },
       { "spacer1@persona.vertical_4_padding": {} },
-      { "see_more_owned@persona.see_more_skins_button": {} },
-      { "divider2@persona.common_horizontal_divider": {} }
+      { "see_more_owned@persona.see_more_skins_button": {} }
     ],
     "bindings": [
       {
@@ -3609,7 +3906,7 @@
     "controls": [
       {
         "none_piece_option_button@common_buttons.light_text_button": {
-          "size": [ "100%", 20 ],
+          "size": [ "100% - 2px", 20 ],
           "$pressed_button_name": "button.none_piece_option",
           "$button_text": "#none_option_text",
           "$button_text_binding_type": "collection",

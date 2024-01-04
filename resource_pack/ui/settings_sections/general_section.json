@@ -64,7 +64,7 @@
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingCellularData": {
-          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition or $education_edition_china)",
+          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -72,7 +72,7 @@
 
       {
         "mobile_data_option_toggle@settings_common.option_toggle": {
-          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition or $education_edition_china)",
+          "ignored": "($is_console or $is_settopbox or $win10_edition or $osx_edition)",
           "$option_label": "options.allowCellularData",
           "$option_binding_name": "#allow_cellular_data",
           "$option_enabled_binding_name": "#allow_cellular_data_enabled",
@@ -85,7 +85,7 @@
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingWebSockets": {
-          "ignored": "($console_edition or $education_edition_china)",
+          "ignored": "($console_edition)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -97,7 +97,7 @@
           "$option_binding_name": "#websocket_encryption",
           "$option_enabled_binding_name": "#websocket_encryption_enabled",
           "$toggle_name": "websocket_encryption",
-          "ignored": "($console_edition or $education_edition_china)"
+          "ignored": "($console_edition)"
         }
       },
 
@@ -160,7 +160,7 @@
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingLinkEduSupport": {
-          "ignored": "(not $education_edition or $education_edition_china or $is_holographic or $fire_tv)",
+          "ignored": "(not $education_edition or $is_holographic or $fire_tv)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -168,7 +168,7 @@
 
       {
         "link_button@settings_common.link_button": {
-          "ignored": "(not $education_edition or $education_edition_china or $is_holographic or $fire_tv)",
+          "ignored": "(not $education_edition or $is_holographic or $fire_tv)",
           "$button_text": "options.goToFeedbackWebsite",
           "property_bag": {
             "#hyperlink": "https://aka.ms/minecraftedusupport"
@@ -276,7 +276,7 @@
 
       {
         "attribution_link_button@settings_common.link_button": {
-          "ignored": "($is_holographic or $fire_tv or $education_edition_china)",
+          "ignored": "($is_holographic or $fire_tv)",
           "$button_text": "options.attribution",
           "variables": [
             {
@@ -1423,7 +1423,6 @@
     "$bottom_description_text": "resourcePack.description.bottom.global",
     "$selected_label_text": "resourcePack.selected.title.packs",
     "$available_label_text": "resourcePack.available.title.packs",
-    "$realms_label_text": "resourcePack.realmsPlus.title.packs",
     "$unowned_label_text": "resourcePack.suggestedContent.title",
     "$platform_locked": "#platform_locked_global",
     "$view_more_unowned_content_button_text": "resourcePack.suggestedContent.button.viewMore",
@@ -1473,19 +1472,31 @@
     ]
   },
 
-  //Storage management button & section
+  // Storage management button & section
   "storage_management_button@settings_common.section_toggle_base": {
     "$toggle_view_binding_name": "storage_management_button_toggle",
     "enabled": "(not $trial)",
-    "visible": "($is_pregame and not $education_edition_china)",
-    "$button_text": "menu.storageManagement",
+    "visible": "($is_pregame)",
     "$glyph_texture": "textures/ui/storageIcon",
     "$glyph_color_texture": "textures/ui/storageIconColor",
     "$glyph_uv": [ 0, 0 ],
     "$glyph_size": [ 17, 16 ],
-    "$toggle_property_bag": {
-      "#panel_title": "menu.storageManagement"
-    }
+    "variables": [
+      {
+        "requires": "$education_edition",
+        "$button_text": "menu.eduLocalStorage",
+        "$toggle_property_bag": {
+          "#panel_title": "menu.eduLocalStorage"
+        }
+      },
+      {
+        "requires": "(not $education_edition)",
+        "$button_text": "menu.storageManagement",
+        "$toggle_property_bag": {
+          "#panel_title": "menu.storageManagement"
+        }
+      }
+    ]
   },
 
   "storage_management_section@storage_management.storage_main_panel": {
@@ -1517,6 +1528,172 @@
         "source_control_name": "storage_management_button_toggle",
         "source_property_name": "#toggle_state",
         "target_property_name": "#visible"
+      }
+    ]
+  },
+
+  // EDU Cloud Storage button & section
+
+  "edu_cloud_storage_button@settings_common.section_toggle_base": {
+    "ignored": "(not $education_edition or not $edu_save_to_cloud_on)",
+    "$toggle_view_binding_name": "edu_cloud_storage_button_toggle",
+    "$glyph_texture": "textures/ui/debug_glyph",
+    "$glyph_color_texture": "textures/ui/debug_glyph_color",
+    "$glyph_size": [ 16, 16 ],
+    "$button_text": "menu.eduCloudStorage",
+    "$toggle_property_bag": {
+      "#panel_title": "menu.eduCloudStorage"
+    }
+  },
+
+  "edu_cloud_storage_section": {
+    "type": "stack_panel",
+    "ignored": "(not $education_edition or not $edu_save_to_cloud_on)",
+    "size": [ "100%", "100%c" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "edu_cloud_storage_button_toggle",
+        "source_property_name": "#toggle_state",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        //TTS border affects all sibilings, so need to split header out so its only sibling of border
+        "wrapper_panel": {
+          "type": "panel",
+          "size": [ "100%", "100%cm" ],
+          "controls": [
+            {
+              "tts_border@common.non_interact_focus_border_button": {
+                "tts_inherit_siblings": true,
+                "size": [ "100%sm + 3px", "100%sm" ],
+                "bindings": [
+                  {
+                    "binding_name": "#tts_enabled",
+                    "binding_name_override": "#enabled"
+                  }
+                ]
+              }
+            },
+            {
+              "edu_cloud_storage_header_label": {
+                "type": "label",
+                "text": "#edu_cloud_storage_header_label",
+                "size": [ "100%", "default" ],
+                "color": "$body_text_color",
+                "bindings": [
+                  {
+                    "binding_name": "#edu_cloud_storage_header_label_text",
+                    "binding_name_override": "#edu_cloud_storage_header_label"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "edu_cloud_onedrive_button@common_buttons.light_content_button": {
+          "size": [ "100%", "24px" ],
+          "$button_size_override": [ "100%", "100% - 4px" ],
+          "$button_content": "general_section.edu_cloud_onedrive_button_content",
+          "$pressed_button_name": "button.onedrive_link"
+        }
+      }
+    ]
+  },
+
+  //icon and text need to be centered together, so wrapped under 1 panel that dictates horizontal space
+  "edu_cloud_onedrive_button_content": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", "100%" ],
+    "controls": [
+      {
+        "padded_label@common.empty_panel": {
+          "size": [ "100%c", "100%" ],
+          "controls": [
+            {
+              "label": {
+                "type": "label",
+                "size": [ "default", "default" ],
+                "color": "$text_color",
+                "text": "options.eduCloud.oneDrive"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padded_icon@common.empty_panel": {
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "icon": {
+                "type": "image",
+                "texture": "textures/ui/icon_external_link",
+                "color": "$glyph_color",
+                "size": [ 9, 9 ],
+                "offset": [ 3, 2 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "edu_cloud_onedrive_error_popup@popup_dialog.form_fit_modal_dialog_popup": {
+    "$modal_title": "edu.cloudError.unauthorized.title",
+    "$modal_contents": "general_section.edu_cloud_onedrive_error_content",
+    "$popup_dialog_escape_button_name": "button.close_eduCloud_error_popup",
+    "$modal_contents_padding": [ 6, 6 ]
+  },
+
+  "edu_cloud_onedrive_error_content": {
+    "type": "stack_panel",
+    "layer": 5,
+    "size": [ 300, "100%c" ],
+    "controls": [
+      {
+        "body_text_centering_panel2@edu_common.vertical_stack_item": {
+          "controls": [
+            {
+              "body_text2": {
+                "type": "label",
+                "font_type": "smooth",
+                "text": "edu.cloudError.unauthorized.message",
+                "color": "$body_text_color",
+                "size": [ "100%", "default" ],
+                "layer": 1,
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle"
+              }
+            }
+          ]
+        }
+      },
+      { "padding2@common.empty_panel": { "size": [ "100%sm", 10 ] } },
+      {
+        "learn_more_button@edu_common.underline_button": {
+          "$single_label_size": [ "default", "default" ],
+          "$single_line_font_scale_factor": 1,
+          "$pressed_button_name": "button.eduCloud_learn_more",
+          "$single_line_label_text": "edu.cloudError.generic.linkDescription",
+          "$font_type": "smooth"
+        }
+      },
+      { "padding3@common.empty_panel": { "size": [ "100%sm", 10 ] } },
+      {
+        "ok_button@common_buttons.light_text_button": {
+          "size": [ "100%", 24 ],
+          "$button_text": "gui.ok",
+          "$pressed_button_name": "button.eduCloud_error_ok"
+        }
       }
     ]
   },
@@ -7455,14 +7632,6 @@
         }
       },
       {
-        "option_dev_controltower_override_transport_layer@settings_common.option_toggle": {
-          "$option_label": "options.dev_controltower_override_transport_layer",
-          "$option_binding_name": "#dev_controltower_override_transport_layer",
-          "$option_enabled_binding_name": "#dev_controltower_override_transport_layer_enabled",
-          "$toggle_name": "dev_controltower_override_transport_layer"
-        }
-      },
-      {
         //  Should be close to Feature Toggle options (right after option_toggle_0_0)
         "option_slider_side_by_side_comparison_rate@settings_common.option_slider": {
           "$option_label": "#dev_side_by_side_comparison_rate_slider_label",
@@ -9430,7 +9599,6 @@
     "$glyph_color_texture": "textures/ui/how_to_play_button_default",
     "$glyph_size": [ 15, 15 ],
     "$button_text": "menu.howToPlay",
-    "visible": "(not $education_edition_china)",
     "$toggle_property_bag": {
       "#panel_title": "menu.howToPlay"
     }
@@ -9632,14 +9800,14 @@
     "$radio_buttons": [
       {
         "@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#transport_layer_raknet",
-          "$radio_label_text": "options.dev_transport_layer.raknet"
+          "$toggle_state_binding_name": "#transport_layer_nethernet_websockets",
+          "$radio_label_text": "options.dev_transport_layer.nethernet_websockets"
         }
       },
       {
         "@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#transport_layer_nethernet_websockets",
-          "$radio_label_text": "options.dev_transport_layer.nethernet_websockets"
+          "$toggle_state_binding_name": "#transport_layer_raknet",
+          "$radio_label_text": "options.dev_transport_layer.raknet"
         }
       }
     ]
