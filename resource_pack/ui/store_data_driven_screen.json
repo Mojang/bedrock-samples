@@ -341,7 +341,6 @@
     "$scroll_view_port_size": [ "100% - 8px", "100%" ],
     "$scrolling_pane_size": [ "100%", "100%" ],
     "$scrolling_pane_offset": [ 0, 0 ],
-    "$bar_visible": true,
     "$scrollbar_always_visible": true,
     "$scroll_bar_contained": true,
     "controls": [
@@ -375,44 +374,6 @@
     "controls": [
       { "expanded_appearance_view@persona_sdl.expanded_appearance_view": {} },
       { "character_creator_panel@store_layout.character_creator_panel": {} }
-    ]
-  },
-
-  "generic_screen_layout@store_layout.sdl_scrolling_section": {
-    "$bar_visible": false
-  },
-
-  "sdl_screen_layout_factory": {
-    "type": "stack_panel",
-    "size": [ "100%", "100%" ],
-    "anchor_from": "top_middle",
-    "anchor_to": "top_middle",
-
-    "$main_content_focus_container_left|default": "none",
-    "$main_content_focus_container_left_custom|default": {},
-
-    "collection_name": "screen_layout_collection",
-
-    "factory": {
-      "name": "sdl_screen_layout_factory",
-      "control_ids": {
-        "Generic": "@store_layout.generic_screen_layout",
-        "CharacterCreator": "@store_layout.character_creator_screen_layout"
-      },
-      "factory_variables": [
-        "$main_content_focus_container_left",
-        "$main_content_focus_container_left_custom",
-        "$store_factory_clipping_event",
-        "$store_factory_collection_details",
-        "$store_factory_collection_name",
-        "$store_factory_collection_prefix"
-      ]
-    },
-    "bindings": [
-      {
-        "binding_name": "#screen_layout_creation",
-        "binding_name_override": "#collection_length"
-      }
     ]
   },
 
@@ -838,6 +799,7 @@
           "type": "panel",
           "size": [ "100%", "100%" ],
           "layer": 2,
+          "$sdl_screen_content|default": "store_layout.sdl_scrolling_section",
           "bindings": [
             {
               "binding_name": "(not #page_loading_visible)",
@@ -845,18 +807,9 @@
               "binding_condition": "always"
             }
           ],
-          "$main_panel_controls|default": [
-            { "sdl_scrolling_section@store_layout.sdl_scrolling_section": {} }
-          ],
-          "variables": [
-            {
-              "requires": "$is_persona_sdl_enabled",
-              "$main_panel_controls": [
-                { "sdl_screen_layout_factory@store_layout.sdl_screen_layout_factory": {} }
-              ]
-            }
-          ],
-          "controls": "$main_panel_controls"
+          "controls": [
+            { "sdl_screen_content@$sdl_screen_content": {} }
+          ]
         }
       },
       {
@@ -1148,6 +1101,114 @@
     ]
   },
 
+  //--------------------------------------------------------------------------------
+  // Add-Ons Popup Flow
+  //--------------------------------------------------------------------------------
+
+  "world_icon_new": {
+    "type": "image",
+    "size": [ "100% - 2px", "57.7%x" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "texture": "textures/ui/white_background",
+    "color": "$light_button_default_text_color",
+    "clip_direction": "left", // clipping variables needed for square image to fill rectangular space
+    "clip_pixelperfect": true,
+    "clip_ratio": 0.4376,
+    "controls": [
+      {
+        "plus_button@": {
+          "type": "image",
+          "texture": "textures/ui/color_plus",
+          "size": [ "50%", "50%" ]
+        }
+      }
+    ]
+  },
+
+  "world_icon_existing": {
+    "type": "image",
+    "size": [ "100% - 2px", "57.7%x" ], // Original texture size [ 260, 150 ]
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "texture": "#existing_world_icon",
+    "bindings": [
+      {
+        "binding_name": "#existing_world_icon",
+        "binding_name_override": "#texture",
+        "binding_condition": "once"
+      },
+      {
+        "binding_name": "#existing_world_icon_file_system",
+        "binding_name_override": "#texture_file_system",
+        "binding_condition": "once"
+      }
+    ]
+  },
+
+  "world_icon_with_button@common.vertical_stack_panel": {
+    "size": [ "fill", "100%c" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      { "padding_top@common.empty_panel": { "size": [ "100%", "16px" ] } },
+      { "world_icon@common.vert_stack_centering_panel": { } },
+      {
+        "button@common_buttons.light_text_button": {
+          "size": [ "100%", 20 ]
+        }
+      },
+      { "padding_bottom@common.empty_panel": { "size": [ "100%", "16px" ] } }
+    ]
+  },
+
+  "new_or_existing_world_panel@common.horizontal_stack_panel": {
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "padding_left@common.empty_panel": { "size": [ "2px", "100%" ] } },
+      {
+        "world_icon_existing@store_layout.world_icon_with_button": {
+          "$button_text": "store.addon.choseWorldPopupExisting",
+          "$pressed_button_name": "button.none",
+          "$vert_stack_centering_content": "store_layout.world_icon_existing"
+        }
+      },
+      { "padding_middle@common.empty_panel": { "size": [ "2px", "100%" ] } },
+      {
+        "world_icon_new@store_layout.world_icon_with_button": {
+          "$button_text": "store.addon.choseWorldPopupNew",
+          "$pressed_button_name": "button.navigate_create_new_world",
+          "$vert_stack_centering_content": "store_layout.world_icon_new"
+        }
+      },
+      { "padding_right@common.empty_panel": { "size": [ "2px", "100%" ] } }
+    ]
+  },
+
+  "add_on_popup_content_panel": {
+    "type": "panel",
+    "size": [ "100% - 16px", "100% - 31px" ], // size and offset to align inside dialog_background_hollow_3 frame
+    "offset": [ 0, "-8px" ],
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "layer": 10,
+    "$popup_content:default": "",
+    "controls": [
+      { "popup_content@$popup_content": {} }
+    ]
+  },
+
+  "popup_dialog__activate_add_on@popup_dialog.popup_dialog": {
+    "$middle_button_press": "button.close_dialog",
+    "$message_text": "store.addon.choseWorldPopupTitle",
+    "$popup_content": "store_layout.new_or_existing_world_panel",
+    "controls": [
+      { "popup_dialog_bg@common.dialog_background_hollow_3": { "$fill_alpha": 1.0 } },
+      { "popup_dialog_message@popup_dialog.popup_dialog_message": { "offset": [ 0, "8px" ] } },
+      { "close_button@common.close_button": { "$close_button_to_button_id": "button.close_popup" } },
+      { "add_on_popup_content_panel@store_layout.add_on_popup_content_panel": {} }
+    ]
+  },
 
   //--------------------------------------------------------------------------------
   // Screen
@@ -1204,15 +1265,6 @@
     ]
   },
 
-  "store_data_driven_modal_one_button_screen@store_layout.store_data_driven_screen_base": {
-    "$screen_content": "store_layout.store_screen_modal_panel",
-    "$header_safezone_control": "common.empty_panel",
-    "$header_bar_control": "common.empty_panel",
-    "$screen_background_control": "common_store.store_background",
-    "$is_full_screen_layout": false,
-    "force_render_below": true
-  },
-
   "store_screen_modal_panel": {
     "type": "panel",
     "controls": [
@@ -1251,14 +1303,6 @@
         "binding_collection_name": "$button_text_grid_collection_name"
       }
     ]
-  },
-
-  "store_data_driven_screen@store_layout.store_data_driven_screen_base": {
-    "$screen_content": "store_layout.store_full_screen_content",
-    "$header_safezone_control": "common_store.store_top_bar_filler",
-    "$header_bar_control": "common_store.store_top_bar",
-    "$screen_background_control": "common_store.store_background",
-    "$is_full_screen_layout": true
   },
 
   "store_screen_main_panel": {
@@ -1314,7 +1358,8 @@
           "control_ids": {
             "no_store_connection": "@common_store.popup_dialog__no_store_connection",
             "restore_popup": "@common_store.popup_dialog__restore_popup",
-            "restore_failed": "@common_store.popup_dialog__restore_failed"
+            "restore_failed": "@common_store.popup_dialog__restore_failed",
+            "activate_add_on": "@store_layout.popup_dialog__activate_add_on"
           }
         }
       },
@@ -1333,5 +1378,38 @@
         }
       }
     ]
+  },
+
+  "sdl_base_screen@store_layout.store_data_driven_screen_base": {
+    "$screen_content": "store_layout.store_full_screen_content",
+    "$header_safezone_control": "common_store.store_top_bar_filler",
+    "$header_bar_control": "common_store.store_top_bar",
+    "$screen_background_control": "common_store.store_background",
+    "$is_full_screen_layout": true
+  },
+
+  //////////////////////////////////////////////////////
+  //  SDL Screens
+  //////////////////////////////////////////////////////
+  "store_data_driven_screen@store_layout.sdl_base_screen": {},
+
+  "character_creator_screen@store_layout.sdl_base_screen": {
+    "$sdl_screen_content": "store_layout.character_creator_screen_layout",
+    "$ignore_search": true
+  },
+
+  "skin_selector_screen@store_layout.sdl_base_screen": {
+    "$sdl_screen_content": "store_layout.character_creator_screen_layout",
+    "$ignore_search": true
+  },
+
+  "store_data_driven_modal_one_button_screen@store_layout.store_data_driven_screen_base": {
+    "$screen_content": "store_layout.store_screen_modal_panel",
+    "$header_safezone_control": "common.empty_panel",
+    "$header_bar_control": "common.empty_panel",
+    "$screen_background_control": "common_store.store_background",
+    "$is_full_screen_layout": false,
+    "force_render_below": true
   }
+
 }
