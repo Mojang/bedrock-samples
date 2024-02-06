@@ -133,7 +133,39 @@
   "feed_icon": {
     "type": "image",
     "texture": "textures/ui/feedIcon",
-    "size": [ 22, 16 ]
+    "size": [ 22, 16 ],
+    "visible": "(not $is_realms_stories_enabled)"
+  },
+
+  "realms_stories_icon": {
+    "type": "image",
+    "texture": "textures/ui/realmsStoriesIcon",
+    "size": [ 22, 22 ]
+  },
+
+  "realms_stories_icon_animated": {
+    "type": "image",
+    "texture": "textures/ui/realmsStoriesIconAnimated",
+    "size": [ 22, 22 ],
+    "uv_size": [ 22, 22 ],
+    "uv": "@play.anim_realms_stories_icon",
+    "disable_anim_fast_forward": true
+  },
+
+  "anim_realms_stories_icon": {
+    "anim_type": "flip_book",
+    "initial_uv": [ 0, 0 ],
+    "frame_count": 13,
+    "fps": 4,
+    "looping": false,
+    "easing": "linear",
+    "wait_until_rendered_to_play": true
+  },
+
+  "realms_slots_edit_icon": {
+    "type": "image",
+    "texture": "textures/ui/realmsSlotsEditIcon",
+    "size": [ 22, 22 ]
   },
 
   "worlds_icon": {
@@ -991,7 +1023,16 @@
 
   "realms_world_edit_button@common_buttons.dark_glyph_button": {
     "$pressed_button_name": "button.menu_realms_world_item_edit",
-    "$button_content": "play.edit_icon",
+    "variables": [
+      {
+        "requires": "$is_realms_stories_enabled",
+        "$button_content": "play.realms_slots_edit_icon"
+      },
+      {
+        "requires": "(not $is_realms_stories_enabled)",
+        "$button_content": "play.edit_icon"
+      }
+    ],
     "$button_tts_header": "accessibility.play.editRealm",
     "size": [ "100%y", "100%" ],
     "anchor_from": "top_right",
@@ -1009,9 +1050,55 @@
     ]
   },
 
-  "realms_feed_button@common_buttons.dark_glyph_button": {
+  "realms_feed_button_content": {
+    "type": "image",
+    "controls": [
+      {
+        "default_icon@play.realms_stories_icon": {
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_name": "($is_realms_stories_enabled and not #realms_unread_story_count_visible)",
+              "binding_name_override": "#visible",
+              "binding_collection_name": "$realms_worlds_collection_name"
+            }
+          ]
+        }
+      },
+      {
+        "unread_icon_active@play.realms_stories_icon_animated": {
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_name": "($is_realms_stories_enabled and #realms_unread_story_count_visible)",
+              "binding_name_override": "#visible",
+              "binding_collection_name": "$realms_worlds_collection_name"
+            }
+          ]
+        }
+      },
+      {
+        "old_feed_icon@play.feed_icon": {}
+      }
+    ]
+  },
+
+  "persistent_realms_feed_button_control@common_buttons.new_ui_button_panel": {
+    "$new_ui_button_texture": "$default_button_texture",
+    "$glyph_color": "$dark_glyph_default_color",
+    "$border_color": "$dark_border_default_color",
+    "$button_press_offset": [ 0, 0 ],
+    "$border_layer": 2,
+    "$border_alpha": 0,
+    "$button_image_alpha": 0,
+    "$content_alpha": 0,
+    "layer": 4,
+    "$button_content": "play.realms_feed_button_content"
+  },
+
+  "realms_feed_button@common_buttons.dark_glyph_button_with_custom_control": {
     "$pressed_button_name": "button.menu_realms_feed",
-    "$button_content": "play.feed_icon",
+    "$custom_control": "play.persistent_realms_feed_button_control",
     "$button_tts_header": "#realms_feed_button_tts_header",
     "size": [ "100%y", "100%" ],
     "anchor_from": "top_right",
@@ -1171,12 +1258,12 @@
       {
         "feed_panel_with_unread_count": {
           "type": "panel",
-          "size": [ "100%y", "100%" ],
+          "size": [ "100%y - 1px", "100% + 1px" ],
           "controls": [
             {
               "feed_panel": {
                 "type": "panel",
-                "size": [ "100%c - 1px", "100% + 1px" ],
+                "size": [ "100%y", "100%" ],
                 "controls": [
                   {
                     "realms_feed_button@play.realms_feed_button": {
@@ -4413,7 +4500,7 @@
     "anchor_to": "top_left",
     "controls": [
       {
-        "create_on_realms_button@settings_common.action_button": {
+        "create_on_realms_button@settings_common.action_button_dark_text": {
           "size": [ "100%", 29 ],
           "$button_text": "createWorldScreen.createOnRealms",
           "$pressed_button_name": "button.create_on_realms_button",
@@ -4800,8 +4887,7 @@
     ]
   },
 
-  "new_ui_switch_button_options_panel":
-  {
+  "new_ui_switch_button_options_panel": {
     "type": "stack_panel",
     "ignored": "$education_edition",
     "orientation": "vertical",
@@ -4818,6 +4904,34 @@
           "size": [ "100% - 1px", 30 ],
           "$button_text": "options.newUiPlayScreen.initiate",
           "$pressed_button_name": "button.switch_to_new_ui"
+        }
+      }
+    ]
+  },
+
+  "new_ui_servers_switch_button_options_panel": {
+    "type": "stack_panel",
+    "ignored": "$education_edition",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "bindings": [
+      {
+        "binding_name": "#show_new_play_screen_servers_opt_in",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "unlock_template_options_button@settings_common.action_button": {
+          "size": [ "100% - 1px", 30 ],
+          "$button_text": "options.newUiPlayScreen.initiate",
+          "$pressed_button_name": "button.switch_to_new_ui_servers"
+        }
+      },
+      {
+        "padding_0": {
+          "type": "panel",
+          "size": [ "100%", 2 ]
         }
       }
     ]
@@ -4938,7 +5052,13 @@
                       "layer": 8,
                       "offset": [ 0, -2 ],
                       "anchor_from": "top_right",
-                      "anchor_to": "top_right"
+                      "anchor_to": "top_right",
+                      "bindings": [
+                        {
+                          "binding_name": "#free_preview_realm_new_button_visible",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
                     }
                   },
                   {
@@ -6027,6 +6147,10 @@
     "$focus_id": "left_panel",
     "controls": [
       {
+        "new_ui_servers_switch_button_options_panel@play.new_ui_servers_switch_button_options_panel": {}
+      },
+      {
+
         "featured_servers_panel": {
           "type": "stack_panel",
           "size": [ "100%", "100%c" ],
@@ -7007,7 +7131,7 @@
             }
           ],
           "controls": [
-            { "close_button@$end_tab_control": { } }
+            { "close_button@$end_tab_control": {} }
           ]
         }
       }

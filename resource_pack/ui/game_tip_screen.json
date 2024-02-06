@@ -15,6 +15,48 @@
     "to": 0
   },
 
+
+  "gameplay_tip_animation": {
+    "$animation_image_size|default": [ 84, 64 ],
+    "type": "image",
+    "texture": "#texture",
+    "size": "$animation_image_size",
+    "anchor_from": "top_left",
+    "anchor_to": "left_middle",
+    "layer": 50,
+    "uv_size": "$animation_image_size",
+    "uv": "@game_tip.tip_animation",
+    "disable_anim_fast_forward": true,
+    "bindings": [
+      {
+        "binding_name": "#animation_name"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "('textures/ui/game_tip_animations/' + #animation_name)",
+        "target_property_name": "#texture"
+      }
+    ]
+  },
+
+  "game_tip_animation_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%c", "0px" ],
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "use_child_anchors": true,
+    "offset": [ 0, -4 ],
+    "controls": [
+      { "animated_icon@game_tip.gameplay_tip_animation": {} }
+    ]
+  },
+
+  "tip_animation": {
+    "anim_type": "aseprite_flip_book",
+    "initial_uv": [ 0, 0 ]
+  },
+
   "game_tip_label": {
     "type": "label",
     "layer": 3,
@@ -23,7 +65,7 @@
     "$tip_min_size|default": [ "default", "default" ],
     "size": [ "default", "default" ],
     "min_size": "$tip_min_size",
-    "$tip_max_size|default": [ 165, 40 ],
+    "$tip_max_size|default": [ 165, 100 ],
     "max_size": "$tip_max_size",
     "line_padding": 1.5,
     "$animation|default": [
@@ -46,6 +88,9 @@
     "type": "stack_panel",
     "orientation": "horizontal",
     "size": [ "100%c", "100%cm" ],
+    "anchor_from": "right_middle",
+    "anchor_to": "right_middle",
+    "offset": [-10, 0],
     "controls": [
       {
         "padding_1": {
@@ -62,14 +107,14 @@
             {
               "padding_vertical": {
                 "type": "panel",
-                "size": [ 0, 3 ]
+                "size": [ 0, 5 ]
               }
             },
             { "label@game_tip.game_tip_label": {} },
             {
               "padding_vertical_1": {
                 "type": "panel",
-                "size": [ 0, 1 ]
+                "size": [ 0, 5 ]
               }
             }
           ]
@@ -78,36 +123,72 @@
     ]
   },
 
-  "game_tip_item_background": {
+  "game_tip_arrow_image": {
     "type": "image",
-    "texture": "textures/ui/greyBorder",
-    "layer": 1,
-    "size": [ "100%c + 8px", "100%c" ],
-    "$tip_anchor_from|default": "bottom_middle",
-    "$is_inventory_tip|default": false,
-    "$fill_alpha|default": 0.6,
+    "alpha": 1.0,
+
+    "$arrow_direction|default": "left",
+    "$arrow_offset|default": [-5, 0],
+    "$arrow_texture|default": "textures/ui/gameTipArrow_left",
+    "$arrow_anchor_point|default": "left_middle",
+    "$arrow_size|default": [ 8, 12 ],
+
     "variables": [
       {
-        "requires": "($is_holographic or $is_inventory_tip)",
-        "$fill_alpha": 1.0
+        "requires": "($arrow_direction = 'left')",
+        "$arrow_texture": "textures/ui/gameTipArrow_left",
+        "$arrow_anchor_point": "left_middle",
+        "$arrow_size": [ 8, 12 ]
+      },
+      {
+        "requires": "($arrow_direction = 'right')",
+        "$arrow_texture": "textures/ui/gameTipArrow_right",
+        "$arrow_anchor_point": "right_middle",
+        "$arrow_size": [ 8, 12 ]
+      },
+      {
+        "requires": "($arrow_direction = 'up')",
+        "$arrow_texture": "textures/ui/gameTipArrow_up",
+        "$arrow_anchor_point": "top_middle",
+        "$arrow_size": [ 28, 15 ]
+      },
+      {
+        "requires": "($arrow_direction = 'down')",
+        "$arrow_texture": "textures/ui/gameTipArrow_down",
+        "$arrow_anchor_point": "bottom_middle",
+        "$arrow_size": [ 28, 15 ]
       }
     ],
+
+    "texture": "$arrow_texture",
+    "anchor_from":"$arrow_anchor_point",
+    "anchor_to":"$arrow_anchor_point",
+    "size": "$arrow_size",
+    "offset": "$arrow_offset"
+  },
+
+  "game_tip_item_background": {
+    "type": "image",
+    "texture": "textures/ui/gameTipBorder",
+    "layer": 50,
+    "$tip_anchor_from|default": "top_right",
+    "$tip_anchor_to|default": "top_right",
+    "$game_tip_offset|default": [ 0, 0 ],
+    "$is_inventory_tip|default": false,
+    "$fill_alpha|default": 1.0,
+    "$ignore_arrow|default": false,
+
     "anchor_from": "$tip_anchor_from",
-    "anchor_to": "$tip_anchor_from",
-    "alpha": "$fill_alpha",
+    "anchor_to": "$tip_anchor_to",
+    "size": [ "100%c + 15px", "100%cm" ],
+    "min_size": ["default", 35],
+    "offset": "$game_tip_offset",
     "controls": [
-      {
-        "padding_vertical": {
-          "type": "panel",
-          "size": [ 0, 4 ]
-        }
-      },
       { "game_tip_text@game_tip.game_tip_item_panel": {} },
-      {
-        "padding_vertical_2": {
-          "type": "panel",
-          "size": [ 0, 4 ]
-        }
+      { "animated_panel@game_tip.game_tip_animation_panel": {} },
+      { "game_tip_arrow@game_tip.game_tip_arrow_image": {
+        "ignored": "$ignore_arrow"
+        } 
       }
     ]
   },
