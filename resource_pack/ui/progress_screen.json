@@ -846,6 +846,18 @@
     ]
   },
 
+  "world_image": {
+    "type": "image",
+    "texture": "textures/ui/worldsIcon",
+    "size": [ 16, 16 ]
+  },
+
+  "cloud_image": {
+    "type": "image",
+    "texture": "textures/ui/cloud_only_storage",
+    "size": [ 14, 10 ]
+  },
+
   "edu_cloud_upload_image": {
     "type": "stack_panel",
     "size": [ "100%c", 20 ],
@@ -905,6 +917,48 @@
       {
         "binding_name": "#edu_cloud_upload_images_visible",
         "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "edu_cloud_fetch_image": {
+    "type": "stack_panel",
+    "size": [ "100%c", 16 ],
+    "orientation": "horizontal",
+    "controls": [
+      {
+        "cloud_image_wrapper": {
+          "type": "panel",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            { "fetch_cloud_image@progress.cloud_image": { "offset": [ -6, 3 ] } }
+          ]
+        }
+      },
+      {
+        "spyglass_image_wrapper": {
+          "type": "panel",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "spyglass_image": {
+                "type": "image",
+                "texture": "textures/ui/spyglass_flat",
+                "size": [ 16, 16 ],
+                "offset": [ 0, 0 ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "world_image_wrapper": {
+          "type": "panel",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            { "fetch_world_image@progress.world_image": { "offset": [ 6, 0 ] } }
+          ]
+        }
       }
     ]
   },
@@ -1120,7 +1174,7 @@
   "world_saving_progress_screen@progress_screen": {
     "variables": [
       {
-        "requires": "($education_edition and edu_save_to_cloud_on)",
+        "requires": "($education_edition and $edu_save_to_cloud_on)",
         "$screen_content": "progress.cloud_upload_error_screen_content"
       },
       {
@@ -1130,6 +1184,14 @@
     ]
   },
 
+  "fetching_edu_cloud_worlds@progress_screen": {
+    "variables": [
+      {
+        "requires": "($education_edition and $edu_save_to_cloud_on)",
+        "$screen_content": "progress.edu_cloud_fetch_screen_content"
+      }
+    ]
+  },
 
   "world_convert_modal_progress_screen@progress.progress_screen": {
     "$screen_content": "progress.world_convert_modal_progress_screen_content"
@@ -1509,6 +1571,69 @@
     ]
   },
 
+  "cloud_fetch_panel": {
+    "type": "panel",
+    "size": [ 270, 84 ],
+    "controls": [
+      {
+        "common_panel@common.common_panel": {
+          "$dialog_background": "dialog_background_hollow_3",
+          "$show_close_button": false
+        }
+      },
+      {
+        "base_content": {
+          "type": "panel",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          // magic offset to make the scroll clipping perfect
+          "size": [ "100%-12px", "100%-12px" ],
+          "offset": [ 6, 6 ],
+          "controls": [
+            {
+              "progress_title_text@progress.progress_title_text": {
+                "color": "$title_text_color",
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle",
+                "offset": [ 0, 3 ]
+              }
+            },
+            {
+              "progress_text": {
+                "type": "label",
+                "size": [ "default", 60 ],
+                "max_size": [ "100% - 8px", 60 ],
+                "offset": [ 0, 15 ],
+                "color": "$loading_text_color",
+                "layer": 2,
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "text": "#progress_text",
+                "bindings": [
+                  { "binding_name": "#progress_text" }
+                ]
+              }
+            },
+            {
+              "edu_cloud_fetch_image@progress.edu_cloud_fetch_image": { "offset": [ 0, 10 ] }
+            },
+            {
+              "loading_bar_panel": {
+                "type": "panel",
+                "size": [ "100%", "100%c" ],
+                "controls": [
+                  {
+                    "progress_loading_bars@progress.progress_loading_bars": { "offset": [ 0, 25 ] }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "world_convert_modal_progress_screen_content": {
     "type": "panel",
 
@@ -1588,6 +1713,14 @@
           "$modal_button_panel_type": "progress.modal_ok_button_panel"
         }
       },
+      { "popup_dialog_factory@progress.popup_dialog_factory": {} }
+    ]
+  },
+
+  "edu_cloud_fetch_screen_content": {
+    "type": "panel",
+    "controls": [
+      { "cloud_fetch_panel@progress.cloud_fetch_panel": {} },
       { "popup_dialog_factory@progress.popup_dialog_factory": {} }
     ]
   },
