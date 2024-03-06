@@ -3,6 +3,7 @@
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:wolf",
+      "spawn_category": "creature",
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
@@ -290,6 +291,60 @@
             }
           ]
         }
+      },
+
+      "minecraft:wolf_pale": {
+        "minecraft:variant": {
+          "value": 0
+        }
+      },
+
+      "minecraft:wolf_ashen": {
+        "minecraft:variant": {
+          "value": 1
+        }
+      },
+
+      "minecraft:wolf_black": {
+        "minecraft:variant": {
+          "value": 2
+        }
+      },
+
+      "minecraft:wolf_chestnut": {
+        "minecraft:variant": {
+          "value": 3
+        }
+      },
+
+      "minecraft:wolf_rusty": {
+        "minecraft:variant": {
+          "value": 4
+        }
+      },
+
+      "minecraft:wolf_snowy": {
+        "minecraft:variant": {
+          "value": 5
+        }
+      },
+
+      "minecraft:wolf_spotted": {
+        "minecraft:variant": {
+          "value": 6
+        }
+      },
+
+      "minecraft:wolf_striped": {
+        "minecraft:variant": {
+          "value": 7
+        }
+      },
+
+      "minecraft:wolf_woods": {
+        "minecraft:variant": {
+          "value": 8
+        }
       }
     },
 
@@ -475,7 +530,7 @@
       },
       "minecraft:behavior.leap_at_target": {
         "priority": 4,
-        "target_dist": 0.4
+        "yd": 0.4
       },
       "minecraft:behavior.melee_box_attack": {
         "priority": 5
@@ -524,20 +579,194 @@
 
     "events": {
       "minecraft:entity_spawned": {
-        "randomize": [
+        "sequence": [
           {
-            "weight": 9,
-            "trigger": "minecraft:spawn_wild_adult"
+            "randomize": [
+              {
+                "weight": 9,
+                "trigger": "minecraft:spawn_wild_adult"
+              },
+              {
+                "weight": 1,
+                "trigger": "minecraft:spawn_wild_baby"
+              }
+            ]
           },
           {
-            "weight": 1,
-            "trigger": "minecraft:spawn_wild_baby"
+            // Pale Wolf: every non-cold Taiga, except Old Growth Pine Taiga and Old Growth Spruce Taiga.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "operator": "not", "value": "cold" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mega" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mutated" }
+              ]
+            },
+            "trigger": "minecraft:set_pale_variant"
+          },
+          {
+            // Ashen Wolf: every cold Taiga.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "value": "cold" }
+              ]
+            },
+            "trigger": "minecraft:set_ashen_variant"
+          },
+          {
+            // Black Wolf: Old Growth Pine Taiga only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "mega" },
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "value": "forest" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mutated" }
+              ]
+            },
+            "trigger": "minecraft:set_black_variant"
+          },
+          {
+            // Chestnut Wolf: Old Growth Spruce Taiga only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "mega" },
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "value": "forest" },
+                { "test": "has_biome_tag", "value": "mutated" }
+              ]
+            },
+            "trigger": "minecraft:set_chestnut_variant"
+          },
+          {
+            // Rusty Wolf: Jungle Edge only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "edge" },
+                { "test": "has_biome_tag", "value": "jungle" }
+              ]
+            },
+            "trigger": "minecraft:set_rusty_variant"
+          },
+          {
+            // Snowy Wolf: Grove only.
+            "filters": {
+              "test": "has_biome_tag", "value": "grove"
+            },
+            "trigger": "minecraft:set_snowy_variant"
+          },
+          {
+            // Spotted Wolf: Savanna Plateau only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "savanna" },
+                { "test": "has_biome_tag", "value": "plateau" }
+              ]
+            },
+            "trigger": "minecraft:set_spotted_variant"
+          },
+          {
+            // Striped Wolf: Wooded Badlands only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "mesa" },
+                { "test": "has_biome_tag", "value": "plateau" },
+                { "test": "has_biome_tag", "value": "stone" }
+              ]
+            },
+            "trigger": "minecraft:set_striped_variant"
+          },
+          {
+            // Woods Wolf: Forest only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "forest" },
+                { "test": "has_biome_tag", "operator": "not", "value": "birch" },
+                { "test": "has_biome_tag", "operator": "not", "value": "taiga" },
+                { "test": "has_biome_tag", "operator": "not", "value": "roofed" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mutated" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mountain" }
+              ]
+            },
+            "trigger": "minecraft:set_woods_variant"
           }
         ]
       },
 
       "minecraft:entity_born": {
         "trigger": "minecraft:spawn_tame_baby"
+      },
+
+      "minecraft:set_pale_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_pale"
+          ]
+        }
+      },
+
+      "minecraft:set_ashen_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_ashen"
+          ]
+        }
+      },
+
+      "minecraft:set_black_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_black"
+          ]
+        }
+      },
+
+      "minecraft:set_chestnut_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_chestnut"
+          ]
+        }
+      },
+
+      "minecraft:set_rusty_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_rusty"
+          ]
+        }
+      },
+
+      "minecraft:set_snowy_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_snowy"
+          ]
+        }
+      },
+
+      "minecraft:set_spotted_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_spotted"
+          ]
+        }
+      },
+
+      "minecraft:set_striped_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_striped"
+          ]
+        }
+      },
+
+      "minecraft:set_woods_variant": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_woods"
+          ]
+        }
       },
 
       "minecraft:spawn_wild_baby": {
