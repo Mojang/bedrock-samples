@@ -65,7 +65,7 @@
     "$tip_min_size|default": [ "default", "default" ],
     "size": [ "default", "default" ],
     "min_size": "$tip_min_size",
-    "$tip_max_size|default": [ 165, 100 ],
+    "$tip_max_size|default": [ 120, 100 ],
     "max_size": "$tip_max_size",
     "line_padding": 1.5,
     "$animation|default": [
@@ -90,14 +90,10 @@
     "size": [ "100%c", "100%cm" ],
     "anchor_from": "right_middle",
     "anchor_to": "right_middle",
-    "offset": [-10, 0],
+    // Offset inwards by 8px in order to create some space between 
+    // the text and the tip edge.
+    "offset": [-8, 0],
     "controls": [
-      {
-        "padding_1": {
-          "type": "panel",
-          "size": [ 2, 0 ]
-        }
-      },
       {
         "label_panel": {
           "type": "stack_panel",
@@ -127,7 +123,6 @@
     "type": "image",
     "alpha": 1.0,
 
-    "$arrow_direction|default": "left",
     "$arrow_offset|default": [-5, 0],
     "$arrow_texture|default": "textures/ui/gameTipArrow_left",
     "$arrow_anchor_point|default": "left_middle",
@@ -137,25 +132,21 @@
       {
         "requires": "($arrow_direction = 'left')",
         "$arrow_texture": "textures/ui/gameTipArrow_left",
-        "$arrow_anchor_point": "left_middle",
         "$arrow_size": [ 8, 12 ]
       },
       {
         "requires": "($arrow_direction = 'right')",
         "$arrow_texture": "textures/ui/gameTipArrow_right",
-        "$arrow_anchor_point": "right_middle",
         "$arrow_size": [ 8, 12 ]
       },
       {
         "requires": "($arrow_direction = 'up')",
         "$arrow_texture": "textures/ui/gameTipArrow_up",
-        "$arrow_anchor_point": "top_middle",
         "$arrow_size": [ 28, 15 ]
       },
       {
         "requires": "($arrow_direction = 'down')",
         "$arrow_texture": "textures/ui/gameTipArrow_down",
-        "$arrow_anchor_point": "bottom_middle",
         "$arrow_size": [ 28, 15 ]
       }
     ],
@@ -177,18 +168,36 @@
     "$is_inventory_tip|default": false,
     "$fill_alpha|default": 1.0,
     "$ignore_arrow|default": false,
+    "$arrow_direction|default": "none",
+
+    // The 15 px padding is partly to account for that the text is offset towards 
+    // the animation by 8 pixels (in order to move it away a bit from the right edge 
+    // of the tip) and also to create a space of 7px between them. Additionally, if 
+    // an arrow is present its size will be included in the 100%c computation so we 
+    // need to subtract the arrow size from the total.
+    "$game_tip_size|default": [ "100%c + 15px", "100%cm" ],
+    "variables": [
+      {
+        "requires": "($arrow_direction = 'left') or ($arrow_direction = 'right')",
+        "$game_tip_size": [ "100%c + 7px", "100%cm" ] // -8px for the arrow
+      },
+      {
+        "requires": "($arrow_direction = 'up') or ($arrow_direction = 'down')",
+        "$game_tip_size": [ "100%c - 13px", "100%cm" ] // -28px for the arrow
+      }
+    ],
 
     "anchor_from": "$tip_anchor_from",
     "anchor_to": "$tip_anchor_to",
-    "size": [ "100%c + 15px", "100%cm" ],
-    "min_size": ["default", 35],
+    "size": "$game_tip_size",
+    "min_size": ["default", 40],
     "offset": "$game_tip_offset",
     "controls": [
       { "game_tip_text@game_tip.game_tip_item_panel": {} },
       { "animated_panel@game_tip.game_tip_animation_panel": {} },
       { "game_tip_arrow@game_tip.game_tip_arrow_image": {
         "ignored": "$ignore_arrow"
-        } 
+       } 
       }
     ]
   },
