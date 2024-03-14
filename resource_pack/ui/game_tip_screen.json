@@ -1,28 +1,19 @@
 {
   "namespace": "game_tip",
 
-  "anim_game_tip_txt_wait": {
-    "anim_type": "wait",
-    "duration": "$game_tip_item_lifetime",
-    "next": "@game_tip.anim_game_tip_txt_alpha"
+  "tip_animation": {
+    "anim_type": "aseprite_flip_book",
+    "initial_uv": [ 0, 0 ]
   },
 
-  "anim_game_tip_txt_alpha": {
-    "anim_type": "alpha",
-    "easing": "in_quart",
-    "duration": 1,
-    "from": 1,
-    "to": 0
-  },
-
-
-  "gameplay_tip_animation": {
+  "game_tip_animation": {
     "$animation_image_size|default": [ 84, 64 ],
     "type": "image",
     "texture": "#texture",
     "size": "$animation_image_size",
-    "anchor_from": "top_left",
+    "anchor_from": "left_middle",
     "anchor_to": "left_middle",
+    "offset": [ 0, -4 ],
     "layer": 50,
     "uv_size": "$animation_image_size",
     "uv": "@game_tip.tip_animation",
@@ -40,21 +31,15 @@
   },
 
   "game_tip_animation_panel": {
-    "type": "stack_panel",
-    "orientation": "vertical",
-    "size": [ "100%c", "0px" ],
+    "type": "panel",
+    "size": [ "100%c", "0px" ],  // Animation can be higher than game tip frame, so it's height shouldn't be counted.
     "anchor_from": "left_middle",
     "anchor_to": "left_middle",
-    "use_child_anchors": true,
-    "offset": [ 0, -4 ],
     "controls": [
-      { "animated_icon@game_tip.gameplay_tip_animation": {} }
+      {
+        "animated_icon@game_tip.game_tip_animation": {}
+      }
     ]
-  },
-
-  "tip_animation": {
-    "anim_type": "aseprite_flip_book",
-    "initial_uv": [ 0, 0 ]
   },
 
   "game_tip_label": {
@@ -62,16 +47,8 @@
     "layer": 3,
     "text_alignment": "left",
     "color": "$body_text_color",
-    "$tip_min_size|default": [ "default", "default" ],
-    "size": [ "default", "default" ],
-    "min_size": "$tip_min_size",
-    "$tip_max_size|default": [ 120, 100 ],
-    "max_size": "$tip_max_size",
+    "max_size": [ 120, 100 ],
     "line_padding": 1.5,
-    "$animation|default": [
-      "@game_tip.anim_game_tip_txt_wait"
-    ],
-    "anims": "$animation",
     "$label_text|default": "#text",
     "$label_text_binding_type|default": "global",
     "text": "$label_text",
@@ -84,38 +61,15 @@
     ]
   },
 
-  "game_tip_item_panel": {
+  "game_tip_text_panel": {
     "type": "stack_panel",
-    "orientation": "horizontal",
-    "size": [ "100%c", "100%cm" ],
-    "anchor_from": "right_middle",
-    "anchor_to": "right_middle",
-    // Offset inwards by 9px in order to create 7px space (2px takes up the frame border)
-    // between the text and the tip edge.
-    "offset": [-9, 0],
+    "size": [ "100%c", "100%c" ],
     "controls": [
+      { "upper_padding": { "type": "panel", "size": [ 0, 5 ]} },
       {
-        "label_panel": {
-          "type": "stack_panel",
-          "orientation": "vertical",
-          "size": [ "100%c", "100%c" ],
-          "controls": [
-            {
-              "padding_vertical": {
-                "type": "panel",
-                "size": [ 0, 5 ]
-              }
-            },
-            { "label@game_tip.game_tip_label": {} },
-            {
-              "padding_vertical_1": {
-                "type": "panel",
-                "size": [ 0, 5 ]
-              }
-            }
-          ]
-        }
-      }
+        "label@game_tip.game_tip_label": {}
+      },
+      { "lower_padding": { "type": "panel", "size": [ 0, 5 ]} }
     ]
   },
 
@@ -123,10 +77,22 @@
     "type": "image",
     "alpha": 1.0,
 
-    "$arrow_offset|default": [-5, 0],
-    "$arrow_texture|default": "textures/ui/gameTipArrow_left",
+    "anchor_from": "$arrow_anchor_point",
+    "anchor_to": "$arrow_anchor_point",
+
+    "texture": "$arrow_texture",
+    "size": "$arrow_size"
+  },
+
+  "game_tip_arrow_panel": {
+    "type": "panel",
+    "size": [ "0px", "0px" ],  // Arrow shouldn't be included in size calculation for the game tip frame.
+    
+    "$arrow_offset|default": [ 25, -3 ],
+    "$arrow_texture|default": "textures/ui/gameTipArrow_down",
     "$arrow_anchor_point|default": "left_middle",
     "$arrow_size|default": [ 8, 12 ],
+    "$arrow_direction|default": "bottom_left",
 
     "variables": [
       {
@@ -151,61 +117,58 @@
       }
     ],
 
-    "texture": "$arrow_texture",
     "anchor_from":"$arrow_anchor_point",
     "anchor_to":"$arrow_anchor_point",
-    "size": "$arrow_size",
-    "offset": "$arrow_offset"
+    "offset": "$arrow_offset",
+
+    "controls": [
+      {
+        "tip_arrow@game_tip.game_tip_arrow_image": {}
+      }
+    ]
+  },
+
+  "game_tip_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", "100%cm" ],
+    "use_child_anchors": true,
+    "controls": [
+      { "animated_panel@game_tip.game_tip_animation_panel": {} },
+      { "middle_padding": { "type": "panel", "size": [ 7, 0 ]} },  // Padding between animation and text.
+      { "label@game_tip.game_tip_text_panel": {} },
+      { "right_padding": { "type": "panel", "size": [ 9, 0 ]} }  // 7px padding between text and frame + 2px frame border.
+    ]
   },
 
   "game_tip_item_background": {
     "type": "image",
     "texture": "textures/ui/gameTipBorder",
     "layer": 50,
+
+    "min_size": ["default", 40],
+    "size": [ "100%c", "100%cm" ],
+  
     "$tip_anchor_from|default": "top_right",
     "$tip_anchor_to|default": "top_right",
     "$game_tip_offset|default": [ 0, 0 ],
-    "$is_inventory_tip|default": false,
-    "$fill_alpha|default": 1.0,
     "$ignore_arrow|default": false,
-    "$arrow_direction|default": "none",
-
-    // The 16 px padding is partly to account for that the text is offset towards
-    // the animation by 9px (see game_tip_item_panel offset)
-    // and also to create a space of 7px between the text and animation.
-    // Additionally, if an arrow is present it's size will be included in the 100%c computation,
-    // so we need to subtract the arrow size from the total.
-    "$game_tip_size|default": [ "100%c + 16px", "100%cm" ],
-    "variables": [
-      {
-        "requires": "($arrow_direction = 'left') or ($arrow_direction = 'right')",
-        "$game_tip_size": [ "100%c + 7px", "100%cm" ] // -8px for the arrow
-      },
-      {
-        "requires": "($arrow_direction = 'up') or ($arrow_direction = 'down')",
-        "$game_tip_size": [ "100%c - 13px", "100%cm" ] // -28px for the arrow
-      }
-    ],
 
     "anchor_from": "$tip_anchor_from",
     "anchor_to": "$tip_anchor_to",
-    "size": "$game_tip_size",
-    "min_size": ["default", 40],
     "offset": "$game_tip_offset",
+
     "controls": [
-      { "game_tip_text@game_tip.game_tip_item_panel": {} },
-      { "animated_panel@game_tip.game_tip_animation_panel": {} },
-      { "game_tip_arrow@game_tip.game_tip_arrow_image": {
+      { "horizontal_container@game_tip.game_tip_panel": {} },
+      { "arrow_panel@game_tip_arrow_panel": {
         "ignored": "$ignore_arrow"
-       } 
-      }
+        } }
     ]
   },
 
   //---------------------------------------------------------------------------
-  // In-game tips
+  // Game Tip Factory 
   //---------------------------------------------------------------------------
-
 
   "game_tip_factory": {
     "type": "panel",
@@ -217,118 +180,5 @@
         "game_tip": "game_tip@game_tip.game_tip_item_background"
       }
     }
-  },
-
-  //---------------------------------------------------------------------------
-  // Hotbar Tips
-  //---------------------------------------------------------------------------
-
-  "hotbar_game_tip_factory": {
-    "type": "panel",
-    "size": [ "default", "default" ],
-    "factory": {
-      "name": "hotbar_game_tip_item_factory",
-      "max_children_size": 1,
-      "control_ids": {
-        "hotbar_game_tip": "game_tip@game_tip.hotbar_game_tip_panel"
-      }
-    }
-  },
-
-  "hotbar_game_tip_panel": {
-    "type": "panel",
-    "layer": 1000,
-    "bindings": [
-      {
-        "binding_name": "#hotbar_game_tip_offset",
-        "binding_name_override": "#offset",
-        "binding_type": "global"
-      }
-    ],
-    "controls": [
-      {
-        "hotbar_game_tip@game_tip.hotbar_game_tip_panel_content": {
-          "$is_hotbar_tip": true,
-          "$left_enabled": true,
-          "$up_enabled": true
-        }
-      }
-    ]
-  },
-
-  "hotbar_game_tip_panel_content": {
-    "type": "panel",
-    "layer": 100,
-    "$offset_value|default": [ 0, 25 ],
-    "$chevron_texture|default": "textures/ui/tip_Chevron",
-    "$chevron_offset|default": [ 0, -12 ],
-    "$ignore_chevron|default": false,
-    "$ignore_tip|default": false,
-    "$up_enabled|default": false,
-    "$is_hotbar_tip|default": false,
-    "variables": [
-      {
-        "requires": "$up_enabled",
-        "$chevron_texture": "textures/ui/down_tip_Chevron"
-      },
-      {
-        "requires": "($is_hotbar_tip)",
-        "$offset_value": [ 0, -32 ],
-        "$chevron_offset": [ 0, 28 ]
-      },
-      {
-        "requires": "(not ($mouse) and $is_hotbar_tip)",
-        "$offset_value": [ 0, -32 ],
-        "$chevron_offset": [ -10, 28 ]
-      }
-    ],
-    "offset": "$offset_value",
-    "controls": [
-      {
-        "horizontal_panel@game_tip.hotbar_tip_horizontal_panel": {
-          "ignored": "$ignore_tip"
-        }
-      },
-      {
-        "chevron": {
-          "alpha": 0.6,
-          "ignored": "$ignore_chevron",
-          "type": "image",
-          "layer": 101,
-          "size": [ 19, 13 ],
-          "offset": "$chevron_offset",
-          "texture": "$chevron_texture"
-        }
-      }
-    ]
-  },
-
-  "hotbar_tip_horizontal_panel": {
-    "type": "panel",
-    "$is_recipe_book_tip|default": false,
-    "layer": 13,
-    "$animation": [],
-    "controls": [
-      {
-        "hotbar_tip@game_tip.game_tip_item_background": {
-          "$left_enabled|default": false,
-          "$right_enabled|default": false,
-          "$tip_min_size": [ 110, "default" ],
-          "$offset|default": [ 0, 0 ],
-          "variables": [
-            {
-              "requires": "($left_enabled)",
-              "$offset": [ 50, 0 ]
-            },
-            {
-              "requires": "($right_enabled)",
-              "$offset": [ -50, 0 ]
-            }
-          ],
-          "offset": "$offset"
-        }
-      }
-    ]
   }
-
 }
