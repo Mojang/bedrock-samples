@@ -216,6 +216,12 @@
     "size": [ 22, 16 ]
   },
 
+  "world_download_icon": {
+    "type": "image",
+    "texture": "textures/ui/world_download",
+    "size": [ 15, 16 ]
+  },
+
   // To create the bouncing effect of alternating bounces for the notification icon
   // the durations have to be alternated and then resynced with the wait time.
   "anim_icon_wait_A": {
@@ -4144,6 +4150,20 @@
     ]
   },
 
+  "legacy_world_migrate_button@common_buttons.dark_glyph_button": {
+    "size": [ "100%y - 1px", "100%" ],
+    "$pressed_button_name": "button.menu_legacy_world_item_migrate",
+    "$button_content": "play.world_download_icon",
+    "$button_tts_header": "accessibility.play.importWorld",
+    "layer": 2,
+    "bindings": [
+      {
+        "binding_type": "collection_details",
+        "binding_collection_name": "legacy_worlds"
+      }
+    ]
+  },
+
   "local_world_item": {
     "type": "stack_panel",
     "anchor_from": "top_left",
@@ -4187,8 +4207,19 @@
         }
       },
       {
+        "header_button_panel_with_migrate@play.header_button_panel": {
+          "ignored": "(not $legacy_worlds_supports_migration)",
+          "layer": 1,
+          "size": [ "100%", "100% + 1px" ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "$primary_header_button": "play.legacy_world_item_button",
+          "$secondary_header_button": "play.legacy_world_migrate_button"
+        }
+      },
+      {
         "header_button_panel_no_delete@play.header_single_button_panel": {
-          "ignored": "$legacy_worlds_share_storage",
+          "ignored": "($legacy_worlds_share_storage or $legacy_worlds_supports_migration)",
           "layer": 1,
           "size": [ "100%", "100% + 1px" ],
           "anchor_from": "top_left",
@@ -5409,12 +5440,16 @@
       },
       {
         "upgrade_legacy_worlds_label@play.world_list_label_with_color_panel": {
-          "$label_text": "#upgrade_legacy_text",
+          "$label_text": "playscreen.upgradeLegacyWorlds",
           "$square_color": "$world_diskspace_editions_fill",
           "variables": [
             {
               "requires": "$pre_release",
               "$label_text": "playscreen.beta_legacy_worlds"
+            },
+            {
+              "requires": "($is_preview_app and (not $legacy_worlds_supports_migration))",
+              "$label_text": "playscreen.upgradeRetailWorlds"
             }
           ],
           "bindings": [
@@ -5427,11 +5462,15 @@
       },
       {
         "legacy_world_item_grid@play.legacy_world_item_grid": {
-          "$tts_section_header": "#upgrade_legacy_text",
+          "$tts_section_header": "playscreen.upgradeLegacyWorlds",
           "variables": [
             {
               "requires": "$pre_release",
               "$tts_section_header": "playscreen.beta_legacy_worlds"
+            },
+            {
+              "requires": "($is_preview_app and (not $legacy_worlds_supports_migration))",
+              "$label_text": "playscreen.upgradeRetailWorlds"
             }
           ]
         }
@@ -5450,7 +5489,13 @@
       },
       {
         "beta_retail_legacy_worlds_label@play.world_list_label_panel": {
-          "$label_text": "#upgrade_legacy_text",
+          "$label_text": "playscreen.upgradeLegacyWorlds",
+          "variables": [
+            {
+              "requires": "($is_preview_app and (not $legacy_worlds_supports_migration))",
+              "$label_text": "playscreen.upgradeRetailWorlds"
+            }
+          ],
           "bindings": [
             {
               "binding_name": "#beta_retail_legacy_worlds_visible",
@@ -5461,7 +5506,13 @@
       },
       {
         "beta_retail_legacy_grid@play.beta_retail_legacy_world_item_grid": {
-          "$tts_section_header": "#upgrade_legacy_text"
+          "$tts_section_header": "playscreen.upgradeLegacyWorlds",
+          "variables": [
+            {
+              "requires": "($is_preview_app and (not $legacy_worlds_supports_migration))",
+              "$tts_section_header": "playscreen.upgradeRetailWorlds"
+            }
+          ]
         }
       },
       {
@@ -5687,7 +5738,7 @@
           "controls": [
             {
               "colored_square": {
-                "ignored": "(not $legacy_worlds_share_storage)",
+                "ignored": "(not $legacy_worlds_share_storage) and (not $legacy_worlds_supports_migration)",
                 "type": "image",
                 "texture": "textures/ui/progress_bar_simple",
                 "size": [ "100%y", "100% - 4px" ],
@@ -5699,7 +5750,7 @@
       },
       {
         "padding": {
-          "ignored": "(not $legacy_worlds_share_storage)",
+          "ignored": "(not $legacy_worlds_share_storage) and (not $legacy_worlds_supports_migration)",
           "type": "panel",
           "size": [ 4, "100%" ]
         }
@@ -6415,7 +6466,7 @@
             {
               "scrolling_panel_legacy_storage_sizer": {
                 "type": "panel",
-                "ignored": "(not $legacy_worlds_share_storage)",
+                "ignored": "(not $legacy_worlds_share_storage) and (not $legacy_worlds_supports_migration)",
                 "size": [ "100%", "20%" ],
                 "controls": [
                   {
