@@ -6,10 +6,31 @@
 {
   "namespace": "display_logged_error",
 
+  "display_logged_error_screen@common.base_screen": {
+    "force_render_below": true,
+    "$screen_content": "display_logged_error.factory_panel"
+  },
+
+  "factory_panel": {
+    "type": "panel",
+    "controls": [
+      {
+        "error_dialog_factory": {
+          "type": "factory",
+          "control_ids": {
+            "error_popup": "@display_logged_error.display_logged_error_modal",
+            "error_details": "@display_logged_error.error_details_modal"
+          }
+        }
+      }
+    ]
+  },
+
   // Error popup
 
   "display_logged_error_modal@common_dialogs.main_panel_two_buttons": {
-    "layer": 300, // This should always be on top - follow modal popup pattern
+
+    "layer": 5,
     "size": [ 200, 165 ],
     "$child_control": "display_logged_error.error_message_stack",
     "$text_name": "Errors detected!",
@@ -49,6 +70,7 @@
   },
 
   "input_blocking_button_base@common_buttons.light_text_button": {
+    "$dismiss_button|default": "button.dismiss",
     "button_mappings": [
       {
         "from_button_id": "button.menu_select",
@@ -61,24 +83,40 @@
         "to_button_id": "$pressed_button_name",
         "mapping_type": "focused",
         "button_up_right_of_first_refusal": true
+      },
+      {
+        "from_button_id": "button.menu_cancel",
+        "to_button_id": "$dismiss_button",
+        "mapping_type": "focused",
+        "button_up_right_of_first_refusal": true
       }
     ]
   },
 
   "details_button@display_logged_error.input_blocking_button_base": {
     "$pressed_button_name": "button.show_error_details",
-    "$button_text": "store.itemDetail.back"
+    "$button_text": "store.itemDetail.back",
+    "$focus_id": "error_details_button",
+    "$focus_override_up": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_right": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_down": "error_hide_button"
   },
 
   "dismiss_button@display_logged_error.input_blocking_button_base": {
     "$pressed_button_name": "button.dismiss",
-    "$button_text": "gui.hide"
+    "$button_text": "gui.hide",
+    "$focus_id": "error_hide_button",
+    "$focus_override_up": "error_details_button",
+    "$focus_override_down": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_right": "FOCUS_OVERRIDE_STOP"
   },
 
   // Error details screen
 
   "error_details_modal@common_dialogs.main_panel_two_buttons": {
-    "layer": 300, // This should always be on top - follow modal popup pattern
+    "layer": 5,
     "$child_control": "display_logged_error.error_stack_scrolling_panel",
     "$text_name": "Error details",
     "$top_button_panel|default": "display_logged_error.copy_path_button",
@@ -88,12 +126,26 @@
 
   "copy_path_button@display_logged_error.input_blocking_button_base": {
     "$pressed_button_name": "button.copy_log_path_to_clipboard",
-    "$button_text": "Copy log file path to clipboard"
+    "$button_text": "Copy log file path to clipboard",
+    "$focus_id": "copy_button",
+    "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_right": "FOCUS_OVERRIDE_STOP",
+    "bindings": [
+      {
+        "binding_name": "#copy_button_focus_override_up",
+        "binding_name_override": "#focus_change_up"
+      }
+    ]
   },
 
   "hide_error_details_button@display_logged_error.input_blocking_button_base": {
-    "$pressed_button_name": "button.hide_error_details",
-    "$button_text": "gui.close"
+    "$pressed_button_name": "button.dismiss",
+    "$button_text": "gui.close",
+    "$focus_id": "hide_error_button",
+    "$focus_override_up": "copy_button",
+    "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_right": "FOCUS_OVERRIDE_STOP",
+    "$focus_override_down": "FOCUS_OVERRIDE_STOP"
   },
 
   "error_stack_scrolling_panel@common.scrolling_panel": {
@@ -142,6 +194,28 @@
           "size": [ "100%", "100%sm" ],
           "$pressed_button_name": "button.expand",
           "default_control": "",
+          "$focus_override_left": "FOCUS_OVERRIDE_STOP",
+          "$focus_override_right": "FOCUS_OVERRIDE_STOP",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "$pressed_button_name",
+              "mapping_type": "pressed",
+              "button_up_right_of_first_refusal": true
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "$pressed_button_name",
+              "mapping_type": "focused",
+              "button_up_right_of_first_refusal": true
+            },
+            {
+              "from_button_id": "button.menu_cancel",
+              "to_button_id": "button.dismiss",
+              "mapping_type": "focused",
+              "button_up_right_of_first_refusal": true
+            }
+          ],
           "controls": [
             {
               "hover@common.focus_border_white": {}
@@ -158,6 +232,24 @@
             {
               "binding_name": "#gamepad_helper_visible",
               "binding_name_override": "#visible"
+            },
+            {
+              "binding_name": "#error_focus_id",
+              "binding_type": "collection",
+              "binding_collection_name": "display_logged_errors",
+              "binding_name_override": "#focus_identifier"
+            },
+            {
+              "binding_name": "#error_focus_override_up",
+              "binding_type": "collection",
+              "binding_collection_name": "display_logged_errors",
+              "binding_name_override": "#focus_change_up"
+            },
+            {
+              "binding_name": "#error_focus_override_down",
+              "binding_type": "collection",
+              "binding_collection_name": "display_logged_errors",
+              "binding_name_override": "#focus_change_down"
             }
           ]
         }
@@ -192,6 +284,7 @@
           "$button_text": "#error_expand_label",
           "$button_text_binding_type": "collection",
           "$button_text_grid_collection_name": "display_logged_errors",
+          "$dismiss_button": "button.hide_error_details",
           "bindings": [
             {
               "binding_type": "collection_details",
