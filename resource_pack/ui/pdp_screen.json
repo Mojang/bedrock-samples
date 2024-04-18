@@ -3342,73 +3342,79 @@
     ]
   },
 
-  "glyph_panel": {
-    "type": "panel",
-    "size": [ "100%", "100%cm" ],
-    "layer": 2,
+  // Glyph Tags
+
+  // Requires: $glyph_texture
+  "glyph_icon": {
+    "type": "image",
+    "size": [ 8, 8 ],
+    "offset": [ 0, -1.5 ],
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "texture": "$glyph_texture",
+    "color": "$body_text_color",
+    "bilinear": true
+  },
+
+  // Requires: $glyph_text_binding
+  "glyph_count_label": {
+    "type": "label",
+    "size": [ "default", 10 ],
+    "text_alignment": "left",
+    "font_type": "smooth",
+    "font_scale_factor": 0.8,
+    "color": "$body_text_color",
+    "text": "$glyph_text_binding",
+    "bindings": [
+      {
+        "binding_type": "global",
+        "binding_name": "$glyph_text_binding",
+        "binding_condition": "visible"
+      }
+    ]
+  },
+
+  // Requires: $glyph_text_binding, $pressed_button_name
+  "glyph_count_underline_button@common_buttons.underline_button": {
+    "$single_label_size": [ "default", 9 ],
+    "$single_line_label_offset": [ 0, -1 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$single_line_label_text": "$glyph_text_binding",
+    "$label_text_bindings": [
+      {
+        "binding_type": "global",
+        "binding_name": "$glyph_text_binding",
+        "binding_condition": "visible"
+      }
+    ]
+  },
+
+  // Requires: $glyph_text_binding, $pressed_button_name, $glyph_button_hover_bind
+  "glyph_count_hover_underline_button_panel@common.empty_panel": {
+    "size": [ 32, 10 ],
+    "$glyph_button_hover_bind|default": "glyph_button.is_hovered",
+    "$glyph_hover_control|default": "pdp.glyph_panel_hover_popup",
     "controls": [
       {
-        "item_glyph_count_panel": {
-          "anchor_from": "top_left",
-          "anchor_to": "top_left",
-          "type": "stack_panel",
-          "orientation": "horizontal",
-          "size": [ "100%c", 10 ],
-          "offset": [ 1, -2 ],
-          "layer": 2,
-          "controls": [
+        "glyph_hover_popup@$glyph_hover_control": {}
+      },
+      {
+        "glyph_count_underline_button@pdp.glyph_count_underline_button": {
+          "button_mappings": [
             {
-              "glyph_icon_panel": {
-                "type": "panel",
-                "size": [ 8, "100%" ],
-                "controls": [
-                  {
-                    "glyph_icon": {
-                      "type": "image",
-                      "size": [ 8, 8 ],
-                      "offset": [ 0, -1.5 ],
-                      "texture": "$item_glyph_texture",
-                      "color": "$body_text_color",
-                      "bilinear": true,
-                      "anchor_from": "bottom_left",
-                      "anchor_to": "bottom_left"
-                    }
-                  }
-                ]
-              }
+              "to_button_id": "$glyph_button_hover_bind",
+              "mapping_type": "pressed"
             },
             {
-              "center_item_glyph_padding": {
-                "type": "panel",
-                "size": [ 2, "100%" ]
-              }
+              "from_button_id": "button.menu_select",
+              "to_button_id": "$pressed_button_name",
+              "mapping_type": "pressed"
             },
             {
-              "item_glyph_count_panel_label": {
-                "type": "label",
-                "size": [ "default", 8 ],
-                "text_alignment": "left",
-                "font_type": "smooth",
-                "font_scale_factor": 0.8,
-                "color": "$body_text_color",
-                "text": "$item_glyph_text_binding",
-                "bindings": [
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  },
-                  {
-                    "binding_type": "$mashup_collection_binding_type",
-                    "binding_collection_name": "$mashup_collection_name",
-                    "binding_name": "$item_glyph_text_binding",
-                    "binding_condition": "visible"
-                  }
-                ]
-              }
-            },
-            {
-              "item_glyph_panel_padding@pdp.horizontal_padding_8px": {}
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "$pressed_button_name",
+              "mapping_type": "focused"
             }
           ]
         }
@@ -3416,119 +3422,81 @@
     ]
   },
 
-  "horizontal_glyph_section_content@pdp.glyph_panel": {
-    "bindings": [
-      {
-        "binding_type": "$store_factory_collection_details",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_collection_prefix": "$store_factory_collection_prefix"
-      },
-      {
-        "binding_type": "$mashup_collection_binding_type",
-        "binding_collection_name": "$mashup_collection_name",
-        "binding_name": "$item_glyph_count_visible_binding",
-        "binding_name_override": "#visible"
-      }
-    ]
-  },
-
-  "vertical_glyph_section_content": {
-    "size": [ "100%", "100%cm" ],
-    "type": "stack_panel",
-    "orientation": "vertical",
+  // Requires: $item_glyph_count_visible_binding
+  "glyph_icon_with_count@common.horizontal_stack_panel": {
+    "size": [ "100%c", 10 ],
+    "$glyph_label_content|default": "pdp.glyph_count_label",
     "controls": [
       {
-        "glyph_content@pdp.glyph_panel": {}
+        "glyph_icon@pdp.glyph_icon": {}
       },
       {
-        "bottom_glyph_content_padding@pdp.vertical_padding_2px": {}
+        "horizontal_padding@common.empty_panel": { "size": [ 2, "100%" ] }
+      },
+      {
+        "item_glyph_count_panel_label@$glyph_label_content": {}
       }
     ],
     "bindings": [
       {
-        "binding_type": "$store_factory_collection_details",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_collection_prefix": "$store_factory_collection_prefix"
-      },
-      {
-        "binding_type": "$mashup_collection_binding_type",
-        "binding_collection_name": "$mashup_collection_name",
+        "binding_type": "global",
         "binding_name": "$item_glyph_count_visible_binding",
         "binding_name_override": "#visible"
       }
     ]
   },
 
-  "glyph_section_panel": {
-    "type": "panel",
-    "size": [ "100%", "100%cm" ],
-    "layer": 2,
-    "anchor_to": "top_right",
-    "anchor_from": "top_right",
+  "glyph_panel_hover_popup@common.dynamic_tooltip_popup_with_image_and_text": {
+    "$tooltip_panel_offset": [ "-45%", "-10px" ],
+    "$tooltip_popup_image": "textures/ui/infobulb",
+    "$tooltip_button_binding_type": "global",
+    "$tooltip_button_collection_name": "",
+    "$tooltip_popup_visible_binding": "#glyph_hover_visible",
+    "$tooltip_hovered_to_button_id": "$glyph_button_hover_bind"
+  },
 
+  "glyph_panel_mashup_hover_popup@common.dynamic_custom_tooltip_below": {
+    "$tooltip_panel_offset": [ "-45%", "10px" ],
+    "$tooltip_popup_image": "textures/ui/infobulb",
+    "$tooltip_button_binding_type": "global",
+    "$tooltip_button_collection_name": "",
+    "$tooltip_popup_visible_binding": "#glyph_hover_visible",
+    "$tooltip_hovered_to_button_id": "glyph_button.is_hovered",
+    "$pressed_button_name": "button.navigate_to_store_search_mashup",
+    "$tooltip_content": "pdp.mashup_glyph_tooltip_content"
+  },
+
+  "mashup_glyph_tooltip_content@common.vertical_stack_panel": {
+    "size": [ "100%cm", "100%c" ],
+    "$glyph_label_content": "pdp.glyph_count_label",
     "controls": [
       {
-        "glyphs": {
-          "type": "stack_panel",
-          "orientation": "$glyph_section_orientation",
-          "size": "$glyph_section_size",
-
-          "$mashup_collection_binding_type|default": "global",
-          "$mashup_collection_name|default": "",
-          "$glyph_section_only_show_count|default": false,
-
+        "mashup_text_row@common.horizontal_stack_panel": {
+          "size": [ "100%c", 12 ],
           "controls": [
             {
-              "skin_glyph_section@$glyph_section_content": {
-                "$item_glyph_texture": "textures/ui/glyph_skin_pack_small",
-                "$item_glyph_text_binding": "#item_skin_count_and_label",
-                "$item_glyph_count_visible_binding": "#item_skin_count_visible",
-                "variables": [
-                  {
-                    "requires": "$glyph_section_only_show_count",
-                    "$item_glyph_text_binding": "#item_skin_count"
-                  }
-                ]
+              "lightbulb_icon": {
+                "type": "image",
+                "size": [ 11, 11 ],
+                "texture": "textures/ui/infobulb"
               }
             },
             {
-              "world_glyph_section@$glyph_section_content": {
-                "$item_glyph_texture": "textures/ui/glyph_world_template_small",
-                "$item_glyph_text_binding": "#item_world_template_count_and_label",
-                "$item_glyph_count_visible_binding": "#item_world_template_count_visible",
-                "variables": [
-                  {
-                    "requires": "$glyph_section_only_show_count",
-                    "$item_glyph_text_binding": "#item_world_template_count"
-                  }
-                ]
+              "mashup_line_one@common.single_line_label": {
+                "$single_line_label_text": "store.mashup.hover.label.mashup.lineOne",
+                "$font_type": "default"
               }
-            },
+            }
+          ]
+        }
+      },
+      { "mashup_line_two@common.single_line_label": { "$single_line_label_text": "store.mashup.hover.label.mashup.lineTwo" } },
+      {
+        "offset_panel@common.empty_panel": {
+          "size": [ "100%cm", "100%cm" ],
+          "controls": [
             {
-              "resource_pack_glyph_section@$glyph_section_content": {
-                "$item_glyph_texture": "textures/ui/glyph_resource_pack_small",
-                "$item_glyph_text_binding": "#item_resource_pack_count_and_label",
-                "$item_glyph_count_visible_binding": "#item_resource_pack_count_visible",
-                "variables": [
-                  {
-                    "requires": "$glyph_section_only_show_count",
-                    "$item_glyph_text_binding": "#item_resource_pack_count"
-                  }
-                ]
-              }
-            },
-            {
-              "addon_pack_glyph_section@$glyph_section_content": {
-                "$item_glyph_texture": "textures/ui/glyph_addon_pack_small",
-                "$item_glyph_text_binding": "#item_addon_pack_count_and_label",
-                "$item_glyph_count_visible_binding": "#item_addon_pack_count_visible",
-                "variables": [
-                  {
-                    "requires": "$glyph_section_only_show_count",
-                    "$item_glyph_text_binding": "#item_addon_pack_count"
-                  }
-                ]
-              }
+              "basic_vertical_glyph_section_panel@pdp.basic_vertical_glyph_section_panel": { "offset": [ 2, 0 ] }
             }
           ]
         }
@@ -3536,17 +3504,80 @@
     ]
   },
 
-  "horizontal_glyph_section_panel@pdp.glyph_section_panel": {
-    "$glyph_section_orientation": "horizontal",
-    "$glyph_section_size": [ "100% - 4px", "100%cm" ],
-    "$glyph_section_content": "pdp.horizontal_glyph_section_content"
+  "glyph_section_mashup@pdp.glyph_icon_with_count": {
+    "$glyph_texture": "textures/ui/glyph_mashup_pack_small",
+    "$glyph_text_binding": "#item_mashup_count_and_label",
+    "$item_glyph_count_visible_binding": "#item_mashup_count_visible",
+    "$pressed_button_name": "button.navigate_to_store_search_mashup",
+    "$tooltip_text_binding_name": "#glyph_hover_text_mashup",
+    "$glyph_hover_control": "pdp.glyph_panel_mashup_hover_popup"
   },
 
-  "vertical_glyph_section_panel@pdp.glyph_section_panel": {
+  "glyph_section_skin@pdp.glyph_icon_with_count": {
+    "$glyph_texture": "textures/ui/glyph_skin_pack_small",
+    "$glyph_text_binding": "#item_skin_count_and_label",
+    "$item_glyph_count_visible_binding": "#item_skin_count_visible",
+    "$pressed_button_name": "button.navigate_to_store_search_skin",
+    "$tooltip_text_binding_name": "store.mashup.hover.label.skin",
+    "$tooltip_text_binding_type": "none"
+  },
+
+  "glyph_section_resource_pack@pdp.glyph_icon_with_count": {
+    "$glyph_texture": "textures/ui/glyph_resource_pack_small",
+    "$glyph_text_binding": "#item_resource_pack_count_and_label",
+    "$item_glyph_count_visible_binding": "#item_resource_pack_count_visible",
+    "$pressed_button_name": "button.navigate_to_store_search_resource",
+    "$tooltip_text_binding_name": "store.mashup.hover.label.texturePack",
+    "$tooltip_text_binding_type": "none"
+  },
+
+  "glyph_section_world@pdp.glyph_icon_with_count": {
+    "$glyph_texture": "textures/ui/glyph_world_template_small",
+    "$glyph_text_binding": "#item_world_template_count_and_label",
+    "$item_glyph_count_visible_binding": "#item_world_template_count_visible",
+    "$pressed_button_name": "button.navigate_to_store_search_world",
+    "$tooltip_text_binding_name": "store.mashup.hover.label.world",
+    "$tooltip_text_binding_type": "none"
+  },
+
+  "glyph_section_addon@pdp.glyph_icon_with_count": {
+    "$glyph_texture": "textures/ui/glyph_addon_pack_small",
+    "$glyph_text_binding": "#item_addon_pack_count_and_label",
+    "$item_glyph_count_visible_binding": "#item_addon_pack_count_visible",
+    "$pressed_button_name": "button.navigate_to_store_search_addon",
+    "$tooltip_text_binding_name": "store.mashup.hover.label.addonPack",
+    "$tooltip_text_binding_type": "none"
+  },
+
+  "basic_vertical_glyph_section_panel@common.vertical_stack_panel": {
+    "size": [ "100%c", "100%c" ],
+    "controls": [
+      { "glyph_section_skin@pdp.glyph_section_skin": {} },
+      { "glyph_section_world@pdp.glyph_section_world": {} },
+      { "glyph_section_resource_pack@pdp.glyph_section_resource_pack": {} },
+      { "glyph_section_addon@pdp.glyph_section_addon": {} }
+    ]
+  },
+
+  "vertical_glyph_section_panel@common.vertical_stack_panel": {
     "size": [ "100%", "100%cm" ],
-    "$glyph_section_orientation": "vertical",
-    "$glyph_section_size": [ "100%", "100%c" ],
-    "$glyph_section_content": "pdp.vertical_glyph_section_content"
+    "$glyph_label_content": "pdp.glyph_count_hover_underline_button_panel",
+    "controls": [
+      { "glyph_section_mashup@pdp.glyph_section_mashup": {} },
+      {
+        "basic_vertical_glyph_section_panel@pdp.basic_vertical_glyph_section_panel": {
+          "visible": false,
+          "bindings": [
+            {
+              "binding_type": "global",
+              "binding_name": "(not #item_mashup_count_visible)",
+              "binding_name_override": "#visible",
+              "binding_condition": "once"
+            }
+          ]
+        }
+      }
+    ]
   },
 
   "summary_text_panel": {
