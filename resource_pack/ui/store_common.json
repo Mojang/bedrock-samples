@@ -98,6 +98,57 @@
     ]
   },
 
+  "sdl_texture": {
+    "type": "image",
+    "layer": 2,
+    "alpha": 1.0,
+
+    "texture": "#sdl_texture_component_image_path",
+
+    "$ignore_texture_related_binds|default": false,
+    "$ignore_texture_visiblity_bind|default": false,
+
+    "bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "ignored": "$ignore_texture_related_binds",
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#sdl_texture_component_image_path",
+        "binding_name_override": "#texture"
+      },
+      {
+        "ignored": "$ignore_texture_related_binds",
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#sdl_texture_component_image_system",
+        "binding_name_override": "#texture_file_system"
+      },
+      {
+        "ignored": "$ignore_texture_visiblity_bind",
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#sdl_texture_component_image_visible",
+        "binding_name_override": "#visible"
+      },
+      {
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#sdl_texture_color",
+        "binding_name_override": "#color"
+      },
+      {
+        "binding_type": "$store_factory_binding_type",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name": "#sdl_texture_alpha",
+        "binding_name_override": "#alpha"
+      }
+    ]
+  },
 
   // This is the border hover/press states and click region, since the controls are complex it is better to draw a simple white border
   // around the content rather than create 3 sets of each control when only the border changes
@@ -1443,9 +1494,6 @@
     "size": [ "100%c + 2px", "100%" ],
 
     "$timer_field_count_to_show|default": 1,
-    "property_bag": {
-      "#timer_field_count_to_show": "$timer_field_count_to_show"
-    },
 
     "$timer_bindings|default": [
       {
@@ -1469,7 +1517,10 @@
           "color": "$timer_label_color",
           "layer": 1,
           "font_type": "smooth",
-          "bindings": "$timer_bindings"
+          "bindings": "$timer_bindings",
+          "property_bag": {
+            "#timer_field_count_to_show": "$timer_field_count_to_show"
+          }
         }
       }
     ]
@@ -5942,7 +5993,7 @@
           "anchor_from": "bottom_right",
           "anchor_to": "bottom_right",
           "$description_background_alpha": 0.9,
-          "size": [ "100%", "100%c" ],
+          "size": [ 120, "100%c" ],
           "layer": 8,
           "controls": [
             {
@@ -6586,7 +6637,7 @@
     "$frame_size": [ "100%", "100%" ],
     "$pressed_button_name": "button.select_offer",
 
-    "$timer_field_count_to_show": 1,
+    "$timer_field_count_to_show": 2,
 
     "$offer_collection_details": "collection_details",
     "$offer_binding_type": "$hero_offer_binding_type",
@@ -8447,6 +8498,81 @@
     ]
   },
 
+  "thumbnail_only_offer": {
+    "type": "panel",
+
+    "size": [ "25%", "100%" ],
+
+    "$ignore_creator|default": false,
+    "$is_hero_offer|default": false,
+    "$ignore_durable_status_content|default": false,
+    "$timer_visible|default": false,
+    "$offer_background_asset|default": "common_store.store_description_background",
+    "$is_purchase_button": false,
+
+    // offer binding vars
+    "$offer_collection_details|default": "none",
+    "$offer_binding_type|default": "global",
+    "$offer_collection_name|default": "",
+    "$offer_collection_prefix|default": "",
+
+    // offer factory binding vars (for offers that are created within a factory)
+    "$store_factory_collection_details|default": "none",
+    "$store_factory_collection_prefix|default": "",
+    "$store_factory_collection_name|default": "",
+
+    "$store_offer_grid_item_bindings|default": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "$offer_binding_type",
+        "binding_collection_name": "$offer_collection_name",
+        "binding_name": "#valid_offer_index",
+        "binding_name_override": "#visible"
+      }
+    ],
+
+    "bindings": "$store_offer_grid_item_bindings",
+
+    "controls": [
+      {
+        "frame@$offer_background_asset": {
+          "size": [ "100%", "100%" ],
+          "layer": 3,
+          "controls": [
+            {
+              "key_art@common_store.store_offer_key_art": {
+                "size": [ "100% - 2px", "56.25%x" ],
+                "offset": [ 0, 1 ],
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle",
+                "layer": 1,
+                "controls": [
+                  {
+                    "key_art_frame@common.square_image_border_white": {
+                      "size": [ "100% + 2px", "100% + 2px" ],
+                      "color": "$0_color_format",
+                      "layer": 3
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "offer_button@common_store.store_offer_grid_button": {
+                "offset": [ 0, -1 ],
+                "$size_to_cover": [ "100%", "100%" ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "store_section_header_label@common_store.label": {
     "$store_section_header_label_text|default": "#section_header",
     "$store_section_binding_condition|default": "always_when_visible",
@@ -8532,6 +8658,14 @@
           "$filesystem_binding_type": "collection"
         }
       }
+    ]
+  },
+
+  "thumnail_only_row_offer@common_store.generic_store_row_offer_panel": {
+    "type": "panel",
+    "size": [ "fill", "56.249%x" ],
+    "controls": [
+      { "generic_store_offer@common_store.thumbnail_only_offer": { "size": [ "100% - 2px", "100%" ] } }
     ]
   },
 
@@ -8632,6 +8766,7 @@
       "control_ids": {
         "Generic": "common_store.generic_store_row_offer_panel",
         "Persona": "common_store.persona_store_row_offer",
+        "ThumbnailOnly": "common_store.thumnail_only_row_offer",
         "ShowMoreButton": "common_store.store_row_show_more_button_panel"
       },
       "factory_variables": [
@@ -10227,38 +10362,16 @@
               }
             },
             {
-              "vertical_line_divider_row_line": {
-                "type": "image",
-                "layer": 6,
+              "vertical_line_divider_row_line@common_store.sdl_texture": {
                 "texture": "textures/ui/white_background",
                 "size": [ "100% - 16px", "100%" ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left",
                 "fill": true,
                 "keep_ratio": false,
-                "color": "#assigned_color",
-                "$row_binding_collection_details|default": "$store_factory_collection_details",
-                "$row_binding_collection_name|default": "$store_factory_collection_name",
-                "$row_binding_collection_prefix|default": "$store_factory_collection_prefix",
-                "bindings": [
-                  {
-                    "binding_type": "$row_binding_collection_details",
-                    "binding_collection_name": "$row_binding_collection_name",
-                    "binding_collection_prefix": "$row_binding_collection_prefix"
-                  },
-                  {
-                    "binding_type": "collection",
-                    "binding_collection_name": "$row_binding_collection_name",
-                    "binding_name": "#assigned_color",
-                    "binding_name_override": "#color"
-                  },
-                  {
-                    "binding_type": "collection",
-                    "binding_collection_name": "$row_binding_collection_name",
-                    "binding_name": "#assigned_alpha",
-                    "binding_name_override": "#alpha"
-                  }
-                ]
+
+                "$ignore_texture_related_binds": true,
+                "$ignore_texture_visiblity_bind": true
               }
             },
             {

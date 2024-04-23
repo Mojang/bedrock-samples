@@ -259,6 +259,25 @@
     ]
   },
 
+  "anim_main_buttons_panel_alpha": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "duration": 0.2,
+    "from": 0,
+    "to": 1,
+    "play_event": "anim_main_buttons_panel_alpha_play_event"
+  },
+
+  "anim_new_player_buttons_panel_alpha": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "duration": 0.2,
+    "from": 1,
+    "to": 0,
+    "play_event": "anim_new_player_buttons_panel_alpha_play_event",
+    "end_event": "anim_new_player_buttons_panel_finish_event"
+  },
+
   //---------------------------------------------------------------------------
   // Skins Panel
   //---------------------------------------------------------------------------
@@ -268,6 +287,17 @@
     "size": [ "100%", 25 ],
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
+    "variables": [
+      {
+        "requires": "($showing_new_player_flow_buttons)",
+        "$anim_type": "@start.anim_main_buttons_panel_alpha"
+      },
+      {
+        "requires": "(not $showing_new_player_flow_buttons)",
+        "$anim_type": 1.0
+      }
+    ],
+    "alpha": "$anim_type",
     "controls": [
       {
         "change_skin@start.change_skin_button": {
@@ -912,6 +942,17 @@
     "anchor_to": "bottom_left",
     "anchor_from": "bottom_left",
     "size": [ "100%", "100%c" ],
+    "variables": [
+      {
+        "requires": "($showing_new_player_flow_buttons)",
+        "$anim_type": "@start.anim_main_buttons_panel_alpha"
+      },
+      {
+        "requires": "(not $showing_new_player_flow_buttons)",
+        "$anim_type": 1.0
+      }
+    ],
+    "alpha": "$anim_type",
     "controls": [
       {
         "stacked_column": {
@@ -1062,6 +1103,10 @@
     "size": [ "100% - 2px", "100% - 2px" ]
   },
 
+  "main_button_dark@common_buttons.dark_text_button": {
+    "size": [ "100% - 2px", "100% - 2px" ]
+  },
+
   "main_content_button@common_buttons.light_content_button": {
     "size": [ "100% - 2px", "100% - 2px" ]
   },
@@ -1105,6 +1150,14 @@
   "settings_button@start.main_button": {
     "$pressed_button_name": "button.menu_settings",
     "$button_text": "menu.settings"
+  },
+
+  "realms_button@start.main_button_dark": {
+    "$pressed_button_name": "button.menu_realms",
+    "$button_text": "menu.realmsServer",
+    "$default_button_texture": "textures/ui/realms_button_borderless_default",
+    "$hover_button_texture": "textures/ui/realms_button_borderless_hover",
+    "$pressed_button_texture": "textures/ui/realms_button_borderless_hover_pressed"
   },
 
   "store_button@common_buttons.light_content_button": {
@@ -1292,12 +1345,24 @@
         "main_buttons_panel": {
           "type": "panel",
           "size": [ "100%", "100%c" ],
+          "variables": [
+            {
+              "requires": "($showing_new_player_flow_buttons)",
+              "$anim_type": "@start.anim_main_buttons_panel_alpha"
+            },
+            {
+              "requires": "(not $showing_new_player_flow_buttons)",
+              "$anim_type": 1.0
+            }
+          ],
           "bindings": [
             {
-              "binding_name": "(not #using_new_player_flow)",
+              "binding_name": "(not #showing_new_player_flow_buttons)",
               "binding_name_override": "#visible"
             }
           ],
+          "alpha": "$anim_type",
+          "propagate_alpha": true,
           "controls": [
             {
               "main_buttons_panel@start.main_buttons_panel": {}
@@ -1311,10 +1376,12 @@
           "size": [ "100%", "100%c" ],
           "bindings": [
             {
-              "binding_name": "#using_new_player_flow",
+              "binding_name": "#showing_new_player_flow_buttons",
               "binding_name_override": "#visible"
             }
           ],
+          "alpha": "@start.anim_new_player_buttons_panel_alpha",
+          "propagate_alpha": true,
           "controls": [
             {
               "main_buttons_panel_new_player_flow@start.main_buttons_panel_new_player_flow": {}
@@ -1909,6 +1976,17 @@
           "anchor_from": "bottom_left",
           "size": [ "50% - 75px", "100%c" ],
           "offset": [ 0, "-10%" ],
+          "variables": [
+            {
+              "requires": "($showing_new_player_flow_buttons)",
+              "$anim_type": "@start.anim_main_buttons_panel_alpha"
+            },
+            {
+              "requires": "(not $showing_new_player_flow_buttons)",
+              "$anim_type": 1.0
+            }
+          ],
+          "alpha": "$anim_type",
           "controls": [
             {
               "gathering_panel@start.gathering_panel": {}

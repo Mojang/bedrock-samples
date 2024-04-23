@@ -1,11 +1,17 @@
 {
-  "format_version": "1.20.70",
+  "format_version": "1.20.80",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:wolf",
+      "spawn_category": "creature",
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
+        "minecraft:is_armorable": {
+          "type": "bool",
+          "client_sync": false,
+          "default": false
+        },
         "minecraft:has_increased_max_health": {
           "type": "bool",
           "client_sync": false,
@@ -199,7 +205,6 @@
           "priority": 2,
           "speed_multiplier": 1.0
         },
-
         "minecraft:behavior.owner_hurt_by_target": {
           "priority": 1
         },
@@ -220,6 +225,125 @@
         },
         "minecraft:is_dyeable": {
           "interact_text": "action.interact.dye"
+        }
+      },
+
+      "minecraft:wolf_armorable": {
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "self", "domain": "armor", "operator": "not", "value": "wolf_armor" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "wolf_armor" },
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_owner", "subject": "other", "value": true },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "equip_item_slot": "slot.armor.chest",
+              "play_sounds": "armor.equip_wolf",
+              "interact_text": "action.interact.equipwolfarmor"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "self", "domain": "armor", "value": "wolf_armor" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_owner", "subject": "other", "value": true },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "slot.armor.chest",
+              "play_sounds": "armor.unequip_wolf",
+              "interact_text": "action.interact.removewolfarmor",
+              "vibration": "shear"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_sitting", "subject": "self" },
+                    { "test": "has_damaged_equipment", "subject": "self", "domain": "armor", "value": "wolf_armor" },
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "is_owner", "subject": "other", "value": true },
+                    { "test": "is_sneak_held", "subject": "other", "value": false },
+                    { "test": "has_equipment", "domain": "hand", "subject": "other", "value": "armadillo_scute" }
+                  ]
+                },
+                "target": "self"
+              },
+              "repair_entity_item": {
+                "slot": "slot.armor.chest",
+                "amount": 8
+              },
+              "use_item": true,
+              "play_sounds": "armor.repair_wolf",
+              "interact_text": "action.interact.repairwolfarmor"
+            }
+          ]
+        }
+      },
+
+      "minecraft:wolf_pale": {
+        "minecraft:variant": {
+          "value": 0
+        }
+      },
+
+      "minecraft:wolf_ashen": {
+        "minecraft:variant": {
+          "value": 1
+        }
+      },
+
+      "minecraft:wolf_black": {
+        "minecraft:variant": {
+          "value": 2
+        }
+      },
+
+      "minecraft:wolf_chestnut": {
+        "minecraft:variant": {
+          "value": 3
+        }
+      },
+
+      "minecraft:wolf_rusty": {
+        "minecraft:variant": {
+          "value": 4
+        }
+      },
+
+      "minecraft:wolf_snowy": {
+        "minecraft:variant": {
+          "value": 5
+        }
+      },
+
+      "minecraft:wolf_spotted": {
+        "minecraft:variant": {
+          "value": 6
+        }
+      },
+
+      "minecraft:wolf_striped": {
+        "minecraft:variant": {
+          "value": 7
+        }
+      },
+
+      "minecraft:wolf_woods": {
+        "minecraft:variant": {
+          "value": 8
         }
       }
     },
@@ -374,6 +498,18 @@
               ]
             },
             "event": "minecraft:increase_max_health"
+          },
+          {
+            // We apply "wolf_armorable" this way instead of reacting to "ageable_grow_up" and "on_tame" as that will fail if
+            // the events are emittied in the same tick. Moreover, this takes care of upgrading pre-existing adult tame Wolves.
+            "filters": {
+              "all_of": [
+                { "test": "bool_property", "operator": "!=", "domain": "minecraft:is_armorable" },
+                { "test": "has_component", "operator": "!=", "value": "minecraft:is_baby" },
+                { "test": "has_component", "value": "minecraft:is_tamed" }
+              ]
+            },
+            "event": "minecraft:become_armorable"
           }
         ]
       },
@@ -394,7 +530,7 @@
       },
       "minecraft:behavior.leap_at_target": {
         "priority": 4,
-        "target_dist": 0.4
+        "yd": 0.4
       },
       "minecraft:behavior.melee_box_attack": {
         "priority": 5
@@ -427,6 +563,7 @@
           "cooked_rabbit"
         ]
       },
+
       "minecraft:behavior.hurt_by_target": {
         "priority": 3
       },
@@ -442,20 +579,237 @@
 
     "events": {
       "minecraft:entity_spawned": {
-        "randomize": [
+        "sequence": [
           {
-            "weight": 9,
-            "trigger": "minecraft:spawn_wild_adult"
+            "trigger": "minecraft:spawn_wild_baby_or_adult"
           },
           {
-            "weight": 1,
-            "trigger": "minecraft:spawn_wild_baby"
+            // Pale Wolf: every non-cold Taiga, except Old Growth Pine Taiga and Old Growth Spruce Taiga.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "operator": "not", "value": "cold" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mega" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mutated" }
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_pale"
+              ]
+            }
+          },
+          {
+            // Ashen Wolf: every cold Taiga.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "value": "cold" }
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_ashen"
+              ]
+            }
+          },
+          {
+            // Black Wolf: Old Growth Pine Taiga only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "mega" },
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "value": "forest" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mutated" }
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_black"
+              ]
+            }
+          },
+          {
+            // Chestnut Wolf: Old Growth Spruce Taiga only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "mega" },
+                { "test": "has_biome_tag", "value": "taiga" },
+                { "test": "has_biome_tag", "value": "forest" },
+                { "test": "has_biome_tag", "value": "mutated" }
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_chestnut"
+              ]
+            }
+          },
+          {
+            // Rusty Wolf: every Jungle, which is broader than the variant's spawn rule.
+            "filters": {
+              "test": "has_biome_tag", "value": "jungle"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_rusty"
+              ]
+            }
+          },
+          {
+            // Snowy Wolf: Grove only.
+            "filters": {
+              "test": "has_biome_tag", "value": "grove"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_snowy"
+              ]
+            }
+          },
+          {
+            // Spotted Wolf: every Savanna, which is broader than the variant's spawn rule.
+            "filters": {
+              "test": "has_biome_tag", "value": "savanna"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_spotted"
+              ]
+            }
+          },
+          {
+            // Striped Wolf: every Badland, which is broader than the variant's spawn rule.
+            "filters": {
+              "test": "has_biome_tag", "value": "mesa"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_striped"
+              ]
+            }
+          },
+          {
+            // Woods Wolf: Forest only.
+            "filters": {
+              "all_of": [
+                { "test": "has_biome_tag", "value": "forest" },
+                { "test": "has_biome_tag", "operator": "not", "value": "birch" },
+                { "test": "has_biome_tag", "operator": "not", "value": "taiga" },
+                { "test": "has_biome_tag", "operator": "not", "value": "roofed" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mutated" },
+                { "test": "has_biome_tag", "operator": "not", "value": "mountain" }
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_woods"
+              ]
+            }
           }
         ]
       },
 
       "minecraft:entity_born": {
         "trigger": "minecraft:spawn_tame_baby"
+      },
+
+      "minecraft:spawn_wild_pale": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_pale"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_ashen": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_ashen"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_black": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_black"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_chestnut": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_chestnut"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_rusty": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_rusty"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_snowy": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_snowy"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_spotted": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_spotted"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_striped": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_striped"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_woods": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_woods"
+          ]
+        },
+        "trigger": "minecraft:spawn_wild_baby_or_adult"
+      },
+
+      "minecraft:spawn_wild_baby_or_adult": {
+        "sequence": [
+          {
+            "randomize": [
+              {
+                "weight": 9,
+                "trigger": "minecraft:spawn_wild_adult"
+              },
+              {
+                "weight": 1,
+                "trigger": "minecraft:spawn_wild_baby"
+              }
+            ]
+          }
+        ]
       },
 
       "minecraft:spawn_wild_baby": {
@@ -467,20 +821,20 @@
         }
       },
 
-      "minecraft:spawn_tame_baby": {
-        "add": {
-          "component_groups": [
-            "minecraft:wolf_baby",
-            "minecraft:wolf_tame"
-          ]
-        }
-      },
-
       "minecraft:spawn_wild_adult": {
         "add": {
           "component_groups": [
             "minecraft:wolf_adult",
             "minecraft:wolf_wild"
+          ]
+        }
+      },
+
+      "minecraft:spawn_tame_baby": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_baby",
+            "minecraft:wolf_tame"
           ]
         }
       },
@@ -567,6 +921,17 @@
           "component_groups": [
             "minecraft:wolf_wild"
           ]
+        }
+      },
+
+      "minecraft:become_armorable": {
+        "add": {
+          "component_groups": [
+            "minecraft:wolf_armorable"
+          ]
+        },
+        "set_property": {
+          "minecraft:is_armorable": true
         }
       }
     }

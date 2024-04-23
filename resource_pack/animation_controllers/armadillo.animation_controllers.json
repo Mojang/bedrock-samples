@@ -1,0 +1,79 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.armadillo.look_at_target": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [ { "looking_at_target": "!variable.is_rolled_up" } ]
+        },
+        "looking_at_target": {
+          "animations": [ "look_at_target" ],
+          "transitions": [ { "default": "variable.is_rolled_up" } ]
+        }
+      }
+    },
+    "controller.animation.armadillo.walk": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [ { "walking": "variable.walking" } ],
+          "blend_transition": 0.2
+        },
+        "walking": {
+          "animations": [ { "walk": "math.min(1.4, math.lerp(0.2, 2.4, query.modified_move_speed))" } ],
+          "transitions": [ { "default": "!variable.walking" } ],
+          "blend_transition": 0.2
+        }
+      }
+    },
+    "controller.animation.armadillo.roll_up": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [ { "roll_up": "variable.is_rolled_up" } ],
+          "blend_transition": 0.2
+        },
+        "roll_up": {
+          "animations": [ "roll_up" ],
+          "transitions": [
+            { "rolled_up": "variable.is_rolled_up && query.all_animations_finished" },
+            { "unroll_fast": "!variable.is_rolled_up" }
+          ],
+          "blend_transition": 0.2
+        },
+        "rolled_up": {
+          "animations": [ "rolled_up" ],
+          "transitions": [
+            { "peek": "variable.is_rolled_up && variable.is_peeking" },
+            { "unroll": "variable.is_rolled_up && variable.is_unrolling" },
+            { "unroll_fast": "!variable.is_rolled_up" }
+          ],
+          "blend_transition": 0.2
+        },
+        "peek": {
+          "animations": [ "peek" ],
+          "transitions": [
+            { "rolled_up": "variable.is_rolled_up && !variable.is_peeking && query.all_animations_finished" },
+            { "unroll": "variable.is_rolled_up && variable.is_unrolling && query.all_animations_finished" },
+            { "unroll_fast": "!variable.is_rolled_up" }
+          ],
+          "blend_transition": 0.2
+        },
+        "unroll": {
+          "animations": [ "unroll" ],
+          "transitions": [
+            { "rolled_up": "variable.is_rolled_up && !variable.is_unrolling" },
+            { "default": "!variable.is_rolled_up && query.all_animations_finished" }
+          ],
+          "blend_transition": 0.2
+        },
+        "unroll_fast": {
+          "animations": [ "unroll_fast" ],
+          "transitions": [ { "default": "query.all_animations_finished" } ],
+          "blend_transition": 0.2
+        }
+      }
+    }
+  }
+}

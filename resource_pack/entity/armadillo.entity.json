@@ -1,0 +1,63 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:armadillo",
+      "materials": {
+        "default": "armadillo"
+      },
+      "geometry": {
+        "default": "geometry.armadillo"
+      },
+      "textures": {
+        "default": "textures/entity/armadillo"
+      },
+      "render_controllers": [
+        "controller.render.armadillo"
+      ],
+      "scripts": {
+        "pre_animation": [
+          "variable.x_head_rotation = math.clamp(query.target_x_rotation, -32.5, 32.5);",
+          "variable.y_head_rotation = math.clamp(query.target_y_rotation, -22.5, 25);",
+          "variable.is_rolled_up = query.property('minecraft:armadillo_state') != 'unrolled';",
+          "variable.rolled_up_time = variable.is_rolled_up ? ((variable.rolled_up_time ?? 0.0) + query.delta_time) : 0.0;",
+          "variable.is_peeking = query.property('minecraft:armadillo_state') == 'rolled_up_peeking';",
+          "variable.is_unrolling = query.property('minecraft:armadillo_state') == 'rolled_up_unrolling';",
+          "variable.unrolling_time = variable.is_unrolling ? ((variable.unrolling_time ?? 0.0) + query.delta_time) : 0.0;",
+          "variable.use_rolled_up_model = variable.rolled_up_time >= 0.2083 && (variable.unrolling_time == 0.0 || variable.unrolling_time <= 1.25 );",
+          "variable.walking = query.modified_move_speed > 0.01 && !variable.is_rolled_up;",
+          "variable.walk_anim_time_update = query.anim_time + math.min(3.0, math.lerp(2.0, 5.0, query.modified_move_speed)) * query.delta_time;"
+        ],
+        "animate": [
+          "look_at_target_controller",
+          "walk_controller",
+          "roll_up_controller"
+        ],
+        "should_update_effects_offscreen": "1.0"
+      },
+      "animations": {
+        "look_at_target": "animation.armadillo.look_at_target",
+        "look_at_target_controller": "controller.animation.armadillo.look_at_target",
+        "walk": "animation.armadillo.walk",
+        "walk_controller": "controller.animation.armadillo.walk",
+        "roll_up": "animation.armadillo.roll_up",
+        "rolled_up": "animation.armadillo.rolled_up",
+        "peek": "animation.armadillo.peek",
+        "unroll": "animation.armadillo.unroll",
+        "unroll_fast": "animation.armadillo.unroll_fast",
+        "roll_up_controller": "controller.animation.armadillo.roll_up"
+      },
+      "sound_effects": {
+        "roll": "mob.armadillo.roll",
+        "land": "mob.armadillo.land",
+        "peek": "mob.armadillo.peek",
+        "unroll_start": "mob.armadillo.unroll_start",
+        "unroll_finish": "mob.armadillo.unroll_finish"
+      },
+      "spawn_egg": {
+        "base_color": "#ad716d",
+        "overlay_color": "#824848"
+      }
+    }
+  }
+}

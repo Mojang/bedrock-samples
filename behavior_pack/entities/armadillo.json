@@ -1,0 +1,627 @@
+{
+  "format_version": "1.20.80",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:armadillo",
+      "spawn_category": "creature",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "minecraft:armadillo_state": {
+          "type": "enum",
+          "values": [ "unrolled", "rolled_up", "rolled_up_peeking", "rolled_up_relaxing", "rolled_up_unrolling" ],
+          "default": "unrolled",
+          "client_sync": true
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:type_family": {
+        "family": [ "armadillo", "mob" ]
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:movement.basic": {
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "avoid_damage_blocks": true,
+        "avoid_water": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      },
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:nameable": {
+      },
+      "minecraft:balloonable": {
+      },
+      "minecraft:leashable": {
+        "soft_distance": 4.0,
+        "hard_distance": 6.0,
+        "max_distance": 10.0
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:collision_box": {
+        "width": 0.7,
+        "height": 0.65
+      },
+      "minecraft:health": {
+        "value": 12
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava", "subject": "self"
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      // Every four ticks, the Armadillo scans for threats. These are either undead mobs or players
+      // who are sprinting, on a vehicle, or the last one to recently attack it.
+      "minecraft:entity_sensor": {
+        "subsensors": [
+          {
+            "event": "minecraft:no_threat_detected",
+            "cooldown": 0.2,
+            "range": [ 7.0, 2.0 ],
+            "minimum_count": 0,
+            "maximum_count": 0,
+            // This filter must be exactly the same as the one for minecraft:threat_detected.
+            "event_filters": {
+              "any_of": [
+                { "test": "is_family", "subject": "other", "value": "undead" },
+                {
+                  "all_of": [
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    {
+                      "any_of": [
+                        { "test": "was_last_hurt_by", "subject": "other" },
+                        { "test": "is_sprinting", "subject": "other" },
+                        { "test": "is_riding", "subject": "other" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "event": "minecraft:threat_detected",
+            "cooldown": 0.2,
+            "range": [ 7.0, 2.0 ],
+            "minimum_count": 1,
+            // This filter must be exactly the same as the one for minecraft:no_threat_detected.
+            "event_filters": {
+              "any_of": [
+                { "test": "is_family", "subject": "other", "value": "undead" },
+                {
+                  "all_of": [
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    {
+                      "any_of": [
+                        { "test": "was_last_hurt_by", "subject": "other" },
+                        { "test": "is_sprinting", "subject": "other" },
+                        { "test": "is_riding", "subject": "other" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:behavior.panic": {
+        "priority": 1,
+        "ignore_mob_damage": true,
+        "speed_multiplier": 2.0
+      }
+    },
+
+    "component_groups": {
+      "minecraft:baby": {
+        "minecraft:is_baby": {
+        },
+        "minecraft:scale": {
+          "value": 0.6
+        },
+        "minecraft:ageable": {
+          "duration": 1200,
+          "interact_filters": {
+              "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "unrolled"
+          },
+          "feed_items": "spider_eye",
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      },
+      "minecraft:baby_unrolled": {
+        "minecraft:behavior.follow_parent": {
+          "priority": 5,
+          "speed_multiplier": 1.25
+        }
+      },
+      "minecraft:adult": {
+        "minecraft:experience_reward": {
+          "on_bred": "Math.Random(1,7)",
+          "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
+        },
+        "minecraft:spawn_entity": {
+          "entities": {
+            "min_wait_time": 300,
+            "max_wait_time": 600,
+            "spawn_sound": "mob.armadillo.scute_drop",
+            "spawn_item": "armadillo_scute"
+          }
+        },
+        "minecraft:breedable": {
+          "love_filters": {
+            "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "unrolled"
+          },
+          "require_tame": false,
+          "breeds_with": [
+            {
+              "mate_type": "minecraft:armadillo",
+              "baby_type": "minecraft:armadillo",
+              "breed_event": {
+                "event": "minecraft:entity_born",
+                "target": "baby"
+              }
+            }
+          ],
+          "breed_items": [
+            "spider_eye"
+          ]
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_family", "subject": "other", "value": "player" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "brush" }
+                  ]
+                }
+              },
+              "play_sounds": "mob.armadillo.brush",
+              "interact_text": "action.interact.brush",
+              "hurt_item": 16,
+              "swing": true,
+              "spawn_items": { "table": "loot_tables/entities/armadillo_brush.json" }
+            }
+          ]
+        }
+      },
+      "minecraft:adult_unrolled": {
+        "minecraft:behavior.breed": {
+          "priority": 2,
+          "speed_multiplier": 1.0
+        }
+      },
+      "minecraft:unrolled": {
+        "minecraft:movement": {
+          "value": 0.14
+        },
+        "minecraft:ambient_sound_interval": {
+        },
+        "minecraft:damage_sensor": {
+          "triggers": {
+            "on_damage": {
+              "filters": {
+                "any_of": [
+                  { "test": "is_family", "subject": "other", "value": "mob" },
+                  { "test": "is_family", "subject": "other", "value": "player" }
+                ]
+              },
+              "event": "minecraft:threat_detected"
+            }
+          }
+        },
+        "minecraft:behavior.tempt": {
+          "priority": 3,
+          "speed_multiplier": 1.25,
+          "can_tempt_vertically": true,
+          "items": [ "spider_eye" ]
+        },
+        "minecraft:behavior.random_stroll": {
+          "priority": 6,
+          "speed_multiplier": 1.0
+        },
+        "minecraft:behavior.look_at_player": {
+          "priority": 7,
+          "target_distance": 6.0,
+          "probability": 0.02,
+          "min_look_time": 40,
+          "max_look_time": 80
+        },
+        "minecraft:behavior.random_look_around": {
+          "priority": 8
+        }
+      },
+      "minecraft:rolled_up": {
+        "minecraft:movement": {
+          "value": 0.0
+        },
+        "minecraft:body_rotation_blocked": {
+        },
+        "minecraft:damage_sensor": {
+          "triggers": [
+            // Consider damage coming from mobs and players as a threat, and adjust its value.
+            {
+              "on_damage": {
+                "filters": {
+                  "any_of": [
+                    { "test": "is_family", "subject": "other", "value": "mob" },
+                    { "test": "is_family", "subject": "other", "value": "player" }
+                  ]
+                },
+                "event": "minecraft:threat_detected"
+              },
+              "damage_multiplier": 0.5,
+              "damage_modifier": -1.0
+            },
+            // For any other source other than mobs and players, just adjust the damage value.
+            {
+              "damage_multiplier": 0.5,
+              "damage_modifier": -1.0
+            }
+          ]
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              // Immediately unroll if the Armadillo is not in a suitable state for being rolled-up.
+              "filters": {
+                "any_of": [
+                  { "test": "on_fire" },
+                  { "test": "in_water" },
+                  { "test": "is_panicking" },
+                  { "test": "is_leashed" },
+                  { "test": "is_riding" }
+                ]
+              },
+              "event": "minecraft:unroll"
+            }
+          ]
+        }
+      },
+      "minecraft:rolled_up_with_threats": {
+        // Since "cooldown_range" has to elapse before being able to start the goal, peeking on_end instead
+        // of on_start allows for a total delay of cooldown_range + duration_range before the first peek.
+        "minecraft:behavior.timer_flag_1": {
+          "priority": 0,
+          "cooldown_range": 2.5,           // Peeking duration, since on_end starts the peeking.
+          "duration_range": [ 5.0, 20.0 ], // Peeking cooldown, since on_start stops the peeking.
+          "on_start": {
+            "event": "minecraft:stop_peeking"
+          },
+          "on_end": {
+            "event": "minecraft:start_peeking"
+          }
+        }
+      },
+      "minecraft:rolled_up_without_threats": {
+        // Unroll after 4 seconds without threats. The goal below will take care of
+        // starting the unrolling animation at the right time.
+        "minecraft:timer": {
+          "looping": true, // Makes sure we don't somehow get stuck in this state.
+          "time": 4,
+          "randomInterval": false,
+          "time_down_event": {
+            "event": "minecraft:unroll"
+          }
+        },
+        // Since "cooldown_range" has to elapse before being able to start the goal,
+        // the event will be emitted after 2.5 seconds, making sure that the end of
+        // the resulting unrolling animation matches the end of the timer above.
+        "minecraft:behavior.timer_flag_1": {
+          "priority": 0,
+          "cooldown_range": 2.5,
+          "duration_range": 1.5,
+          "on_start": {
+            "event": "minecraft:start_unrolling"
+          }
+        }
+      }
+    },
+
+    "events": {
+      "minecraft:entity_spawned": {
+        "randomize": [
+          {
+            "weight": 95,
+            "trigger": "minecraft:spawn_adult"
+          },
+          {
+            "weight": 5,
+            "trigger": "minecraft:spawn_baby"
+          }
+        ]
+      },
+      "minecraft:entity_born": {
+        "trigger": "minecraft:spawn_baby"
+      },
+      "minecraft:spawn_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:adult",
+            "minecraft:adult_unrolled",
+            "minecraft:unrolled",
+            "minecraft:scanning"
+          ]
+        }
+      },
+      "minecraft:spawn_baby": {
+        "add": {
+          "component_groups": [
+            "minecraft:baby",
+            "minecraft:baby_unrolled",
+            "minecraft:unrolled",
+            "minecraft:scanning"
+          ]
+        }
+      },
+      "minecraft:ageable_grow_up": {
+        "sequence": [
+          {
+            "remove": {
+              "component_groups": [
+                "minecraft:baby",
+                "minecraft:baby_unrolled"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:adult"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "unrolled"
+            },
+            "add": {
+              "component_groups": [ "minecraft:adult_unrolled" ]
+            }
+          }
+        ]
+      },
+      "minecraft:no_threat_detected": {
+        "sequence": [
+          {
+            // Relax instead of immediately unrolling only if the Armadillo is in a suitable state to do so.
+            "filters": {
+              "all_of": [
+                {
+                  "any_of": [
+                    { "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up" },
+                    { "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up_peeking" }
+                  ]
+                },
+                { "test": "on_fire", "value": false },
+                { "test": "in_water", "value": false },
+                { "test": "is_panicking", "value": false },
+                { "test": "is_leashed", "value": false },
+                { "test": "is_riding", "value": false }
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:rolled_up_with_threats"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:rolled_up_without_threats"
+              ]
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "rolled_up_relaxing"
+            }
+          }
+        ]
+      },
+      "minecraft:threat_detected": {
+        "sequence": [
+          {
+            // Roll up only if the Armadillo is in a suitable state to do so.
+            "filters": {
+              "all_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "unrolled" },
+                { "test": "on_ground", "value": true },
+                { "test": "on_fire", "value": false },
+                { "test": "in_water", "value": false },
+                { "test": "is_panicking", "value": false },
+                { "test": "is_leashed", "value": false },
+                { "test": "is_riding", "value": false }
+              ]
+            },
+            "trigger": "minecraft:roll_up"
+          },
+          {
+            "filters": {
+              "any_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up_relaxing" },
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up_unrolling" }
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:rolled_up_without_threats"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:rolled_up_with_threats"
+              ]
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "rolled_up"
+            }
+          }
+        ]
+      },
+      "minecraft:unroll": {
+        "sequence": [
+          {
+            "filters": {
+              "all_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "operator": "not", "value": "unrolled" },
+                // No unrolling on death, as the resulting animation may look silly.
+                { "test": "actor_health", "subject": "self", "operator" : ">", "value": 0 }
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:rolled_up",
+                "minecraft:rolled_up_with_threats",
+                "minecraft:rolled_up_without_threats"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:unrolled"
+              ]
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "unrolled"
+            },
+            "emit_vibration": {
+              "vibration": "entity_act"
+            }
+          },
+          {
+            "filters": {
+              "all_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "operator": "not", "value": "unrolled" },
+                // No unrolling on death, as the resulting animation may look silly.
+                { "test": "actor_health", "subject": "self", "operator" : ">", "value": 0 },
+                { "test": "has_component", "value": "minecraft:is_baby" }
+              ]
+            },
+            "add": {
+              "component_groups": [ "minecraft:baby_unrolled" ]
+            }
+          },
+          {
+            "filters": {
+              "all_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "operator": "not", "value": "unrolled" },
+                // No unrolling on death, as the resulting animation may look silly.
+                { "test": "actor_health", "subject": "self", "operator" : ">", "value": 0 },
+                { "test": "has_component", "operator": "not", "value": "minecraft:is_baby" }
+              ]
+            },
+            "add": {
+              "component_groups": [ "minecraft:adult_unrolled" ]
+            }
+          }
+        ]
+      },
+      "minecraft:roll_up": {
+        "sequence": [
+          {
+            "filters": {
+              "all_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "operator": "not", "value": "rolled_up" },
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "operator": "not", "value": "rolled_up_peeking" },
+                // No rolling up on death, as the resulting animation may look silly.
+                { "test": "actor_health", "subject": "self", "operator" : ">", "value": 0 }
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:unrolled",
+                "minecraft:baby_unrolled",
+                "minecraft:adult_unrolled",
+                "minecraft:rolled_up_without_threats"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:rolled_up",
+                "minecraft:rolled_up_with_threats"
+              ]
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "rolled_up"
+            }
+          },
+          {
+            "filters": {
+              "all_of": [
+                { "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "unrolled" },
+                // No rolling up on death, as the resulting animation may look silly.
+                { "test": "actor_health", "subject": "self", "operator" : ">", "value": 0 }
+              ]
+            },
+            "emit_vibration": {
+              "vibration": "entity_act"
+            }
+          }
+        ]
+      },
+      "minecraft:start_peeking": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up"
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "rolled_up_peeking"
+            }
+          }
+        ]
+      },
+      "minecraft:stop_peeking": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up_peeking"
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "rolled_up"
+            }
+          }
+        ]
+      },
+      "minecraft:start_unrolling": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "enum_property", "domain": "minecraft:armadillo_state", "value": "rolled_up_relaxing"
+            },
+            "set_property": {
+              "minecraft:armadillo_state": "rolled_up_unrolling"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
