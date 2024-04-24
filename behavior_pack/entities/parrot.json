@@ -1,12 +1,11 @@
 {
-  "format_version": "1.19.0",
+  "format_version": "1.21.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:parrot",
       "spawn_category": "creature",
       "is_spawnable": true,
-      "is_summonable": true,
-      "is_experimental": false
+      "is_summonable": true
     },
 
     "component_groups": {
@@ -99,25 +98,19 @@
       },
       "minecraft:parrot_not_riding_player": {
         "minecraft:entity_sensor": {
-          "sensor_range": 2.0,
           "relative_range": false,
-          "event_filters": {
-            "all_of": [
-              {
-                "test": "is_riding",
-                "subject": "self",
-                "operator": "equals",
-                "value": true
+          "subsensors": [
+            {
+              "range": [ 2.0, 2.0 ],
+              "event_filters": {
+                "all_of": [
+                  { "test": "is_riding", "subject": "self", "operator": "equals", "value": true },
+                  { "test": "has_component", "subject": "self", "operator": "equals", "value": "minecraft:behavior.look_at_player" }
+                ]
               },
-              {
-                "test": "has_component",
-                "subject": "self",
-                "operator": "equals",
-                "value": "minecraft:behavior.look_at_player"
-              }
-            ]
-          },
-          "event": "minecraft:on_riding_player"
+              "event": "minecraft:on_riding_player"
+            }
+          ]
         },
         "minecraft:behavior.look_at_player": {
           "priority": 1,
@@ -126,25 +119,19 @@
       },
       "minecraft:parrot_riding_player": {
         "minecraft:entity_sensor": {
-          "sensor_range": 2.0,
           "relative_range": false,
-          "event_filters": {
-            "all_of": [
-              {
-                "test": "is_riding",
-                "subject": "self",
-                "operator": "equals",
-                "value": false
+          "subsensors": [
+            {
+              "range": [ 2.0, 2.0 ],
+              "event_filters": {
+                "all_of": [
+                  { "test": "is_riding", "subject": "self", "operator": "equals", "value": false },
+                  { "test": "has_component", "subject": "self", "operator": "not", "value": "minecraft:behavior.look_at_player" }
+                ]
               },
-              {
-                "test": "has_component",
-                "subject": "self",
-                "operator": "not",
-                "value": "minecraft:behavior.look_at_player"
-              }
-            ]
-          },
-          "event": "minecraft:on_not_riding_player"
+              "event": "minecraft:on_not_riding_player"
+            }
+          ]
         }
       }
     },
@@ -170,10 +157,7 @@
         "damage_conditions": [
           {
             "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
+              "test": "in_lava", "subject": "self", "operator": "==", "value": true
             },
             "cause": "lava",
             "damage_per_tick": 4
