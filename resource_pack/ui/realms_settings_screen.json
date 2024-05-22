@@ -221,6 +221,212 @@
     ]
   },
 
+  // Invite links content
+
+  "invite_link_item_content": {
+    "type": "stack_panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "orientation": "horizontal",
+    "size": [ "100%", 30 ],
+    "offset": [ 2, 2 ],
+    "controls": [
+      {
+        "invite_link_item_name_and_expiry_text": {
+          "type": "stack_panel",
+          "size": [ "60%", "100%" ],
+          "controls": [
+            {
+              "name_text@realms_settings.label_text": {
+                "text": "#link_name",
+                "size": [ "100% - 8px", 10 ],
+                "color": "$text_color",
+                "bindings": [
+                  {
+                    "binding_name": "#link_name",
+                    "binding_type": "collection",
+                    "binding_collection_name": "$collection_binding_name"
+                  }
+                ]
+              }
+            },
+            {
+              "spacing_gap": {
+                "type": "panel",
+                "size": [ "100%", 2 ]
+              }
+            },
+            {
+              "expiry_text@realms_settings.label_text": {
+                "text": "#link_expiry",
+                "size": [ "100% - 8px", 10 ],
+                "color": "$light_button_secondary_default_text_color",
+                "bindings": [
+                  {
+                    "binding_name": "#link_expiry",
+                    "binding_type": "collection",
+                    "binding_collection_name": "$collection_binding_name"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "invite_link_item_state_text": {
+          "type": "panel",
+          "size": [ "fill", "100%" ],
+          "controls": [
+            {
+              "state_text@realms_settings.label_text": {
+                "text": "#link_state",
+                "text_alignment": "right",
+                "offset": [ 0, 6 ],
+                "size": [ "100%", 10 ],
+                "color": "$light_button_secondary_default_text_color",
+                "bindings": [
+                  {
+                    "binding_name": "#link_state",
+                    "binding_type": "collection",
+                    "binding_collection_name": "$collection_binding_name"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "spacing_gap": {
+          "type": "panel",
+          "size": [ 6, "100%" ]
+        }
+      }
+    ]
+  },
+
+  "invite_link_item_template": {
+    "type": "panel",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ "100%", 30 ],
+    "controls": [
+      {
+        "invite_link_item_button@common_buttons.dark_content_button": {
+          "$pressed_button_name": "open_invite_link_settings_screen",
+          "size": [ "100%", 30 ],
+          "$button_content": "realms_settings.invite_link_item_content",
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "$collection_binding_name"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "invite_links_section": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "loading_view": {
+          "type": "label",
+          "color": "$body_text_color",
+          "size": [ "default", "80px" ],
+          "offset": [ 0, 10 ],
+          "text": "realmsSettingsScreen.LoadingInviteLinks",
+          "bindings": [
+            {
+              "binding_name": "#realms_invite_links_loading_message_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "loading_failed_view": {
+          "type": "label",
+          "color": "$body_text_color",
+          "size": [ "default", "80px" ],
+          "offset": [ 0, 10 ],
+          "text": "realmsSettingsScreen.failedLoadingInviteLinks",
+          "bindings": [
+            {
+              "binding_name": "#realms_invite_links_loading_failed_message_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "loaded_view": {
+          "type": "stack_panel",
+          "controls": [
+            {
+              "spacing_gap_0": {
+                "type": "panel",
+                "size": [ "100%", 8 ]
+              }
+            },
+            {
+              "invite_links_info@settings_common.option_info_label": {
+                "$option_label": "realmsSettingsScreen.inviteLinkLabel",
+                "$container_size": [ "100%", "30px" ],
+                "$container_text_binding_name": "#realm_invite_links_description"
+              }
+            },
+            {
+              "invite_links_grid": {
+                "type": "stack_panel",
+                "size": [ "100%", "default" ],
+                "factory": {
+                  "name": "invite_links_factory",
+                  "control_name": "realms_settings.invite_link_item_template"
+                },
+                "collection_name": "realms_invite_links_collection",
+                "$collection_binding_name": "realms_invite_links_collection",
+                "bindings": [
+                  {
+                    "binding_name": "#realms_invite_links_collection_length",
+                    "binding_name_override": "#collection_length"
+                  }
+                ]
+              }
+            },
+            {
+              "spacing_gap_1": {
+                "type": "panel",
+                "size": [ "100%", 4 ]
+              }
+            },
+            {
+              "add_invite_link_button@settings_common.action_button": {
+                "$button_text": "realmsSettingsScreen.inviteLinkAddButton",
+                "$pressed_button_name": "create_and_open_invite_link_settings_screen",
+                "bindings": [
+                  {
+                    "binding_name": "#add_invite_link_button_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#realms_invite_links_info_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   //---------------------------------------------------------------------------
   // Branches Section
   //---------------------------------------------------------------------------
@@ -933,6 +1139,7 @@
     "$subscription_toggle_index|default": 3,
     "$backup_toggle_index|default": 4,
     "$dev_options_toggle_index|default": 5,
+    "$invite_links_toggle_index|default": 6,
     "controls": [
       {
         "play_button@settings_common.action_button_dark_text": {
@@ -1102,6 +1309,27 @@
             "#panel_title": "realmsSettingsScreen.devOptionsSectionTitle"
           }
         }
+      },
+      {
+        "invite_links_button@settings_common.section_toggle_base": {
+          "ignored": "$is_realm_slot",
+          "$toggle_view_binding_name": "invite_links_button_toggle",
+          "$toggle_group_forced_index": "$invite_links_toggle_index",
+          "$glyph_texture": "textures/ui/share_google_glyph",
+          "$glyph_color_texture": "textures/ui/share_google_glyph_color",
+          "$glyph_size": [ 14, 13 ],
+          "layer": 6,
+          "$button_text": "realmsSettingsScreen.inviteLinksSectionTitle",
+          "$toggle_property_bag": {
+            "#panel_title": "realmsSettingsScreen.inviteLinksSectionTitle"
+          },
+          "bindings": [
+            {
+              "binding_name": "#realms_invite_links_button_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
       }
     ]
   },
@@ -1132,6 +1360,13 @@
           "ignored": "$is_realm_slot",
           "$section_button_name|default": "subscription_button_toggle",
           "$section_content_name|default": "realms_settings.subscriptions_section"
+        }
+      },
+      {
+        "invite_links_section@realms_settings.generic_section_wrapper": {
+          "ignored": "$is_realm_slot",
+          "$section_button_name|default": "invite_links_button_toggle",
+          "$section_content_name|default": "realms_settings.invite_links_section"
         }
       },
       {
