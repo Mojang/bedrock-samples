@@ -1,4 +1,4 @@
-<h1>FEATURES DOCUMENTATION </br>Version: 1.21.10.21</h1>
+<h1>FEATURES DOCUMENTATION </br>Version: 1.21.10.22</h1>
 This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
@@ -404,7 +404,7 @@ Example use: Scans the surface of a chunk and places a feature if able<br / ><te
 <h1><p id="minecraft:scatter_feature">minecraft:scatter_feature</p></h1>
 
 'minecraft:scatter_feature' scatters a feature throughout a chunk. The 'x', 'y', and 'z' fields are per-coordinate parameters. Note that coordinates represent an offset from the input position, not an absolute position. Coordinates may be a single value, a random distribution, or Molang expression that resolves to a numeric value. The 'coordinate_eval_order' field is provided for finer control of coordinate resolution (particularly when using the 'grid' distribution). 'iterations' controls how many individual placements should occur if the 'scatter_chance' check succeeds. The 'scatter_chance' check happens once, so either all placements will run or none will.</br>Succeeds if: At least one feature placement succeeds.</br>Fails if: All feature placements fail.</br><h2></h2>
-Example use: Scattering flowers at sea level across half the chunks in a biome.<br / ><textarea readonly="true" cols="54" rows="21">
+Example use: Scattering flowers at sea level across half the chunks in a biome.<br / ><textarea readonly="true" cols="54" rows="23">
 {
   "format_version": "1.13.0",
   "minecraft:scatter_feature": {
@@ -412,16 +412,18 @@ Example use: Scattering flowers at sea level across half the chunks in a biome.<
       "identifier": "example:scatter_flowers_feature"
     },
     "places_feature": "example:flower_feature",
-    "iterations": 10,
-    "scatter_chance": 50.0,
-    "x": {
-      "distribution": "uniform",
-      "extent": [ 0, 15 ]
-    },
-    "y": 64,
-    "z": {
-      "distribution": "uniform",
-      "extent": [ 0, 15 ]
+    "distribution": {
+      "iterations": 10,
+      "scatter_chance": 50.0,
+      "x": {
+        "distribution": "uniform",
+        "extent": [ 0, 15 ]
+      },
+      "y": 64,
+      "z": {
+        "distribution": "uniform",
+        "extent": [ 0, 15 ]
+      }
     }
   }
 }
@@ -983,50 +985,7 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
           }
           feature_reference "places_feature" // Named reference of feature to be placed
           bool "project_input_to_floor" : opt // If true, snaps the y-value of the scattered position to the terrain heightmap. If false or unset, y-value is unmodified.
-          molang "iterations" // Number of scattered positions to generate
-          object "scatter_chance" : opt // Probability numerator / denominator that this scatter will occur.  Not evaluated each iteration; either no iterations will run, or all will.
-          {
-              int "numerator"<1-*>
-              int "denominator"<1-*>
-          }
-          molang "scatter_chance" : opt // Probability (0-100] that this scatter will occur.  Not evaluated each iteration; either no iterations will run, or all will.
-          enumerated_value "coordinate_eval_order"<"xyz", "xzy", "yxz", "yzx", "zxy", "zyx"> : opt // The order in which coordinates will be evaluated. Should be used when a coordinate depends on another. If omitted, defaults to "xzy".
-          molang "x" : opt // Expression for the coordinate (evaluated each iteration).  Mutually exclusive with random distribution object below.
-          object "x" : opt // Distribution for the coordinate (evaluated each iteration).  Mutually exclusive with Molang expression above.
-          {
-              enumerated_value "distribution"<"uniform", "gaussian", "inverse_gaussian", "triangle", "fixed_grid", "jittered_grid"> // Type of distribution - uniform random, gaussian (centered in the range), triangle (centered in the range), or grid (either fixed-step or jittered)
-              int "step_size"<1-*> : opt // When the distribution type is grid, defines the distance between steps along this axis
-              int "grid_offset"<0-*> : opt // When the distribution type is grid, defines the offset along this axis
-              array "extent"[2]
-              {
-                  molang "[0..0]" : opt // Lower bound (inclusive) of the scatter range, as an offset from the input point to scatter around
-                  molang "[1..1]" : opt // Upper bound (inclusive) of the scatter range, as an offset from the input point to scatter around
-              }
-          }
-          molang "z" : opt // Expression for the coordinate (evaluated each iteration).  Mutually exclusive with random distribution object below.
-          object "z" : opt // Distribution for the coordinate (evaluated each iteration).  Mutually exclusive with Molang expression above.
-          {
-              enumerated_value "distribution"<"uniform", "gaussian", "inverse_gaussian", "triangle", "fixed_grid", "jittered_grid"> // Type of distribution - uniform random, gaussian (centered in the range), triangle (centered in the range), or grid (either fixed-step or jittered)
-              int "step_size"<1-*> : opt // When the distribution type is grid, defines the distance between steps along this axis
-              int "grid_offset"<0-*> : opt // When the distribution type is grid, defines the offset along this axis
-              array "extent"[2]
-              {
-                  molang "[0..0]" : opt // Lower bound (inclusive) of the scatter range, as an offset from the input point to scatter around
-                  molang "[1..1]" : opt // Upper bound (inclusive) of the scatter range, as an offset from the input point to scatter around
-              }
-          }
-          molang "y" : opt // Expression for the coordinate (evaluated each iteration).  Mutually exclusive with random distribution object below.
-          object "y" : opt // Distribution for the coordinate (evaluated each iteration).  Mutually exclusive with Molang expression above.
-          {
-              enumerated_value "distribution"<"uniform", "gaussian", "inverse_gaussian", "triangle", "fixed_grid", "jittered_grid"> // Type of distribution - uniform random, gaussian (centered in the range), triangle (centered in the range), or grid (either fixed-step or jittered)
-              int "step_size"<1-*> : opt // When the distribution type is grid, defines the distance between steps along this axis
-              int "grid_offset"<0-*> : opt // When the distribution type is grid, defines the offset along this axis
-              array "extent"[2]
-              {
-                  molang "[0..0]" : opt // Lower bound (inclusive) of the scatter range, as an offset from the input point to scatter around
-                  molang "[1..1]" : opt // Upper bound (inclusive) of the scatter range, as an offset from the input point to scatter around
-              }
-          }
+          object "distribution" // Parameters controlling the scatter of the feature. Object of type ScatterParams
       }
       object "minecraft:sculk_patch_feature" : opt
       {
@@ -2045,7 +2004,7 @@ Controls the scatter distribution of a particular object.</br><h2></h2>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">iterations</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type struct Puv::Legacy::ExpressionNode</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type struct SharedTypes::Legacy::ExpressionNode</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Number of scattered positions to generate.</br></td>
 </tr>
