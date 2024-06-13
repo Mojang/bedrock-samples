@@ -327,8 +327,8 @@
   "advanced_stack_panel@npc_interact.main_stack_panel": {
     "controls": [
       { "top_pad@common.empty_panel": { "size": [ "100%", 4 ] } },
-      { "add_help_p1@npc_interact.add_help_p1": {} },
-      { "add_help_p2@npc_interact.add_help_p2": {} },
+      { "add_help_text@npc_interact.add_help_text": {} },
+      { "middle_pad@common.empty_panel": { "size": [ "100%", 12 ] } },
       { "actions@npc_interact.action_panel": {} },
       { "add_buttons@npc_interact.add_buttons": {} },
       { "bottom_pad@common.empty_panel": { "size": [ "100%", 4 ] } }
@@ -748,40 +748,120 @@
   },
 
   "help_label@edu_common.light_label": {
-    "size": [ "fill", "default" ]
+    "size": "$label_size",
+    "variables": [
+      {
+        "requires": "$education_edition",
+        "$label_size": [ 139, "default" ]
+      },
+      {
+        "requires": "(not $education_edition)",
+        "$label_size": [ "default", "default" ]
+      }
+    ]
   },
 
   // Help text that is visible when no actions have been added
   "add_help_section": {
     "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", "100%cm" ],
     "controls": [
       {
-        "text": {
-          "type": "stack_panel",
-          "orientation": "horizontal",
-          "size": [ "100%", "100%cm" ],
+        "text_url": {
+          "type": "panel",
+          "size": [ "100%cm", "100%cm" ],
+          "ignored": "(not $education_edition)",
           "controls": [
             {
-              "url@npc_interact.help_label": {
-                "text": "$url_text",
-                "ignored": "(not $education_edition)"
+              "tts_border@common.non_interact_focus_border_button": {
+                "tts_inherit_siblings": true,
+                "size": [ "100%sm + 5px", "100%sm + 5px" ],
+                "bindings": [
+                  {
+                    "binding_name": "#tts_enabled",
+                    "binding_name_override": "#enabled"
+                  }
+                ]
               }
             },
             {
-              "padding@common.empty_panel": {
-                "size": [ 23, "100%sm" ],
-                "ignored": "(not $education_edition)"
-              }
-            },
-            {
-              "command@npc_interact.help_label": {
-                "text": "$command_text"
+              "wrapper_panel_url": {
+                "type": "stack_panel",
+                "orientation": "vertical",
+                "size": [ "100%cm", "100%c" ],
+                "controls": [
+                  {
+                    "text_url_a@npc_interact.help_label": {
+                      "text": "$text_url_a"
+                    }
+                  },
+                  {
+                    "padding@common.empty_panel": {
+                      "size": [ "100%sm", 12 ]
+                    }
+                  },
+                  {
+                    "text_url_b@npc_interact.help_label": {
+                      "text": "$text_url_b"
+                    }
+                  }
+                ]
               }
             }
           ]
         }
       },
-      { "padding@common.empty_panel": { "size": [ "100%", 12 ] } }
+      {
+        "padding@common.empty_panel": {
+          "size": [ 23, 12 ],
+          "ignored": "(not $education_edition)"
+        }
+      },
+      {
+        "text_command": {
+          "type": "panel",
+          "size": [ "fill", "100%cm" ],
+          "controls": [
+            {
+              "tts_border@common.non_interact_focus_border_button": {
+                "tts_inherit_siblings": true,
+                "size": [ "100%sm + 5px", "100%sm + 5px" ],
+                "bindings": [
+                  {
+                    "binding_name": "#tts_enabled",
+                    "binding_name_override": "#enabled"
+                  }
+                ]
+              }
+            },
+            {
+              "wrapper_panel_command": {
+                "type": "stack_panel",
+                "orientation": "vertical",
+                "size": [ "100%cm", "100%c" ],
+                "controls": [
+                  {
+                    "text_command_a@npc_interact.help_label": {
+                      "text": "$text_command_a"
+                    }
+                  },
+                  {
+                    "padding@common.empty_panel": {
+                      "size": [ "100%sm", 12 ]
+                    }
+                  },
+                  {
+                    "text_command_b@npc_interact.help_label": {
+                      "text": "$text_command_b"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     ],
     "bindings": [
       {
@@ -791,14 +871,11 @@
     ]
   },
 
-  "add_help_p1@npc_interact.add_help_section": {
-    "$url_text": "npcscreen.help.url.a",
-    "$command_text": "npcscreen.help.command.a"
-  },
-
-  "add_help_p2@npc_interact.add_help_section": {
-    "$url_text": "npcscreen.help.url.b",
-    "$command_text": "npcscreen.help.command.b"
+  "add_help_text@npc_interact.add_help_section": {
+    "$text_url_a": "npcscreen.help.url.a",
+    "$text_url_b": "npcscreen.help.url.b",
+    "$text_command_a": "npcscreen.help.command.a",
+    "$text_command_b": "npcscreen.help.command.b"
   },
 
   "add_buttons": {
@@ -922,6 +999,7 @@
           "anchor_to": "bottom_right",
           "offset": [ -2, -2 ],
           "size": [ 18, 18 ],
+          "$button_tts_name|default": "key.immersivereader",
           "layer": 5,
           "ignored": "($is_worldbuilder or not $education_edition)",
           "bindings": [
@@ -1221,7 +1299,7 @@
   // -----------------------------------------------
   // Base window
   // -----------------------------------------------
-  "close_button_base": {
+  "close_button_base@common.back_button": {
     "type": "button",
     "size": [ 21, 21 ],
     "layer": 10,
@@ -1230,9 +1308,9 @@
     "default_control": "default",
     "hover_control": "hover",
     "pressed_control": "pressed",
-    "focus_enabled": false,
     "$close_button_panel_size": [ 15, 15 ],
     "$close_button_to_button_id": "button.menu_exit",
+    "$button_text": "",
 
     "button_mappings": [
       {

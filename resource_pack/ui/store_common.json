@@ -4139,10 +4139,21 @@
   "store_section_panel": {
     "type": "panel",
     "size": [ "100%", "100%cm + 4px" ],
-    "focus_container": true,
-    "focus_wrap_enabled": false,
-    "focus_navigation_mode_left": "$main_content_focus_container_left",
-    "focus_container_custom_left": "$main_content_focus_container_left_custom",
+    "focus_container": "$allows_sdl_section_focus_container",
+    "$store_section_focus_wrap_enabled|default": false,
+    "$store_section_panel_nav_mode_left|default": "$main_content_focus_container_left",
+    "$store_section_panel_nav_custom_left|default": "$main_content_focus_container_left_custom",
+    "variables": [
+      {
+        "requires": "(not $allows_sdl_section_focus_container)",
+        "$store_section_focus_wrap_enabled": true,
+        "$store_section_panel_nav_mode_left": "none",
+        "$store_section_panel_nav_custom_left": {},
+        "focus_wrap_enabled": "$store_section_focus_wrap_enabled",
+        "focus_navigation_mode_left": "$store_section_panel_nav_mode_left",
+        "focus_container_custom_left": "$store_section_panel_nav_custom_left"
+      }
+    ],
 
     "clip_state_change_event": "$store_factory_clipping_event",
 
@@ -4278,6 +4289,7 @@
 
     "$main_content_focus_container_left|default": "none",
     "$main_content_focus_container_left_custom|default": {},
+    "$allows_sdl_section_focus_container|default": true,
 
     "factory": {
       "name": "store_section_factory",
@@ -4340,6 +4352,7 @@
         "$is_mashup",
         "$main_content_focus_container_left",
         "$main_content_focus_container_left_custom",
+        "$allows_sdl_section_focus_container",
         "$always_show_layer",
         "$always_show_paper_doll",
         "$is_non_scrollable_sdl_screen"
@@ -4577,9 +4590,17 @@
     "type": "stack_panel",
     "orientation": "vertical",
     "size": [ "100% - 8px", "100%c + 2px" ],
-    "focus_container": true,
-    "focus_wrap_enabled": false,
+    "focus_container": "$allows_sdl_section_focus_container",
     "$focus_id": "store_offer_grid_panel_focus_id",
+
+    "$store_offer_grid_content_focus_wrap_enabled|default": false,
+    "variables": [
+      {
+        "requires": "(not $allows_sdl_section_focus_container)",
+        "$store_offer_grid_content_focus_wrap_enabled": true,
+        "focus_wrap_enabled": "$store_offer_grid_content_focus_wrap_enabled"
+      }
+    ],
 
     "controls": [
       {
@@ -8557,6 +8578,28 @@
                       "color": "$0_color_format",
                       "layer": 3
                     }
+                  },
+                  {
+                    "offer_coin_icon@common_store.coin_icon": {
+                      "size": [ 10, 10 ],
+                      "layer": 3,
+                      "offset": [ 1, -1 ],
+                      "anchor_to": "bottom_left",
+                      "anchor_from": "bottom_left",
+                      "bindings": [
+                        {
+                          "binding_type": "$store_factory_collection_details",
+                          "binding_collection_name": "$store_factory_collection_name",
+                          "binding_collection_prefix": "$store_factory_collection_prefix"
+                        },
+                        {
+                          "binding_type": "$offer_binding_type",
+                          "binding_collection_name": "$offer_collection_name",
+                          "binding_name": "#offer_coin_visible",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -8654,6 +8697,9 @@
           "$persona_piece_collection_name": "$offer_collection_name",
           "$persona_piece_binding_type": "$offer_binding_type",
           "$persona_piece_prefix": "$offer_collection_prefix",
+
+          "$controller_left_bumper_mapping": "button.cycle_offer_left",
+          "$controller_right_bumper_mapping": "button.cycle_offer_right",
 
           "$filesystem_binding_type": "collection"
         }
@@ -9682,7 +9728,7 @@
         }
       },
       {
-        "clear_button@common.close_button": {
+        "clear_button@common.light_close_button": {
           "anchor_from": "right_middle",
           "anchor_to": "right_middle",
           "visible": false,
@@ -9701,6 +9747,20 @@
               "from_button_id": "button.menu_ok",
               "to_button_id": "button.search_clear",
               "mapping_type": "focused"
+            }
+          ]
+        }
+      },
+      {
+        "loading_spinner@common_store.progress_loading_spinner": {
+          "$progress_loading_spinner_anchor": "right_middle",
+          "offset": [ -6, 0 ],
+          "layer": 2,
+          "bindings": [
+            {
+              "binding_type": "global",
+              "binding_name": "#search_spinner_visible",
+              "binding_name_override": "#visible"
             }
           ]
         }

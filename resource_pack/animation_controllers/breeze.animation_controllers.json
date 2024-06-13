@@ -1,0 +1,127 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.breeze.look_at": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "animations": [ "look_at" ]
+        }
+      }
+    },
+    "controller.animation.breeze.idle": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "animations": [ "idle" ]
+        }
+      }
+    },
+    "controller.animation.breeze.idle_ground_sound": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "animations": [ "idle_ground_sound" ]
+        }
+      }
+    },
+    "controller.animation.breeze.move": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "animations": [ "whirl_sound" ],
+          "transitions": [
+            {
+              "moving": "query.modified_move_speed > 0.1 && query.vertical_speed == 0"
+            }
+          ]
+        },
+        "moving": {
+          "animations": [ "slide" ],
+          "sound_effects": [
+            {
+              "effect": "slide"
+            }
+          ],
+          "transitions": [
+            {
+              "default": "query.modified_move_speed < 0.1"
+            }
+          ],
+          "blend_transition": 0.2
+        }
+      }
+    },
+    "controller.animation.breeze.ground_particles": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            { "idling": "!query.is_moving && query.is_on_ground && query.vertical_speed > -2 && !query.is_riding" },
+            { "moving": "query.is_moving && query.is_on_ground && query.vertical_speed > -2 && !query.is_riding" }
+          ]
+        },
+        "idling": {
+          "animations": [ "idle_ground_particles" ],
+          "transitions": [
+            { "default": "!query.is_on_ground || query.is_riding" },
+            { "moving": "query.is_moving && query.is_on_ground && !query.is_riding" }
+          ]
+        },
+        "moving": {
+          "animations": [ "slide_ground_particles" ],
+          "transitions": [
+            { "default": "!query.is_on_ground || query.is_riding" },
+            { "idling": "!query.is_moving && query.is_on_ground && !query.is_riding" }
+          ]
+        }
+      }
+    },
+    "controller.animation.breeze.shoot": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "shoot": "query.facing_target_to_range_attack"
+            }
+          ]
+        },
+        "shoot": {
+          "animations": [ "shoot" ],
+          "sound_effects": [
+            {
+              "effect": "inhale"
+            }
+          ],
+          "transitions": [
+            {
+              "default": "!query.facing_target_to_range_attack || query.all_animations_finished"
+            }
+          ]
+        }
+      }
+    },
+    "controller.animation.breeze.jump": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            { "jump": "query.is_jump_goal_jumping" }
+          ]
+        },
+        "jump": {
+          "animations": [ "jump" ],
+          "sound_effects": [
+            {
+              "effect": "charge"
+            }
+          ],
+          "transitions": [
+            { "default": "!query.is_jump_goal_jumping" }
+          ]
+        }
+      }
+    }
+  }
+}

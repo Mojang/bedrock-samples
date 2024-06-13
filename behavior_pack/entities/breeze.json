@@ -1,0 +1,312 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:breeze",
+      "spawn_category": "monster",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "minecraft:is_playing_idle_ground_sound": {
+          "type": "bool",
+          "client_sync": false,
+          "default": false
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "breeze",
+          "monster",
+          "mob"
+        ]
+      },
+      "minecraft:nameable": {},
+      "minecraft:health": {
+        "value": 30,
+        "max": 30
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/breeze.json"
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 1.77
+      },
+      "minecraft:knockback_resistance": {
+        "value": 0.0
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:persistent": {
+      },
+      "minecraft:experience_reward": {
+        "on_bred": "Math.Random(1,7)",
+        "on_death": "query.last_hit_by_player ? 10 : 0"
+      },
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:movement": {
+        "value": 0.4
+      },
+      "minecraft:follow_range": {
+        "value": 32.0
+      },
+      "minecraft:navigation.walk": {
+        "blocks_to_avoid": [
+          {
+            "tags": "query.any_tag('trapdoors')"
+          }
+        ]
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:can_climb": {},
+      "minecraft:conditional_bandwidth_optimization": {
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "fall",
+            "deals_damage": false
+          },
+          {
+            "on_damage": {
+              "filters": { "test" : "is_family", "subject" : "damager", "operator": "!=", "value" : "wind_charge" }
+            },
+            "cause": "projectile",
+            "deals_damage": false
+          }
+        ]
+      },
+      "minecraft:environment_sensor": {
+        "triggers": [
+          {
+            "filters": {
+              "all_of": [
+                {"test": "on_ground", "subject": "self", "value": true},
+                {"test": "has_target", "subject": "self", "value": true},
+                {"test": "bool_property", "operator": "==", "domain": "minecraft:is_playing_idle_ground_sound"}
+              ]
+            },
+            "event": "minecraft:stop_playing_idle_ground_sound"
+          },
+          {
+            "filters": {
+              "all_of": [
+                {"test": "bool_property", "operator": "!=", "domain": "minecraft:is_playing_idle_ground_sound"},
+                {
+                  "any_of": [
+                    {"test": "on_ground", "subject": "self", "value": false},
+                    {"test": "has_target", "subject": "self", "value": false}
+                  ]
+                }
+              ]
+            },
+            "event": "minecraft:start_playing_idle_ground_sound"
+          }
+        ]
+      },
+      "minecraft:reflect_projectiles": {
+        "reflected_projectiles": [
+          "xp_bottle",
+          "thrown_trident",
+          "shulker_bullet",
+          "dragon_fireball",
+          "arrow",
+          "snowball",
+          "egg",
+          "fireball",
+          "splash_potion",
+          "ender_pearl",
+          "wither_skull",
+          "wither_skull_dangerous",
+          "small_fireball",
+          "lingering_potion",
+          "llama_spit",
+          "fireworks_rocket",
+          "fishing_hook"
+        ],
+        "azimuth_angle": "180.0 + Math.random(-20.0, 20.0)",
+        "reflection_scale": "0.5"
+      },
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 1,
+        "within_radius": 24,
+        "scan_interval": 10,
+        "entity_types": [
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            "max_dist": 24
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "irongolem"
+            },
+            "max_dist": 24
+          }
+        ],
+        "must_see": true
+      },
+      "minecraft:behavior.move_away_from_target": {
+        "priority": 2,
+        "destination_position_range": [4.0, 8.0],
+        "movement_speed": 1.2,
+        "destination_pos_spread_degrees": 90,
+        "filters": {
+          "all_of": [
+            {
+              "test": "on_ground",
+              "value": true
+            },
+            {
+              "test": "target_distance",
+              "subject": "self",
+              "value": 4.0,
+              "operator": "<="
+            }
+          ]
+        }
+      },
+      "minecraft:behavior.fire_at_target": {
+        "projectile_def": "minecraft:breeze_wind_charge_projectile",
+        "priority": 3,
+        "attack_range": [ 2, 16 ],
+        "attack_cooldown": 0.5,
+        "pre_shoot_delay": 0.75,
+        "post_shoot_delay": 0.2,
+        "ranged_fov": 90.0,
+        "owner_anchor": 2,
+        "owner_offset": [ 0.0, 0.3, 0.0 ],
+        "target_anchor": 0,
+        "target_offset": [ 0.0, 0.5, 0.0 ]
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 4,
+        "entity_types": [
+          {
+            "filters": {
+              "all_of": [
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "skeleton"
+                },
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "stray"
+                },
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "zombie"
+                },
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "husk"
+                },
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "spider"
+                },
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "cavespider"
+                },
+                {
+                  "test": "is_family", "subject": "other", "operator": "!=", "value": "slime"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "minecraft:behavior.jump_around_target": {
+        "priority": 5,
+        "filters": {
+          "all_of": [
+            {
+              "any_of": [
+                { "test": "in_water", "value": true },
+                { "test": "on_ground", "value": true }
+              ]
+            },
+            { "test": "is_riding", "value": false },
+            { "test": "in_lava", "value": false }
+          ]
+        },
+        "jump_cooldown_duration": 0.5,
+        "jump_cooldown_when_hurt_duration": 0.1,
+        "last_hurt_duration": 2.0,
+        "prepare_jump_duration": 0.5,
+        "max_jump_velocity": 1.4,
+        "check_collision": false,
+        "entity_bounding_box_scale": 0.7,
+        "line_of_sight_obstruction_height_ignore": 4,
+        "valid_distance_to_target": [4.0, 20.0],
+        "landing_position_spread_degrees": 90,
+        "landing_distance_from_target": [4.0, 8.0],
+        "required_vertical_space": 4,
+        "snap_to_surface_block_range": 10,
+        "jump_angles": [40.0, 55.0, 60.0, 75.0, 80.0]
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 6,
+        "speed_multiplier": 1.0
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 7,
+        "look_distance": 16
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 8
+      }
+    },
+    "events": {
+      "minecraft:start_playing_idle_ground_sound": {
+        "add": {
+          "component_groups": [
+            "minecraft:playing_idle_ground_sound"
+          ]
+        },
+        "set_property": {
+          "minecraft:is_playing_idle_ground_sound": true
+        }
+      },
+      "minecraft:stop_playing_idle_ground_sound": {
+        "remove": {
+          "component_groups": [
+            "minecraft:playing_idle_ground_sound"
+          ]
+        },
+        "set_property": {
+          "minecraft:is_playing_idle_ground_sound": false
+        }
+      }
+    }
+  }
+}

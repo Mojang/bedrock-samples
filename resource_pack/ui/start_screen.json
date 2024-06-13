@@ -135,6 +135,34 @@
     "layer": 12 // This is the lowest layer where the button border won't show through this icon while being pressed
   },
 
+  "alex_icon": {
+    "type": "image",
+    "texture": "textures/ui/icon_alex",
+    "layer": 1,
+    "size": [ 16, 16 ]
+  },
+
+  "gamerpic": {
+    "type": "image",
+    "size": [ 16, 16 ],
+    "layer": 2,
+    "$gamerpic_visible|default": "#none",
+    "bindings": [
+      {
+        "binding_name": "#gamerpic_texture_path",
+        "binding_name_override": "#texture"
+      },
+      {
+        "binding_name": "#gamerpic_texture_location_type",
+        "binding_name_override": "#texture_file_system"
+      },
+      {
+        "binding_name": "$gamerpic_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
   "copyright": {
     "type": "panel",
     "controls": [
@@ -310,10 +338,21 @@
         }
       },
       {
-        "change_profile@start.profile_button": {
+        "dressing_room_button@start.dressing_room_button": {
           "bindings": [
             {
-              "binding_name": "#change_profile_visible",
+              "binding_name": "#dressing_room_button_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "profile_button@start.profile_button": {
+          "$focus_id": "profile_button",
+          "bindings": [
+            {
+              "binding_name": "#profile_button_b_visible",
               "binding_name_override": "#visible"
             }
           ]
@@ -340,7 +379,7 @@
     "$button_tts_header": "accessibility.start.skinPicker"
   },
 
-  "profile_button@common_buttons.light_text_form_fitting_button": {
+  "dressing_room_button@common_buttons.light_text_form_fitting_button": {
     "$pressed_button_name": "button.to_profile_screen",
     "size": [ "100%c", 25 ],
     "anchor_from": "bottom_middle",
@@ -349,8 +388,96 @@
     "$button_text_size": [ "default", 10 ],
     "$button_text": "profileScreen.header",
     "$focus_id": "profile_button",
-    "$pressed_alpha": 0.65,
-    "$button_tts_header": "accessibility.start.profile"
+    "$pressed_alpha": 0.65
+  },
+
+  "profile_button_content": {
+    "type": "stack_panel",
+    "size": [ "100%c", 24 ],
+    "orientation": "horizontal",
+    "controls": [
+      {
+        "gamerpic_offset_wrapper": {
+          "type": "panel",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "gamerpic_with_border": {
+                "type": "panel",
+                "size": [ 18, 18 ],
+                "offset": [ -2, 0 ],
+                "controls": [
+                  {
+                    "gamerpic@start.gamerpic": {
+                      "$gamerpic_visible": "#show_gamerpic"
+                    }
+                  },
+                  {
+                    "alex_icon@start.alex_icon": {
+                      "bindings": [
+                        {
+                          "binding_name": "(not #show_gamerpic)",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "border_black@common.focus_border_black": {
+                      "layer": 3,
+                      "size": [ 18, 18 ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padding_middle@common.empty_panel": {
+          "size": [ 2, "100%" ]
+        }
+      },
+      {
+        "vertically_central_text": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "top_padding": {
+                "type": "panel",
+                "size": [ "0px", 4 ]
+              }
+            },
+            {
+              "profile_button_label@common_buttons.new_ui_binding_button_label": {
+                "layer": 1,
+                "$button_text": "menu.profile",
+                "$button_text_size": [ "default", "default" ],
+                "$button_text_max_size": [ "default", 20 ],
+                "$button_text_binding_type": "none",
+                "$button_binding_condition": "none",
+                "$button_text_grid_collection_name": ""
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padding_right@common.empty_panel": {
+          "size": [ 6, "100%" ]
+        }
+      }
+    ]
+  },
+
+  "profile_button@common_buttons.light_content_form_fitting_button": {
+    "size": [ "100%c", "100%c" ],
+    "$button_content_size_override": [ "100%c", "100%c - 4px" ],
+    "$button_content": "start.profile_button_content",
+    "$pressed_button_name": "button.menu_profile"
   },
 
   "skin_viewer_panel": {
@@ -855,21 +982,7 @@
                       "size": [ "100%c", "100%" ],
                       "controls": [
                         {
-                          "gamerpic": {
-                            "type": "image",
-                            "size": [ 16, 16 ],
-                            "layer": 1,
-                            "bindings": [
-                              {
-                                "binding_name": "#gamerpic_texture_path",
-                                "binding_name_override": "#texture"
-                              },
-                              {
-                                "binding_name": "#gamerpic_texture_location_type",
-                                "binding_name_override": "#texture_file_system"
-                              }
-                            ]
-                          }
+                          "gamerpic@start.gamerpic": {}
                         },
                         {
                           "border_white@common.focus_border_white": {
@@ -1088,6 +1201,32 @@
                   }
                 ]
               }
+            },
+            {
+              "profile_btn_padding": {
+                "type": "panel",
+                "size": [ 5, "100%" ],
+                "bindings": [
+                  {
+                    "binding_name": "#profile_button_a_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "profile_btn@start.column_frame": {
+                "size": [ "100%c", 32 ],
+                "controls": [
+                  { "profile_button@start.profile_button": {} }
+                ],
+                "bindings": [
+                  {
+                    "binding_name": "#profile_button_a_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
             }
           ]
         }
@@ -1158,6 +1297,11 @@
     "$default_button_texture": "textures/ui/realms_button_borderless_default",
     "$hover_button_texture": "textures/ui/realms_button_borderless_hover",
     "$pressed_button_texture": "textures/ui/realms_button_borderless_hover_pressed"
+  },
+
+  "servers_button@start.main_button": {
+    "$pressed_button_name": "button.menu_servers",
+    "$button_text": "menu.servers"
   },
 
   "store_button@common_buttons.light_content_button": {

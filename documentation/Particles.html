@@ -1,4 +1,4 @@
-<h1>PARTICLES DOCUMENTATION </br>Version: 1.20.80.5</h1>
+<h1>PARTICLES DOCUMENTATION </br>Version: 1.21.0.3</h1>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
 <tr> <th><a href="#Basic Structure Overview">Basic Structure Overview</a></th> </tr>
@@ -20,11 +20,13 @@
 <tr> <td> <a href="#"> </a> </tr> </td>
 <tr> <th><a href="#Namespacing">Namespacing</a></th> </tr>
 <tr> <th><a href="#Particles Entity Integration">Particles Entity Integration</a></th> </tr>
-<tr> <td> <a href="#"> </a> </tr> </td>
 <tr> <td> <a href="#Animation Controller effects"> Animation Controller effects</a> </tr> </td>
+<tr> <td> <a href="#Animation Controller effects (continued)"> Animation Controller effects (continued)</a> </tr> </td>
 <tr> <td> <a href="#Animation Timeline effects"> Animation Timeline effects</a> </tr> </td>
+<tr> <td> <a href="#Animation Timeline effects (continued)"> Animation Timeline effects (continued)</a> </tr> </td>
 <tr> <td> <a href="#Effect Event"> Effect Event</a> </tr> </td>
 <tr> <td> <a href="#Effect List"> Effect List</a> </tr> </td>
+<tr> <td> <a href="#Effect List (continued)"> Effect List (continued)</a> </tr> </td>
 <tr> <th><a href="#Particles Examples Pack">Particles Examples Pack</a></th> </tr>
 <tr> <td> <a href="#"> </a> </tr> </td>
 <tr> <th><a href="#Structure In Detail">Structure In Detail</a></th> </tr>
@@ -1260,36 +1262,7 @@ All particle effects should be namespaced (in their name).</br></br>Namespacing 
 
 <h1><p id="Particles Entity Integration">Particles Entity Integration</p></h1>
 
-</br>One of the primary uses for emitting particles in the Bedrock engine is particles associated with entities, such as mobs.  Examples can be when the Blaze flames-up during it's attack sequence, or the Evoker's spell effect while summoning Vexes.  The goal is to allow binding and management of particle effects attached to entities.</br></br>The following concepts are important for managing particles with entities via .json:</br>- Effect lists.  These live in the resource definition of the entity's .json, along with textures, etc.  These list the effects available to the entity, with an internal entity name for the effect, and the associated effect to play.</br>- Locators.  These live in the geometry files, and specify a location in the geometry.  These locators can be associated with bones, and thus follow the bone as it animates.</br>- Animation controller-based particle management.  Using the Animation Controller state machine concept, one can trigger both fire-and-forget and sustained particle effects</br>- Animation timeline particle management.  As part of an animation .json for the entity, one can set up a timeline that triggers particle effects at specified times while the animation is playing.  Note that an actual physical animation is not needed, just the animation .json structure.</br></br>Particles that are attached to entities are intrinsically tied to those entities.  If the entity ceases to exist, the particle effects cease as well.  Emitters follow either the entity, or a locator on the entity.</br>time1/time2/etc are numerical time points, e.g. "0.0". </br></br>In this example, when the cat sits down, after 3 seconds a smoke puff is generated:</br><h2></h2>
-<br / ><textarea readonly="true" cols="35" rows="25">
-
-{
-  "format_version": "1.8.0",
-  "animations": {
-    ...
-    "animation.cat.sit": {
-      "loop": true,
-      "animation_length": 5.0,
-      "bones": {
-          // bone animation stuff
-       },
-      "particle_effects": {
-        "3.0": [
-          {
-            "effect": "smoke_puff"
-          }
-        ]
-      }
-    },
-    ...
-    }
-  }
-}
-
-</textarea> </br>
-<a href="#Index">Back to top</a><br><br>
-
-<h1><p id="Animation Controller effects">Animation Controller effects</p></h1>
+</br>One of the primary uses for emitting particles in the Bedrock engine is particles associated with entities, such as mobs.  Examples can be when the Blaze flames-up during it's attack sequence, or the Evoker's spell effect while summoning Vexes.  The goal is to allow binding and management of particle effects attached to entities.</br></br>The following concepts are important for managing particles with entities via .json:</br>- Effect lists.  These live in the resource definition of the entity's .json, along with textures, etc.  These list the effects available to the entity, with an internal entity name for the effect, and the associated effect to play.</br>- Locators.  These live in the geometry files, and specify a location in the geometry.  These locators can be associated with bones, and thus follow the bone as it animates.</br>- Animation controller-based particle management.  Using the Animation Controller state machine concept, one can trigger both fire-and-forget and sustained particle effects</br>- Animation timeline particle management.  As part of an animation .json for the entity, one can set up a timeline that triggers particle effects at specified times while the animation is playing.  Note that an actual physical animation is not needed, just the animation .json structure.</br></br>Particles that are attached to entities are intrinsically tied to those entities.  If the entity ceases to exist, the particle effects cease as well.  Emitters follow either the entity, or a locator on the entity.</br><h1><p id="Animation Controller effects">Animation Controller effects</p></h1>
 
 </br>Animation controllers can specify effect events for their states.  This allows for a list of particle effects to be started upon state entry, and for those particle effects to be automatically ended when leaving the state.  For particles that don't terminate (or don't terminate prior to state transition), they will be terminated at state exit.</br></br>The schema is:</br>"particle_effects": [</br>    // array of effect events</br>]</br>The array syntax allows for more than one effect to be triggered on state entry.</br></br>An example is the Blaze's flame-up effect in it's animation controller. This animation controller has two states, "default" and "flaming".  It transitions between the two via the "query.is_charged" entity flag check.  When in the "flaming" state, the "charged_flames" effect is started (with no locator or initialization Molang expression), and is terminated when the state exits.</br><h2></h2>
 <br / ><textarea readonly="true" cols="47" rows="32">
@@ -1328,6 +1301,46 @@ All particle effects should be namespaced (in their name).</br></br>Namespacing 
 </textarea> </br>
 <a href="#Index">Back to top</a><br><br>
 
+<h1><p id="Animation Controller effects (continued)">Animation Controller effects (continued)</p></h1>
+
+</br>Another example for the Evoker's spell effect. This causes the evoker to start up two "spell" effects, using the locator for the left and right hand.  The spell effects themselves are continuous, so the emitters will emit particles until the evoker is no longer casting a spell.</br><h2></h2>
+<br / ><textarea readonly="true" cols="47" rows="32">
+
+{
+  "format_version": "1.8.0",
+  "animation_controllers": {
+    "controller.animation.evoker.general": {
+      "states": {
+        "default": {
+            ...
+          "transitions": [
+            { "casting": "query.is_casting" }
+          ]
+        },
+        "casting": {
+            ...
+          "particle_effects": [
+            {
+              "effect": "spell",
+              "locator": "left_hand"
+            },
+            {
+              "effect": "spell",
+              "locator": "right_hand"
+          }
+          ],
+          "transitions": [
+            { "default": "!query.is_casting" }
+          ]
+        }
+      }
+    }
+  }
+}
+
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
 <h1><p id="Animation Timeline effects">Animation Timeline effects</p></h1>
 
 Animations can also trigger particle effects.  These are fire-and-forget effects that are tied to a timeline, when the animation hits that time point, the effect(s) are fired.</br><h2></h2>
@@ -1343,6 +1356,37 @@ Animations can also trigger particle effects.  These are fire-and-forget effects
     "time3" : {
       // single effect
     }
+}
+
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Animation Timeline effects (continued)">Animation Timeline effects (continued)</p></h1>
+
+time1/time2/etc are numerical time points, e.g. "0.0". </br></br>In this example, when the cat sits down, after 3 seconds a smoke puff is generated:</br><h2></h2>
+<br / ><textarea readonly="true" cols="35" rows="25">
+
+{
+  "format_version": "1.8.0",
+  "animations": {
+    ...
+    "animation.cat.sit": {
+      "loop": true,
+      "animation_length": 5.0,
+      "bones": {
+          // bone animation stuff
+       },
+      "particle_effects": {
+        "3.0": [
+          {
+            "effect": "smoke_puff"
+          }
+        ]
+      }
+    },
+    ...
+    }
+  }
 }
 
 </textarea> </br>
@@ -1378,6 +1422,32 @@ The effect list is a list of internal effect names to actual particle effects bi
             "shorthand_name2": "effect_name2",
         },
         ...
+    }
+  }
+}
+
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Effect List (continued)">Effect List (continued)</p></h1>
+
+This is an example of the flame-up effect for the Blaze.  Inside the "description" section of an entity's resource definition we can add a "particle_effects" section that has a name/value pair.  The name is the name that other .json in the entity will refer to, while the value is the name of the particle effect, as specified in the particle effect's .json.</br><h2></h2>
+<br / ><textarea readonly="true" cols="59" rows="20">
+
+{
+  "format_version": "1.8.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:blaze",
+
+      ...
+
+       "particle_effects": {
+            "charged_flames": "minecraft:mobflame_emitter"
+        },
+
+        ...
+
     }
   }
 }

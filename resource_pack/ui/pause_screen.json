@@ -32,6 +32,46 @@
     "size": [ 24, 12 ]
   },
 
+  "alex_icon": {
+    "type": "image",
+    "texture": "textures/ui/icon_alex",
+    "layer": 1,
+    "size": [ 16, 16 ]
+  },
+
+  "profile_gamerpic": {
+    "type": "image",
+    "size": [ 16, 16 ],
+    "layer": 2,
+    "bindings": [
+      {
+        "binding_name": "#gamerpic_texture_path",
+        "binding_name_override": "#texture"
+      },
+      {
+        "binding_name": "#gamerpic_texture_location_type",
+        "binding_name_override": "#texture_file_system"
+      },
+      {
+        "binding_name": "$gamerpic_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "button_x@common.gamepad_helper_x_14": {
+    "$gamepad_helper_visible_binding_type": "none",
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "layer": -1,
+    "bindings": [
+      {
+        "binding_name": "$button_x_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
   //---------------------------------------------------------------------------
   // Skins Panel
   //---------------------------------------------------------------------------
@@ -41,22 +81,15 @@
     "size": [ "100%c", "100%cm" ],
     "controls": [
       {
-        "button_x@common.gamepad_helper_x_14": {
-          "$gamepad_helper_visible_binding_type": "none",
-          "anchor_from": "left_middle",
-          "anchor_to": "left_middle",
-          "layer": -1,
-          "bindings": [
-            {
-              "binding_name": "#can_change_skin",
-              "binding_name_override": "#visible"
-            }
-          ]
+        "button_x@pause.button_x": {
+          "offset": [ 1, -1 ],
+          "$button_x_visible": "#can_change_skin"
         }
       },
       {
         "button_label_panel": {
           "type": "panel",
+          "offset": [ -1, 0 ],
           "size": [ "100%c", "100%c" ],
           "anchor_from": "right_middle",
           "anchor_to": "right_middle",
@@ -86,9 +119,9 @@
     "type": "panel"
   },
 
-  "change_profile_button_gamepad@common_buttons.light_content_form_fitting_button": {
+  "dressing_room_button_gamepad@common_buttons.light_content_form_fitting_button": {
     "size": [ "100%c", "100%c" ],
-    "$button_content_size_override": [ "100%c - 4px", "100%c - 4px" ],
+    "$button_content_size_override": [ "100%c - 2px", "100%c - 4px" ],
     "$pressed_button_name": "button.to_profile_or_skins_screen",
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
@@ -99,7 +132,6 @@
     "$pressed_alpha": 0.65,
     "$hide_description": true,
     "$visibility_binding_type|default": "global",
-    "$button_tts_header": "accessibility.start.profile",
     "variables": [
       {
         "requires": "$nx_os",
@@ -109,13 +141,13 @@
     "bindings": [
       {
         "binding_type": "$visibility_binding_type",
-        "binding_name": "#is_using_gamepad",
+        "binding_name": "#dressing_room_controller_button_visible",
         "binding_name_override": "#visible"
       }
     ]
   },
 
-  "change_profile_button@common_buttons.light_text_form_fitting_button": {
+  "dressing_room_button@common_buttons.light_text_form_fitting_button": {
     "$pressed_button_name": "button.to_profile_or_skins_screen",
     "$form_fitting_min_size": [ "100%c + 2px", 24 ],
     "anchor_from": "bottom_middle",
@@ -123,13 +155,127 @@
     "$button_text": "profileScreen.header",
     "$focus_id": "profile_button",
     "$pressed_alpha": 0.65,
-    "$button_tts_header": "accessibility.start.profile",
     "bindings": [
       {
-        "binding_name": "(not #is_using_gamepad)",
+        "binding_name": "#dressing_room_button_visible",
         "binding_name_override": "#visible"
       }
     ]
+  },
+
+  "profile_button_content": {
+    "type": "stack_panel",
+    "size": [ "100%c", 24 ],
+    "orientation": "horizontal",
+    "controls": [
+      {
+        "button_offset_wrapper": {
+          "type": "panel",
+          "size": [ "100%c - 12px", "100%c" ],
+          "bindings": [
+            {
+              "binding_name": "#profile_button_x_icon_visible",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "controls": [
+            {
+              "button_x@pause.button_x": {
+                "$button_x_visible": "#profile_button_x_icon_visible",
+                "offset": [ -6, -4 ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "gamerpic_offset_wrapper": {
+          "type": "panel",
+          "size": [ "100%c", "100%c" ],
+          "bindings": [
+            {
+              "binding_name": "(not #profile_button_x_icon_visible)",
+              "binding_name_override": "#visible"
+            }
+          ],
+          "controls": [
+            {
+              "gamerpic_with_border": {
+                "type": "panel",
+                "size": [ 18, 18 ],
+                "offset": [ -2, 0 ],
+                "controls": [
+                  {
+                    "gamerpic@pause.profile_gamerpic": {
+                      "$gamerpic_visible": "#is_signed_in_xbl"
+                    }
+                  },
+                  {
+                    "alex_icon@pause.alex_icon": {
+                      "bindings": [
+                        {
+                          "binding_name": "(not #is_signed_in_xbl)",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "border_black@common.focus_border_black": {
+                      "layer": 3,
+                      "size": [ 18, 18 ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padding_middle@common.empty_panel": {
+          "size": [ 2, "100%" ]
+        }
+      },
+      {
+        "vertically_central_text": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "top_padding": {
+                "type": "panel",
+                "size": [ "0px", 4 ]
+              }
+            },
+            {
+              "profile_button_label@common_buttons.new_ui_binding_button_label": {
+                "layer": 1,
+                "$button_text": "menu.profile",
+                "$button_text_size": [ "default", "default" ],
+                "$button_text_max_size": [ "default", 20 ],
+                "$button_text_binding_type": "none",
+                "$button_binding_condition": "none",
+                "$button_text_grid_collection_name": ""
+              }
+            }
+          ]
+        }
+      },
+      {
+        "padding_right@common.empty_panel": {
+          "size": [ 6, "100%" ]
+        }
+      }
+    ]
+  },
+
+  "profile_button@common_buttons.light_content_form_fitting_button": {
+    "size": [ "100%c", "100%c" ],
+    "$button_content_size_override": [ "100%c", "100%c - 4px" ],
+    "$button_content": "pause.profile_button_content",
+    "$pressed_button_name": "button.menu_profile"
   },
 
   "skin_viewer_panel": {
@@ -262,16 +408,57 @@
                 "type": "panel",
                 "size": [ "100%", "100%c" ],
                 "controls": [
-                  { "profile_button@pause.change_profile_button": {} }
+                  { "dressing_room_button@pause.dressing_room_button": {} }
                 ]
               }
             },
             {
               "centering_panel_2": {
-                "type": "panel",
+                "type": "input_panel",
                 "size": [ "100%", "100%c" ],
+                "button_mappings": [
+                  {
+                    "from_button_id": "button.controller_select",
+                    "to_button_id": "button.to_profile_or_skins_screen",
+                    "mapping_type": "global",
+                    "scope": "controller"
+                  }
+                ],
                 "controls": [
-                  { "profile_button_gamepad@pause.change_profile_button_gamepad": {} }
+                  { "dressing_room_button_gamepad@pause.dressing_room_button_gamepad": {} }
+                ],
+                "bindings": [
+                  {
+                    "binding_name": "#dressing_room_controller_button_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "centering_panel_3": {
+                "type": "input_panel",
+                "size": [ "100%", "100%c" ],
+                "button_mappings": [
+                  {
+                    "from_button_id": "button.controller_select",
+                    "to_button_id": "button.menu_profile",
+                    "mapping_type": "global",
+                    "scope": "controller"
+                  }
+                ],
+                "controls": [
+                  {
+                    "profile_button@pause.profile_button": {
+                      "$focus_id": "profile_button"
+                    }
+                  }
+                ],
+                "bindings": [
+                  {
+                    "binding_name": "#profile_button_b_visible",
+                    "binding_name_override": "#visible"
+                  }
                 ]
               }
             }
@@ -305,7 +492,7 @@
     "anchor_to": "top_middle",
     "anchor_from": "top_middle",
     "$button_focus_precedence": 1,
-    "$focus_override_up": "achievements_button_focus",
+    "$focus_override_up": "icon_panel_main_focus",
     "variables": [
       {
         "requires": "$is_editor_playtest_roundtrip",
@@ -506,7 +693,7 @@
     "$button_text": "pauseScreen.quit",
     "anchor_to": "top_middle",
     "anchor_from": "top_middle",
-    "$focus_override_down": "achievements_button_focus",
+    "$focus_override_down": "icon_panel_main_focus",
     "variables": [
       {
         "requires": "($is_secondary_client and not $is_editor_playtest_roundtrip)",
@@ -531,9 +718,10 @@
     "$button_tts_header": "accessibility.start.feedback",
     "$pressed_button_name": "button.feedback",
     "controls": [
-      { "feedback_button@pause.feedback_button": {
-        "ignored": "$education_edition",
-        "$focus_override_left": "FOCUS_OVERRIDE_STOP"
+      {
+        "feedback_button@pause.feedback_button": {
+          "ignored": "$education_edition",
+          "$focus_override_left": "FOCUS_OVERRIDE_STOP"
         }
       }
     ]
@@ -550,9 +738,15 @@
     "type": "panel",
     "$button_tts_header": "menu.achievements",
     "controls": [
-      { "achievements_button@pause.achievements_button": {
-        "ignored": "$education_edition",
-        "$focus_id": "achievements_button_focus"
+      {
+        "achievements_button@pause.achievements_button": {
+          "ignored": "$education_edition",
+          "variables": [
+            {
+              "requires": "$achievements_button_focus",
+              "$focus_id": "icon_panel_main_focus"
+            }
+          ]
         }
       }
     ]
@@ -560,6 +754,7 @@
 
   "take_screenshot_button@common_buttons.light_glyph_button": {
     "$pressed_button_name": "button.screenshot",
+    "$focus_id": "icon_panel_main_focus",
     "$button_tts_header": "key.screenshot",
     "size": [ 24, 24 ],
     "$button_content": "pause.take_screenshot_icon",
@@ -593,12 +788,6 @@
       {
         "from_button_id": "button.menu_vr_realign",
         "to_button_id": "button.menu_vr_realign",
-        "mapping_type": "global",
-        "scope": "controller"
-      },
-      {
-        "from_button_id": "button.controller_select",
-        "to_button_id": "button.to_profile_or_skins_screen",
         "mapping_type": "global",
         "scope": "controller"
       },
@@ -763,7 +952,16 @@
                 "ignored": "$education_edition",
                 "size": [ 28, 32 ],
                 "controls": [
-                  { "feedback_icon_button@pause.feedback_icon_button": {} }
+                  {
+                    "feedback_icon_button@pause.feedback_icon_button": {
+                      "variables": [
+                        {
+                          "requires": "$feedback_button_focus",
+                          "$focus_id": "icon_panel_main_focus"
+                        }
+                      ]
+                    }
+                  }
                 ]
               }
             },
@@ -808,9 +1006,69 @@
                 ],
                 "bindings": [
                   {
-                    "binding_name": "#show_clubs",
+                    "binding_name": "#screenshot_button_visible",
                     "binding_name_override": "#visible",
                     "binding_type": "global"
+                  }
+                ]
+              }
+            },
+            {
+              "screenshot_padding": {
+                "type": "panel",
+                "size": [ "2%", 0 ],
+                "bindings": [
+                  {
+                    "binding_name": "#screenshot_button_visible",
+                    "binding_name_override": "#visible",
+                    "binding_type": "global"
+                  }
+                ]
+              }
+            },
+            {
+              "profile_btn_padding_left": {
+                "type": "panel",
+                "size": [ "2%", 0 ],
+                "bindings": [
+                  {
+                    "binding_name": "#profile_button_a_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "profile_btn@pause.column_frame": {
+                "size": [ "100%c", 32 ],
+                "controls": [
+                  {
+                    "profile_button@pause.profile_button": {
+                      "variables": [
+                        {
+                          "requires": "$profile_button_focus",
+                          "$focus_id": "icon_panel_main_focus"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "bindings": [
+                  {
+                    "binding_name": "#profile_button_a_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "profile_btn_padding_right": {
+                "type": "panel",
+                "size": [ "4%", 0 ],
+                "bindings": [
+                  {
+                    "binding_name": "#profile_button_a_visible",
+                    "binding_name_override": "#visible"
                   }
                 ]
               }
