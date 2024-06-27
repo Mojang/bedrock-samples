@@ -1470,6 +1470,7 @@
           ]
         }
       },
+
       {
         "sign_out": {
           "ignored": "($build_platform_UWP or not $is_pregame or $requires_xbl_signin_to_play)",
@@ -1484,6 +1485,31 @@
                 "anchor_to": "top_right",
                 "offset": [ 0, 2 ]
               }
+            }
+          ]
+        }
+      },
+
+      {
+        "offline_token_authorization": {
+          "ignored": "(not $is_ps5)",
+          "type": "panel",
+          "size": [ "100%", 32 ],
+          "controls": [
+            {
+              "request_psn_authorization_button@settings_common.action_button": {
+                "$pressed_button_name": "button.request_offline_token_authorization",
+                "$button_text": "options.request_offline_token_authorization",
+                "anchor_from": "top_right",
+                "anchor_to": "top_right",
+                "offset": [ 0, 2 ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#needs_offline_token_authorization",
+              "binding_name_override": "#visible"
             }
           ]
         }
@@ -1694,6 +1720,11 @@
     ],
     "controls": [
       {
+        "spacing1@common.empty_panel": {
+          "size": [ 0, 2 ]
+        }
+      },
+      {
         "edu_cloud_backup_toggle@settings_common.option_toggle": {
           "$option_label": "options.eduCloud.toggleCloud",
           "$option_binding_name": "#toggle_edu_cloud_backup",
@@ -1702,8 +1733,13 @@
         }
       },
       {
+        "spacing2@common.empty_panel": {
+          "size": [ 0, 4 ]
+        }
+      },
+      {
         //TTS border affects all sibilings, so need to split header out so its only sibling of border
-        "wrapper_panel": {
+        "body_wrapper_panel": {
           "type": "panel",
           "size": [ "100%", "100%cm" ],
           "controls": [
@@ -1720,15 +1756,16 @@
               }
             },
             {
-              "edu_cloud_storage_header_label": {
+              "edu_cloud_storage_body_label": {
                 "type": "label",
-                "text": "#edu_cloud_storage_header_label",
+                "text": "#edu_cloud_storage_body_label",
                 "size": [ "100%", "default" ],
                 "color": "$body_text_color",
+                "font_type": "smooth",
                 "bindings": [
                   {
-                    "binding_name": "#edu_cloud_storage_header_label_text",
-                    "binding_name_override": "#edu_cloud_storage_header_label"
+                    "binding_name": "#edu_cloud_storage_body_label_text",
+                    "binding_name_override": "#edu_cloud_storage_body_label"
                   }
                 ]
               }
@@ -1737,11 +1774,21 @@
         }
       },
       {
+        "spacing3@common.empty_panel": {
+          "size": [ 0, 4 ]
+        }
+      },
+      {
         "edu_cloud_onedrive_button@common_buttons.light_content_button": {
           "size": [ "100%", "24px" ],
           "$button_size_override": [ "100%", "100% - 4px" ],
           "$button_content": "general_section.edu_cloud_onedrive_button_content",
           "$pressed_button_name": "button.onedrive_link"
+        }
+      },
+      {
+        "spacing4@common.empty_panel": {
+          "size": [ 0, 2 ]
         }
       },
       {
@@ -2945,6 +2992,35 @@
         }
       },
       {
+        "beta_new_bed_screen_toggle_input_panel@settings_common.option_toggle": {
+          "type": "input_panel",
+          "ignored": "(not $pre_release)",
+          "consume_hover_events": false,
+          "focus_enabled": true,
+          "$beta_new_bed_screen_toggle_disabled_is_hovered_button_event|default": "button.beta_new_bed_screen_toggle_disabled_is_hovered",
+          "button_mappings": [
+            {
+              "to_button_id": "$beta_new_bed_screen_toggle_disabled_is_hovered_button_event",
+              "mapping_type": "pressed"
+            }
+          ],
+          "controls": [
+            {
+              "beta_new_bed_screen_toggle@settings_common.option_toggle": {
+                "$option_label": "options.betaNewBedScreenToggle",
+                "$option_binding_name": "#beta_new_bed_screen_toggle",
+                "$toggle_name": "beta_new_bed_screen_toggle",
+                "$option_enabled_binding_name": "#beta_new_bed_screen_toggle_enabled",
+                "controls": [
+                  { "beta_new_bed_screen_toggle_disabled@general_section.beta_new_bed_screen_toggle_disabled": {} },
+                  { "option_generic_core@settings_common.option_generic_core": {} }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
         "gui_scale_slider@settings_common.option_slider": {
           "ignored": "($is_holographic)",
           "$option_label": "#gui_scale_slider_label",
@@ -3388,6 +3464,54 @@
       }
     ]
   },
+
+  // Information popup for new bed screen toggle
+
+  "beta_new_bed_screen_toggle_disabled_image": {
+    "type": "image",
+    "size": [ 7, 11 ],
+    "texture": "textures/ui/infobulb"
+  },
+
+  "beta_new_bed_screen_toggle_disabled_popup@common.static_tooltip_popup_with_image_and_text": {
+    "size": [ "100% - 4px", "100%cm + 8px" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "bottom_middle",
+    "$tooltip_panel_offset": [ 0, -10 ],
+    "$tooltip_popup_image": "textures/ui/infobulb",
+    "$tooltip_button_binding_type": "global",
+    "$tooltip_button_collection_name": "",
+    "$tooltip_popup_visible_binding|default": "$beta_new_bed_screen_toggle_disabled_tooltip_visible",
+    "$tooltip_text_binding_name": "#beta_new_bed_screen_toggle_disabled_tooltip_text",
+    "$tooltip_chevron_anchor": "bottom_right",
+    "$tooltip_popup_chevron_offset": [ "-30%x", "100%y - 3px" ]
+  },
+
+  "beta_new_bed_screen_toggle_disabled": {
+    "type": "panel",
+    "size": [ "100%", 0 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "$beta_new_bed_screen_toggle_disabled_visible|default": "#beta_new_bed_screen_toggle_disabled_visible",
+    "$beta_new_bed_screen_toggle_disabled_tooltip_visible|default": "#beta_new_bed_screen_toggle_disabled_tooltip_visible",
+    "controls": [
+      {
+        "beta_new_bed_screen_toggle_disabled_image@general_section.beta_new_bed_screen_toggle_disabled_image": {
+          "offset": [ -14, 0 ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right"
+        }
+      },
+      { "beta_new_bed_screen_toggle_disabled_popup@general_section.beta_new_bed_screen_toggle_disabled_popup": {} }
+    ],
+    "bindings": [
+      {
+        "binding_name": "$beta_new_bed_screen_toggle_disabled_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
 
   // Warning Notification and popup for RTX render distance
 
@@ -6204,10 +6328,10 @@
       },
       {
         "preview_store_launch_app1_button@settings_common.action_button": {
-          "ignored":  "(not $show_preview_app1_button)",
+          "ignored": "(not $show_preview_app1_button)",
           "$pressed_button_name": "button.preview_app1",
           "$button_text": "#preview_app1_button_text",
-          "$button_text_binding_type":  "global"
+          "$button_text_binding_type": "global"
         }
       },
       {
@@ -7767,6 +7891,13 @@
         }
       },
       {
+        "option_toggle_extra_debug_hud_info@settings_common.option_toggle": {
+          "$option_label": "Show extra debug info on Basic debug HUD",
+          "$option_binding_name": "#dev_show_extra_debug_hud_info",
+          "$toggle_name": "dev_show_extra_debug_hud_info"
+        }
+      },
+      {
         "option_toggle_0_1@settings_common.option_toggle": {
           "$option_label": "options.dev_renderBoundingBox",
           "$option_binding_name": "#dev_render_bounding_box",
@@ -8686,6 +8817,26 @@
           "$pressed_button_name": "button.add_100000_coins",
           "$button_text": "#add_100000_text",
           "$button_text_binding_type": "global"
+        }
+      },
+      {
+        "padding3": {
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
+      },
+      {
+        "reset_entitlements@settings_common.action_button": {
+          "enabled": "(not $test_infrastructure_disabled)",
+          "$pressed_button_name": "button.reset_entitlements",
+          "$button_text": "options.dev_reset_entitlements"
+        }
+      },
+      {
+        "reset_wallet@settings_common.action_button": {
+          "enabled": "(not $test_infrastructure_disabled)",
+          "$pressed_button_name": "button.reset_wallet",
+          "$button_text": "options.dev_reset_wallet"
         }
       }
     ]

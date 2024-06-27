@@ -108,6 +108,15 @@
     "size": [ 32, 16 ]
   },
 
+  "manage_accounts_icon": {
+    "type": "image",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "texture": "textures/ui/profile_glyph_combined",
+    "layer": 3,
+    "size": [ 11, 12 ]
+  },
+
   "new_offers_icon@common_store.new_offer_icon": {
     "layer": 11, // This is the lowest layer where the button border won't show through this icon while being pressed
     "anchor_from": "top_right",
@@ -312,7 +321,7 @@
 
   "skin_or_profile_panel": {
     "type": "panel",
-    "size": [ "100%", 25 ],
+    "size": [ 55, 25 ],
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
     "variables": [
@@ -338,6 +347,16 @@
         }
       },
       {
+        "change_skin_button_demo@start.change_skin_button_demo": {
+          "bindings": [
+            {
+              "binding_name": "#change_skin_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
         "dressing_room_button@start.dressing_room_button": {
           "bindings": [
             {
@@ -346,6 +365,9 @@
             }
           ]
         }
+      },
+      {
+        "switch_accounts@start.switch_accounts_button": {}
       },
       {
         "profile_button@start.profile_button": {
@@ -368,6 +390,20 @@
   },
 
   "change_skin_button@common_buttons.light_glyph_button": {
+    "ignored": "((not $education_edition) or $is_edu_demo)",
+    "$pressed_button_name": "button.menu_skins",
+    "size": [ 25, 25 ],
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "$button_content_offset": [ 1, 2 ],
+    "$button_content": "start.change_skin_icon",
+    "$pressed_alpha": 0.65,
+    "$focus_id": "menu_skins_button",
+    "$button_tts_header": "accessibility.start.skinPicker"
+  },
+
+  "change_skin_button_demo@common_buttons.light_glyph_button": {
+    "ignored": "(not $is_edu_demo)",
     "$pressed_button_name": "button.menu_skins",
     "size": [ 25, 25 ],
     "anchor_from": "bottom_middle",
@@ -379,7 +415,21 @@
     "$button_tts_header": "accessibility.start.skinPicker"
   },
 
+  "switch_accounts_button@common_buttons.light_content_button": {
+    "ignored": "((not $education_edition) or $is_edu_demo)",
+    "$pressed_button_name": "button.manage_account",
+    "size": [ 25, 25 ],
+    "anchor_from": "bottom_right",
+    "anchor_to": "bottom_right",
+    "$button_content_offset": [ 0, 0 ],
+    "$button_content": "start.manage_accounts_icon",
+    "$pressed_alpha": 0.65,
+    "$focus_id": "menu_account_button",
+    "$button_tts_header": "accounts.manage"
+  },
+
   "dressing_room_button@common_buttons.light_text_form_fitting_button": {
+    "ignored": "($education_edition)",
     "$pressed_button_name": "button.to_profile_screen",
     "size": [ "100%c", 25 ],
     "anchor_from": "bottom_middle",
@@ -1263,7 +1313,6 @@
 
   "main_menu_button@edu_common.underline_button": {
     "$pressed_button_name": "button.open_main_menu",
-
     "$single_label_size": [ "default", "default" ],
     "$single_line_font_scale_factor": 1,
     "$single_line_label_text": "menu.openMainMenu",
@@ -1275,15 +1324,22 @@
     "$button_text": "start_screen.start_demo"
   },
 
-  "switch_accounts_button@start.main_button": {
+  "unlock_full_game_button@start.main_button": {
+    "ignored": "(not $is_edu_demo)",
     "$pressed_button_name": "button.manage_account",
-    "$button_text": "#manage_account_button_text",
+    "$button_text": "#unlock_full_game_button_text",
     "$button_text_binding_type": "global"
   },
 
   "launch_editions_button@start.main_button": {
     "$pressed_button_name": "button.launch_editions",
     "$button_text": "menu.editions"
+  },
+
+  "ai_lesson_crafter_button@start.main_button": {
+    "ignored": "(not $education_edition)",
+    "$pressed_button_name": "button.ai_lesson_crafter",
+    "$button_text": "menu.ai_lesson_crafter"
   },
 
   "settings_button@start.main_button": {
@@ -1690,6 +1746,19 @@
               }
             },
             {
+              "ai_lesson_crafter_row@start.stacked_row": {
+                "bindings": [
+                  {
+                    "binding_name": "#edu_ai_lesson_crafter_on",
+                    "binding_name_override": "#visible"
+                  }
+                ],
+                "controls": [
+                  { "ai_lesson_crafter_button@start.ai_lesson_crafter_button": {} }
+                ]
+              }
+            },
+            {
               "edu_featured_button@start.stacked_row": {
                 "ignored": "(not $education_edition or $is_edu_demo)",
                 "controls": [
@@ -1712,10 +1781,10 @@
               }
             },
             {
-              "switch_accounts_row@start.stacked_row": {
-                "ignored": "$switch_accounts_ignored",
+              "unlock_full_game_row@start.stacked_row": {
+                "ignored": "(not $is_edu_demo)",
                 "controls": [
-                  { "switch_accounts@start.switch_accounts_button": {} }
+                  { "unlock_full_game@start.unlock_full_game_button": {} }
                 ]
               }
             },
