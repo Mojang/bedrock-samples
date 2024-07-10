@@ -222,28 +222,37 @@
               }
             },
             {
-              "share_by_link_button_panel@realms_allowlist.share_by_link_button_panel": {}
-            },
-            {
-              "spacing2": {
-                "type": "panel",
-                "size": [ 1, "100%" ]
-              }
-            },
-            {
               "options_panel": {
                 "type": "panel",
-                "size": [ 32, 32 ],
+                "size": [ "50%", 32 ],
                 "controls": [
                   {
-                    "options_button@common_buttons.light_content_button": {
-                      "$button_content": "realms_allowlist.options_icon",
-                      "$pressed_button_name": "button.member_list_options",
-                      "tts_name": "accessibility.dropdown.tts.title",
-                      "anchor_to": "center",
-                      "anchor_from": "center",
-                      "size": [ 30, 30 ]
+                    "clear_members_button@common_buttons.light_text_button": {
+                      "anchor_from": "left_middle",
+                      "anchor_to": "left_middle",
+                      "size": [ "default", 30 ],
+                      "layer": 2,
+                      "$button_text": "realmsClearMembers.clear",
+                      "button_mappings": [
+                        {
+                          "from_button_id": "button.menu_select",
+                          "to_button_id": "button.clear_members",
+                          "mapping_type": "pressed"
+                        },
+                        {
+                          "from_button_id": "button.menu_ok",
+                          "to_button_id": "button.clear_members",
+                          "mapping_type": "focused"
+                        }
+                      ],
+                      "bindings": [
+                        {
+                          "binding_name": "#members_list_enabled", // a hack: you cannot set "enabled":false directly on a ui control
+                          "binding_name_override": "#enabled"
+                        }
+                      ]
                     }
+
                   }
                 ],
                 "bindings": [
@@ -306,18 +315,6 @@
     "anchor_to": "left_middle",
     "controls": [
       { "find_friends_button@find_friends_button": {} }
-    ]
-  },
-
-  "share_by_link_button_panel": {
-    "type": "panel",
-    "size": [ "fill", 32 ],
-    "anchor_from": "right_middle",
-    "anchor_to": "right_middle",
-    "controls": [
-      {
-        "share_by_link_button@realms_allowlist.share_by_link_button": {}
-      }
     ]
   },
 
@@ -1383,42 +1380,6 @@
     ]
   },
 
-  "share_by_link_button@common_buttons.light_text_button": {
-    "anchor_from": "right_middle",
-    "anchor_to": "right_middle",
-    "size": [ "100%", 30 ],
-    "layer": 2,
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.realms_invite_share_by_link",
-        "mapping_type": "pressed"
-      },
-      {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "button.realms_invite_share_by_link",
-        "mapping_type": "focused"
-      }
-    ],
-    "bindings": [
-      {
-        "binding_name": "#members_list_enabled", // a hack: you cannot set "enabled":false directly on a ui control
-        "binding_name_override": "#enabled"
-      }
-    ],
-    "variables": [
-      {
-        "requires": "$is_console",
-        "$button_text": "realmsInvitationScreen.shareByCode"
-      },
-      {
-        "requires": "(not $is_console)",
-        "$button_text": "realmsInvitationScreen.shareByLink"
-      }
-    ]
-  },
-
-
   //---------------------------------------------------------------------------
   // assets
   //---------------------------------------------------------------------------
@@ -1485,12 +1446,6 @@
     "layer": 2,
     "texture": "textures/ui/plus",
     "size": [ 11, 11 ]
-  },
-
-  "refresh_icon": {
-    "type": "image",
-    "layer": 2,
-    "texture": "textures/ui/refresh_light"
   },
 
   "more_icon": {
@@ -1671,37 +1626,7 @@
             { "realms_allowlist_content_panel@realms_allowlist.realms_allowlist_content_panel": { "layer": 1 } }
           ]
         }
-      },
-      {
-        "popup_dialog_factory": {
-          "type": "factory",
-          "control_ids": {
-            "share_by_link": "@realms_allowlist.popup_dialog__share_by_link"
-          }
-        }
-      },
-      {
-        "popup_dialog_factory_options": {
-          "type": "factory",
-          "control_ids": {
-            "options_modal": "@realms_allowlist.popup_dialog__options"
-          }
-        }
       }
-    ]
-  },
-
-  "popup_dialog__options@popup_dialog.modal_input_panel": {
-    "size": [ "100%", "100%" ],
-    "controls": [
-      {
-        // click anywhere to exit modal menu
-        "transparent_close_button@realms_allowlist.transparent_close_button": {
-          "focus_enabled": false,
-          "tts_ignore_count": true
-        }
-      },
-      { "options_popup_dialog_button_panel@realms_allowlist.options_popup_dialog_button_panel": {} }
     ]
   },
 
@@ -1732,514 +1657,6 @@
         "from_button_id": "button.menu_ok",
         "to_button_id": "button.realms_options_close",
         "mapping_type": "focused"
-      }
-    ]
-  },
-
-  "options_popup_dialog_button_panel": {
-    "type": "stack_panel",
-    "size": [ "20%", "15%" ],
-    "offset": [ -20, 60 ],
-    "orientation": "vertical",
-    "anchor_from": "top_right",
-    "anchor_to": "top_right",
-    "controls": [
-      {
-        "transparent_close_button_inline@realms_allowlist.transparent_close_button": {
-          "offset": [ 30, 0 ],
-          "size": [ 1, 1 ],
-            "anchor_from": "top_right",
-            "anchor_to": "top_right",
-            "tts_name": "accessibility.button.close"
-        }
-      },
-      {
-        "clear_members_button@common_buttons.light_text_button": {
-          "anchor_from": "left_middle",
-          "anchor_to": "left_middle",
-          "size": [ "default", 30 ],
-          "layer": 2,
-          "$button_text": "realmsClearMembers.clear",
-          "button_mappings": [
-            {
-              "from_button_id": "button.menu_select",
-              "to_button_id": "button.clear_members",
-              "mapping_type": "pressed"
-            },
-            {
-              "from_button_id": "button.menu_ok",
-              "to_button_id": "button.clear_members",
-              "mapping_type": "focused"
-            }
-          ],
-          "bindings": [
-            {
-              "binding_name": "#members_list_enabled", // a hack: you cannot set "enabled":false directly on a ui control
-              "binding_name_override": "#enabled"
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  //--------------------------------------------------------------------------------
-  // Share By Link Dialog Popup
-  //--------------------------------------------------------------------------------
-  "popup_dialog__share_by_link@popup_dialog.modal_input_panel": {
-    "size": [ "100%", "100%" ],
-    "controls": [
-      {
-        "share_popup_background@realms_allowlist.share_popup_background": {}
-      },
-      {
-        "gamepad_helpers@common.gamepad_helpers_a_and_b": {
-          "anchor_from": "bottom_middle",
-          "anchor_to": "bottom_middle",
-          "offset": [ 0, "31px" ]
-        }
-      },
-      {
-        "share_popup_content@realms_allowlist.share_popup_content": {
-          "layer": 1
-        }
-      }
-    ]
-  },
-
-  "share_popup_background": {
-    "type": "image",
-    "texture": "textures/ui/control",
-    "size": [ "100%", "100%" ],
-    "alpha": 0.6,
-    "anchor_from": "top_left",
-    "anchor_to": "top_left"
-  },
-
-  "share_popup_content": {
-    "type": "panel",
-    "$share_popup_content_size|default": [ 340, 140 ],
-    "controls": [
-      { "popup_dialog_bg@realms_common.popup_dialog_bg": {} },
-      { "share_popup_dialog_header@realms_allowlist.share_popup_dialog_header": {} },
-      { "share_popup_dialog_upper_body@realms_allowlist.share_popup_dialog_upper_body": {} },
-      { "share_popup_dialog_lower_body@realms_allowlist.share_popup_dialog_lower_body": {} }
-    ],
-    "variables": [
-      {
-        "requires": "$is_console",
-        "$share_popup_content_size": [ 255, 140 ]
-      }
-    ],
-    "size": "$share_popup_content_size"
-  },
-
-  "share_popup_dialog_header": {
-    "type": "panel",
-    "size": [ "100%", "15%" ],
-    "anchor_from": "top_left",
-    "anchor_to": "top_left",
-    "layer": 1,
-    "controls": [
-      { "share_popup_dialog_header_text@realms_allowlist.share_popup_dialog_header_text": {} },
-      {
-        "close_button@common.close_button": {
-          "anchor_from": "top_right",
-          "anchor_to": "top_right",
-          "offset": [ -1, 1 ],
-          "button_mappings": [
-            {
-              "from_button_id": "button.menu_select",
-              "to_button_id": "button.realms_invite_share_close",
-              "mapping_type": "pressed"
-            },
-            {
-              "from_button_id": "button.menu_ok",
-              "to_button_id": "button.realms_invite_share_close",
-              "mapping_type": "focused"
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  "share_popup_dialog_header_text": {
-    "type": "label",
-    "font_size": "normal",
-    "color": "$title_text_color",
-    "anchor_from": "center",
-    "anchor_to": "center",
-    "offset": [ 0, 2 ],
-    "variables": [
-      {
-        "requires": "$is_console",
-        "$text": "realmsInvitationScreen.shareCodeToRealm"
-      },
-      {
-        "requires": "(not $is_console)",
-        "$text": "realmsInvitationScreen.shareLinkToRealm"
-      }
-    ],
-    "text": "$text"
-  },
-
-  "share_popup_dialog_upper_body": {
-    "type": "panel",
-    "size": [ "100%", "30%" ],
-    "anchor_from": "top_left",
-    "anchor_to": "top_left",
-    "offset": [ 0, "15%" ],
-    "layer": 1,
-    "controls": [
-      { "link_panel@realms_allowlist.link_panel": {} }
-    ]
-  },
-
-  "link_panel@realms_common.hollow_banner": {
-    "anchor_from": "center",
-    "anchor_to": "center",
-    "size": [ "100%-12px", "100%" ],
-    "controls": [
-      { "refresh_button@realms_allowlist.refresh_button": {} },
-      { "link_url_text@realms_allowlist.link_url_text": {} },
-      {
-        "copy_share_panel": {
-          "type": "stack_panel",
-          "anchor_from": "right_middle",
-          "anchor_to": "right_middle",
-          "size": [ "100%c", 28 ],
-          "offset": [ -6, 0 ],
-          "orientation": "horizontal",
-          "variables": [
-            {
-              "requires": "($apple_os and $supports_share)",
-              "$share_icon_texture": "textures/ui/share_apple",
-              "$share_icon_offset": [ 3.5, -1.5 ],
-              "$share_icon_size": [ 11, 15 ]
-            },
-            {
-              "requires": "(($microsoft_os or (not $apple_os and not $google_os)) and $supports_share)",
-              "$share_icon_texture": "textures/ui/share_microsoft",
-              "$share_icon_offset": [ 2.5, -0.5 ],
-              "$share_icon_size": [ 15, 13 ]
-            },
-            {
-              "requires": "($google_os and $supports_share)",
-              "$share_icon_texture": "textures/ui/share_google",
-              "$share_icon_offset": [ 2.0, -0.5 ],
-              "$share_icon_size": [ 14, 13 ]
-            }
-          ],
-          "controls": [
-            {
-              "link_copy@realms_allowlist.copy_button": {
-                "ignored": "(not $supports_clipboard_set)",
-                "bindings": [
-                  {
-                    "binding_name": "#copy_share_enabled",
-                    "binding_name_override": "#enabled"
-                  }
-                ]
-              }
-            },
-            {
-              "spacing": {
-                "type": "panel",
-                "size": [ 1, "100%" ],
-                "ignored": "(not $supports_share)"
-              }
-            },
-            {
-              "link_share@realms_allowlist.share_button": {
-                "offset": [ 0, 6 ],
-                "$button_content": "realms_allowlist.share_icon",
-                "ignored": "(not $supports_share)"
-              }
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  "link_url_text": {
-    "type": "label",
-    "text": "#linkurl",
-    "text_alignment": "center",
-    "font_size": "normal",
-    "color": "$body_text_color",
-    "anchor_to": "left_middle",
-    "anchor_from": "left_middle",
-    "offset": [ 27, 0 ],
-    "hide_hyphen": true,
-    "layer": 1,
-    "bindings": [
-      {
-        "binding_name": "#linkurl",
-        "binding_type": "global"
-      }
-    ],
-    "$link_url_text_size|default": [ 208, "default" ],
-    "variables": [
-      {
-        "requires": "$is_console",
-        "$link_url_text_size": [ 163, "default" ]
-      }
-    ],
-    "size": "$link_url_text_size"
-  },
-
-  "empty_image": {
-    "type": "image"
-  },
-
-  "refresh_button@common_buttons.transparent_content_button": {
-    "size": [ 21, 21 ],
-    "$default_button_alpha": 0.3,
-    "$default_hover_alpha": 0.45,
-    "$default_pressed_alpha": 0.6,
-
-    "offset": [ 4, 0 ],
-    "anchor_to": "left_middle",
-    "anchor_from": "left_middle",
-    "$button_content": "realms_allowlist.refresh_icon",
-    "$light_glyph_default_color": [ 1, 1, 1 ],
-    "$light_glyph_hover_color": [ 1.19, 1.14, 1.05 ],
-    "$light_glyph_pressed_color": [ 0.8, 0.84, 0.93 ],
-    "$button_pressed_offset": [ 0, 0 ],
-
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.realms_invite_refresh",
-        "mapping_type": "pressed"
-      },
-      {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "button.realms_invite_refresh",
-        "mapping_type": "focused"
-      }
-    ],
-    "bindings": [
-      {
-        "binding_name": "#members_list_enabled",
-        "binding_name_override": "#enabled"
-      }
-    ]
-  },
-
-  "share_button@common_buttons.light_glyph_button": {
-    "size": [ 28, 28 ],
-    "anchor_from": "right_middle",
-    "anchor_to": "right_middle",
-    "offset": [ -26, 0 ], // Right aligned
-    "$light_glyph_default_color": [ 1, 1, 1 ],
-    "$light_glyph_hover_color": [ 1, 1, 1 ],
-    "$light_glyph_pressed_color": [ 0.9, 0.9, 0.9 ],
-    "bindings": [
-      {
-        "binding_name": "#copy_share_enabled",
-        "binding_name_override": "#enabled"
-      }
-    ],
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.realms_invite_share",
-        "mapping_type": "pressed"
-      },
-      {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "button.realms_invite_share",
-        "mapping_type": "focused"
-      }
-    ]
-  },
-
-  "copy_button@common_buttons.light_text_button": {
-    "size": [ 56, 28 ],
-    "anchor_from": "center",
-    "anchor_to": "center",
-    "$button_text": "realmsInvitationScreen.shareDialogCopyButton",
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.realms_invite_copy",
-        "mapping_type": "pressed"
-      },
-      {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "button.realms_invite_copy",
-        "mapping_type": "focused"
-      }
-    ]
-  },
-
-  "new_link_button@common_buttons.light_text_button": {
-    "size": [ "50% - 2px", "90%" ],
-    "anchor_from": "bottom_right",
-    "anchor_to": "bottom_right",
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.realms_invite_new_link",
-        "mapping_type": "pressed"
-      },
-      {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "button.realms_invite_new_link",
-        "mapping_type": "focused"
-      }
-    ],
-    "variables": [
-      {
-        "requires": "$is_console",
-        "$button_text": "realmsInvitationScreen.shareDialogNewCodeButton"
-      },
-      {
-        "requires": "(not $is_console)",
-        "$button_text": "realmsInvitationScreen.shareDialogNewLinkButton"
-      }
-    ]
-  },
-
-  "cancel_button@common_buttons.light_text_button": {
-    "size": [ "50% - 2px", "90%" ],
-    "anchor_from": "bottom_right",
-    "anchor_to": "bottom_right",
-    "$button_text": "realmsInvitationScreen.shareDialogCancel",
-    "button_mappings": [
-      {
-        "from_button_id": "button.menu_select",
-        "to_button_id": "button.realms_invite_cancel",
-        "mapping_type": "pressed"
-      },
-      {
-        "from_button_id": "button.menu_cancel",
-        "to_button_id": "button.realms_invite_cancel",
-        "mapping_type": "global"
-      },
-      {
-        "from_button_id": "button.menu_ok",
-        "to_button_id": "button.realms_invite_cancel",
-        "mapping_type": "focused"
-      }
-    ]
-  },
-
-  "share_popup_text": {
-    "type": "label",
-    "size": [ "70%", "default" ],
-    "shadow": false,
-    "text": "$text",
-    "color": "$light_glyph_default_color",
-    "anchor_from": "center",
-    "anchor_to": "center",
-    "text_alignment": "center"
-  },
-
-  "lower_body_default_content": {
-    "type": "panel",
-    "size": [ "100%", "90%" ],
-    "anchor_from": "top_middle",
-    "anchor_to": "top_middle",
-    "controls": [
-      {
-        "info_text@realms_allowlist.share_popup_text": {
-          "variables": [
-            {
-              "requires": "$is_console",
-              "$text": "realmsInvitationScreen.shareInfoMessageCode"
-            },
-            {
-              "requires": "(not $is_console)",
-              "$text": "realmsInvitationScreen.shareInfoMessage"
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  "lower_body_refresh_content": {
-    "type": "panel",
-    "size": [ "100%", "80%" ],
-    "anchor_from": "center",
-    "anchor_to": "center",
-    "controls": [
-      {
-        "info_text@realms_allowlist.share_popup_text": {
-          "anchor_from": "top_middle",
-          "anchor_to": "top_middle",
-          "size": [ "75%", "50% - 2px" ],
-          "offset": [ 0, 7 ],
-          "variables": [
-            {
-              "requires": "$is_console",
-              "$text": "realmsInvitationScreen.refreshCodeInfoMessage"
-            },
-            {
-              "requires": "(not $is_console)",
-              "$text": "realmsInvitationScreen.refreshLinkInfoMessage"
-            }
-          ]
-        }
-      },
-      {
-        "button_panel": {
-          "type": "panel",
-          "size": [ "75%", "40%" ],
-          "anchor_from": "bottom_middle",
-          "anchor_to": "bottom_middle",
-          "offset": [ 0, -7 ],
-          "controls": [
-            {
-              "cancel_button@realms_allowlist.cancel_button": {
-                "layer": 5, // To catch focus of controller when open.
-                "$button_text": "gui.cancel",
-                "anchor_from": "bottom_left",
-                "anchor_to": "bottom_left"
-
-              }
-            },
-            {
-              "new_link_button@realms_allowlist.new_link_button": {}
-            }
-          ]
-
-        }
-      }
-    ]
-  },
-
-  "share_popup_dialog_lower_body": {
-    "type": "panel",
-    "size": [ "100%", "65%" ],
-    "anchor_from": "top_left",
-    "anchor_to": "top_left",
-    "offset": [ 0, "40%" ],
-    "layer": 1,
-    "controls": [
-      {
-        "default@realms_allowlist.lower_body_default_content": {
-          "bindings": [
-            {
-              "binding_name": "#default_message_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-      {
-        "refresh@realms_allowlist.lower_body_refresh_content": {
-          "bindings": [
-            {
-              "binding_name": "#refresh_message_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
       }
     ]
   }
