@@ -1,0 +1,114 @@
+{
+  "namespace": "sdl_label",
+
+  // The reason we use this is that MinecraftTen font has specific requirements for a backup font and offset on devices that are low memory
+  // so we unfortunately can't bind the font type directly. The factory creates an instance of the layout for MCTen based on this behavior and uses
+  // the SDLLabel for everything else
+  "sdl_label_factory": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "layer": 1,
+
+    "$sdl_factory_size|default": [ "100%", "100%" ],
+    "$sdl_factory_bindings|default": [], // You will want to implement this with a unique name for each instance
+    "$sdl_label_binding_name|default": "",
+    "$sdl_label_offset|default": [ 0, 0 ],
+    "$sdl_label_size|default": [ "100%", "default" ],
+    "$sdl_label_max_size|default": [ "100%", "100%" ],
+    "$sdl_label_collection_name|default": "sdl_label_factory",
+
+    "size": "$sdl_factory_size",
+
+    "$sdl_label_bindings|default": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_binding_name"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_text_color",
+        "binding_condition": "once",
+        "binding_name_override": "#color"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_font_type",
+        "binding_condition": "once",
+        "binding_name_override": "#font_type"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_font_scalar",
+        "binding_condition": "once",
+        "binding_name_override": "#font_scale_factor"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_alignment",
+        "binding_condition": "once",
+        "binding_name_override": "#text_alignment"
+      }
+    ],
+
+    "factory": {
+      "name": "sdl_label_factory",
+      "control_ids": {
+        "MinecraftTenLabel": "@sdl_label.sdl_mc_ten_label",
+        "SDLLabel": "@sdl_label.sdl_label"
+      },
+      "factory_variables": [
+        "$store_factory_collection_details",
+        "$store_factory_collection_name",
+        "$store_factory_collection_prefix",
+        "$sdl_label_size",
+        "$sdl_label_max_size",
+        "$sdl_label_offset",
+        "$sdl_label_bindings",
+        "$sdl_label_binding_type",
+        "$sdl_label_collection_name",
+        "$sdl_label_binding_name",
+        "$sdl_label_text_color",
+        "$sdl_label_font_type",
+        "$sdl_label_font_scalar",
+        "$sdl_label_alignment"
+      ]
+    },
+    "collection_name": "sdl_label_factory",
+    "bindings": "$sdl_factory_bindings"
+  },
+
+  "sdl_label": {
+    "type": "label",
+    "layer": 3,
+
+    "size": "$sdl_label_size",
+    "max_size": "$sdl_label_max_size",
+    "offset": "$sdl_label_offset",
+    "color": "$sdl_label_text_color",
+    "text": "$sdl_label_binding_name",
+    "bindings": "$sdl_label_bindings"
+  },
+
+  "sdl_mc_ten_label@common.minecraftTenLabel": {
+    "layer": 3,
+
+    "size": "$sdl_label_size",
+    "max_size": "$sdl_label_max_size",
+    "offset": "$sdl_label_offset",
+
+    "$sdl_label_font_binding_type": "none", // We aren't binding the font type as this is specified as MCTen
+
+    "text": "$sdl_label_binding_name",
+    "bindings": "$sdl_label_bindings"
+  }
+}
