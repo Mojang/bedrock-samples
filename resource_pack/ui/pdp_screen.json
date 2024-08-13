@@ -408,6 +408,38 @@
     ]
   },
 
+  "smooth_purchase_buttons_panel": {
+    "type": "stack_panel",
+    "layer": 3,
+    "size": [ "100%", "100%c" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "orientation": "vertical",
+    "visible": false,
+    "controls": [
+      {
+        "activated_purchase_buttons_panel@pdp.activated_smooth_purchase_buttons_panel": {
+          "bindings": [
+            {
+              "binding_name": "#activated_purchase_panel_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "deactivated_purchase_buttons_panel@pdp.deactivated_smooth_purchase_buttons_panel": {
+          "bindings": [
+            {
+              "binding_name": "#deactivated_purchase_panel_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "smooth_buttons_panel": {
     "type": "stack_panel",
     "layer": 3,
@@ -434,16 +466,6 @@
           "bindings": [
             {
               "binding_name": "#purchase_panel_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-      {
-        "deactivated_purchase_buttons_panel@pdp.deactivated_smooth_purchase_buttons_panel": {
-          "bindings": [
-            {
-              "binding_name": "#purchase_panel_visible_disallowed",
               "binding_name_override": "#visible"
             }
           ]
@@ -565,7 +587,7 @@
     ]
   },
 
-  "smooth_purchase_buttons_panel": {
+  "activated_smooth_purchase_buttons_panel": {
     "type": "stack_panel",
     "layer": 3,
     "size": [ "100%", "100%c" ],
@@ -1767,6 +1789,13 @@
         }
       },
       {
+        "navigation_tab_section@store_layout.nav_button_grid_panel": {
+          "$nav_button_event_name": "button.tab_button",
+          "$nav_button_collection_name": "tab_button_collection",
+          "$section_content": "#tab_section_content"
+        }
+      },
+      {
         "update_notification_section@pdp.content_section_boarder_bg": {
           "size": [ "100%", "100%c" ],
           "$content": "pdp.update_notification_stack_panel",
@@ -2744,73 +2773,6 @@
     "texture": "textures/ui/store_play_button"
   },
 
-  "realms_plus_expiration": {
-    "type": "panel",
-    "size": [ "100%", "20% + 1px" ],
-    "offset": [ 0, 0.5 ],
-    "anchor_from": "bottom_middle",
-    "anchor_to": "bottom_middle",
-    "controls": [
-      {
-        "background": {
-          "type": "image",
-          "size": [ "100%", "100%" ],
-          "anchor_from": "bottom_middle",
-          "anchor_to": "bottom_middle",
-          "texture": "textures/ui/purple_gradient",
-          "tiled": "y",
-          "layer": 3
-        }
-      },
-      {
-        "icon": {
-          "type": "image",
-          "size": [ 11, 14 ],
-          "texture": "textures/ui/realmsIcon",
-          "anchor_from": "left_middle",
-          "anchor_to": "left_middle",
-          "offset": [ 2, 0 ],
-          "layer": 5
-        }
-      },
-      {
-        "text": {
-          "type": "label",
-          "size": [ "default", 10 ],
-          "color": "$body_text_color",
-          "anchor_from": "left_middle",
-          "anchor_to": "left_middle",
-          "offset": [ 18, 0 ],
-          "text": "#item_realms_expiration_label",
-          "layer": 6,
-          "bindings": [
-            {
-              "binding_name": "#item_realms_expiration_label",
-              "binding_type": "global"
-            }
-          ]
-        }
-      },
-      {
-        "particles": {
-          "type": "image",
-          "size": [ 20, 20 ],
-          "texture": "textures/ui/realms_particles",
-          "anchor_from": "right_middle",
-          "anchor_to": "right_middle",
-          "offset": [ -10, 0 ],
-          "layer": 4
-        }
-      }
-    ],
-    "bindings": [
-      {
-        "binding_name": "#realm_expiration_banner_visible",
-        "binding_name_override": "#visible"
-      }
-    ]
-  },
-
   "csb_expiration": {
     "type": "panel",
     "size": [ "100%", 14 ],
@@ -3061,7 +3023,7 @@
                                     {
                                       "summary_rating_button@common_buttons.underline_button": {
                                         "$focus_id": "rating_button",
-                                        "$focus_override_up": "author_button",
+                                        "$focus_override_up": "glyph_button",
                                         "$focus_override_left": "video_overlay",
                                         "$focus_override_right": "share_button",
                                         "$focus_override_down": "read_more_button",
@@ -3148,7 +3110,7 @@
                 "$single_line_label_text": "#creator_label",
 
                 "$focus_id": "author_button",
-                "$focus_override_down": "rating_button",
+                "$focus_override_down": "glyph_button",
                 "$focus_override_left": "video_overlay",
                 "$focus_override_right": "interact_button",
 
@@ -3292,7 +3254,7 @@
       },
       {
         "description_toggle_show_button@common_buttons.light_text_form_fitting_button": {
-          "$focus_id": "description_toggle_button",
+          "$focus_id": "$description_toggle_focus_id",
           "size": [ "100%cm", "100%cm" ],
           "anchor_from": "bottom_right",
           "anchor_to": "bottom_right",
@@ -3375,6 +3337,8 @@
     "anchor_from": "top_left",
     "anchor_to": "top_left",
     "$single_line_label_text": "$glyph_text_binding",
+    "$focus_id": "glyph_button",
+    "$focus_override_down": "rating_button",
     "$label_text_bindings": [
       {
         "binding_type": "global",
@@ -3662,71 +3626,9 @@
           ],
           "bindings": [
             { "binding_name": "#in_csb_button_visible" },
-            { "binding_name": "#in_realms_plus_button_visible" },
             {
               "binding_type": "view",
-              "source_property_name": "(#in_csb_button_visible and not #in_realms_plus_button_visible)",
-              "target_property_name": "#visible"
-            }
-          ]
-        }
-      },
-      {
-        "in_realms_plus_panel": {
-          "type": "panel",
-          "size": [ "100%", "100%c + 3px" ],
-          "controls": [
-            {
-              "in_realms_plus_button@pdp.in_realms_plus_button": {
-                "anchor_from": "bottom_middle",
-                "anchor_to": "bottom_middle",
-                "bindings": [
-                  {
-                    "binding_name": "(not #realms_incompatible_button_visible)",
-                    "binding_name_override": "#visible"
-                  }
-                ]
-              }
-            },
-            {
-              "realms_disabled_button@common_buttons.dynamic_tooltip_notification_panel": {
-                "size": [ "100% - 4px", "20px" ],
-                "button_mappings": [
-                  {
-                    "from_button_id": "button.menu_select",
-                    "to_button_id": "button.menu_store_error",
-                    "mapping_type": "pressed"
-                  },
-                  {
-                    "to_button_id": "button.is_hovered",
-                    "mapping_type": "pressed"
-                  }
-                ],
-                "consume_hover_events": true,
-                "focus_enabled": true,
-                "$dynamic_tooltip_button_visibility_binding_name": "#realms_incompatible_button_visible",
-                "$tooltip_popup_visible_binding": "#realms_incompatible_tooltip_visible",
-                "$tooltip_text_binding_name": "#marketplace_incompatable_popup_text",
-                "$override_tooltip_popup_image": true,
-                "$tooltip_popup_override_image_panel": "pdp.info_bulb_image",
-                "$tool_tip_text_max_size": [ "190px", "default" ],
-                "$tooltip_panel_offset": [ -40, -10 ],
-                "$tooltip_panel_content": "pdp.realms_incompatable_content",
-                "bindings": [
-                  {
-                    "binding_name": "#realms_incompatible_button_visible",
-                    "binding_name_override": "#visible"
-                  }
-                ]
-              }
-            }
-          ],
-          "bindings": [
-            { "binding_name": "#in_csb_button_visible" },
-            { "binding_name": "#in_realms_plus_button_visible" },
-            {
-              "binding_type": "view",
-              "source_property_name": "(#in_realms_plus_button_visible and not #in_csb_button_visible)",
+              "source_property_name": "#in_csb_button_visible",
               "target_property_name": "#visible"
             }
           ]
@@ -5317,6 +5219,7 @@
   },
 
   "description_section@pdp.content_section_boarder_bg": {
+    "$description_toggle_focus_id|default": "description_toggle_button",
     "size": [ "100%", "100%c + 4px" ],
 
     "$store_factory_collection_details|default": "none",
@@ -5329,6 +5232,10 @@
     "focus_container_custom_left": "$main_content_focus_container_left_custom",
 
     "$content": "pdp.description_inner_panel"
+  },
+
+  "changelog_section@pdp.description_section": {
+    "$description_toggle_focus_id": "changelog_toggle_button"
   },
 
   //--------------------------------------------------------------------------------

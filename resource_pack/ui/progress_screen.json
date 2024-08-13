@@ -320,7 +320,20 @@
                             "type": "label",
                             "size": [ "100%", "default" ],
                             "color": "$body_text_color",
-                            "text": "$description_text"
+                            "text": "$description_text",
+                            "bindings": [
+                              {
+                                "binding_name": "$description_text"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "padding_2": {
+                            "type": "panel",
+                            "size": [ 0, 8 ],
+                            "visible": "$has_second_line",
+                            "enabled": "$has_second_line"
                           }
                         },
                         {
@@ -330,11 +343,16 @@
                             "size": [ "100%", "default" ],
                             "color": "$body_text_color",
                             "text": "$description_text2",
-                            "ignored": "(not $has_second_line)"
+                            "ignored": "(not $has_second_line)",
+                            "bindings": [
+                              {
+                                "binding_name": "$description_text2"
+                              }
+                            ]
                           }
                         },
                         {
-                          "padding_2": {
+                          "padding_3": {
                             "type": "panel",
                             "size": [ 0, 8 ]
                           }
@@ -351,7 +369,7 @@
                           }
                         },
                         {
-                          "padding_3": {
+                          "padding_4": {
                             "type": "panel",
                             "size": [ 0, 2 ],
                             "visible": "$use_top_button",
@@ -368,7 +386,7 @@
                           }
                         },
                         {
-                          "padding_4": {
+                          "padding_5": {
                             "type": "panel",
                             "size": [ 0, 2 ]
                           }
@@ -390,6 +408,66 @@
         }
       }
     ]
+  },
+
+  "resource_pack_download_popup_base@progress.simple_popup_dialog_base": {
+    "$title_text": "progressScreen.dialog.title.resourcePack",
+    "$has_second_line": "#show_ray_tracing_warning",
+    "$description_text": "#pack_download_type_message",
+    "$description_text2": "#ray_tracing_warning_message",
+    "bindings": [
+      {
+        "binding_name": "#show_ray_tracing_warning"
+      },
+      {
+        "binding_name": "#pack_download_type_message"
+      },
+      {
+        "binding_name": "#ray_tracing_warning_message"
+      }
+    ]
+  },
+
+  "resource_pack_download_server_required@progress.resource_pack_download_popup_base": {
+    "$top_button_text": "#empty_binding",
+
+    "$middle_button_press": "button.join_and_download_everything",
+    "$middle_button_text": "#join_and_download_everything",
+
+    "$bottom_button_press": "button.leave",
+    "$bottom_button_text": "progressScreen.dialog.button.leave"
+  },
+
+  "resource_pack_download_optional_and_required@progress.resource_pack_download_popup_base": {
+    "$use_top_button": true,
+    "$top_button_press": "button.join_and_download_everything",
+    "$top_button_text": "#join_and_download_everything",
+
+    "$middle_button_press": "button.join_and_download_required",
+    "$middle_button_text": "#join_and_download_required",
+
+    "$bottom_button_press": "button.leave",
+    "$bottom_button_text": "progressScreen.dialog.button.leave"
+  },
+
+  "resource_pack_download_optional@progress.resource_pack_download_popup_base": {
+    "$top_button_text": "#empty_binding",
+
+    "$middle_button_press": "button.join_and_download_everything",
+    "$middle_button_text": "#join_and_download_everything",
+
+    "$bottom_button_press": "button.join",
+    "$bottom_button_text": "progressScreen.dialog.button.join"
+  },
+
+  "resource_pack_download_required@progress.resource_pack_download_popup_base": {
+    "$top_button_text": "#empty_binding",
+
+    "$middle_button_press": "button.join_and_download_required",
+    "$middle_button_text": "#join_and_download_required",
+
+    "$bottom_button_press": "button.leave",
+    "$bottom_button_text": "progressScreen.dialog.button.leave"
   },
 
   "add_on_only@progress.simple_popup_dialog_base": {
@@ -542,11 +620,17 @@
     "max_size": [ "100% - 8px", 20 ],
     "text": "#code_text",
     "bindings": [
-      { "binding_name": "#code_text" },
-      {
-        "binding_name": "#code_text_visible",
-        "binding_name_override": "#visible"
-      }
+      { "binding_name": "#code_text" }
+    ]
+  },
+
+  "code_number@progress.progress_screen_text": {
+    "size": [ "default", 20 ],
+    "max_size": [ "100% - 8px", 20 ],
+    "text": "#code_number",
+    "color": "$e_color_format",
+    "bindings": [
+      { "binding_name": "#code_number" }
     ]
   },
 
@@ -1252,6 +1336,10 @@
     "type": "factory",
     "control_ids": {
       "test": "dialog@progress.popup_dialog_base",
+      "resource_pack_download_server_required": "resource_pack_download_server_required@progress.resource_pack_download_server_required",
+      "resource_pack_download_optional_and_required": "resource_pack_download_optional_and_required@progress.resource_pack_download_optional_and_required",
+      "resource_pack_download_optional": "resource_pack_download_optional@progress.resource_pack_download_optional",
+      "resource_pack_download_required": "resource_pack_download_required@progress.resource_pack_download_required",
       "add_on_only": "add_on_only@progress.add_on_only",
       "add_on_confirmation": "add_on_only@progress.add_on_confirmation",
       "add_on_with_optional_texture_pack": "add_on_only@progress.add_on_with_optional_texture_pack",
@@ -1484,7 +1572,7 @@
 
   "cloud_error_panel": {
     "type": "panel",
-    "size": [ 270, "100%" ],
+    "size": [ 300, "100%" ],
     "variables": [
       {
         "requires": "$desktop_screen",
@@ -1562,12 +1650,28 @@
                     }
                   },
                   {
-                    "code_text@progress.code_text": {
-                      "size": [ "default", "default" ],
-                      "max_size": [ "100% - 8px", 60 ],
-                      "font_type": "smooth",
-                      "anchor_from": "top_left",
-                      "anchor_to": "top_left"
+                    "error_code": {
+                      "type": "stack_panel",
+                      "size": [ "100% - 8px", 15 ],
+                      "orientation": "horizontal",
+                      "controls": [
+                        {
+                          "code_text@progress.code_text": {
+                            "size": [ "default", "default" ],
+                            "font_type": "smooth",
+                            "anchor_from": "top_left",
+                            "anchor_to": "top_left"
+                          }
+                        },
+                        {
+                          "code_number@progress.code_number": {
+                            "size": [ "default", "default" ],
+                            "font_type": "smooth",
+                            "anchor_from": "top_left",
+                            "anchor_to": "top_left"
+                          }
+                        }
+                      ]
                     }
                   },
                   {
@@ -1583,109 +1687,48 @@
                     }
                   },
                   {
-                    "cloud_support_hypertext@edu_common.underline_button": {
+                    "cloud_support_link": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
                       "size": [ "100%c", "100%c" ],
-                      "$single_label_size": [ "default", "default" ],
-                      "$single_line_font_scale_factor": 1,
-                      "$pressed_button_name": "button.eduCloud_cloud_support",
-                      "$single_line_label_text": "edu.cloudError.generic.linkDescription",
-                      "$font_type": "smooth",
-                      "anchor_from": "top_left",
-                      "anchor_to": "top_left",
-                      "bindings": [
+                      "controls": [
                         {
-                          "binding_name": "#cloud_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "vertical_padding_3": {
-                      "type": "panel",
-                      "size": [ 0, 5 ],
-                      "bindings": [
+                          "cloud_support_hypertext@edu_common.underline_button": {
+                            "size": [ "98%c", "100%c" ],
+                            "$single_label_size": [ "default", "default" ],
+                            "$single_line_font_scale_factor": 1,
+                            "$pressed_button_name": "button.edu_cloud_hyperlink",
+                            "$single_line_label_text": "#edu_cloud_error_hyperlink_label",
+                            "$font_type": "smooth",
+                            "anchor_from": "top_left",
+                            "anchor_to": "top_left",
+                            "$label_text_bindings": [
+                              {
+                                "binding_name": "#edu_cloud_error_hyperlink_label"
+                              }
+                            ],
+                            "bindings": [
+                              {
+                                "binding_name": "#cloud_link_visible",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
+                          }
+                        },
                         {
-                          "binding_name": "#backup_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "backup_support_hypertext@edu_common.underline_button": {
-                      "size": [ "100%c", "100%c" ],
-                      "$single_label_size": [ "default", "default" ],
-                      "$single_line_font_scale_factor": 1,
-                      "$pressed_button_name": "button.eduCloud_backup_support",
-                      "$single_line_label_text": "edu.cloudError.outOfStorage.linkDescription",
-                      "$font_type": "smooth",
-                      "anchor_from": "top_left",
-                      "anchor_to": "top_left",
-                      "bindings": [
-                        {
-                          "binding_name": "#backup_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "vertical_padding_4": {
-                      "type": "panel",
-                      "size": [ 0, 5 ],
-                      "bindings": [
-                        {
-                          "binding_name": "#generic_download_error_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "generic_download_error_support_hypertext@edu_common.underline_button": {
-                      "size": [ "100%c", "100%c" ],
-                      "$single_label_size": [ "default", "default" ],
-                      "$single_line_font_scale_factor": 1,
-                      "$pressed_button_name": "button.eduCloud_generic_download_error_support",
-                      "$single_line_label_text": "edu.cloudError.generic.linkDescription",
-                      "$font_type": "smooth",
-                      "anchor_from": "top_left",
-                      "anchor_to": "top_left",
-                      "bindings": [
-                        {
-                          "binding_name": "#generic_download_error_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "vertical_padding_5": {
-                      "type": "panel",
-                      "size": [ 0, 5 ],
-                      "bindings": [
-                        {
-                          "binding_name": "#unauthorized_download_error_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "unauthorized_download_error_support_hypertext@edu_common.underline_button": {
-                      "size": [ "100%c", "100%c" ],
-                      "$single_label_size": [ "default", "default" ],
-                      "$single_line_font_scale_factor": 1,
-                      "$pressed_button_name": "button.eduCloud_unauthorized_download_error_support",
-                      "$single_line_label_text": "edu.cloudError.generic.linkDescription",
-                      "$font_type": "smooth",
-                      "anchor_from": "top_left",
-                      "anchor_to": "top_left",
-                      "bindings": [
-                        {
-                          "binding_name": "#unauthorized_download_error_link_visible",
-                          "binding_name_override": "#visible"
+                          "padded_icon@common.empty_panel": {
+                            "size": [ "100%c", "100%c" ],
+                            "controls": [
+                              {
+                                "icon": {
+                                  "type": "image",
+                                  "texture": "textures/ui/icon_external_link",
+                                  "size": [ 9, 9 ],
+                                  "offset": [ 7, 0.6 ]
+                                }
+                              }
+                            ]
+                          }
                         }
                       ]
                     }
@@ -1926,7 +1969,8 @@
           ]
         }
       },
-      { "popup_dialog_factory@progress.popup_dialog_factory": {} }
+      { "popup_dialog_factory@progress.popup_dialog_factory": {} },
+      { "cloud_conflict_resolution_popup_factory@edu_common.edu_cloud_conflict_resolution_popup_dialog_factory": {} }
     ]
   },
 

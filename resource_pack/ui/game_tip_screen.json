@@ -1,6 +1,19 @@
 {
   "namespace": "game_tip",
 
+  //---------------------------------------------------------------------------
+  // Game Tip UI elements
+  //---------------------------------------------------------------------------
+
+  "fade_animation": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "from": "$anim_alpha_from",
+    "to": "$anim_alpha_to",
+    "duration": "$anim_duration",
+    "end_event": "$anim_event_name"
+  },
+
   "tip_animation": {
     "anim_type": "aseprite_flip_book",
     "initial_uv": [ 0, 0 ]
@@ -32,7 +45,7 @@
 
   "game_tip_animation_panel": {
     "type": "panel",
-    "size": [ "100%c", "0px" ],  // Animation can be higher than game tip frame, so it's height shouldn't be counted.
+    "size": [ "100%c", "0px" ], // Animation can be higher than game tip frame, so it's height shouldn't be counted.
     "anchor_from": "left_middle",
     "anchor_to": "left_middle",
     "controls": [
@@ -86,8 +99,7 @@
 
   "game_tip_arrow_panel": {
     "type": "panel",
-    "size": [ "0px", "0px" ],  // Arrow shouldn't be included in size calculation for the game tip frame.
-    
+    "size": [ "0px", "0px" ], // Arrow shouldn't be included in size calculation for the game tip frame.
     "$arrow_offset|default": [ 25, -3 ],
     "$arrow_texture|default": "textures/ui/gameTipArrow_down",
     "$arrow_anchor_point|default": "left_middle",
@@ -117,8 +129,8 @@
       }
     ],
 
-    "anchor_from":"$arrow_anchor_point",
-    "anchor_to":"$arrow_anchor_point",
+    "anchor_from": "$arrow_anchor_point",
+    "anchor_to": "$arrow_anchor_point",
     "offset": "$arrow_offset",
 
     "controls": [
@@ -135,9 +147,9 @@
     "use_child_anchors": true,
     "controls": [
       { "animated_panel@game_tip.game_tip_animation_panel": {} },
-      { "middle_padding": { "type": "panel", "size": [ 7, 0 ]} },  // Padding between animation and text.
+      { "middle_padding": { "type": "panel", "size": [ 7, 0 ]} }, // Padding between animation and text.
       { "label@game_tip.game_tip_text_panel": {} },
-      { "right_padding": { "type": "panel", "size": [ 9, 0 ]} }  // 7px padding between text and frame + 2px frame border.
+      { "right_padding": { "type": "panel", "size": [ 9, 0 ]} } // 7px padding between text and frame + 2px frame border.
     ]
   },
 
@@ -146,9 +158,9 @@
     "texture": "textures/ui/gameTipBorder",
     "layer": 50,
 
-    "min_size": ["default", 40],
+    "min_size": [ "default", 40 ],
     "size": [ "100%c", "100%cm" ],
-  
+
     "$tip_anchor_from|default": "top_right",
     "$tip_anchor_to|default": "top_right",
     "$game_tip_offset|default": [ 0, 0 ],
@@ -158,16 +170,39 @@
     "anchor_to": "$tip_anchor_to",
     "offset": "$game_tip_offset",
 
+    "alpha": "@game_tip.fade_animation",
+    "propagate_alpha": true,
+
     "controls": [
       { "horizontal_container@game_tip.game_tip_panel": {} },
-      { "arrow_panel@game_tip_arrow_panel": {
-        "ignored": "$ignore_arrow"
-        } }
+      {
+        "arrow_panel@game_tip_arrow_panel": {
+          "ignored": "$ignore_arrow"
+        }
+      }
     ]
   },
 
   //---------------------------------------------------------------------------
-  // Game Tip Factory 
+  // UI helpers
+  //---------------------------------------------------------------------------
+
+  "chat_stack_game_tip_panel": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "controls": [
+      {
+        "top_padding": {
+          "type": "panel",
+          "size": [ "100%", 7 ]
+        }
+      },
+      { "game_tip_background@game_tip.game_tip_item_background": {} }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // Game Tip Factories 
   //---------------------------------------------------------------------------
 
   "game_tip_factory": {
@@ -178,6 +213,18 @@
       "max_children_size": 1,
       "control_ids": {
         "game_tip": "game_tip@game_tip.game_tip_item_background"
+      }
+    }
+  },
+
+  "game_tip_chat_stack_factory": {
+    "type": "panel",
+    "size": [ "default", "default" ],
+    "factory": {
+      "name": "game_tip_chat_stack_item_factory",
+      "max_children_size": 1,
+      "control_ids": {
+        "game_tip": "game_tip@game_tip.chat_stack_game_tip_panel"
       }
     }
   }

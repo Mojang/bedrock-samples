@@ -131,16 +131,9 @@
     "$button_content": "pause.dressing_room_controller_button_content",
     "$pressed_alpha": 0.65,
     "$hide_description": true,
-    "$visibility_binding_type|default": "global",
-    "variables": [
-      {
-        "requires": "$nx_os",
-        "$visibility_binding_type": "none"
-      }
-    ],
     "bindings": [
       {
-        "binding_type": "$visibility_binding_type",
+        "binding_type": "global",
         "binding_name": "#dressing_room_controller_button_visible",
         "binding_name_override": "#visible"
       }
@@ -522,7 +515,6 @@
   },
 
   "realms_stories_button@pause.pause_button_template": {
-    "ignored": "$is_secondary_client",
     "$pressed_button_name": "button.menu_feed",
     "$button_text": "pauseScreen.realmsStories",
     "anchor_to": "top_middle",
@@ -575,6 +567,7 @@
   "store_button_panel": {
     "type": "panel",
     "size": [ "100%", 28 ],
+    "ignored": "$is_secondary_client",
     "controls": [
       { "store_button@pause.store_button": {} },
       { "store_error_button@pause.store_error_button": {} }
@@ -582,7 +575,6 @@
   },
 
   "store_button@pause.pause_button_template": {
-    "ignored": "$is_secondary_client",
     "$pressed_button_name": "button.menu_store",
     "$button_text": "$store_button_text",
     "bindings": [
@@ -752,16 +744,63 @@
     ]
   },
 
-  "take_screenshot_button@common_buttons.light_glyph_button": {
+  "take_screenshot_gamepad_button_content": {
+    "type": "panel",
+    "size": [ "100%c", "100%cm" ],
+    "controls": [
+      {
+        "button_y@common.gamepad_helper_y_14": {
+          "$gamepad_helper_visible_binding_type": "none",
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "layer": -1,
+          "offset": [ 6, 0 ]
+        }
+      },
+      {
+        "take_screenshot_icon@pause.take_screenshot_icon": {
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle",
+          "color": "$glyph_color"
+        }
+      }
+    ]
+  },
+
+  "take_screenshot_gamepad_button@common_buttons.light_content_form_fitting_button": {
+    "size": [ "100%c", "100%c" ],
+    "$button_image_size_override": [ "100%c", "100%c" ],
+    "$button_content_size_override": [ "100%c - 8px", "100%c - 4px" ],
+    "$pressed_button_name": "button.screenshot",
+    "$focus_id": "icon_panel_main_focus",
+    "$button_tts_header": "key.screenshot",
+    "$button_offset": [ -4, 0 ],
+    "$button_pressed_offset": [ -4, 0 ],
+    "$button_content": "pause.take_screenshot_gamepad_button_content",
+    "$pressed_alpha": 0.65,
+    "$hide_description": true,
+    "bindings": [
+      {
+        "binding_type": "global",
+        "binding_name": "#is_using_gamepad",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "take_screenshot_button@common_buttons.light_content_button": {
     "$pressed_button_name": "button.screenshot",
     "$focus_id": "icon_panel_main_focus",
     "$button_tts_header": "key.screenshot",
     "size": [ 24, 24 ],
     "$button_content": "pause.take_screenshot_icon",
     "$pressed_alpha": 0.65,
-    "sound_name": "random.screenshot",
-    "sound_volume": 1.0,
-    "sound_pitch": 1.0
+    "bindings": [
+      {
+        "binding_name": "(not #is_using_gamepad)",
+        "binding_name_override": "#visible"
+      }
+    ]
   },
 
   "pause_screen@common.base_screen": {
@@ -999,16 +1038,26 @@
               }
             },
             {
-              "take_screenshot_btn@pause.column_frame": {
-                "size": [ 28, 32 ],
+              "take_screenshot_btn": {
+                "type": "input_panel",
+                "size": [ "100%c + 4px", 32 ],
                 "controls": [
-                  { "take_screenshot_button@pause.take_screenshot_button": {} }
+                  { "take_screenshot_button@pause.take_screenshot_button": {} },
+                  { "take_screenshot_gamepad_button@pause.take_screenshot_gamepad_button": {} }
                 ],
                 "bindings": [
                   {
                     "binding_name": "#screenshot_button_visible",
                     "binding_name_override": "#visible",
                     "binding_type": "global"
+                  }
+                ],
+                "button_mappings": [
+                  {
+                    "from_button_id": "button.controller_secondary_select",
+                    "to_button_id": "button.screenshot",
+                    "mapping_type": "global",
+                    "scope": "controller"
                   }
                 ]
               }
@@ -1150,6 +1199,7 @@
             { "store_button_panel@pause.store_button_panel": {} },
             {
               "server@pause.vertical_padding": {
+                "ignored": "$is_secondary_client",
                 "bindings": [
                   {
                     "binding_name": "#store_button_visible",

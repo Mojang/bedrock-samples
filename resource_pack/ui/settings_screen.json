@@ -21,7 +21,8 @@
     "$include_controls_and_settings_sections": false,
     "$is_global_texture_packs_visible|default": true,
     "$is_realm_slot|default": false,
-    "$realm_no_world_edit|default": false
+    "$realm_no_world_edit|default": false,
+    "$include_realm_invite_link_settings|default": false
   },
 
   "screen_world_create@settings_screen_base": {
@@ -77,6 +78,15 @@
     "$realms_pack_feature_enabled": false
   },
 
+  "screen_realm_invite_link_settings@settings_screen_base": {
+    "$include_realm_section": false,
+    "$realm_no_world_edit": false,
+    "$_include_world_section": false,
+    "$include_controls_and_settings_sections": false,
+    "$realms_pack_feature_enabled": false,
+    "$include_realm_invite_link_settings": true
+  },
+
   "selector_stack_panel": {
     "type": "stack_panel",
     "anchor_from": "top_left",
@@ -125,7 +135,8 @@
           "$members_toggle_index": "$members_forced_index",
           "$subscription_toggle_index": "$subscription_forced_index",
           "$backup_toggle_index": "$backup_forced_index",
-          "$dev_options_toggle_index": "$dev_options_forced_index"
+          "$dev_options_toggle_index": "$dev_options_forced_index",
+          "$invite_links_toggle_index": "$invite_links_forced_index"
         }
       },
       {
@@ -328,6 +339,13 @@
               }
             },
             {
+              "realms_debug_button@general_section.realms_debug_button": {
+                "ignored": "$is_publish",
+                "$toggle_group_forced_index": "$realms_debug_forced_index",
+                "$tts_section_header": "$general_section_header"
+              }
+            },
+            {
               "automation_button@general_section.automation_button": {
                 "ignored": "($is_publish or $test_infrastructure_disabled)",
                 "$toggle_group_forced_index": "$automation_forced_index",
@@ -343,6 +361,13 @@
           "$level_texture_pack_toggle_index": "$level_texture_pack_index",
           "$addon_toggle_index": "$addon_index"
         }
+      },
+      {
+        "realms_invite_link_settings_pane@realms_invite_link_settings.selector_panel": {
+          "ignored": "(not $include_realm_invite_link_settings)",
+          "$general_toggle_index": "$general_invite_link_forced_index",
+          "$advanced_toggle_index": "$advanced_invite_link_forced_index"
+        }
       }
     ]
   },
@@ -355,6 +380,11 @@
     "offset": [ 2, 0 ],
     "controls": [
       // the list of section panels, add yours here...
+      {
+        "realm_invite_link_settings_content_panels@realms_invite_link_settings.section_content_panels": {
+          "ignored": "(not $include_realm_invite_link_settings)"
+        }
+      },
       {
         "world_sections": {
           "type": "stack_panel",
@@ -373,7 +403,7 @@
             },
             { "server_section@world_section.server_section": {} },
             { "multiplayer_section@world_section.multiplayer_section": {} },
-            { "cloud_section@world_section.cloud_section": {} },
+            { "edu_cloud_section@world_section.edu_cloud_section": { "ignored": "(not $education_edition)" } },
             {
               "debug_section@world_section.debug_section": {
                 "ignored": "$is_publish",
@@ -507,6 +537,12 @@
             },
             {
               "flighting_debug_section@general_section.flighting_debug_section": {
+                "ignored": "$is_publish",
+                "visible": false
+              }
+            },
+            {
+              "realms_debug_section@general_section.realms_debug_section": {
                 "ignored": "$is_publish",
                 "visible": false
               }
