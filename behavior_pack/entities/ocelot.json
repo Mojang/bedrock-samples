@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.40",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:ocelot",
@@ -24,7 +24,6 @@
           }
         }
       },
-
       "minecraft:ocelot_adult": {
         "minecraft:experience_reward": {
           "on_bred": "Math.Random(1,7)",
@@ -102,6 +101,18 @@
         }
       },
       "minecraft:ocelot_trusting": {
+        "minecraft:breedable": {
+          "require_tame": false,
+          "breeds_with": {
+            "mate_type": "minecraft:ocelot",
+            "baby_type": "minecraft:ocelot",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "breed_items": [ "fish", "salmon" ]
+        },
         "minecraft:behavior.breed": {
           "priority": 3,
           "speed_multiplier": 1.0
@@ -114,21 +125,9 @@
             "fish",
             "salmon"
           ]
-        },
-        "minecraft:breedable": {
-          "require_tame": false,
-          "breeds_with": {
-            "mate_type": "minecraft:ocelot",
-            "baby_type": "minecraft:ocelot",
-            "breed_event": {
-              "event": "minecraft:entity_born",
-              "target": "baby"
-            }
-          },
-          "breed_items": [ "fish", "salmon" ]
         }
       },
-      // minecraft:ocelot_tame is only here for backwards compatibility purposes, ocelots are no longer tameable in Vanilla Minecraft
+      // Taming is only here for backwards compatibility purposes, ocelots are no longer tameable in Vanilla Minecraft
       "minecraft:ocelot_tame": {
         "minecraft:is_tamed": {
         },
@@ -138,14 +137,23 @@
         },
         "minecraft:sittable": {
         },
+        "minecraft:behavior.teleport_to_owner": {
+          "priority": 0,
+          "filters": {
+            "all_of": [
+              { "test": "owner_distance", "operator": ">", "value": 12 },
+              { "test": "is_panicking" }
+            ]
+          }
+        },
+        "minecraft:behavior.stay_while_sitting": {
+          "priority": 3
+        },
         "minecraft:behavior.follow_owner": {
           "priority": 4,
           "speed_multiplier": 1.0,
           "start_distance": 10,
           "stop_distance": 2
-        },
-        "minecraft:behavior.stay_while_sitting": {
-          "priority": 3
         },
         "minecraft:behavior.ocelot_sit_on_block": {
           "priority": 6,
@@ -210,6 +218,30 @@
       "minecraft:despawn": {
         "despawn_from_distance": {}
       },
+      "minecraft:leashable": {
+        "soft_distance": 4.0,
+        "hard_distance": 6.0,
+        "max_distance": 10.0,
+        "on_leash": {
+          "event": "minecraft:on_leash",
+          "target": "self"
+        },
+        "on_unleash": {
+          "event": "minecraft:on_unleash",
+          "target": "self"
+        }
+      },
+      "minecraft:balloonable": {
+        "mass": 0.7
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      },
       "minecraft:behavior.float": {
         "priority": 0
       },
@@ -267,30 +299,6 @@
       },
       "minecraft:behavior.look_at_player": {
         "priority": 9
-      },
-      "minecraft:leashable": {
-        "soft_distance": 4.0,
-        "hard_distance": 6.0,
-        "max_distance": 10.0,
-        "on_leash": {
-          "event": "minecraft:on_leash",
-          "target": "self"
-        },
-        "on_unleash": {
-          "event": "minecraft:on_unleash",
-          "target": "self"
-        }
-      },
-      "minecraft:balloonable": {
-        "mass": 0.7
-      },
-      "minecraft:physics": {
-      },
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      },
-      "minecraft:conditional_bandwidth_optimization": {
       }
     },
 
@@ -326,7 +334,6 @@
           }
         ]
       },
-
       "minecraft:entity_born": {
         "sequence": [
           {
@@ -341,7 +348,6 @@
           }
         ]
       },
-
       "minecraft:entity_born_wild": {
         "remove": {
           "component_groups": [
@@ -355,7 +361,6 @@
           ]
         }
       },
-
       "minecraft:ageable_grow_up": {
         "remove": {
           "component_groups": [
