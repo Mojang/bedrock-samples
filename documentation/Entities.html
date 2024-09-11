@@ -1,4 +1,4 @@
-<h1>ENTITIES DOCUMENTATION </br>Version: 1.21.40.20</h1>
+<h1>ENTITIES DOCUMENTATION </br>Version: 1.21.40.21</h1>
 This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
@@ -21146,47 +21146,77 @@ Allows this entity to be leashed and defines the conditions and events for this 
 </table>
 <a href="#Index">Back to top</a><br><br>
 
-<h2><p id="minecraft:lookat">minecraft:lookat</p></h2>
+<h2><p id="minecraft:looked_at">minecraft:looked_at</p></h2>
 
-Defines the behavior when another entity looks at this entity.</br><h3></h3>
+Defines the behavior when another entity looks at the owner entity.</br><h3></h3>
 
 <table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:2;">
 <tr> <th style="border-style:solid; border-width:2;">Name</th> <th style="border-style:solid; border-width:2;">Type</th> <th style="border-style:solid; border-width:2;">Default Value</th> <th style="border-style:solid; border-width:2;">Description</th> </tr>
 <tr>
-<td style="border-style:solid; border-width:2; padding:8px">allow_invulnerable</td>
-<td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
-<td style="border-style:solid; border-width:2; padding:8px">false</td>
-<td style="border-style:solid; border-width:2; padding:8px">If true, invulnerable entities (e.g. Players in creative mode) are considered valid targets.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">field_of_view</td>
+<td style="border-style:solid; border-width:2; padding:8px">Decimal</td>
+<td style="border-style:solid; border-width:2; padding:8px">26</td>
+<td style="border-style:solid; border-width:2; padding:8px">[Beta] Defines, in degrees, the width of the field of view for entities looking at the owner entity. If "scale_fov_by_distance" is set to true, this value corresponds to the field of view at a distance of one block between the entities.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">filters</td>
 <td style="border-style:solid; border-width:2; padding:8px">Minecraft Filter</td>
 <td style="border-style:solid; border-width:2; padding:8px"></td>
-<td style="border-style:solid; border-width:2; padding:8px">Defines the entities that can trigger this component.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">Defines which entities are considered when searching for entities looking at the owner entity.</br></td>
 </tr>
 <tr>
-<td style="border-style:solid; border-width:2; padding:8px">look_cooldown</td>
+<td style="border-style:solid; border-width:2; padding:8px">find_players_only</td>
+<td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
+<td style="border-style:solid; border-width:2; padding:8px">false</td>
+<td style="border-style:solid; border-width:2; padding:8px">[Beta] Limits the search to only the nearest Player that meets the specified "filters" rather than all nearby entities.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">line_of_sight_obstruction_type</td>
+<td style="border-style:solid; border-width:2; padding:8px">String</td>
+<td style="border-style:solid; border-width:2; padding:8px">collision</td>
+<td style="border-style:solid; border-width:2; padding:8px">[Beta] Defines the type of block shape used to check for line of sight obstructions. Valid values: "outline", "collision", "collision_for_camera".</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">look_at_locations</td>
+<td style="border-style:solid; border-width:2; padding:8px">List</td>
+<td style="border-style:solid; border-width:2; padding:8px"></td>
+<td style="border-style:solid; border-width:2; padding:8px">[Beta] A list of locations on the owner entity towards which line of sight checks are performed. At least one location must be unobstructed for the entity to be considered as looked at. Valid values: "head", "body", "feet".</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">looked_at_cooldown</td>
 <td style="border-style:solid; border-width:2; padding:8px">Range [a, b]</td>
 <td style="border-style:solid; border-width:2; padding:8px">[0, 0]</td>
-<td style="border-style:solid; border-width:2; padding:8px">The range for the random amount of time during which the entity is 'cooling down' and won't get angered or look for a target.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">Specifies the range for the random number of seconds that must pass before the owner entity can check again for entities looking at it, after detecting an entity looking at it.</br></td>
 </tr>
 <tr>
-<td style="border-style:solid; border-width:2; padding:8px">look_event</td>
+<td style="border-style:solid; border-width:2; padding:8px">looked_at_event</td>
 <td style="border-style:solid; border-width:2; padding:8px">String</td>
 <td style="border-style:solid; border-width:2; padding:8px"></td>
-<td style="border-style:solid; border-width:2; padding:8px">The event identifier to run when the entities specified in filters look at this entity.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">Defines the event to trigger when an entity is detected looking at the owner entity.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">not_looked_at_event</td>
+<td style="border-style:solid; border-width:2; padding:8px">String</td>
+<td style="border-style:solid; border-width:2; padding:8px"></td>
+<td style="border-style:solid; border-width:2; padding:8px">[Beta] Defines the event to trigger when no entity is found looking at the owner entity.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">scale_fov_by_distance</td>
+<td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
+<td style="border-style:solid; border-width:2; padding:8px">true</td>
+<td style="border-style:solid; border-width:2; padding:8px">[Beta] When true, the field of view narrows as the distance between the owner entity and the entity looking at it increases. This ensures that the width of the view cone remains somewhat constant towards the owner entity position, regardless of distance.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">search_radius</td>
 <td style="border-style:solid; border-width:2; padding:8px">Decimal</td>
 <td style="border-style:solid; border-width:2; padding:8px">10</td>
-<td style="border-style:solid; border-width:2; padding:8px">Maximum distance this entity will look for another entity looking at it.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">Maximum distance the owner entity will search for entities looking at it.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">set_target</td>
 <td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
-<td style="border-style:solid; border-width:2; padding:8px">true</td>
-<td style="border-style:solid; border-width:2; padding:8px">If true, this entity will set the attack target as the entity that looked at it.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">once_and_stop_scanning</td>
+<td style="border-style:solid; border-width:2; padding:8px">Defines if and how the owner entity will set entities that are looking at it as its combat targets. Valid values:</br>                                          \n- "never", looking entities are never set as targets, but events are emitted.</br>                                          \n- "once_and_stop_scanning", the first detected looking entity is set as target. Scanning and event emission is suspended if and until the owner entity has a target.</br>                                          \n- [Beta] "once_and_keep_scanning", the first detected looking entity is set as target. Scanning and event emission continues.s</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -24791,8 +24821,8 @@ Sets the mapping of internal animation controller references to actual animation
 <td style="border-style:solid; border-width:2; padding:8px">893445039</br></td>
 </tr>
 <tr>
-<td style="border-style:solid; border-width:2; padding:8px">minecraft:lookat</td>
-<td style="border-style:solid; border-width:2; padding:8px">-1329707008</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">minecraft:looked_at</td>
+<td style="border-style:solid; border-width:2; padding:8px">-1189178052</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">minecraft:managed_wandering_trader</td>
