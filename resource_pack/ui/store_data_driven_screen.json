@@ -322,33 +322,15 @@
     "$show_background": false
   },
 
-  "character_creator_sdl_section_content": {
-    "type": "panel",
-    "size": [ "100%", "100%" ],
-    "controls": [
-      { "color_picker_content_panel@persona_sdl.color_picker_content_panel": {} },
+  "character_creator_sdl_scroll_section@store_layout.sdl_scrolling_section_panel": {
+    "variables": [
       {
-        "sdl_scroll_section@store_layout.sdl_scrolling_section_panel": {
-          "variables": [
-            {
-              "requires": "$is_ps4",
-              "$scroll_view_control_anchor": "top_left",
-              "$scroll_view_control_size": [ "100%", "100% - 25px" ],
-              "$scroll_view_port_panel_size": [ "100%", "100% + 25px" ],
-              "$scroll_view_port_size": [ "100%", "100% - 25px" ],
-              "$scroll_view_port_clips_children": false
-            }
-          ],
-          "bindings": [
-            {
-              "binding_type": "view",
-              "source_control_name": "color_picker_content_panel",
-              "source_property_name": "(not #visible)",
-              "target_property_name": "#visible",
-              "resolve_sibling_scope": true
-            }
-          ]
-        }
+        "requires": "$is_ps4",
+        "$scroll_view_control_anchor": "top_left",
+        "$scroll_view_control_size": [ "100%", "100% - 25px" ],
+        "$scroll_view_port_panel_size": [ "100%", "100% + 25px" ],
+        "$scroll_view_port_size": [ "100%", "100% - 25px" ],
+        "$scroll_view_port_clips_children": false
       }
     ]
   },
@@ -357,7 +339,7 @@
     "type": "stack_panel",
     "size": [ "52%", "100%" ],
     "layer": 2,
-    "$persona_dialog_content": "store_layout.character_creator_sdl_section_content",
+    "$persona_dialog_content|default": "store_layout.character_creator_sdl_scroll_section",
     "$scrolling_content_anchor_from": "top_middle",
     "$scrolling_content_anchor_to": "top_middle",
     "$scroll_view_port_size": [ "100% - 8px", "100%" ],
@@ -409,19 +391,15 @@
       "@persona_sdl.enter_screen_appearance_size_animation"
     ],
 
+
+    "$character_creator_right_side_content|default": "persona_sdl.default_right_side_stack",
+
     "controls": [
       { "left_main_panel_padding@persona_sdl.horizontal_2_padding": {} },
       { "character_creator_sdl_portion@store_layout.character_creator_sdl_section": {} },
       { "middle_main_panel_padding@persona_sdl.horizontal_1_padding": {} },
-      { "right_main_panel@persona.right_side_stack": {} },
+      { "right_main_panel@$character_creator_right_side_content": {} },
       { "right_main_panel_padding@persona_sdl.horizontal_2_padding": {} }
-    ],
-    "bindings": [
-      {
-        "binding_name": "(not #expanded_appearance_visible)",
-        "binding_name_override": "#visible",
-        "binding_condition": "always"
-      }
     ]
   },
 
@@ -429,7 +407,6 @@
     "type": "panel",
     "size": [ "100%", "100%" ],
     "controls": [
-      { "expanded_appearance_view@persona_sdl.expanded_appearance_view": {} },
       { "character_creator_panel@store_layout.character_creator_panel": {} }
     ]
   },
@@ -1162,7 +1139,7 @@
     ]
   },
 
-  
+
 
   //--------------------------------------------------------------------------------
   // Screen
@@ -1202,7 +1179,6 @@
       {
         "requires": "(not $use_animation)",
         "$screen_animations": [
-          "@common.screen_exit_animation_no_offset"
         ],
         "$background_animations": []
       },
@@ -1354,16 +1330,10 @@
     "$is_full_screen_layout": true
   },
 
-  //////////////////////////////////////////////////////
-  //  SDL Screens
-  //////////////////////////////////////////////////////
-  "store_data_driven_screen@store_layout.sdl_base_screen": {
-  },
-
-  "character_creator_screen@store_layout.sdl_base_screen": {
+  "character_creator_base_screen@store_layout.sdl_base_screen": {
     "$sdl_screen_content": "store_layout.character_creator_screen_layout",
     "$allows_sdl_section_focus_container": false,
-    "$ignore_search": true,
+    "$ignore_search": "(not $is_persona_search_enabled)",
     "bindings": [
       {
         "binding_name": "#register_as_dressing_room_scene",
@@ -1379,20 +1349,32 @@
     ]
   },
 
-  "dressing_room_color_picker_screen@store_layout.character_creator_screen": {
+  //////////////////////////////////////////////////////
+  //  SDL Screens
+  //////////////////////////////////////////////////////
+  "store_data_driven_screen@store_layout.sdl_base_screen": {},
+
+  "character_creator_screen@store_layout.character_creator_base_screen": {
+    "$sdl_screen_content": "store_layout.character_creator_screen_layout"
   },
 
-  "expanded_appearance_view_screen@store_layout.character_creator_screen": {
+  "dressing_room_color_picker_screen@store_layout.character_creator_screen": {
+    "$persona_dialog_content": "persona_sdl.color_picker_content_panel",
+    "$character_creator_right_side_content": "persona_sdl.color_picker_right_side_stack"
+  },
+
+  "expanded_appearance_view_screen@store_layout.character_creator_base_screen": {
+    "$sdl_screen_content": "persona_sdl.expanded_appearance_view"
   },
 
   "non_scrollable_sdl_screen@store_layout.sdl_base_screen": {
     "$is_non_scrollable_sdl_screen": true,
-    "$ignore_search": true
+    "$ignore_search": "(not $is_persona_search_enabled)"
   },
 
   "skin_selector_screen@store_layout.sdl_base_screen": {
     "$sdl_screen_content": "store_layout.character_creator_screen_layout",
-    "$ignore_search": true,
+    "$ignore_search": "(not $is_persona_search_enabled)",
     "bindings": [
       {
         "binding_name": "#register_as_dressing_room_scene",
