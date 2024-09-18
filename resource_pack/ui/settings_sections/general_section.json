@@ -2145,22 +2145,12 @@
             },
             {
               "auto_attach_toggle@settings_common.option_toggle": {
-                "ignored": "$build_platform_UWP",
                 "$option_label": "options.creator.debuggerAutoAttach",
                 "$option_binding_name": "#script_debugger_auto_attach",
                 "$option_enabled_binding_name": "#script_debugger_auto_attach_enabled",
                 "$toggle_name": "script_debugger_auto_attach"
               }
-            },
-            {
-              "auto_connect_toggle@settings_common.option_toggle": {
-                "ignored": "(not $build_platform_UWP)",
-                "$option_label": "options.creator.debuggerAutoConnect",
-                "$option_binding_name": "#script_debugger_auto_attach",
-                "$option_enabled_binding_name": "#script_debugger_auto_attach_enabled",
-                "$toggle_name": "script_debugger_auto_attach"
-              }
-            },
+            },            
             {
               "all_options_panel": {
                 "type": "stack_panel",
@@ -2227,6 +2217,21 @@
                             "$option_label": "options.creator.debuggerPort",
                             "$option_binding_name": "#script_debugger_port"
                           }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "auto_attach_timeout_slider@settings_common.option_slider": {
+                      "$option_label": "#script_debugger_auto_attach_timeout_slider_label",
+                      "$slider_name": "script_debugger_auto_attach_timeout",
+                      "$slider_value_binding_name": "#script_debugger_auto_attach_timeout",
+                      "$slider_tts_text_value": "#script_debugger_auto_attach_timeout_text_value",
+                      "$option_enabled_binding_name": "#script_debugger_auto_attach_timeout_enabled",
+                      "$slider_steps_binding_name": "#script_debugger_auto_attach_timeout_steps",
+                      "$label_bindings": [
+                        {
+                          "binding_name": "$option_label"
                         }
                       ]
                     }
@@ -7780,7 +7785,7 @@
                       "$option_binding_name": "#dev_show_discovery_overrides",
                       "$option_enabled_binding_name": "#dev_show_discovery_overrides_enabled",
                       "$toggle_name": "dev_show_discovery_overrides"
-                    } 
+                    }
                   },
                   {
                     "spacer_0": {
@@ -7810,13 +7815,43 @@
                           }
                         },
                         {
+                          "service_override_type@settings_common.option_dropdown": {
+                            "$option_label": "options.dev_serviceOverrideType",
+                            "$dropdown_content": "general_section.dev_service_override_type_dropdown_content",
+                            "$dropdown_area": "content_area",
+                            "$dropdown_name": "dev_service_override_type_dropdown",
+                            "$options_dropdown_toggle_label_binding": "#dev_service_override_type_dropdown_toggle_label",
+                            "$dropdown_scroll_content_size": [ "100%", "250%" ]
+                          }
+                        },
+                        {
                           "text_edit_discovery_override_service_branch@settings_common.option_text_edit": {
                             "$option_generic_panel_size": [ "100%", "100%c" ],
                             "$option_label": "options.dev_discoveryOverrideServiceBranch",
                             "$text_box_name": "dev_discovery_override_branch",
                             "$option_binding_name": "#dev_discovery_override_branch",
-                            "$option_enabled_binding_name": "#dev_discovery_override_branch_enabled",
-                            "$max_text_edit_length": 50
+                            "$max_text_edit_length": 50,
+                            "bindings": [
+                              {
+                                "binding_name": "#dev_discovery_override_branch_enabled",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "text_edit_discovery_override_service_custom@settings_common.option_text_edit": {
+                            "$option_generic_panel_size": [ "100%", "100%c" ],
+                            "$option_label": "options.dev_discoveryOverrideServiceCustom",
+                            "$text_box_name": "dev_discovery_override_custom",
+                            "$option_binding_name": "#dev_discovery_override_custom",
+                            "$max_text_edit_length": 50,
+                            "bindings": [
+                              {
+                                "binding_name": "#dev_discovery_override_custom_enabled",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
                           }
                         },
                         {
@@ -9506,6 +9541,32 @@
     ]
   },
 
+  "new_trial_mode_screen_grid_item@settings_common.radio_with_label": {
+    "$toggle_state_binding_name": "#initial_selected",
+    "$radio_label_text": "#description",
+    "$radio_label_bindings": [
+      {
+        "binding_name": "#description",
+        "binding_type": "collection",
+        "binding_condition": "once",
+        "binding_collection_name": "dev_new_trial_screen_radio"
+      }
+    ],
+    "$radio_toggle_group": true,
+    "$toggle_binding_type": "collection",
+    "$toggle_name": "dev_new_trial_screen_radio",
+    "$toggle_grid_collection_name": "dev_new_trial_screen_radio",
+    "$option_enabled_binding_name": "",
+    "bindings": [
+      {
+        "binding_name": "#default_focus_precedence",
+        "binding_type": "collection",
+        "binding_condition": "visible",
+        "binding_collection_name": "dev_new_trial_screen_radio"
+      }
+    ]
+  },
+
   "new_death_grid_item@settings_common.radio_with_label": {
     "$toggle_state_binding_name": "#initial_selected",
     "$radio_label_text": "#description",
@@ -9758,6 +9819,42 @@
       },
       {
         "new_edit_world_screen_radio_button_spacer": {
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      },
+      /* Trial Mode Screen Overrides */
+      {
+        "new_trial_mode_screen_radio_label": {
+          "type": "label",
+          "text": "New Trial Mode (requires restart)",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "new_trial_mode_screen_radio_label_spacer": {
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
+      },
+      {
+        "new_trial_mode_screen_radio_button": {
+          "type": "grid",
+          "size": [ "100%", "100%c" ],
+          "grid_item_template": "general_section.new_trial_mode_screen_grid_item",
+          "grid_dimension_binding": "#dev_new_trial_screen_radio_dimension",
+          "collection_name": "dev_new_trial_screen_radio",
+          "bindings": [
+            {
+              "binding_name": "#dev_new_trial_screen_radio_dimension",
+              "binding_condition": "visible"
+            }
+          ]
+        }
+      },
+      {
+        "new_trial_mode_screen_radio_button_spacer": {
           "type": "panel",
           "size": [ "100%", 10 ]
         }
@@ -10468,6 +10565,23 @@
     ]
   },
 
+  "dev_service_override_type_dropdown_content@settings_common.option_radio_dropdown_group": {
+    "$radio_buttons": [
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_service_override_type_radio_multibranch",
+          "$radio_label_text": "options.dev_serviceOverrideTypeMultibranch"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_service_override_type_radio_custom",
+          "$radio_label_text": "options.dev_serviceOverrideTypeCustom"
+        }
+      }
+    ]
+  },
+
   "dev_realms_environment_dropdown_content@settings_common.option_radio_dropdown_group": {
     "$radio_buttons": [
       {
@@ -10539,19 +10653,25 @@
       {
         "@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#dev_actor_movement_default",
-          "$radio_label_text": "Normal Movement"
+          "$radio_label_text": "Default Movement"
         }
       },
       {
         "@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#dev_actor_movement_client_authoritative",
-          "$radio_label_text": "Client Authoritative"
+          "$toggle_state_binding_name": "#dev_actor_movement_legacy_client",
+          "$radio_label_text": "Legacy Client Authoritative V1"
         }
       },
       {
         "@settings_common.radio_with_label": {
-          "$toggle_state_binding_name": "#dev_actor_movement_server_authoritative_with_anti_cheat",
-          "$radio_label_text": "Server Authoritative with Anti Cheat"
+          "$toggle_state_binding_name": "#dev_actor_movement_client",
+          "$radio_label_text": "Client Authoritative V2"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#dev_actor_movement_server",
+          "$radio_label_text": "Server Authoritative V3"
         }
       }
     ]
