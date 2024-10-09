@@ -344,6 +344,34 @@
     ]
   },
 
+  "trial_info": {
+    "type": "panel",
+    "controls": [
+        {
+          "trial_label": {
+            "type": "label",
+            "size": [ "150%", 20 ],
+            "offset": [ 4, 0 ],
+            "text": "menu.trialLabel",
+            "color": "$body_text_color",
+            "text_alignment": "center",
+            "layer": 2
+          }
+        },
+        {
+          "label_background": {
+            "type": "image",
+            "texture": "textures/ui/Black",
+            "anchor_from": "center",
+            "anchor_to": "center",
+            "alpha": 0.6,
+            "size": [ "100%sm + 10px", "100%sm + 10px" ],
+            "layer": 1
+        }
+      }
+    ]
+  },
+
   "text_panel": {
     "type": "panel",
     "size": [ "100%-2px", 10 ],
@@ -409,7 +437,7 @@
         "change_skin@start.change_skin_button": {
           "bindings": [
             {
-              "binding_name": "#change_skin_visible",
+              "binding_name": "#edu_signed_in_only_ui_visible",
               "binding_name_override": "#visible"
             }
           ]
@@ -419,7 +447,7 @@
         "change_skin_button_demo@start.change_skin_button_demo": {
           "bindings": [
             {
-              "binding_name": "#change_skin_visible",
+              "binding_name": "#edu_demo_only_ui_visible",
               "binding_name_override": "#visible"
             }
           ]
@@ -436,7 +464,14 @@
         }
       },
       {
-        "switch_accounts@start.switch_accounts_button": {}
+        "switch_accounts@start.switch_accounts_button": {
+          "bindings": [
+            {
+              "binding_name": "#edu_signed_in_only_ui_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
       },
       {
         "profile_button@start.profile_button": {
@@ -459,7 +494,7 @@
   },
 
   "change_skin_button@common_buttons.light_glyph_button": {
-    "ignored": "((not $education_edition) or $is_edu_demo)",
+    "ignored": "(not $education_edition)",
     "$pressed_button_name": "button.menu_skins",
     "size": [ 25, 25 ],
     "anchor_from": "bottom_left",
@@ -472,7 +507,7 @@
   },
 
   "change_skin_button_demo@common_buttons.light_glyph_button": {
-    "ignored": "(not $is_edu_demo)",
+    "ignored": "(not $education_edition)",
     "$pressed_button_name": "button.menu_skins",
     "size": [ 25, 25 ],
     "anchor_from": "bottom_middle",
@@ -485,7 +520,7 @@
   },
 
   "switch_accounts_button@common_buttons.light_content_button": {
-    "ignored": "((not $education_edition) or $is_edu_demo)",
+    "ignored": "(not $education_edition)",
     "$pressed_button_name": "button.manage_account",
     "size": [ 25, 25 ],
     "anchor_from": "bottom_right",
@@ -1368,7 +1403,6 @@
   },
 
   "unlock_full_game_button@start.main_button": {
-    "ignored": "(not $is_edu_demo)",
     "$pressed_button_name": "button.manage_account",
     "$button_text": "#unlock_full_game_button_text",
     "$button_text_binding_type": "global"
@@ -1668,6 +1702,23 @@
           "anchor_to": "bottom_middle",
           "controls": [
             {
+              "test_label_row@start.stacked_row": {
+                "ignored": "(not $trial or not $is_new_trial_mode_enabled)",
+                "controls": [
+                  {
+                    "trial_info@start.trial_info": {}
+                  }
+                ]
+              }
+            },
+            {
+              "spacer": {
+                "type": "panel",
+                "ignored": "(not $trial or not $is_new_trial_mode_enabled)",
+                "size": [ 20, 20 ]
+              }
+            },
+            {
               "get_started_row@start.stacked_row": {
                 "controls": [
                   {
@@ -1799,7 +1850,13 @@
             },
             {
               "edu_featured_button@start.stacked_row": {
-                "ignored": "(not $education_edition or $is_edu_demo)",
+                "ignored": "(not $education_edition)",
+                "bindings": [
+                  {
+                    "binding_name": "#edu_signed_in_only_ui_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ],
                 "controls": [
                   {
                     "new_and_featured_button@edu_featured.featured_button": {}
@@ -1911,7 +1968,13 @@
             },
             {
               "unlock_full_game_row@start.stacked_row": {
-                "ignored": "(not $is_edu_demo)",
+                "ignored": "(not $education_edition)",
+                "bindings": [
+                  {
+                    "binding_name": "#edu_demo_only_ui_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ],
                 "controls": [
                   { "unlock_full_game@start.unlock_full_game_button": {} }
                 ]

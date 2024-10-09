@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:pillager",
@@ -40,34 +40,24 @@
         },
         "minecraft:environment_sensor": {
           "triggers": {
-            "filters": {
-              "test": "is_underwater",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "is_underwater", "subject": "self", "operator": "==", "value": true },
             "event": "minecraft:melee_mode"
           }
         }
       },
       "minecraft:melee_attack": {
-        "minecraft:behavior.melee_box_attack": {
-          "priority": 4,
-          "track_target": true
-        },
         "minecraft:attack": {
           "damage": 3
         },
         "minecraft:environment_sensor": {
           "triggers": {
-            "filters": {
-              "test": "in_water",
-              "subject": "self",
-              "operator": "==",
-              "value": false
-            },
+            "filters": { "test": "in_water", "subject": "self", "operator": "==", "value": false },
             "event": "minecraft:ranged_mode"
           }
+        },
+        "minecraft:behavior.melee_box_attack": {
+          "priority": 4,
+          "track_target": true
         }
       },
       "minecraft:raid_configuration": {
@@ -80,11 +70,6 @@
           "can_migrate": true,
           "first_founding_reward": 0
         },
-        "minecraft:behavior.move_to_village": {
-          "priority": 5,
-          "speed_multiplier": 1.0,
-          "goal_radius": 2.0
-        },
         "minecraft:loot": {
           "table": "loot_tables/entities/pillager_raid.json"
         },
@@ -92,6 +77,11 @@
           "value": 2.0,
           "range": 4.0,
           "event_name": "ambient.in.raid"
+        },
+        "minecraft:behavior.move_to_village": {
+          "priority": 5,
+          "speed_multiplier": 1.0,
+          "goal_radius": 2.0
         }
       },
       "minecraft:raid_persistence": {
@@ -172,6 +162,18 @@
         }
       },
       "minecraft:patrol_follower": {
+        "minecraft:on_hurt": {
+          "event": "minecraft:ranged_mode",
+          "target": "self"
+        },
+        "minecraft:on_hurt_by_player": {
+          "event": "minecraft:ranged_mode",
+          "target": "self"
+        },
+        "minecraft:on_target_escape": {
+          "event": "minecraft:calm",
+          "target": "self"
+        },
         "minecraft:behavior.follow_target_captain": {
           "priority": 5,
           "speed_multiplier": 0.8,
@@ -187,18 +189,6 @@
             "event": "minecraft:ranged_mode",
             "target": "self"
           }
-        },
-        "minecraft:on_hurt": {
-          "event": "minecraft:ranged_mode",
-          "target": "self"
-        },
-        "minecraft:on_hurt_by_player": {
-          "event": "minecraft:ranged_mode",
-          "target": "self"
-        },
-        "minecraft:on_target_escape": {
-          "event": "minecraft:calm",
-          "target": "self"
         }
       }
     },
@@ -236,12 +226,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -278,17 +263,33 @@
       "minecraft:despawn": {
         "despawn_from_distance": {}
       },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:follow_range": {
+        "value": 64
+      },
       "minecraft:behavior.float": {
         "priority": 0
+      },
+      "minecraft:behavior.avoid_mob_type": {
+        "priority": 1,
+        "entity_types": [
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "creaking" },
+            "max_dist": 8,
+            "sprint_speed_multiplier": 1.2
+          }
+        ]
       },
       "minecraft:behavior.hurt_by_target": {
         "priority": 1,
         "entity_types": {
           "filters": {
-            "test": "is_family",
-            "subject": "other",
-            "operator": "!=",
-            "value": "illager"
+            "test": "is_family", "subject": "other", "operator": "!=", "value": "illager"
           },
           "max_dist": 64
         }
@@ -302,21 +303,9 @@
           {
             "filters": {
               "any_of": [
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "player"
-                },
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "irongolem"
-                },
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "wandering_trader"
-                }
+                { "test": "is_family", "subject": "other", "value": "player" },
+                { "test": "is_family", "subject": "other", "value": "irongolem" },
+                { "test": "is_family", "subject": "other", "value": "wandering_trader" }
               ]
             },
             "max_dist": 16
@@ -324,17 +313,8 @@
           {
             "filters": {
               "all_of": [
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "villager"
-                },
-                {
-                  "test": "has_component",
-                  "subject": "other",
-                  "operator": "!=",
-                  "value": "minecraft:is_baby"
-                }
+                { "test": "is_family", "subject": "other", "value": "villager" },
+                { "test": "has_component", "subject": "other", "operator": "!=", "value": "minecraft:is_baby" }
               ]
             },
             "max_dist": 16
@@ -343,6 +323,12 @@
       },
       "minecraft:behavior.equip_item": {
         "priority": 3
+      },
+      "minecraft:behavior.charge_held_item": {
+        "priority": 3,
+        "items": [
+          "minecraft:arrow"
+        ]
       },
       "minecraft:behavior.pickup_items": {
         "priority": 7,
@@ -360,21 +346,6 @@
       },
       "minecraft:behavior.random_look_around": {
         "priority": 10
-      },
-      "minecraft:behavior.charge_held_item": {
-        "priority": 3,
-        "items": [
-          "minecraft:arrow"
-        ]
-      },
-      "minecraft:physics": {
-      },
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      },
-      "minecraft:follow_range": {
-        "value": 64
       }
     },
 

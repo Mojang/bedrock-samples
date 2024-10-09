@@ -1,4 +1,4 @@
-<h1>FEATURES DOCUMENTATION </br>Version: 1.21.40.25</h1>
+<h1>FEATURES DOCUMENTATION </br>Version: 1.21.50.20</h1>
 This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
@@ -39,7 +39,6 @@ This is documentation for a preview release of Minecraft. New features, componen
 <tr> <td> <a href="#Feature Rule Conditions"> Feature Rule Conditions</a> </tr> </td>
 <tr> <td> <a href="#Feature Rule Definition"> Feature Rule Definition</a> </tr> </td>
 <tr> <td> <a href="#Feature Rule Description"> Feature Rule Description</a> </tr> </td>
-<tr> <td> <a href="#Feature Rule JSON File"> Feature Rule JSON File</a> </tr> </td>
 <tr> <td> <a href="#Filter Group"> Filter Group</a> </tr> </td>
 <tr> <td> <a href="#Filter Test"> Filter Test</a> </tr> </td>
 <tr> <td> <a href="#Random Distribution Type"> Random Distribution Type</a> </tr> </td>
@@ -509,18 +508,23 @@ Example use: Placing a single pumpkin or carved pumpkin block where carved pumpk
 <h1><p id="minecraft:snap_to_surface_feature">minecraft:snap_to_surface_feature</p></h1>
 
 'minecraft:snap_to_surface_feature' snaps the y-value of a feature placement pos to the floor or the ceiling within the provided 'vertical_search_range'. The placement biome is preserved. If the snap position goes outside of the placement biome, placement will fail.</br><h2></h2>
-Example use: Define a feature that snaps the 'cave_vine_feature' to the ceiling.<br / ><textarea readonly="true" cols="67" rows="12">
+Example use: Define a feature that snaps the 'cave_vine_feature' to the ceiling.<br / ><textarea readonly="true" cols="71" rows="17">
 {
-  "format_version": "1.13.0",
-  "minecraft:snap_to_surface_feature": {
-    "description": {
-      "identifier": "example:cave_vine_snapped_to_ceiling_feature"
-    },
-    "feature_to_snap":  "example:cave_vine_feature",
-    "vertical_search_range":  12,
-    "surface": "ceiling"
-  }
-}
+        "format_version": "1.13.0",
+        "minecraft:snap_to_surface_feature": {
+        "description": {
+          "identifier": "example:cave_vine_snapped_to_ceiling_feature"
+        },
+        "feature_to_snap":  "example:cave_vine_feature",
+        "vertical_search_range":  12,
+        "surface": "ceiling",
+        "allowed_surface_blocks": {
+          {
+          "name": "minecraft:cobblestone"
+          }
+        }
+        }
+      }
 </textarea> </br>
 <a href="#Index">Back to top</a><br><br>
 
@@ -1190,6 +1194,10 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
           string "surface" : opt // Defines the surface that the y-value of the placement position will be snapped to. Valid values: 'ceiling', 'floor' and 'random_horizontal'
           bool "allow_air_placement" : opt // Determines whether the feature can snap through air blocks. Defaults to true.
           bool "allow_underwater_placement" : opt // Determines whether the feature can snap through water blocks. Defaults to false.
+          array "allowed_surface_blocks" : opt // A list of blocks that the feature is permitted to snap to. Leaving this empty results in the feature snapping to blocks that can provide support for the given face (up/down/horizontal)
+          {
+               "<any array element>"
+          }
       }
       object "minecraft:structure_template_feature" : opt
       {
@@ -2119,27 +2127,6 @@ Represents the scatter distrubution over a coordinate (x/y/z), can also be built
 <td style="border-style:solid; border-width:3; padding:7px">String</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Named reference to the feature controlled by this rule.</br></td>
-</tr>
-</table>
-<a href="#Index">Back to top</a><br><br>
-
-<h1><p id="Feature Rule JSON File">Feature Rule JSON File</p></h1>
-
-<h2></h2>
-
-<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
-<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">format_version</td>
-<td style="border-style:solid; border-width:3; padding:7px">String</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Version of the JSON schema used by this file.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:feature_rules</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type Feature Rule Definition</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">A single Feature Rule Definition.</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>

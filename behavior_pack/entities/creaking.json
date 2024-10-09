@@ -1,0 +1,378 @@
+{
+  "format_version": "1.21.50",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:creaking",
+      "spawn_category": "monster",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "minecraft:creaking_state": {
+          "type": "enum",
+          "values": [ "neutral", "hostile_observed", "hostile_unobserved" ],
+          "default": "neutral",
+          "client_sync": true
+        }
+      }
+    },
+
+    "components": {
+      "minecraft:type_family": {
+        "family": [ "creaking", "monster", "mob" ]
+      },
+      "minecraft:collision_box": {
+        "width": 0.9,
+        "height": 2.7
+      },
+      "minecraft:health": {
+        "value": 1,
+        "max": 1
+      },
+      "minecraft:attack": {
+        "damage": 2
+      },
+      "minecraft:fire_immune": {
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:jump.static": {
+      },
+      "minecraft:can_climb": {
+      },
+      "minecraft:movement.basic": {
+      },
+      "minecraft:variable_max_auto_step": {
+        "base_value": 1.0625, // 1 block + 1 pixel
+        "jump_prevented_value": 0.5625 // 0.5 blocks + 1 pixel
+      },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "can_path_over_lava": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:follow_range": {
+        "value": 32,
+        "max": 32
+      },
+      "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+      }
+    },
+
+    "component_groups": {
+      "minecraft:spawned_by_player": {
+        "minecraft:nameable": {
+        }
+      },
+      "minecraft:spawned_by_creaking_heart": {
+        "minecraft:transient": {
+        },
+        "minecraft:dimension_bound": {
+        },
+        "minecraft:home": {
+          "restriction_type": "all_movement",
+          "restriction_radius": 32
+        },
+        "minecraft:damage_sensor": {
+          "triggers": [
+            {
+              "cause": "void",
+              "deals_damage": "yes"
+            },
+            {
+              "on_damage": {
+                "filters": { "test": "is_family", "subject": "other", "value": "player" },
+                "event": "minecraft:attacked_by_player"
+              },
+              "cause": "all",
+              "deals_damage": "no_but_side_effects_apply"
+            },
+            {
+              "on_damage": {
+                "filters": { "test": "is_family", "subject": "other", "value": "mob" },
+                "event": "minecraft:attacked_by_mob"
+              },
+              "cause": "all",
+              "deals_damage": "no_but_side_effects_apply"
+            },
+            {
+              "cause": "all",
+              "deals_damage": "no_but_side_effects_apply"
+            }
+          ]
+        }
+      },
+      "minecraft:mobile": {
+        "minecraft:movement": {
+          "value": 0.3
+        },
+        "minecraft:knockback_resistance": {
+          "value": 0.0
+        },
+        "minecraft:pushable": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        },
+        "minecraft:behavior.float": {
+          "priority": 0
+        }
+      },
+      "minecraft:immobile": {
+        "minecraft:movement": {
+          "value": 0.0
+        },
+        "minecraft:knockback_resistance": {
+          "value": 1.0
+        },
+        "minecraft:pushable": {
+          "is_pushable": false,
+          "is_pushable_by_piston": false
+        }
+      },
+      "minecraft:neutral": {
+        "minecraft:looked_at": {
+          "search_radius": 12.0,
+          "look_at_locations": [ "head", "body", "feet" ],
+          "set_target": "once_and_keep_scanning",
+          "find_players_only": true,
+          "looked_at_cooldown": 0.1,
+          "field_of_view": 120,
+          "scale_fov_by_distance": false,
+          "line_of_sight_obstruction_type": "collision_for_camera",
+          "looked_at_event": {
+            "event": "minecraft:become_hostile",
+            "filter": "self"
+          },
+          "filters": {
+            "test": "actor_health", "subject": "other", "operator": ">", "value": 0
+          }
+        },
+        "minecraft:ambient_sound_interval": {
+        },
+        "minecraft:behavior.random_stroll": {
+          "priority": 7,
+          "speed_multiplier": 0.667
+        }
+      },
+      "minecraft:hostile": {
+        "minecraft:looked_at": {
+          "search_radius": 24.0,
+          "look_at_locations": [ "head", "body", "feet" ],
+          "set_target": "never",
+          "find_players_only": true,
+          "looked_at_cooldown": 0.1,
+          "field_of_view": 120,
+          "scale_fov_by_distance": false,
+          "line_of_sight_obstruction_type": "collision_for_camera",
+          "looked_at_event": {
+            "event": "minecraft:on_target_start_looking",
+            "filter": "self"
+          },
+          "not_looked_at_event": {
+            "event": "minecraft:on_target_stop_looking",
+            "filter": "self"
+          },
+          "filters": {
+            "none_of": [
+              { "test": "actor_health", "subject": "target", "value": 0 },
+              { "test": "has_equipment", "subject": "other", "domain": "head", "value": "carved_pumpkin" }
+            ]
+          }
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": {
+                "any_of": [
+                  { "test": "has_target", "value": false },
+                  { "test": "actor_health", "subject": "target", "value": 0 },
+                  { "test": "target_distance", "operator": ">", "value": 24 }
+                ]
+              },
+              "event": "minecraft:become_neutral"
+            }
+          ]
+        }
+      },
+      "minecraft:hostile_observed": {
+        "minecraft:body_rotation_blocked": {
+        }
+      },
+      "minecraft:hostile_unobserved": {
+        "minecraft:behavior.melee_box_attack": {
+          "priority": 2
+        }
+      },
+      "minecraft:swaying": {
+        "minecraft:behavior.timer_flag_1": {
+          "priority": 0,
+          "cooldown_range": 0.0,
+          "duration_range": [ 0.3, 0.3 ],
+          "on_end": {
+            "event": "minecraft:stop_swaying",
+            "target": "self"
+          }
+        }
+      }
+    },
+
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "minecraft:spawned_by_player",
+            "minecraft:neutral",
+            "minecraft:mobile"
+          ]
+        }
+      },
+      "minecraft:entity_spawned_by_creaking_heart": {
+        "add": {
+          "component_groups": [
+            "minecraft:spawned_by_creaking_heart",
+            "minecraft:neutral",
+            "minecraft:mobile"
+          ]
+        }
+      },
+      "minecraft:become_hostile": {
+        "filters": {
+          "test": "enum_property", "domain": "minecraft:creaking_state", "value": "neutral"
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:hostile",
+            "minecraft:hostile_observed",
+            "minecraft:immobile"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:neutral",
+            "minecraft:hostile_unobserved",
+            "minecraft:mobile"
+          ]
+        },
+        "set_property": {
+          "minecraft:creaking_state": "hostile_observed"
+        },
+        "emit_vibration": {
+          "vibration": "entity_act"
+        },
+        "play_sound": {
+          "sound": "activate"
+        }
+      },
+      "minecraft:become_neutral": {
+        "filters": {
+          "test": "enum_property", "domain": "minecraft:creaking_state", "operator": "not", "value": "neutral"
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:neutral",
+            "minecraft:mobile"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:hostile",
+            "minecraft:hostile_observed",
+            "minecraft:hostile_unobserved",
+            "minecraft:immobile"
+          ]
+        },
+        "set_property": {
+          "minecraft:creaking_state": "neutral"
+        },
+        "emit_vibration": {
+          "vibration": "entity_act"
+        },
+        "play_sound": {
+          "sound": "deactivate"
+        },
+        "reset_target": {
+        }
+      },
+      "minecraft:on_target_start_looking": {
+        "filters": {
+          "test": "enum_property", "domain": "minecraft:creaking_state", "value": "hostile_unobserved"
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:hostile",
+            "minecraft:hostile_observed",
+            "minecraft:immobile"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:neutral",
+            "minecraft:hostile_unobserved",
+            "minecraft:mobile"
+          ]
+        },
+        "set_property": {
+          "minecraft:creaking_state": "hostile_observed"
+        },
+        "emit_vibration": {
+          "vibration": "entity_act"
+        },
+        "play_sound": {
+          "sound": "freeze"
+        }
+      },
+      "minecraft:on_target_stop_looking": {
+        "filters": {
+          "test": "enum_property", "domain": "minecraft:creaking_state", "value": "hostile_observed"
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:hostile",
+            "minecraft:hostile_unobserved",
+            "minecraft:mobile"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:neutral",
+            "minecraft:hostile_observed",
+            "minecraft:immobile"
+          ]
+        },
+        "set_property": {
+          "minecraft:creaking_state": "hostile_unobserved"
+        },
+        "emit_vibration": {
+          "vibration": "entity_act"
+        },
+        "play_sound": {
+          "sound": "unfreeze"
+        }
+      },
+      "minecraft:attacked_by_player": {
+        "trigger": "minecraft:start_swaying",
+        "execute_event_on_home_block": {
+          "event": "minecraft:on_spawned_creaking_damaged_by_player"
+        }
+      },
+      "minecraft:attacked_by_mob": {
+        "trigger": "minecraft:start_swaying"
+      },
+      "minecraft:start_swaying": {
+        "add": {
+          "component_groups": [
+            "minecraft:swaying"
+          ]
+        }
+      },
+      "minecraft:stop_swaying": {
+        "remove": {
+          "component_groups": [
+            "minecraft:swaying"
+          ]
+        }
+      }
+    }
+  }
+}

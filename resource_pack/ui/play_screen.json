@@ -4089,6 +4089,67 @@
     ]
   },
 
+  "ownership_verification_in_progress_content": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%" ],
+    "controls": [
+      { "top_padding@common.empty_panel": { "size": [ "100%", 4 ] } },
+      {
+        "loading_bar_panel": {
+          "type": "panel",
+          "size": [ "100%", "fill" ],
+          "controls": [
+            {
+              "loading_bar_animation@progress.progress_loading_bars": {
+                "size": [ "75%", "75%" ],
+                "offset": [ 0, 1 ],
+                "anchor_to": "top_middle",
+                "anchor_from": "top_middle",
+                "bindings": []
+              }
+            }
+          ]
+        }
+      },
+      { "mid_padding@common.empty_panel": { "size": [ "100%", 2 ] } },
+      {
+        "loading_label": {
+          "type": "label",
+          "size": [ "100%", "fill" ],
+          "text": "#ownership_verification_state_text",
+          "text_alignment": "center",
+          "color": "$f_color_format",
+          "bindings": [
+            {
+              "binding_name": "#ownership_verification_state_text"
+            }
+          ]
+        }
+      },
+      { "bottom_padding@common.empty_panel": { "size": [ "100%", 2 ] } }
+    ]
+  },
+
+  "ownership_verification_in_progress_panel": {
+    "type": "image",
+    "layer": 50,
+    "texture": "textures/ui/DarkBannerNoBorder",
+    "color": "$0_color_format",
+    "alpha": 0.7,
+    "controls": [
+      { "ownership_verification_in_progress_content@play.ownership_verification_in_progress_content": {} }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "local_worlds",
+        "binding_name": "#is_ownership_verification_in_progress",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
   "local_world_item_button@common_buttons.dark_content_button": {
     "variables": [
       {
@@ -4174,6 +4235,12 @@
       {
         "binding_type": "collection_details",
         "binding_collection_name": "local_worlds"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "local_worlds",
+        "binding_name": "(not #is_ownership_verification_in_progress)",
+        "binding_name_override": "#enabled"
       }
     ]
   },
@@ -4208,6 +4275,12 @@
             {
               "binding_name": "#cloud_upload_enabled",
               "binding_name_override": "#visible"
+            },
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "local_worlds",
+              "binding_name": "(not #is_ownership_verification_in_progress)",
+              "binding_name_override": "#enabled"
             }
           ]
         }
@@ -4247,12 +4320,11 @@
   },
 
   "local_world_item": {
-    "type": "stack_panel",
+    "type": "panel",
     "anchor_from": "top_left",
     "anchor_to": "top_left",
     "layer": 1,
     "size": [ "100%", 29 ],
-    "orientation": "horizontal",
     "$local_world_edit_button_visible|default": true,
     "controls": [
       {
@@ -4265,7 +4337,8 @@
           "$secondary_header_button": "play.cloud_upload_and_edit_world_stack_panel",
           "$secondary_visible": "$local_world_edit_button_visible"
         }
-      }
+      },
+      { "signin_in_progress_panel@play.ownership_verification_in_progress_panel": {} }
     ]
   },
 
