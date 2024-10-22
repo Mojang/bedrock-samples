@@ -692,6 +692,40 @@
     ]
   },
 
+  "edu_cloud_upload_progress_bar": {
+    "type": "panel",
+    "size": [ "100%" , "100%c" ],
+    "controls": [
+      {
+        "waveform_loading_bar@progress.progress_loading_bars": {
+          "bindings": [
+            {
+              "binding_name": "(not #use_determinate_animation)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "determinate_loading_bar@progress.fancy_progress_loading_bars": {
+          "offset": [ 0, 25 ],
+          "bindings": [
+            {
+              "binding_name": "#use_determinate_animation",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#progress_animation_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
   "cancel_button@common_buttons.light_text_button": {
     "$pressed_button_name": "button.menu_exit",
     "$button_text": "#cancel_button_text",
@@ -1439,7 +1473,7 @@
                 "type": "panel",
                 "size": [ "100%", "100%c" ],
                 "controls": [
-                  { "progress_loading_bars@progress.progress_loading_bars": { "offset": [ 0, 25 ] } }
+                  { "progress_loading_bars@progress.edu_cloud_upload_progress_bar": {} }
                 ]
               }
             }
@@ -1500,110 +1534,131 @@
               }
             },
             {
-              "edu_cloud_error_text_wrapper": {
-                "type": "stack_panel",
-                // magic offset to make the text wrapping perfect
-                "size": [ "100%-24px", "100%c" ],
-                "offset": [ 0, -8 ],
+              "error_text_tts_wrapper": {
+                "type": "panel",
+                "size": [ "100%", "100%cm" ],
                 "controls": [
                   {
-                    "edu_cloud_error_text": {
-                      "type": "label",
-                      "size": [ "default", "default" ],
-                      "max_size": [ "100% - 8px", 60 ],
-                      "color": "$loading_text_color",
-                      "layer": 2,
-                      "anchor_from": "top_left",
-                      "anchor_to": "top_left",
-                      "text": "#progress_text",
-                      "font_type": "smooth",
+                    "tts_border@common.non_interact_focus_border_button": {
+                      "tts_inherit_siblings": true,
+                      "size": [ "100%sm + 5px", "100%sm" ],
+                      "offset": [ 0, -8 ],
                       "bindings": [
-                        { "binding_name": "#progress_text" }
+                        {
+                          "binding_name": "#tts_enabled",
+                          "binding_name_override": "#enabled"
+                        }
                       ]
                     }
                   },
                   {
-                    "vertical_padding": {
-                      "type": "panel",
-                      "size": [ 0, 5 ]
-                    }
-                  },
-                  {
-                    "error_code": {
+                    "edu_cloud_error_text_wrapper": {
                       "type": "stack_panel",
-                      "size": [ "100% - 8px", 15 ],
-                      "orientation": "horizontal",
+                      // magic offset to make the text wrapping perfect
+                      "size": [ "100%-24px", "100%c" ],
+                      "offset": [ 0, -8 ],
                       "controls": [
                         {
-                          "code_text@progress.code_text": {
+                          "edu_cloud_error_text": {
+                            "type": "label",
                             "size": [ "default", "default" ],
-                            "font_type": "smooth",
+                            "max_size": [ "100% - 8px", 60 ],
+                            "color": "$loading_text_color",
+                            "layer": 2,
                             "anchor_from": "top_left",
-                            "anchor_to": "top_left"
+                            "anchor_to": "top_left",
+                            "text": "#progress_text",
+                            "font_type": "smooth",
+                            "bindings": [
+                              { "binding_name": "#progress_text" }
+                            ]
                           }
                         },
                         {
-                          "code_number@progress.code_number": {
-                            "size": [ "default", "default" ],
-                            "font_type": "smooth",
-                            "anchor_from": "top_left",
-                            "anchor_to": "top_left"
+                          "vertical_padding": {
+                            "type": "panel",
+                            "size": [ 0, 5 ]
                           }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "vertical_padding_2": {
-                      "type": "panel",
-                      "size": [ 0, 5 ],
-                      "bindings": [
+                        },
                         {
-                          "binding_name": "#cloud_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "cloud_support_link": {
-                      "type": "stack_panel",
-                      "orientation": "horizontal",
-                      "size": [ "100%c", "100%c" ],
-                      "bindings": [
-                        {
-                          "binding_name": "#cloud_link_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ],
-                      "controls": [
-                        {
-                          "cloud_support_hypertext@edu_common.underline_button": {
-                            "size": [ "98%c", "100%c" ],
-                            "$single_label_size": [ "default", "default" ],
-                            "$single_line_font_scale_factor": 1,
-                            "$pressed_button_name": "button.edu_cloud_hyperlink",
-                            "$single_line_label_text": "#edu_cloud_error_hyperlink_label",
-                            "$font_type": "smooth",
-                            "anchor_from": "top_left",
-                            "anchor_to": "top_left",
-                            "$label_text_bindings": [
+                          "error_code": {
+                            "type": "stack_panel",
+                            "size": [ "100% - 8px", 15 ],
+                            "orientation": "horizontal",
+                            "controls": [
                               {
-                                "binding_name": "#edu_cloud_error_hyperlink_label"
+                                "code_text@progress.code_text": {
+                                  "size": [ "default", "default" ],
+                                  "font_type": "smooth",
+                                  "anchor_from": "top_left",
+                                  "anchor_to": "top_left"
+                                }
+                              },
+                              {
+                                "code_number@progress.code_number": {
+                                  "size": [ "default", "default" ],
+                                  "font_type": "smooth",
+                                  "anchor_from": "top_left",
+                                  "anchor_to": "top_left"
+                                }
                               }
                             ]
                           }
                         },
                         {
-                          "padded_icon@common.empty_panel": {
+                          "vertical_padding_2": {
+                            "type": "panel",
+                            "size": [ 0, 5 ],
+                            "bindings": [
+                              {
+                                "binding_name": "#cloud_link_visible",
+                                "binding_name_override": "#visible"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "cloud_support_link": {
+                            "type": "stack_panel",
+                            "orientation": "horizontal",
                             "size": [ "100%c", "100%c" ],
+                            "bindings": [
+                              {
+                                "binding_name": "#cloud_link_visible",
+                                "binding_name_override": "#visible"
+                              }
+                            ],
                             "controls": [
                               {
-                                "icon": {
-                                  "type": "image",
-                                  "texture": "textures/ui/icon_external_link",
-                                  "size": [ 9, 9 ],
-                                  "offset": [ 7, 0.6 ]
+                                "cloud_support_hypertext@edu_common.underline_button": {
+                                  "size": [ "98%c", "100%c" ],
+                                  "$single_label_size": [ "default", "default" ],
+                                  "$single_line_font_scale_factor": 1,
+                                  "$pressed_button_name": "button.edu_cloud_hyperlink",
+                                  "$single_line_label_text": "#edu_cloud_error_hyperlink_label",
+                                  "$font_type": "smooth",
+                                  "anchor_from": "top_left",
+                                  "anchor_to": "top_left",
+                                  "$label_text_bindings": [
+                                    {
+                                      "binding_name": "#edu_cloud_error_hyperlink_label"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "padded_icon@common.empty_panel": {
+                                  "size": [ "100%c", "100%c" ],
+                                  "controls": [
+                                    {
+                                      "icon": {
+                                        "type": "image",
+                                        "texture": "textures/ui/icon_external_link",
+                                        "size": [ 9, 9 ],
+                                        "offset": [ 7, 0.6 ]
+                                      }
+                                    }
+                                  ]
                                 }
                               }
                             ]
@@ -1621,9 +1676,48 @@
                 "anchor_from": "bottom_middle",
                 "anchor_to": "bottom_middle",
                 "size": [ "100%", 52 ],
+                "bindings": [
+                  {
+                    "binding_name": "#one_button_panel",
+                    "binding_name_override": "#visible"
+                  }
+                ],
                 "controls": [
                   {
                     "modal_button_panel@$modal_button_panel_type": {}
+                  }
+                ]
+              }
+            },
+            {
+              "error_button_content": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "anchor_from": "bottom_middle",
+                "anchor_to": "bottom_middle",
+                "size": [ "100%", 52 ],
+                "offset": [ 80, 13 ],
+                "bindings": [
+                  {
+                    "binding_name": "(not #one_button_panel)",
+                    "binding_name_override": "#visible"
+                  }
+                ],
+                "controls": [
+                  {
+                    "download_ok_button@common_buttons.light_text_button": {
+                      "$pressed_button_name": "button.download_failed_open",
+                      "$button_text": "edu.cloudError.local.download.open",
+                      "size": [ 70, 26 ]
+                    }
+                  },
+                  {
+                    "download_cancel_button@common_buttons.light_text_button": {
+                      "$pressed_button_name": "button.download_failed_cancel",
+                      "$button_text": "#cancel_button_text",
+                      "$button_text_binding_type": "global",
+                      "size": [ 70, 26 ]
+                    }
                   }
                 ]
               }

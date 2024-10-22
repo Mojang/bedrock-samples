@@ -1,13 +1,14 @@
 {
-  "format_version": "1.16.0",
+  "format_version": "1.21.40",
+  "use_beta_features": true,
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:enderman",
       "spawn_category": "monster",
       "is_spawnable": true,
-      "is_summonable": true,
-      "is_experimental": false
+      "is_summonable": true
     },
+
     "component_groups": {
       "minecraft:enderman_calm": {
         "minecraft:on_target_acquired": {
@@ -18,7 +19,6 @@
           "value": 0.3
         }
       },
-
       "minecraft:enderman_angry": {
         "minecraft:angry": {
           "duration": 25,
@@ -61,12 +61,12 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           },
           {
-            "filters": { "test": "in_contact_with_water", "operator": "==", "value": true },
+            "filters": { "test": "in_contact_with_water" },
             "cause": "drowning",
             "damage_per_tick": 1
           }
@@ -91,25 +91,13 @@
         "target_teleport_chance": 0.05,
         "light_teleport_chance": 0.05
       },
-      "minecraft:lookat": {
+      "minecraft:looked_at": {
         "search_radius": 64.0,
-        "set_target": true,
-        "look_cooldown": 5.0,
+        "set_target": "once_and_stop_scanning",
+        "find_players_only": true,
+        "looked_at_cooldown": 5.0,
         "filters": {
-          "all_of": [
-            {
-              "subject": "other",
-              "test": "is_family",
-              "value": "player"
-            },
-            {
-              "test": "has_equipment",
-              "domain": "head",
-              "subject": "other",
-              "operator": "not",
-              "value": "carved_pumpkin"
-            }
-          ]
+          "test": "has_equipment", "domain": "head", "subject": "other", "operator": "not", "value": "carved_pumpkin"
         }
       },
       "minecraft:despawn": {
@@ -122,9 +110,7 @@
         "entity_types": [
           {
             "filters": {
-              "test": "is_family",
-              "subject": "other",
-              "value": "endermite"
+              "test": "is_family", "subject": "other", "value": "endermite"
             },
             "max_dist": 64
           }
@@ -135,11 +121,27 @@
         "avoid_water": true
       },
       "minecraft:movement.basic": {
-
       },
       "minecraft:jump.static": {
       },
       "minecraft:can_climb": {
+      },
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {
+        "default_values": {
+          "max_optimized_distance": 80.0,
+          "max_dropped_ticks": 10,
+          "use_motion_prediction_hints": true
+        }
+      },
+      "minecraft:variable_max_auto_step": {
+        "base_value": 1.0625, // 1 block + 1 pixel
+        "jump_prevented_value": 0.5625 // 0.5 blocks + 1 pixel
       },
       "minecraft:behavior.float": {
         "priority": 0
@@ -164,23 +166,6 @@
       },
       "minecraft:behavior.enderman_take_block": {
         "priority": 11
-      },
-      "minecraft:physics": {
-      },
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      },
-      "minecraft:conditional_bandwidth_optimization": {
-        "default_values": {
-          "max_optimized_distance": 80.0,
-          "max_dropped_ticks": 10,
-          "use_motion_prediction_hints": true
-        }
-      },
-      "minecraft:variable_max_auto_step": {
-        "base_value": 1.0625, // 1 block + 1 pixel
-        "jump_prevented_value": 0.5625 // 0.5 blocks + 1 pixel
       }
     },
 

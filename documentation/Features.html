@@ -1,4 +1,4 @@
-<h1>FEATURES DOCUMENTATION </br>Version: 1.21.30.3</h1>
+<h1>FEATURES DOCUMENTATION </br>Version: 1.21.40.3</h1>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
 <tr> <th><a href="#Overview">Overview</a></th> </tr>
@@ -463,23 +463,43 @@ Example use: Attaching apples to a tree canopy<br / ><textarea readonly="true" c
 
 <h1><p id="minecraft:single_block_feature">minecraft:single_block_feature</p></h1>
 
-'minecraft:single_block_feature' places a single block in the world. The 'may_place_on' and 'may_replace' fields are allowlists which specify where the block can be placed. If these fields are omitted, the block can be placed anywhere. The block's internal survivability and placement rules can optionally be enforced with the 'enforce_survivability_rules' and 'enforce_placement_rules' fields. These rules are specified per-block and are typically designed to produce high quality gameplay or natural behavior. However, enabling this enforcement may make it harder to debug placement failures.</br>Succeeds if: The block is successfully placed in the world.</br>Fails if: The block fails to be placed.</br><h2></h2>
-Example use: Placing a single pumpkin block.<br / ><textarea readonly="true" cols="53" rows="18">
+'minecraft:single_block_feature' places a single block in the world. The 'places_block' field supports a single block or a list of weighted blocks, where the weight defines how likely it is for that block to be selected. The 'may_attach_to' and 'may_replace' fields are allowlists which specify where the block can be placed. If these fields are omitted, the block can be placed anywhere. The 'may_not_attach_to' field is a denylist that specifies what blocks can't be close to the placement location. The 'randomize_rotation' field will randomize the block's cardinal orientation. The block's internal survivability and placement rules can optionally be enforced with the 'enforce_survivability_rules' and 'enforce_placement_rules' fields. These rules are specified per-block and are typically designed to produce high quality gameplay or natural behavior. However, enabling this enforcement may make it harder to debug placement failures.</br>Succeeds if: The block is successfully placed in the world.</br>Fails if: The block fails to be placed.</br><h2></h2>
+Example use: Placing a single pumpkin or carved pumpkin block where carved pumpkins are less likely to appear.<br / ><textarea readonly="true" cols="53" rows="32">
 {
-  "format_version": "1.13.0",
+  "format_version": "1.21.40",
   "minecraft:single_block_feature": {
     "description": {
       "identifier": "example:single_pumpkin_feature"
     },
-    "places_block": "minecraft:pumpkin",
-    "enforce_placement_rules": true,
-    "enforce_survivability_rules": true,
-    "may_place_on": [
-      "minecraft:grass"
+    "places_block": [
+      {
+        "block": "minecraft:pumpkin",
+        "weight": 5
+      },
+      {
+        "block": "minecraft:carved_pumpkin",
+        "weight": 1
+      }
     ],
-    "may_replace": [
-      "minecraft:air"
-    ]
+    "randomize_rotation": true,
+    "enforce_survivability_rules": true,
+    "enforce_placement_rules": true,
+    "may_attach_to": {
+      "auto_rotate": false,
+      "min_sides_must_attach": 1,
+      "south": [
+        "minecraft:grass",
+        "minecraft:dirt"
+      ]
+    },
+    "may_not_attach_to": {
+      "south": {
+        "name": "minecraft:dirt",
+        "states": {
+          "dirt_type": "coarse"
+        }
+      }
+    }
   }
 }
 </textarea> </br>
@@ -1043,13 +1063,22 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
           {
               string "identifier" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.
           }
-           "places_block" // Reference to the block to be placed.
+          object "places_block" : opt // Reference to the block to be placed.
+          array "places_block" : opt
+          {
+              object "<any array element>" : opt
+              {
+                  float "weight" // Random weight of this block. A higher number will increase the probability of this block to be picked during placement.
+                  object "block" // Reference to the block to be placed.
+              }
+          }
           bool "enforce_placement_rules" // If true, enforce the block's canPlace check.
           bool "enforce_survivability_rules" // If true, enforce the block's canSurvive check.
-          object "may_attach_to" : opt
+          bool "randomize_rotation" : opt // If true, randomizes the block's cardinal orientation.
+          object "may_attach_to" : opt // Allowlist which specifies where the block can be placed.
           {
-              int "min_sides_must_attach"<1-4> : opt
-              bool "auto_rotate" : opt // Automatically rotate the block to attach sensibly.
+              int "min_sides_must_attach"<1-4> : opt // Number of side faces that need to pass the attach conditions before the block can be placed. Default value is four.
+              bool "auto_rotate" : opt // Automatically rotate the block to attach sensibly. This setting is ignored if 'randomize_rotation' is enabled.
                "top" : opt
               array "top" : opt
               {
@@ -1087,6 +1116,59 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
               }
                "sides" : opt
               array "sides" : opt
+              {
+                   "<any array element>"
+              }
+               "diagonal" : opt
+              array "diagonal" : opt
+              {
+                   "<any array element>"
+              }
+          }
+          object "may_not_attach_to" : opt // Denylist which specifies where the block can't be placed.
+          {
+               "top" : opt
+              array "top" : opt
+              {
+                   "<any array element>"
+              }
+               "bottom" : opt
+              array "bottom" : opt
+              {
+                   "<any array element>"
+              }
+               "north" : opt
+              array "north" : opt
+              {
+                   "<any array element>"
+              }
+               "east" : opt
+              array "east" : opt
+              {
+                   "<any array element>"
+              }
+               "south" : opt
+              array "south" : opt
+              {
+                   "<any array element>"
+              }
+               "west" : opt
+              array "west" : opt
+              {
+                   "<any array element>"
+              }
+               "all" : opt
+              array "all" : opt
+              {
+                   "<any array element>"
+              }
+               "sides" : opt
+              array "sides" : opt
+              {
+                   "<any array element>"
+              }
+               "diagonal" : opt
+              array "diagonal" : opt
               {
                    "<any array element>"
               }

@@ -617,6 +617,47 @@
     ]
   },
 
+  "filter_main_menu_content_persona": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ "100%", "100%c" ],
+    "anchor_to": "top_right",
+    "anchor_from": "top_right",
+    "controls": [
+      {
+        "filter_title_bar_panel@filter_menu.filter_title_bar": {}
+      },
+      {
+        "persona_style_button@filter_menu.filter_main_menu_options_button_panel": {
+          "ignored": "($is_inventory_screen or $is_on_3p_server)",
+          "$filter_sort_prefix": "dressingroomstyle"
+        }
+      },
+      {
+        "persona_body_button@filter_menu.filter_main_menu_options_button_panel": {
+          "ignored": "($is_inventory_screen or $is_on_3p_server)",
+          "$filter_sort_prefix": "dressingroombody"
+        }
+      },
+      {
+        "minecoin_button@filter_menu.filter_main_menu_options_button_panel": {
+          "ignored": "($is_inventory_screen or $is_on_3p_server)",
+          "$filter_sort_prefix": "minecoin"
+        }
+      },
+      {
+        "clear_button_panel@filter_menu.filter_clear_button_panel": {
+          "variables": [
+            {
+              "requires": "$is_inventory_screen",
+              "$filter_clear_button_text": "store.search.filters.reset"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "filter_section_content_panel": {
     "type": "panel",
     "size": [ "100%", "100%c" ],
@@ -642,6 +683,12 @@
   "filter_main_menu_section@filter_menu.filter_section_content_panel": {
     "$is_main_menu": true,
     "$filter_section_screen_content": "filter_menu.filter_main_menu_content",
+    "$filter_sections_content_panel_visible": "#main_filter_section_visible"
+  },
+
+  "filter_main_menu_section_persona@filter_menu.filter_section_content_panel": {
+    "$is_main_menu": true,
+    "$filter_section_screen_content": "filter_menu.filter_main_menu_content_persona",
     "$filter_sections_content_panel_visible": "#main_filter_section_visible"
   },
 
@@ -719,10 +766,36 @@
     ]
   },
 
-  "filter_menu_panel": {
-    "type": "stack_panel",
-    "orientation": "vertical",
-    "size": [ "40%", "100%" ],
+  "filter_menu_content_persona": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "filter_main_menu_screen@filter_menu.filter_main_menu_section_persona": {}
+      },
+      {
+        "filter_style_section@filter_menu.filter_type_section": {
+          "$filter_sort_prefix": "dressingroomstyle",
+          "$filter_sections_content_panel_visible": "#dressingroomstyle_filter_section_visible"
+        }
+      },
+      {
+        "filter_body_section@filter_menu.filter_type_section": {
+          "$filter_sort_prefix": "dressingroombody",
+          "$filter_sections_content_panel_visible": "#dressingroombody_filter_section_visible"
+        }
+      },
+      {
+        "filter_minecoin_section@filter_menu.filter_type_section": {
+          "$filter_sort_prefix": "minecoin",
+          "$filter_sections_content_panel_visible": "#minecoin_filter_section_visible"
+        }
+      }
+    ]
+  },
+
+  "filter_menu_panel@common.vertical_stack_panel": {
+    "size": [ "100%", "100%" ],
     "anchor_from": "right_middle",
     "anchor_to": "right_middle",
     "layer": 2,
@@ -731,28 +804,40 @@
     "controls": [
       {
         // added to align with search bar
-        "top_padding": {
-          "type": "panel",
-          "size": [ "100%", 4 ]
+        "top_padding@common.empty_panel": {
+          "$filter_top_padding|default": [ "100%", 0 ],
+          "size": "$filter_top_padding"
         }
       },
       {
-        "filter_menu_content_scroll@common.scrolling_panel": {
+        "alignment_panel@common.horizontal_stack_panel": {
           "size": [ "100%", "fill" ],
-          "anchor_from": "top_right",
-          "anchor_to": "top_right",
-          "$scrolling_pane_offset": [ 0, 0 ],
-          "$scroll_size": [ 5, "100% - 4px" ],
-          "$scroll_bar_left_padding_size": [ 0, 0 ],
-          "$bar_visible": false,
-          "$show_background": false,
-          "$scrolling_content": "filter_menu.filter_menu_content"
-        }
-      },
-      {
-        "bottom_padding": {
-          "type": "panel",
-          "size": [ "100%", 4 ]
+          "controls": [
+            {
+              "left_padding@common.empty_panel": {
+                "$filter_left_padding|default": [ 0, "100%" ],
+                "size": "$filter_left_padding"
+              }
+            },
+            {
+              "filter_menu_content_scroll@common.scrolling_panel": {
+                "size": [ "fill", "100%" ],
+                "anchor_from": "top_right",
+                "anchor_to": "top_right",
+                "$scrolling_pane_offset": [ 0, 0 ],
+                "$scroll_size": [ 5, "100% - 4px" ],
+                "$scroll_bar_left_padding_size": [ 0, 0 ],
+                "$bar_visible": false,
+                "$show_background": false
+              }
+            },
+            {
+              "right_padding@common.empty_panel": {
+                "$filter_right_padding|default": [ 0, "100%" ],
+                "size": "$filter_right_padding"
+              }
+            }
+          ]
         }
       }
     ]
@@ -765,7 +850,32 @@
     "$close_bg_exit_button_name": "button.exit_filter_menu",
     "controls": [
       {
-        "filter_main_panel@filter_menu.filter_menu_panel": {}
+        "filter_main_panel@filter_menu.filter_menu_panel": {
+          "$filter_top_padding": [ "100%", 8 ],
+          "$filter_left_padding": [ "60%", "100%" ],
+          "$filter_right_padding": [ 12, "100%" ],
+          "$scrolling_content": "filter_menu.filter_menu_content",
+          "bindings": [
+            {
+              "binding_name": "(not #is_dressing_room_scene)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "filter_main_panel_persona@filter_menu.filter_menu_panel": {
+          "$filter_top_padding": [ "100%", 11 ],
+          "$filter_left_padding": [ "8%", "100%" ],
+          "$filter_right_padding": [ "47%", "100%" ],
+          "$scrolling_content": "filter_menu.filter_menu_content_persona",
+          "bindings": [
+            {
+              "binding_name": "#is_dressing_room_scene",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
       },
       {
         "filter_menu_close_background_button@common_store.close_bg_panel": {}

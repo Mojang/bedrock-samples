@@ -1,0 +1,202 @@
+{
+  "namespace": "sdl_image_row",
+
+  "image_row_factory": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "center",
+    "anchor_to": "center",
+
+    "$screenshot_grid_collection_name|default": "screenshot_collection",
+    "collection_name": "$screenshot_grid_collection_name",
+    "size": [ "100% - 4px", "100%cm + 4px" ],
+    "$factory_ids|default": {
+      "single_image": "@sdl_image_row.single_image",
+      "duo_image": "@sdl_image_row.double_image",
+      "tri_image": "@sdl_image_row.triple_image_with_buffer"
+    },
+    "factory": {
+      "name": "image_row_factory",
+      "control_ids": "$factory_ids",
+      "factory_variables": [
+        "$store_factory_collection_details",
+        "$store_factory_collection_name",
+        "$store_factory_collection_prefix",
+        "$screenshot_grid_collection_name"
+      ]
+    },
+
+    "bindings": [
+      {
+        "binding_name": "#image_row_ids",
+        "binding_name_override": "#collection_length"
+      },
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      }
+    ]
+  },
+
+  "buffer_panel": {
+    "type": "panel",
+    "size": [ "2px", "100%sm" ]
+  },
+
+  "single_image": {
+    "type": "panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ "fill", "100%cm + 4px" ],
+    "$image_size|default": [ "100% - 2px", "28.125%x" ],
+    "$image_bindings|default": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "$screenshot_grid_collection_name",
+        "binding_name": "#screenshot_texture_image_row",
+        "binding_name_override": "#texture"
+      },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "$screenshot_grid_collection_name",
+        "binding_name": "#screenshot_texture_file_system_image_row",
+        "binding_name_override": "#texture_file_system"
+      }
+    ],
+
+    "controls": [
+      {
+        "image_with_border": {
+          "type": "panel",
+          "size": "$image_size",
+          "controls": [
+            {
+              "screenshot_image": {
+                "type": "image",
+                "layer": 1,
+                "size": [ "100%", "100%" ],
+                "bindings": "$image_bindings"
+              }
+            },
+            {
+              "dark_border@common.focus_border_white": {
+                "size": [ "100% + 2px", "100% + 2px" ],
+                "color": "$dark_border_default_color"
+              }
+            },
+            {
+              "progress_loading@common_store.progress_loading": {
+                "layer": 5,
+                "$source_control_name": "screenshot_image",
+                "$source_property_name": "(#texture = '')",
+                "$use_sibling_scope": true,
+                "$hide_failure_text": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "double_image@sdl_image_row.single_image": {
+    "$image_size": [ "100% - 2px", "56.25%x" ]
+  },
+
+  "triple_image_with_buffer": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ "fill", "100%cm + 4px" ],
+    "controls": [
+      {
+        "buffer_panel_in_1": {
+          "type": "panel",
+          "size": [ "2px", "100%sm" ],
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "$screenshot_grid_collection_name",
+              "binding_name": "#3rd_border",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "buffer_panel_in_2": {
+          "type": "panel",
+          "size": [ "1px", "100%sm" ],
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "$screenshot_grid_collection_name",
+              "binding_name": "#2nd_border",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "triple_image@sdl_image_row.single_image": {
+          "$image_size": [ "100% - 2px", "75%x" ] // will need some extra buffers I think.
+        }
+      },
+      {
+        "buffer_panel_out_1": {
+          "type": "panel",
+          "size": [ "1px", "100%sm" ],
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "$screenshot_grid_collection_name",
+              "binding_name": "#2nd_border",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "buffer_panel_out_2": {
+          "type": "panel",
+          "size": [ "2px", "100%sm" ],
+          "bindings": [
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            },
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "$screenshot_grid_collection_name",
+              "binding_name": "#1st_border",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
