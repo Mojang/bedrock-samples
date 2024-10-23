@@ -69,7 +69,7 @@
         "labels_stack_panel": {
           "type": "stack_panel",
           "orientation": "vertical",
-          "size": [ "100%", "100%" ],
+          "size": [ "100% - 45px", "100%" ],
           "controls": [
             {
               "top_padding": {
@@ -184,7 +184,7 @@
   "sort_menu_show": {
     "type": "stack_panel", //stacks panels together
     "orientation": "vertical",
-    "size": [ "100%", "100%" ],
+    "size": [ "fill", "100%" ],
     "layer": 2,
     "controls": [
       {
@@ -216,31 +216,41 @@
     ]
   },
 
-  //main sort menu content panel, it's half of the current screen size on the X axis
-  "sort_menu_panel": {
-    "type": "stack_panel",
-    "orientation": "vertical",
-    "size": [ "40%", "100%" ],
-    "anchor_to": "top_right",
-    "anchor_from": "top_right",
+  "sort_menu_panel@common.vertical_stack_panel": {
+    "size": [ "100%", "100%" ],
+    "anchor_from": "right_middle",
+    "anchor_to": "right_middle",
     "visible": false,
     "layer": 2,
     "controls": [
       {
         // added to align with search bar
-        "top_padding": {
-          "type": "panel",
-          "size": [ "100%", 4 ]
+        "top_padding@common.empty_panel": {
+          "$sort_top_padding|default": [ "100%", 0 ],
+          "size": "$sort_top_padding"
         }
       },
       {
-        "sort_menu_show@sort_menu.sort_menu_show": {}
-      }
-    ],
-    "bindings": [
-      {
-        "binding_name": "#sort_menu_visible",
-        "binding_name_override": "#visible"
+        "alignment_panel@common.horizontal_stack_panel": {
+          "size": [ "100%", "fill" ],
+          "controls": [
+            {
+              "left_padding@common.empty_panel": {
+                "$sort_left_padding|default": [ 0, "100%" ],
+                "size": "$sort_left_padding"
+              }
+            },
+            {
+              "sort_menu_show@sort_menu.sort_menu_show": {}
+            },
+            {
+              "right_padding@common.empty_panel": {
+                "$sort_right_padding|default": [ 0, "100%" ],
+                "size": "$sort_right_padding"
+              }
+            }
+          ]
+        }
       }
     ]
   },
@@ -252,7 +262,30 @@
     "$close_bg_exit_button_name": "button.close_sort_menu",
     "controls": [
       {
-        "sort_menu_main@sort_menu.sort_menu_panel": {}
+        "sort_menu_main@sort_menu.sort_menu_panel": {
+          "$sort_top_padding": [ "100%", 8 ],
+          "$sort_left_padding": [ "60%", "100%" ],
+          "$sort_right_padding": [ 12, "100%" ],
+          "bindings": [
+            {
+              "binding_name": "(not #is_dressing_room_scene)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "sort_menu_main_persona@sort_menu.sort_menu_panel": {
+          "$sort_top_padding": [ "100%", 11 ],
+          "$sort_left_padding": [ "8%", "100%" ],
+          "$sort_right_padding": [ "47%", "100%" ],
+          "bindings": [
+            {
+              "binding_name": "#is_dressing_room_scene",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
       },
       {
         "sort_menu_background@common_store.close_bg_panel": {}
