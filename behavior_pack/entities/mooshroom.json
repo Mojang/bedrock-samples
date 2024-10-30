@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:mooshroom",
@@ -290,6 +290,42 @@
             },
             {
               "on_interact": {
+                "filters": { // open eyeblossom
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "open_eyeblossom"},
+                    { "test" :  "is_family", "subject" : "other", "value" :  "player"},
+                    { "test": "is_variant", "subject": "self", "operator": "==", "value": 1},
+                    { "test": "is_mark_variant", "subject": "self", "operator": "!=", "value": 11}
+                  ]
+                },
+                "event": "minecraft:ate_open_eyeblossom",
+                "target": "self"
+              },
+              "use_item": true,
+              "play_sounds": "eat",
+              "particle_on_start": { "particle_type": "smoke", "particle_y_offset": 0.25, "particle_offset_towards_interactor": true },
+              "interact_text": "action.interact.feed"
+            },
+            {
+              "on_interact": {
+                "filters": { // closed eyeblossom
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "closed_eyeblossom"},
+                    { "test" :  "is_family", "subject" : "other", "value" :  "player"},
+                    { "test": "is_variant", "subject": "self", "operator": "==", "value": 1},
+                    { "test": "is_mark_variant", "subject": "self", "operator": "!=", "value": 12}
+                  ]
+                },
+                "event": "minecraft:ate_closed_eyeblossom",
+                "target": "self"
+              },
+              "use_item": true,
+              "play_sounds": "eat",
+              "particle_on_start": { "particle_type": "smoke", "particle_y_offset": 0.25, "particle_offset_towards_interactor": true },
+              "interact_text": "action.interact.feed"
+            },
+            {
+              "on_interact": {
                 "filters": {
                   "all_of": [
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears"},
@@ -415,6 +451,18 @@
       "minecraft:mooshroom_brown_fed_torchflower": {
         "minecraft:mark_variant": {
           "value": 10
+        }
+      },
+
+      "minecraft:mooshroom_brown_fed_open_eyeblossom": {
+        "minecraft:mark_variant": {
+          "value": 11
+        }
+      },
+
+      "minecraft:mooshroom_brown_fed_closed_eyeblossom": {
+        "minecraft:mark_variant": {
+          "value": 12
         }
       },
 
@@ -556,7 +604,7 @@
               },
               "event": "minecraft:become_brown"
             },
-            "deals_damage": false,
+            "deals_damage": "no",
             "on_damage_sound_event": "convert_mooshroom"
           },
           {
@@ -569,7 +617,7 @@
               },
               "event": "minecraft:become_red"
             },
-            "deals_damage": false,
+            "deals_damage": "no",
             "on_damage_sound_event": "convert_mooshroom"
           }
         ]
@@ -680,6 +728,22 @@
         "add": {
           "component_groups": [
             "minecraft:mooshroom_brown_fed_torchflower"
+          ]
+        }
+      },
+
+      "minecraft:ate_open_eyeblossom": {
+        "add": {
+          "component_groups": [
+            "minecraft:mooshroom_brown_fed_open_eyeblossom"
+          ]
+        }
+      },
+
+      "minecraft:ate_closed_eyeblossom": {
+        "add": {
+          "component_groups": [
+            "minecraft:mooshroom_brown_fed_closed_eyeblossom"
           ]
         }
       },
