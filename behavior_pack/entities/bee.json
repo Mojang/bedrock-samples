@@ -1,5 +1,5 @@
 {
-  "format_version": "1.20.60",
+  "format_version": "1.21.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:bee",
@@ -116,6 +116,7 @@
           "duration": 25,
           "broadcastAnger": true,
           "broadcastRange": 20,
+          "broadcast_anger_when_dying": false,
           "broadcast_filters": {
             "test": "is_family", "operator": "!=", "value": "pacified"
           },
@@ -243,8 +244,7 @@
             "minecraft:torchflower",
             "minecraft:cherry_leaves",
             "minecraft:pink_petals",
-            "minecraft:open_eyeblossom", // Special-case flowers, not used for breeding/tempting/aging bees
-            "minecraft:closed_eyeblossom"
+            "minecraft:open_eyeblossom"
           ],
           "on_stay_completed": [
             {
@@ -432,6 +432,48 @@
           "range": 0.0,
           "value": 0.0
         }
+      },
+      "add_poison_effect": {
+        "minecraft:spell_effects": {
+          "add_effects": [
+            {
+              "effect": "poison",
+              "duration": 25,
+              "display_on_screen_animation": true
+            }
+          ],
+          "remove_effects": "poison"
+        },
+        "minecraft:behavior.timer_flag_1": {
+          "priority": 0,
+          "cooldown_range": 0.0,
+          "duration_range": [ 0.05, 0.05 ],
+          "on_end": {
+            "event": "minecraft:on_poison_effect_added",
+            "target": "self"
+          }
+        }
+      },
+      "add_wither_effect": {
+        "minecraft:spell_effects": {
+          "add_effects": [
+            {
+              "effect": "wither",
+              "duration": 40,
+              "display_on_screen_animation": true
+            }
+          ],
+          "remove_effects": "wither"
+        },
+        "minecraft:behavior.timer_flag_1": {
+          "priority": 0,
+          "cooldown_range": 0.0,
+          "duration_range": [ 0.05, 0.05 ],
+          "on_end": {
+            "event": "minecraft:on_wither_effect_added",
+            "target": "self"
+          }
+        }
       }
     },
 
@@ -467,7 +509,8 @@
           "minecraft:pitcher_plant",
           "minecraft:torchflower",
           "minecraft:cherry_leaves",
-          "minecraft:pink_petals"
+          "minecraft:pink_petals",
+          "minecraft:open_eyeblossom"
         ]
       },
       "minecraft:behavior.move_towards_home_restriction": {
@@ -513,6 +556,7 @@
         "emit_flap": true
       },
       "minecraft:home": {
+        "restriction_type": "random_movement",
         "restriction_radius": 22,
         "home_block_list": [
           "minecraft:bee_nest",
@@ -526,7 +570,7 @@
         "triggers": [
           {
             "cause": "fall",
-            "deals_damage": false
+            "deals_damage": "no"
           },
           {
             "on_damage": {
@@ -534,7 +578,7 @@
                 "test": "is_block", "subject": "block", "value": "minecraft:sweet_berry_bush"
               }
             },
-            "deals_damage": false
+            "deals_damage": "no"
           }
         ]
       },
@@ -542,7 +586,7 @@
         "damage_conditions": [
           {
             "filters": {
-              "test": "in_lava", "subject": "self", "operator": "==", "value": true
+              "test": "in_lava", "subject": "self"
             },
             "cause": "lava",
             "damage_per_tick": 4
@@ -600,6 +644,38 @@
       "minecraft:pushable": {
         "is_pushable": true,
         "is_pushable_by_piston": true
+      },
+      "minecraft:interact": {
+        "interactions": [
+          {
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject" : "other", "value" :  "player"},
+                  { "test": "has_equipment", "domain": "hand", "subject": "other", "value": "minecraft:open_eyeblossom" }
+                ]
+              },
+              "event": "fed_open_eyeblossom"
+            },
+            "use_item": true,
+            "particle_on_start": { "particle_type": "food" },
+            "interact_text": "action.interact.feed"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject" : "other", "value" :  "player"},
+                  { "test": "has_equipment", "domain": "hand", "subject": "other", "value": "minecraft:wither_rose"}
+                ]
+              },
+              "event": "fed_wither_rose"
+            },
+            "use_item": true,
+            "particle_on_start": { "particle_type": "food" },
+            "interact_text": "action.interact.feed"
+          }
+        ]
       }
     },
 
@@ -948,6 +1024,34 @@
         "add": {
           "component_groups": [
             "perish"
+          ]
+        }
+      },
+      "fed_open_eyeblossom": {
+        "add": {
+          "component_groups": [
+            "add_poison_effect"
+          ]
+        }
+      },
+      "on_poison_effect_added": {
+        "remove": {
+          "component_groups": [
+            "add_poison_effect"
+          ]
+        }
+      },
+      "fed_wither_rose": {
+        "add": {
+          "component_groups": [
+            "add_wither_effect"
+          ]
+        }
+      },
+      "on_wither_effect_added": {
+        "remove": {
+          "component_groups": [
+            "add_wither_effect"
           ]
         }
       }
