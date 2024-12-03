@@ -1,0 +1,104 @@
+<h1>TEXTURE SETS DOCUMENTATION </br>Version: 1.21.50.7</h1>
+<h2><p id="Index">Index</p></h2>
+<table border="1">
+<tr> <th><a href="#Texture Sets">Texture Sets</a></th> </tr>
+<tr> <td> <a href="#Texture Set Json Schema"> Texture Set Json Schema</a> </tr> </td>
+<tr> <td> <a href="#Layers"> Layers</a> </tr> </td>
+<tr> <td> <a href="#Specifying uniform values"> Specifying uniform values</a> </tr> </td>
+<tr> <td> <a href="#Examples of *.texture_set.json files"> Examples of *.texture_set.json files</a> </tr> </td>
+<tr> <td> <a href="#Invalid *.texture_set.json"> Invalid *.texture_set.json</a> </tr> </td>
+<tr> <td> <a href="#Resource Stack Behaviour"> Resource Stack Behaviour</a> </tr> </td>
+<tr> <td> <a href="#Referencing Texture Resources"> Referencing Texture Resources</a> </tr> </td>
+</table>
+<a href="#Index">Back to top</a>
+<h1><p id="Texture Sets">Texture Sets</p></h1>
+
+Minecraft supports a Physically Based Rendering (PBR) color pipeline (e.g. used for Ray Tracing). 		This uses more texture data than simply 'color' to enable richer, more realistic visuals. 		With the PBR approach, you can have layers for different specular reflections, emissivity, normal maps, etc. which goes beyond the Classic color pipeline for Vanilla Minecraft. 		Texture Sets have been added as the feature for defining multiple PBR layers for a texture resource. Texture sets are data driven from json files.</br><h1><p id="Texture Set Json Schema">Texture Set Json Schema</p></h1>
+
+<h2>Texture Set Json Schema</h2>
+
+```</br>--------</br>{</br>    version "format_version"</br>    object "minecraft:texture_set"</br>    {</br>        color "color" : opt // Fill RGBA channels of a textureset layer with the specified values in an array or hex string</br>        string "color" : opt // The texture name of a textureset layer</br>        string "normal" : opt // The texture name of a textureset layer</br>        string "heightmap" : opt // The texture name of a textureset layer</br>        color "metalness_emissive_roughness" : opt // Fill RGB channels of a textureset layer with the specified values in an array or hex string</br>        string "metalness_emissive_roughness" : opt // The texture name of a textureset layer</br>    }</br>}</br></br>----------</br>```</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Layers">Layers</p></h1>
+
+A texture_set.json file may specify several layers.</br>Layers are references to texture image resources. they can also be defined in .json as values for uniform solid values as an alternative to referencing texture images in a pack.</br></br><h2></h2>
+
+<h2><p id="Color">Color</p></h2>
+
+- This is an RGB 3-channel image (defaults to uniform alpha of 1.0), or an RGBA 4-channel image, or a 4 value array for a uniform color with alpha.</br>- This is the only required layer.</br>- It is the only layer used by the Classic pipeline.</br>- Typically there is lighting baked in the color image.</br><a href="#Index">Back to top</a><br><br>
+
+<h2><p id="Normal">Normal</p></h2>
+
+- 3-channel normal map image (or 4-channel where the 4th channel is ignored).</br>- Mutually exclusive with the `heightmap` layer.</br><a href="#Index">Back to top</a><br><br>
+
+<h2><p id="Heightmap">Heightmap</p></h2>
+
+- 1-channel layer image or a single value in json for a uniform heightmap.</br>- Mutually exclusive with the `normal` layer.</br><a href="#Index">Back to top</a><br><br>
+
+<h2><p id="Metalness_emissive_roughness">Metalness_emissive_roughness</p></h2>
+
+- 3-channel image (or 4-channel where the 4th channel is ignored) or a 3 value array for a uniform MER.</br>- RGB images map Red to Metalness, Green to Emissive, and Blue to Roughness.</br><a href="#Index">Back to top</a><br><br>
+
+<br><br>
+
+<h1><p id="Specifying uniform values">Specifying uniform values</p></h1>
+
+Instead of referencing a texture image for a Texture Set layer, values can instead be specified in the *texture_set.json file,			which is effectively the equivalent to referencing a texture image filled uniformly with that value or values for the respective channels.</br></br>The values in the json can be specified in any of the following formats:</br>- 0 to 255 numeric range, or as a vector of such integers for a multi-channel layer.</br>- Hexadecimal RGB or ARGB for 3 and 4 channels respectively, also as 2 hex digits for a single channel layer.</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Examples of *.texture_set.json files">Examples of *.texture_set.json files</p></h1>
+
+<h2></h2>
+All the layer values can be mixed and match with references to image textures, hexadecimal and numerical values.
+<br / ><textarea readonly="true" cols="56" rows="11">
+
+        {
+           "format_version": "1.16.100",
+           "minecraft:texture_set": {
+             "color": [ 180, 140, 190, 255 ],
+             "metalness_emissive_roughness": "#FBA34C",
+             "normal": "grass_carried_normal"
+          }
+        }
+        
+</textarea> </br>
+This example uses referenced images that exist in the same folder. It uses a normal and MER map.
+<br / ><textarea readonly="true" cols="67" rows="11">
+
+        {
+            "format_version": "1.16.100",
+            "minecraft:texture_set": {
+              "color": "grass_carried",
+              "metalness_emissive_roughness": "grass_carried_mer",
+              "heightmap": "grass_carried_heightmap"
+          }
+        }
+        
+</textarea> </br>
+You could also specify values of textures using numerical or hexadecimal values.
+<br / ><textarea readonly="true" cols="63" rows="10">
+
+        {
+           "format_version": "1.16.100",
+           "minecraft:texture_set": {
+             "color": [ 180, 135, 190, 170 ],
+             "metalness_emissive_roughness": [ 130, 135, 140 ]
+          }
+        }
+        
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Invalid *.texture_set.json">Invalid *.texture_set.json</p></h1>
+
+If a Texture Set is invalid, we'll log a CONTENT_ERROR and the Texture Set will not be used.</br>A Texture Set is invalid if:</br>- Json data cannot be parsed, or doesn't meet the Texture Set schema.</br>- Color layer is not specified. Having a color layer in the .texture_set.json is required.</br>- Both heightmap and normal layers are defined.</br>- If a referenced texture does not exist in the same resource pack or the referenced texture cannot be parsed.</br>- Any layer is defined with an unexpected number of channels:</br>  - For layers that are specified with referenced images: Color, MER, and Normal support 3 or 4 channel images;		Heightmap support 1-channel images only.</br>  - For layers that are specified with numerical or hexadecimal values: Color support 4-channel values;		MER support 3-channel values;</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Resource Stack Behaviour">Resource Stack Behaviour</p></h1>
+
+- Texture Set definitions can only reference images that exist in the same resource pack as the definition.</br>- Texture images in higher priority resource packs do not override a Texture Set's reference to a texture in its own pack.</br>- In the resource pack stack, Texture Set definitions for the same texture resource don't get merged. The higher priority pack's Texture Set definition will override the lower priority one.</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Referencing Texture Resources">Referencing Texture Resources</p></h1>
+
+The priority of file extensions, in case you have duplicate image references, is: .tga > .png > .jpg > .jpeg. For example: 			if grass.png and grass.tga both exist in the folder, grass.tga will be chosen. This also applies to other data driven files, like actor json referencing a texture resource.</br><a href="#Index">Back to top</a><br><br>
+
+<br><br>
+

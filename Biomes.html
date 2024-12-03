@@ -1,0 +1,852 @@
+<h1>BIOMES DOCUMENTATION </br>Version: 1.21.50.7</h1>
+<h2><p id="Index">Index</p></h2>
+<table border="1">
+<tr> <th><a href="#Overview">Overview</a></th> </tr>
+<tr> <th><a href="#JSON Format">JSON Format</a></th> </tr>
+<tr> <th><a href="#Adding Biomes">Adding Biomes</a></th> </tr>
+<tr> <th><a href="#Schema">Schema</a></th> </tr>
+<tr> <td> <a href="#Biome Components"> Biome Components</a> </tr> </td>
+<tr> <td> <a href="#Biome Definition"> Biome Definition</a> </tr> </td>
+<tr> <td> <a href="#Biome Description"> Biome Description</a> </tr> </td>
+<tr> <td> <a href="#Biome JSON File"> Biome JSON File</a> </tr> </td>
+<tr> <td> <a href="#Block Specifier"> Block Specifier</a> </tr> </td>
+<tr> <td> <a href="#Molang Expression"> Molang Expression</a> </tr> </td>
+<tr> <td> <a href="#minecraft:capped_surface"> minecraft:capped_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:climate"> minecraft:climate</a> </tr> </td>
+<tr> <td> <a href="#minecraft:frozen_ocean_surface"> minecraft:frozen_ocean_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:mesa_surface"> minecraft:mesa_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:mountain_parameters"> minecraft:mountain_parameters</a> </tr> </td>
+<tr> <td> <a href="#minecraft:mountain_parameters - steep_material_adjustment settings"> minecraft:mountain_parameters - steep_material_adjustment settings</a> </tr> </td>
+<tr> <td> <a href="#minecraft:mountain_parameters - top_slide settings"> minecraft:mountain_parameters - top_slide settings</a> </tr> </td>
+<tr> <td> <a href="#minecraft:multinoise_generation_rules"> minecraft:multinoise_generation_rules</a> </tr> </td>
+<tr> <td> <a href="#minecraft:overworld_generation_rules"> minecraft:overworld_generation_rules</a> </tr> </td>
+<tr> <td> <a href="#minecraft:overworld_generation_rules - Weighted biome names settings"> minecraft:overworld_generation_rules - Weighted biome names settings</a> </tr> </td>
+<tr> <td> <a href="#minecraft:overworld_generation_rules - Weighted climate categories settings"> minecraft:overworld_generation_rules - Weighted climate categories settings</a> </tr> </td>
+<tr> <td> <a href="#minecraft:overworld_height"> minecraft:overworld_height</a> </tr> </td>
+<tr> <td> <a href="#minecraft:surface_material_adjustments"> minecraft:surface_material_adjustments</a> </tr> </td>
+<tr> <td> <a href="#minecraft:surface_material_adjustments - surface adjustment materials settings"> minecraft:surface_material_adjustments - surface adjustment materials settings</a> </tr> </td>
+<tr> <td> <a href="#minecraft:surface_material_adjustments - surface adjustment settings"> minecraft:surface_material_adjustments - surface adjustment settings</a> </tr> </td>
+<tr> <td> <a href="#minecraft:surface_parameters"> minecraft:surface_parameters</a> </tr> </td>
+<tr> <td> <a href="#minecraft:swamp_surface"> minecraft:swamp_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:tags"> minecraft:tags</a> </tr> </td>
+<tr> <td> <a href="#minecraft:the_end_surface"> minecraft:the_end_surface</a> </tr> </td>
+</table>
+<a href="#Index">Back to top</a>
+<h1><p id="Overview">Overview</p></h1>
+
+Minecraft biomes can have different terrain characteristics. By writing custom biome data you could:</br>1) Change the general shape of the terrain.</br>2) Change the ratio of frequency of biome types.</br>3) Change the blocks that make up the biome, both at the surface and down below.</br>4) Change the distribution of decorative features like trees, grass, and flowers.</br>5) Change the mobs that spawn.</br>6) Change the climate.</br>7) ...and more!</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="JSON Format">JSON Format</p></h1>
+
+All biomes should specify the version that they target via the "format_version" field. The remainder of the biome data is divided up into independent JSON sub-objects, or components. </br>In general, a component defines what game behaviors a biome participates in, and the component fields define how it participates. </br></br>There are basically two categories of components:</br>1) Namespaced components, such as those with a 'name:' prefix, that map to specific behaviors in-game. They may have member fields that parameterize that behavior. Only names that have a valid mapping are supported.</br>2) 'tags' which are defined under the "minecraft:tags" component. Tags consist of alphanumeric characters, along with '.' and '_'. A tag is attached to the biome so that either code or data may check for its existence. </br></br><h2></h2>
+Here is a sample biome schema with additional details and the full list of namespaced components.<br / ><textarea readonly="true" cols="51" rows="32">
+{
+  "plains": {
+    "format_version": "1.20.60",
+
+    "minecraft:climate": {
+      "downfall": 0.4,
+      "snow_accumulation": [ 0.0, 0.125 ],
+      "temperature": 0.8
+    },
+    "minecraft:overworld_height": {
+      "noise_type": "lowlands"
+    },
+    "minecraft:surface_parameters": {
+      "sea_floor_depth": 7,
+      "sea_floor_material": "minecraft:gravel",
+      "foundation_material": "minecraft:stone",
+      "mid_material": "minecraft:dirt",
+      "top_material": "minecraft:grass_block"
+    },
+    "minecraft:overworld_generation_rules": {
+      "hills_transformation": [
+        [ "forest_hills", 1 ],
+        [ "forest", 2 ]
+      ],
+      "mutate_transformation": "sunflower_plains",
+      "generate_for_climates": [
+        [ "medium", 3 ],
+        [ "warm", 1 ],
+        [ "cold", 1 ]
+      ]
+    },
+
+    "minecraft:tags": {
+      "tags": [
+        "animal",
+        "monster",
+        "overworld",
+        "plains"
+      ]
+    }
+  }
+}
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Adding Biomes">Adding Biomes</p></h1>
+
+Biomes are read from JSON files in the biomes subfolders of behavior packs. Loading enforces one biome per file; and the file name and the actual biome name must match. Adding a file with a new name to the biome data location will make it available for the game to use, while existing biomes can be overridden using files that match their existing name. Note that if you add a new biome, you'll need to write component data that allows it to participate in world generation (as shown in the full schema below), or else it won't show up in your worlds!</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Schema">Schema</p></h1>
+
+<h1><p id="Biome Components">Biome Components</p></h1>
+
+Any components that this Biome uses</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:capped_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Generates surface on blocks with non-solid blocks above or below.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:climate</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:frozen_ocean_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Similar to overworld_surface. Adds icebergs.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:mesa_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Similar to overworld_surface. Adds colored strata and optional pillars.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:mountain_parameters</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Noise parameters used to drive mountain terrain generation in Overworld.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:multinoise_generation_rules</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:overworld_generation_rules</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:overworld_height</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Noise parameters used to drive terrain height in the Overworld.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_material_adjustments</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Specify fine-detail changes to blocks used in terrain generation (based on a noise function).</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_parameters</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the blocks used for the default Minecraft Overworld terrain generation.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:swamp_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Similar to overworld_surface. Adds swamp surface details.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:tags</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Attach arbitrary string tags to this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:the_end_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Use default Minecraft End terrain generation.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Biome Definition">Biome Definition</p></h1>
+
+Contains a description and components to define a Biome.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">components</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Biome Components</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Components for this Biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">description</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Biome Description</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Non-component settings, including the Biome name.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Biome Description">Biome Description</p></h1>
+
+Contains non-component settings for a Biome.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The name of the Biome, used by other features like the '/locate biome' command.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Biome JSON File">Biome JSON File</p></h1>
+
+Contains a format version and a biome definition</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">format_version</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Version of the JSON schema used by this file</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:biome</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Biome Definition</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">A single biome definition</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Block Specifier">Block Specifier</p></h1>
+
+Specifies a particular block. Can be a string block name or a JSON object</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">name</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Name of the block</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">states</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Contains members named after each state, with boolean, integer, or string values.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Molang Expression">Molang Expression</p></h1>
+
+A JSON field that specifies a Molang expression. Can be an integer, float, boolean, or string.</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:capped_surface">minecraft:capped_surface</p></h1>
+
+Generates surface on blocks with non-solid blocks above or below.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">beach_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Material used to decorate surface near sea level.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">ceiling_materials</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Materials used for the surface ceiling.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">floor_materials</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Materials used for the surface floor.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Material used to replace solid blocks that are not surface blocks.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Material used to replace air blocks below sea level.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:climate">minecraft:climate</p></h1>
+
+Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">ash</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Density of ash precipitation visuals</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">blue_spores</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Density of blue spore precipitation visuals</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">downfall</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Amount that precipitation affects colors and block changes</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">red_spores</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Density of blue spore precipitation visuals</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">snow_accumulation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of 2 Floats</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Minimum and maximum snow level, each multiple of 0.125 is another snow layer</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">temperature</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Temperature affects a variety of visual and behavioral things, including snow and ice placement, sponge drying, and sky color</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">white_ash</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Density of white ash precipitation visuals</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:frozen_ocean_surface">minecraft:frozen_ocean_surface</p></h1>
+
+Similar to overworld_surface. Adds icebergs.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_depth</td>
+<td style="border-style:solid; border-width:3; padding:7px">Integer</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how deep below the world water level the floor should occur</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the bodies of water in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:mesa_surface">minecraft:mesa_surface</p></h1>
+
+Similar to overworld_surface. Adds colored strata and optional pillars.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">bryce_pillars</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Whether the mesa generates with pillars</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">clay_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Base clay block to use</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">hard_clay_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Hardened clay block to use</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">has_forest</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Places coarse dirt and grass at high altitudes</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_depth</td>
+<td style="border-style:solid; border-width:3; padding:7px">Integer</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how deep below the world water level the floor should occur</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the bodies of water in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:mountain_parameters">minecraft:mountain_parameters</p></h1>
+
+Noise parameters used to drive mountain terrain generation in Overworld.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">peaks_factor</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Does nothing</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">steep_material_adjustment</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:mountain_parameters - steep_material_adjustment settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Defines surface material for steep slopes</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_slide</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:mountain_parameters - top_slide settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:mountain_parameters - steep_material_adjustment settings">minecraft:mountain_parameters - steep_material_adjustment settings</p></h1>
+
+Defines surface material for steep slopes</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">east_slopes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Enable for east-facing slopes</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Block type use as steep material</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">north_slopes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Enable for north-facing slopes</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">south_slopes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Enable for south-facing slopes</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">west_slopes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Enable for west-facing slopes</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:mountain_parameters - top_slide settings">minecraft:mountain_parameters - top_slide settings</p></h1>
+
+Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">enabled</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">If false, top slide will be disabled. If true, other parameters will be taken into account.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:multinoise_generation_rules">minecraft:multinoise_generation_rules</p></h1>
+
+Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">target_altitude</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Altitude with which this biome should be generated, relative to other biomes.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">target_humidity</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Humidity with which this biome should be generated, relative to other biomes.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">target_temperature</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Temperature with which this biome should be generated, relative to other biomes.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">target_weirdness</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Weirdness with which this biome should be generated, relative to other biomes.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">weight</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Weight with which this biome should be generated, relative to other biomes.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:overworld_generation_rules">minecraft:overworld_generation_rules</p></h1>
+
+Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">generate_for_climates</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type minecraft:overworld_generation_rules - Weighted climate categories settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the world generation climate categories that this biome can spawn for. A single biome can be associated with multiple categories with different weightings.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">hills_transformation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld_generation_rules - Weighted biome names settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">What biome to switch to when converting to a hilly biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mutate_transformation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld_generation_rules - Weighted biome names settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">What biome to switch to when converting to a mutated biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">river_transformation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld_generation_rules - Weighted biome names settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">What biome to switch to when converting to a river biome (if not the Vanilla 'river' biome)</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">shore_transformation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld_generation_rules - Weighted biome names settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">What biome to switch to when adjacent to an ocean biome</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:overworld_generation_rules - Weighted biome names settings">minecraft:overworld_generation_rules - Weighted biome names settings</p></h1>
+
+Can be just the string name of a Biome, or an array of any size. If an array, each entry can be a Biome name string, or an array of size 2, where the first entry is a Biome name and the second entry is a positive integer representing how that Biome is weighted against other entries. If no weight is provided, a weight of 1 is used.</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:overworld_generation_rules - Weighted climate categories settings">minecraft:overworld_generation_rules - Weighted climate categories settings</p></h1>
+
+An array of any size containing arrays of exactly two elements. For each contained array, the first element is a climate category string ('medium', 'warm', 'lukewarm', 'cold', or 'frozen'). The second element is a positive integer for how much that entry is weighted relative to other entries.</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:overworld_height">minecraft:overworld_height</p></h1>
+
+Noise parameters used to drive terrain height in the Overworld.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">noise_params</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of 2 Floats</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">First value is depth - more negative means deeper underwater, while more positive means higher. Second value is scale, which affects how much noise changes as it moves from the surface.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">noise_type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"default", "default_mutated", "river", "ocean", "deep_ocean", "lowlands", "taiga", "mountains", "highlands", "extreme", "less_extreme", "beach", "stone_beach", "mushroom", "swamp"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Specifies a preset based on a built-in setting rather than manually using noise_params</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:surface_material_adjustments">minecraft:surface_material_adjustments</p></h1>
+
+Specify fine-detail changes to blocks used in terrain generation (based on a noise function).</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">adjustments</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type minecraft:surface_material_adjustments - surface adjustment settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">All adjustments that match the column's noise values will be applied in the order listed.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:surface_material_adjustments - surface adjustment materials settings">minecraft:surface_material_adjustments - surface adjustment materials settings</p></h1>
+
+The specific blocks used for this surface adjustment</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome when this adjustment is active.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome when this adjustment is active.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome when this adjustment is active.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in the bodies of water in this biome when this adjustment is active.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome when this adjustment is active.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:surface_material_adjustments - surface adjustment settings">minecraft:surface_material_adjustments - surface adjustment settings</p></h1>
+
+An adjustment to generated terrain, replacing blocks based on the specified settings.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">height_range</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of 2 Molang expressions</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Defines a range of noise values [min, max] for which this adjustment should be applied.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">materials</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:surface_material_adjustments - surface adjustment materials settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px"></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">noise_frequency_scale</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The scale to multiply by the position when accessing the noise value for the material adjustments.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">noise_range</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of 2 Floats</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Defines a range of noise values [min, max] for which this adjustment should be applied.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:surface_parameters">minecraft:surface_parameters</p></h1>
+
+Controls the blocks used for the default Minecraft Overworld terrain generation.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_depth</td>
+<td style="border-style:solid; border-width:3; padding:7px">Integer</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how deep below the world water level the floor should occur.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the bodies of water in this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:swamp_surface">minecraft:swamp_surface</p></h1>
+
+Similar to overworld_surface. Adds swamp surface details.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_depth</td>
+<td style="border-style:solid; border-width:3; padding:7px">Integer</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how deep below the world water level the floor should occur.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the bodies of water in this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:tags">minecraft:tags</p></h1>
+
+Attach arbitrary string tags to this biome.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">tags</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of string tags used by other systems such as entity spawning</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:the_end_surface">minecraft:the_end_surface</p></h1>
+
+Use default Minecraft End terrain generation.</br><a href="#Index">Back to top</a><br><br>
+
+<br><br>
+
