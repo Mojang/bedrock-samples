@@ -1,13 +1,13 @@
 {
-  "format_version": "1.16.0",
+  "format_version": "1.21.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:evocation_illager",
       "spawn_category": "monster",
       "is_spawnable": true,
-      "is_summonable": true,
-      "is_experimental": false
+      "is_summonable": true
     },
+
     "component_groups": {
       "minecraft:celebrate": {
         "minecraft:behavior.celebrate": {
@@ -57,6 +57,7 @@
         }
       }
     },
+
     "components": {
       "minecraft:equip_item": {
       },
@@ -94,12 +95,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -129,7 +125,6 @@
       },
       "minecraft:behavior.summon_entity": {
         "priority": 2,
-
         "summon_choices": [
           {
             "min_activation_range": 0.0,
@@ -198,7 +193,8 @@
                 "summon_cap": 8,
                 "summon_cap_radius": 16.0,
                 "size": 1.0,
-                "sound_event": "prepare.summon"
+                "sound_event": "prepare.summon",
+                "summon_event": "minecraft:add_damage_timer"
               }
             ]
           }
@@ -216,16 +212,8 @@
             "weight": 3,
             "filters": {
               "all_of": [
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "sheep"
-                },
-                {
-                  "test": "is_color",
-                  "subject": "other",
-                  "value": "blue"
-                }
+                { "test": "is_family", "subject": "other", "value": "sheep" },
+                { "test": "is_color", "subject": "other", "value": "blue" }
               ]
             },
             "start_sound_event": "cast.spell",
@@ -243,14 +231,15 @@
         "priority": 5,
         "entity_types": [
           {
-            "filters": {
-              "test": "is_family",
-              "subject": "other",
-              "value": "player"
-            },
+            "filters": { "test": "is_family", "subject": "other", "value": "player" },
             "max_dist": 8,
             "walk_speed_multiplier": 0.6,
             "sprint_speed_multiplier": 1.0
+          },
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "creaking" },
+            "max_dist": 8,
+            "sprint_speed_multiplier": 1.2
           }
         ]
       },
@@ -264,26 +253,10 @@
           {
             "filters": {
               "any_of": [
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "player"
-                },
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "snowgolem"
-                },
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "irongolem"
-                },
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "wandering_trader"
-                }
+                { "test": "is_family", "subject": "other", "value": "player" },
+                { "test": "is_family", "subject": "other", "value": "snowgolem" },
+                { "test": "is_family", "subject": "other", "value": "irongolem" },
+                { "test": "is_family", "subject": "other", "value": "wandering_trader" }
               ]
             },
             "max_dist": 20
@@ -291,17 +264,8 @@
           {
             "filters": {
               "all_of": [
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "villager"
-                },
-                {
-                  "test": "has_component",
-                  "subject": "other",
-                  "operator": "!=",
-                  "value": "minecraft:is_baby"
-                }
+                { "test": "is_family", "subject": "other", "value": "villager" },
+                { "test": "has_component", "subject": "other", "operator": "!=", "value": "minecraft:is_baby" }
               ]
             },
             "max_dist": 20
@@ -309,7 +273,6 @@
         ],
         "must_see": true
       },
-
       "minecraft:behavior.look_at_player": {
         "priority": 9,
         "look_distance": 3.0,
@@ -318,14 +281,16 @@
       "minecraft:behavior.look_at_entity": {
         "priority": 10,
         "look_distance": 8.0,
-        "filters": {
-          "test": "is_family",
-          "subject": "other",
-          "value": "mob"
-        }
+        "filters": { "test": "is_family", "subject": "other", "value": "mob" }
       },
       "minecraft:behavior.hurt_by_target": {
-        "priority": 1
+        "priority": 1,
+        "entity_types": {
+          "filters": {
+            "test": "is_family", "subject": "other", "operator": "!=", "value": "illager"
+          },
+          "max_dist": 64
+        }
       },
       "minecraft:behavior.equip_item": {
         "priority": 3
@@ -352,6 +317,7 @@
       "minecraft:conditional_bandwidth_optimization": {
       }
     },
+
     "events": {
       "minecraft:spawn_for_raid": {
         "add": {
@@ -368,10 +334,7 @@
             "add": { "component_groups": [ "minecraft:celebrate" ] }
           },
           {
-            "filters": {
-              "test": "has_nametag",
-              "value": false
-            },
+            "filters": { "test": "has_nametag", "value": false },
             "remove": { "component_groups": [ "minecraft:raid_persistence" ] }
           }
         ]
@@ -382,10 +345,7 @@
       "minecraft:raid_expired": {
         "sequence": [
           {
-            "filters": {
-              "test": "has_nametag",
-              "value": false
-            },
+            "filters": { "test": "has_nametag", "value": false },
             "remove": { "component_groups": [ "minecraft:raid_persistence" ] }
           }
         ]

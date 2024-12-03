@@ -170,6 +170,24 @@
       },
 
       {
+        "tutorial_animation_toggle@settings_common.option_toggle": {
+          "$option_label": "options.tutorial_show_animation",
+          "$option_binding_name": "#tutorial_show_animations_toggle",
+          "$toggle_name": "tutorial_show_animations_toggle",
+          "bindings": [
+            {
+              "binding_name": "#edu_show_animation_toggle",
+              "binding_name_override": "#visible"
+            },
+            {
+              "binding_name": "#gametips_enabled",
+              "binding_name_override": "#enabled"
+            }
+          ]
+        }
+      },
+
+      {
         "tutorial_restart_button@settings_common.action_button": {
           "$pressed_button_name": "button.tutorial_restart",
           "$button_text": "options.restartTutorial",
@@ -231,7 +249,6 @@
 
       {
         "ecomode_label_header": {
-          "ignored": "(not $supports_ecomode_toggle)",
           "type": "label",
           "text": "options.ecoMode",
           "color": "$sub_header_text_color"
@@ -240,7 +257,6 @@
 
       {
         "paddingEcoMode": {
-          "ignored": "(not $supports_ecomode_toggle)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -248,7 +264,6 @@
 
       {
         "ecomode_enabled_toggle@settings_common.option_toggle": {
-          "ignored": "(not $supports_ecomode_toggle)",
           "$option_label": "options.enableEcoMode",
           "$option_binding_name": "#ecomode_toggle",
           "$option_enabled_binding_name": "#ecomode_toggle_enabled",
@@ -1281,17 +1296,13 @@
             },
             {
               "gamerpic": {
-                "type": "image",
+                "type": "custom",
+                "renderer": "profile_image_renderer",
                 "size": [ 12, 12 ],
                 "layer": 1,
                 "bindings": [
                   {
-                    "binding_name": "#gamerpic_texture_path",
-                    "binding_name_override": "#texture"
-                  },
-                  {
-                    "binding_name": "#gamerpic_texture_location_type",
-                    "binding_name_override": "#texture_file_system"
+                    "binding_name": "#profile_image_options"
                   }
                 ]
               }
@@ -1446,7 +1457,7 @@
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingSignOut": {
-          "ignored": "($build_platform_UWP or not $is_pregame or $requires_xbl_signin_to_play)",
+          "ignored": "($ms_platform or not $is_pregame or $requires_xbl_signin_to_play)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -1473,7 +1484,7 @@
 
       {
         "sign_out": {
-          "ignored": "($build_platform_UWP or not $is_pregame or $requires_xbl_signin_to_play)",
+          "ignored": "($ms_platform or not $is_pregame or $requires_xbl_signin_to_play)",
           "type": "panel",
           "size": [ "100%", 32 ],
           "controls": [
@@ -1693,7 +1704,7 @@
 
   "edu_cloud_storage_button@settings_common.section_toggle_base": {
     "ignored": "(not $education_edition or not $edu_save_to_cloud_on)",
-    "visible": "($is_pregame)",
+    "visible": "($is_pregame and not $edu_ignore_cloud_storage)",
     "$toggle_view_binding_name": "edu_cloud_storage_button_toggle",
     "$glyph_texture": "textures/ui/onedrive_pixel_logo_stroke",
     "$glyph_color_texture": "textures/ui/onedrive_pixel_logo",
@@ -2144,13 +2155,36 @@
               }
             },
             {
+              "passcode_required_toggle@settings_common.option_toggle": {
+                "$option_label": "options.creator.debuggerPasscodeRequired",
+                "$option_binding_name": "#script_debugger_passcode_required",
+                "$option_enabled_binding_name": "#script_debugger_passcode_required_enabled",
+                "$toggle_name": "script_debugger_passcode_required"
+              }
+            },
+            {
+              "passcode_input@settings_common.option_text_edit": {
+                "size": [ "100%", 50 ],
+                "$text_box_name": "script_debugger_passcode",
+                "$max_text_edit_length": 64,
+                "$option_label": "options.creator.debuggerPasscode",
+                "$option_binding_name": "#script_debugger_passcode",
+                "bindings": [
+                  {
+                    "binding_name": "#script_debugger_passcode_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
               "auto_attach_toggle@settings_common.option_toggle": {
                 "$option_label": "options.creator.debuggerAutoAttach",
                 "$option_binding_name": "#script_debugger_auto_attach",
                 "$option_enabled_binding_name": "#script_debugger_auto_attach_enabled",
                 "$toggle_name": "script_debugger_auto_attach"
               }
-            },            
+            },
             {
               "all_options_panel": {
                 "type": "stack_panel",
@@ -2164,7 +2198,7 @@
                 "controls": [
                   {
                     "attach_mode_option@settings_common.option_radio_dropdown_group": {
-                      "ignored": "$build_platform_UWP",
+                      "ignored": "$ms_platform",
                       "$option_enabled_binding_name": "#script_debugger_auto_attach_enabled",
                       "$radio_buttons": [
                         {
@@ -2369,8 +2403,125 @@
     ]
   },
 
+  "device_info_toggles_panel": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "bindings": [
+      {
+        "binding_name": "#device_info_options_enabled",
+        "binding_name_override": "#enabled"
+      }
+    ],
+    "controls": [
+      {
+        "section_panel_1": {
+          "type": "panel",
+          "size": [ "100%", "100%c + 14px" ],
+          "controls": [
+            {
+              "section_divider": {
+                "type": "image",
+                "size": [ "100% - 30px", 1 ],
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "layer": 3,
+                "texture": "textures/ui/list_item_divider_line_light"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "primary_panel": {
+          "type": "stack_panel",
+          "controls": [
+            {
+              "heading": {
+                "type": "label",
+                "text": "options.creator.deviceInfo",
+                "color": "$body_text_color"
+              }
+            },
+            {
+              "spacer": {
+                "type": "panel",
+                "size": [ "100%", 7 ]
+              }
+            },
+            {
+              "device_info_memory_tier_use_override_toggle@settings_common.option_toggle": {
+                "$option_label": "options.creator.deviceInfoUseMemoryTierOverride",
+                "$option_binding_name": "#device_info_use_memory_tier_override",
+                "$option_enabled_binding_name": "#device_info_use_memory_tier_override_enabled",
+                "$toggle_name": "device_info_use_memory_tier_override"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "device_info_memory_tier_dropdown@settings_common.option_dropdown": {
+          "$option_label": "options.creator.deviceInfoMemoryTier",
+          "$dropdown_content": "general_section.content_memory_tier_dropdown_content",
+          "$dropdown_area": "content_area",
+          "$dropdown_name": "device_info_memory_tier_dropdown",
+          "$options_dropdown_toggle_label_binding": "#device_info_memory_tier_dropdown_toggle_label",
+          "$option_enabled_binding_name": "#device_info_memory_tier_override_enabled",
+          "$dropdown_scroll_content_size": [ "100%", "250%" ],
+          "bindings": [
+            {
+              "binding_name": "#device_info_memory_tier_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "content_memory_tier_dropdown_content@settings_common.option_radio_dropdown_group": {
+    "$radio_buttons": [
+      {
+        "memory_tier_superLow@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#memory_tier_superLow",
+          "$radio_label_text": "options.creator.deviceInfoMemoryTier.superLow"
+        }
+      },
+      {
+        "memory_tier_low@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#memory_tier_low",
+          "$radio_label_text": "options.creator.deviceInfoMemoryTier.low"
+        }
+      },
+      {
+        "memory_tier_mid@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#memory_tier_mid",
+          "$radio_label_text": "options.creator.deviceInfoMemoryTier.mid"
+        }
+      },
+      {
+        "memory_tier_high@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#memory_tier_high",
+          "$radio_label_text": "options.creator.deviceInfoMemoryTier.high"
+        }
+      },
+      {
+        "memory_tier_superHigh@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#memory_tier_superHigh",
+          "$radio_label_text": "options.creator.deviceInfoMemoryTier.superHigh"
+        }
+      }
+    ]
+  },
+
   "content_log_gui_level_content@settings_common.option_radio_dropdown_group": {
     "$radio_buttons": [
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#content_log_gui_level_verbose",
+          "$radio_label_text": "options.content_log_gui.level.verbose"
+        }
+      },
       {
         "@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#content_log_gui_level_info",
@@ -2573,6 +2724,9 @@
       },
       {
         "watchdog_toggles_panel@general_section.watchdog_toggles_panel": {}
+      },
+      {
+        "device_info_toggles_panel@general_section.device_info_toggles_panel": {}
       },
       {
         "content_log_panel@general_section.content_log_panel": {
@@ -3040,7 +3194,7 @@
       {
         "beta_new_bed_screen_toggle_input_panel@settings_common.option_toggle": {
           "type": "input_panel",
-          "ignored": "(not $pre_release)",
+          "ignored": true,
           "consume_hover_events": false,
           "focus_enabled": true,
           "$beta_new_bed_screen_toggle_disabled_is_hovered_button_event|default": "button.beta_new_bed_screen_toggle_disabled_is_hovered",
@@ -5616,8 +5770,17 @@
   },
 
   "toast_notification_duration_info_label": {
+    "ignored": "$education_edition",
     "type": "label",
     "text": "options.notificationDuration.ToastMessage",
+    "size": [ "100%", "default" ],
+    "color": "$option_description_text_color"
+  },
+
+  "toast_notification_duration_info_edu_label": {
+    "ignored": "(not $education_edition)",
+    "type": "label",
+    "text": "options.notificationDuration.ToastMessage.edu",
     "size": [ "100%", "default" ],
     "color": "$option_description_text_color"
   },
@@ -5850,6 +6013,11 @@
             {
               "toast_notification_duration_info_label_wrapper@common.tts_label_focus_wrapper": {
                 "$tts_label_panel": "general_section.toast_notification_duration_info_label"
+              }
+            },
+            {
+              "toast_notification_duration_info_label_edu_wrapper@common.tts_label_focus_wrapper": {
+                "$tts_label_panel": "general_section.toast_notification_duration_info_edu_label"
               }
             },
             {
@@ -8348,6 +8516,22 @@
         }
       },
       {
+        "log_area@settings_common.option_text_edit": {
+          "$option_label": "Log Area",
+          "$option_binding_name": "#log_area_text_box",
+          "$max_text_edit_length": 2000,
+          "$text_box_name": "log_area_text_box"
+        }
+      },
+      {
+        "log_priority@settings_common.option_text_edit": {
+          "$option_label": "Log Priority",
+          "$option_binding_name": "#log_priority_text_box",
+          "$max_text_edit_length": 2000,
+          "$text_box_name": "log_priority_text_box"
+        }
+      },
+      {
         "option_toggle_build_info@settings_common.option_toggle": {
           "$option_label": "options.dev_showBuildInfo",
           "$option_binding_name": "#dev_show_build_info",
@@ -8380,14 +8564,6 @@
           "$option_binding_name": "#dev_enable_profiler",
           "$option_enabled_binding_name": "#dev_enable_profiler_enabled",
           "$toggle_name": "dev_enable_profiler"
-        }
-      },
-      {
-        "option_toggle_newparticlesystem@settings_common.option_toggle": {
-          "$option_label": "options.dev_newParticleSystem",
-          "$option_binding_name": "#dev_newParticleSystem",
-          "$option_enabled_binding_name": "#dev_newParticleSystem_enabled",
-          "$toggle_name": "dev_newParticleSystem"
         }
       },
       {
@@ -8591,6 +8767,12 @@
         "padding_reset_day_one": {
           "type": "panel",
           "size": [ "100%", 3 ]
+        }
+      },
+      {
+        "reset_new_player_flow@settings_common.action_button": {
+          "$pressed_button_name": "button.reset_new_player_flow",
+          "$button_text": "options.dev_reset_new_player_flow"
         }
       },
       {
@@ -9180,39 +9362,6 @@
     ],
     "controls": [
       {
-        "gatherings_enabled_label": {
-          "type": "label",
-          "text": "#gatherings_enabled_label_text",
-          "size": [ "100%", "default" ],
-          "color": "$body_text_color",
-          "bindings": [
-            {
-              "binding_name": "#gatherings_enabled_label_text"
-            }
-          ]
-        }
-      },
-      {
-        "enable_gatherings_button@settings_common.action_button": {
-          "$pressed_button_name": "button.enable_gatherings",
-          "$button_text": "#enable_gatherings_button_text",
-          "$button_text_binding_type": "global",
-          "visible": false,
-          "bindings": [
-            {
-              "binding_name_override": "#visible",
-              "binding_name": "#gatherings_button_enabled"
-            }
-          ]
-        }
-      },
-      {
-        "spacer_1": {
-          "type": "panel",
-          "size": [ "100%", 10 ]
-        }
-      },
-      {
         "clear_system_service_pack_cache_button@settings_common.action_button": {
           "$pressed_button_name": "button.clear_system_service_pack_cache",
           "$button_text": "options.dev_gatherings_clear_system_service_pack"
@@ -9235,24 +9384,6 @@
       },
       {
         "spacer_3": {
-          "type": "panel",
-          "size": [ "100%", 10 ]
-        }
-      },
-      {
-        "active_gathering_label": {
-          "type": "label",
-          "text": "#active_gathering_text",
-          "color": "$body_text_color",
-          "bindings": [
-            {
-              "binding_name": "#active_gathering_text"
-            }
-          ]
-        }
-      },
-      {
-        "spacer_4": {
           "type": "panel",
           "size": [ "100%", 10 ]
         }
@@ -9485,6 +9616,32 @@
         "binding_type": "collection",
         "binding_condition": "visible",
         "binding_collection_name": "dev_new_create_world_screen_radio"
+      }
+    ]
+  },
+
+  "new_edu_create_world_screen_grid_item@settings_common.radio_with_label": {
+    "$toggle_state_binding_name": "#initial_selected",
+    "$radio_label_text": "#description",
+    "$radio_label_bindings": [
+      {
+        "binding_name": "#description",
+        "binding_type": "collection",
+        "binding_condition": "once",
+        "binding_collection_name": "dev_new_edu_create_world_screen_radio"
+      }
+    ],
+    "$radio_toggle_group": true,
+    "$toggle_binding_type": "collection",
+    "$toggle_name": "dev_new_edu_create_world_screen_radio",
+    "$toggle_grid_collection_name": "dev_new_edu_create_world_screen_radio",
+    "$option_enabled_binding_name": "",
+    "bindings": [
+      {
+        "binding_name": "#default_focus_precedence",
+        "binding_type": "collection",
+        "binding_condition": "visible",
+        "binding_collection_name": "dev_new_edu_create_world_screen_radio"
       }
     ]
   },
@@ -9749,6 +9906,46 @@
         "screen_override_label_spacer": {
           "type": "panel",
           "size": [ "100%", 3 ]
+        }
+      },
+      /* Edu Create New World Screen Overrides */
+      {
+        "new_edu_create_world_screen_radio_label": {
+          "type": "label",
+          "ignored": "(not $education_edition)",
+          "text": "New Edu Create World Screen",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "new_edu_create_world_screen_radio_label_spacer": {
+          "type": "panel",
+          "ignored": "(not $education_edition)",
+          "size": [ "100%", 3 ]
+        }
+      },
+      {
+        "new_edu_create_world_screen_radio_button": {
+          "type": "grid",
+          "ignored": "(not $education_edition)",
+          "size": [ "100%", "100%c" ],
+          "grid_item_template": "general_section.new_edu_create_world_screen_grid_item",
+          "grid_dimension_binding": "#dev_new_edu_create_world_screen_radio_dimension",
+          "collection_name": "dev_new_edu_create_world_screen_radio",
+          "bindings": [
+            {
+              "binding_name": "#dev_new_edu_create_world_screen_radio_dimension",
+              "binding_condition": "visible"
+            }
+          ]
+        }
+      },
+      {
+        "new_edu_create_world_screen_radio_button_spacer": {
+          "type": "panel",
+          "ignored": "(not $education_edition)",
+          "size": [ "100%", 10 ]
         }
       },
       /* Play Screen Overrides */

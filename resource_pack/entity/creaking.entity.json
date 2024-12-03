@@ -1,0 +1,71 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:creaking",
+      "materials": {
+        "default": "creaking",
+        "eyes": "creaking_eyes"
+      },
+      "geometry": {
+        "default": "geometry.creaking"
+      },
+      "textures": {
+        "default": "textures/entity/creaking/creaking",
+        "eyes": "textures/entity/creaking/creaking_eyes"
+      },
+      "render_controllers": [
+        "controller.render.creaking",
+        "controller.render.creaking_eyes"
+      ],
+      "scripts": {
+        "pre_animation": [
+          "variable.state = query.property('minecraft:creaking_state');",
+          "variable.is_immobile = variable.state == 'hostile_observed';",
+          "variable.is_immobile_timer = !variable.is_immobile ? 0.0 : ((variable.is_immobile_timer ?? 0.0) + query.delta_time);",
+          "variable.y_head_rotation = query.target_y_rotation;",
+          "variable.walking = variable.is_immobile_timer < 0.75 && query.modified_move_speed > 0.01;",
+          "variable.attacking = variable.attack_time > 0.0;",
+          "variable.swaying = query.property('minecraft:creaking_swaying_ticks') > 0;",
+          "variable.twitching = variable.state == 'twitching';",
+          "variable.twitching_timer = !variable.twitching ? 0.0 : ((variable.twitching_timer ?? 0.0) + query.delta_time);",
+          "variable.emissive_time_min = variable.twitching_timer / 4.0;",
+          "variable.emissive_time_max = variable.emissive_time_min * 2.0f;",
+          "variable.time_to_emissive_eyes_switch = (!variable.twitching || (variable.has_switched_eyes_emissiveness_from_twitching ?? false)) ? ((variable.had_emissive_eyes_from_twitching ?? true) ? Math.Random(0.1, 0.4) : Math.Random(variable.emissive_time_min, variable.emissive_time_max)) : (variable.time_to_emissive_eyes_switch - query.delta_time);",
+          "variable.had_emissive_eyes_from_twitching = variable.has_emissive_eyes_from_twitching ?? false;",
+          "variable.has_emissive_eyes_from_twitching = variable.time_to_emissive_eyes_switch < 0.0 ? !variable.had_emissive_eyes_from_twitching : variable.had_emissive_eyes_from_twitching;",
+          "variable.has_switched_eyes_emissiveness_from_twitching = variable.has_emissive_eyes_from_twitching != variable.had_emissive_eyes_from_twitching;",
+          "variable.has_emissive_eyes = variable.has_emissive_eyes_from_twitching || variable.state == 'hostile_observed' || variable.state == 'hostile_unobserved';"
+        ],
+        "animate": [
+          "look_at_target_controller",
+          "walk_controller",
+          "attack_controller",
+          "sway_controller",
+          "twitch_controller"
+        ],
+        "should_update_effects_offscreen": "1.0"
+      },
+      "animations": {
+        "look_at_target": "animation.creaking.look_at_target",
+        "look_at_target_controller": "controller.animation.creaking.look_at_target",
+        "walk": "animation.creaking.walk",
+        "walk_controller": "controller.animation.creaking.walk",
+        "attack": "animation.creaking.attack",
+        "attack_controller": "controller.animation.creaking.attack",
+        "sway": "animation.creaking.sway",
+        "sway_controller": "controller.animation.creaking.sway",
+        "twitch": "animation.creaking.twitch",
+        "twitch_controller": "controller.animation.creaking.twitch"
+      },
+      "sound_effects": {
+        "sway": "mob.creaking.sway",
+        "twitch": "mob.creaking.twitch"
+      },
+      "spawn_egg": {
+        "base_color": "#5f5f5f",
+        "overlay_color": "#fc7812"
+      }
+    }
+  }
+}

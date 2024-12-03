@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:vindicator",
@@ -44,14 +44,9 @@
           "must_see": true,
           "within_radius": 12.0,
           "must_see_forget_duration": 40.0,
-
           "entity_types": [
             {
-              "filters": {
-                "all_of": [
-                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "illager" }
-                ]
-              },
+              "filters": { "test": "is_family", "subject": "other", "operator": "!=", "value": "illager" },
               "max_dist": 12
             }
           ]
@@ -63,7 +58,6 @@
           "must_see": true,
           "within_radius": 12.0,
           "must_see_forget_duration": 40.0,
-
           "entity_types": [
             {
               "filters": {
@@ -184,6 +178,7 @@
     },
 
     "components": {
+      // Components
       "minecraft:equip_item": {
       },
       "minecraft:shareables": {
@@ -220,8 +215,6 @@
           }
         ]
       },
-
-      // vindicator Components
       "minecraft:type_family": {
         "family": [ "vindicator", "monster", "illager", "mob" ]
       },
@@ -271,10 +264,19 @@
       "minecraft:equipment": {
         "table": "loot_tables/entities/vindicator_gear.json"
       },
-
-      // vindicator Behaviors
+      // Behaviors
       "minecraft:behavior.float": {
         "priority": 0
+      },
+      "minecraft:behavior.avoid_mob_type": {
+        "priority": 2,
+        "entity_types": [
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "creaking" },
+            "max_dist": 8,
+            "sprint_speed_multiplier": 1.2
+          }
+        ]
       },
       "minecraft:behavior.melee_box_attack": {
         "priority": 3
@@ -289,7 +291,13 @@
         "probability": 0.02
       },
       "minecraft:behavior.hurt_by_target": {
-        "priority": 1
+        "priority": 1,
+        "entity_types": {
+          "filters": {
+            "test": "is_family", "subject": "other", "operator": "!=", "value": "illager"
+          },
+          "max_dist": 64
+        }
       },
       "minecraft:behavior.equip_item": {
         "priority": 3
