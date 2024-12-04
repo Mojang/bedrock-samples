@@ -4,14 +4,27 @@
     "controller.render.creaking": {
       "geometry": "Geometry.default",
       "materials": [ { "*": "Material.default" } ],
-      "textures": [ "Texture.default" ]
+      "textures": [ "Texture.default" ],
+      "part_visibility": [
+        { "*": "!query.is_invisible" }
+      ]
     },
     "controller.render.creaking_eyes": {
+      "arrays": {
+        "materials": {
+          "Array.materials": [ "Material.default", "Material.eyes" ]
+        }
+      },
       "geometry": "Geometry.default",
-      "materials": [ { "*": "Material.eyes" } ],
+      // When invisible, we only render the eyes, so we use the base material as there's no other texture to blend them on.
+      "materials": [ { "*": "Array.materials[query.is_invisible ? 0 : 1]" } ],
       "textures": [ "Texture.eyes" ],
       "ignore_lighting": true,
-      "part_visibility": [ { "*": "variable.has_emissive_eyes" } ]
+      "part_visibility": [
+        { "*": false },
+        { "head": "variable.has_emissive_eyes" }
+
+      ]
     }
   }
 }
