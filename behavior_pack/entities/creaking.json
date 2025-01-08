@@ -37,6 +37,8 @@
       "minecraft:attack": {
         "damage": 3
       },
+      "minecraft:nameable": {
+      },
       "minecraft:physics": {
       },
       "minecraft:jump.static": {
@@ -64,8 +66,6 @@
 
     "component_groups": {
       "minecraft:spawned_by_player": {
-        "minecraft:nameable": {
-        },
         "minecraft:navigation.walk": {
           "can_path_over_water": true,
           "can_path_over_lava": false,
@@ -182,11 +182,18 @@
             {
               "filters": {
                 "all_of": [
-                  { "test": "enum_property", "domain": "minecraft:creaking_state", "operator": "not", "value": "twitching" },
+                  {
+                    "none_of": [
+                      { "test": "enum_property", "domain": "minecraft:creaking_state", "value": "twitching" },
+                      { "test": "has_nametag" }
+                    ]
+                  },
                   {
                     "any_of": [
                       { "test": "home_distance", "operator": ">", "value": 34 },
-                      { "test": "is_daytime" }
+                      // These values correspond to the rising and setting times of the moon, as in Dimension::isMoonVisible
+                      { "test": "hourly_clock_time", "operator": ">", "value": 23400 },
+                      { "test": "hourly_clock_time", "operator": "<=", "value": 12600 }
                     ]
                   }
                 ]
@@ -535,10 +542,16 @@
         "execute_event_on_home_block": {
           "event": "minecraft:on_spawned_creaking_damaged_by_player"
         },
-        "trigger": "minecraft:increment_swaying_ticks"
+        "trigger": "minecraft:increment_swaying_ticks",
+        "emit_vibration": {
+          "vibration": "entity_act"
+        }
       },
       "minecraft:damaged_by_entity": {
-        "trigger": "minecraft:increment_swaying_ticks"
+        "trigger": "minecraft:increment_swaying_ticks",
+        "emit_vibration": {
+          "vibration": "entity_act"
+        }
       },
       "minecraft:increment_swaying_ticks": {
         "set_property": {
