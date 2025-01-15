@@ -32,6 +32,34 @@
         "minecraft:behavior.melee_box_attack": {
           "priority": 2
         }
+      },
+      "minecraft:riding": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "is_riding", "subject": "self", "operator": "==", "value": false
+            },
+            "event": "minecraft:stopped_riding"
+          }
+        }
+      },
+      "minecraft:not_riding": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "is_riding", "subject": "self", "operator": "==", "value": true
+            },
+            "event": "minecraft:started_riding"
+          }
+        },
+        "minecraft:teleport": {
+          "random_teleports": true,
+          "max_random_teleport_time": 30,
+          "random_teleport_cube": [ 32, 32, 32 ],
+          "target_distance": 16,
+          "target_teleport_chance": 0.05,
+          "light_teleport_chance": 0.05
+        }
       }
     },
 
@@ -176,7 +204,8 @@
         },
         "add": {
           "component_groups": [
-            "minecraft:enderman_calm"
+            "minecraft:enderman_calm",
+            "minecraft:not_riding"
           ]
         }
       },
@@ -201,6 +230,30 @@
         "add": {
           "component_groups": [
             "minecraft:enderman_calm"
+          ]
+        }
+      },
+      "minecraft:stopped_riding": {
+        "add": {
+          "component_groups": [
+            "minecraft:not_riding"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:riding"
+          ]
+        }
+      },
+      "minecraft:started_riding": {
+        "add": {
+          "component_groups": [
+            "minecraft:riding"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:not_riding"
           ]
         }
       }
