@@ -2,29 +2,43 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "4012773087",
     "definitions": {
-        "1095951327": {
-            "title": "minecraft:enchantable v1.20.50",
-            "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+        "886176099": {
+            "title": "minecraft:cooldown v1.20.50",
+            "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
             "type": "object",
             "properties": {
-                "slot": {
-                    "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
+                "category": {
+                    "description": "The type of cool down for this item. All items with a cool down component with the same category are put on cool down when one is used.",
                     "type": "string"
                 },
-                "value": {
-                    "description": "Specifies the value of the enchantment (minimum of 0).",
-                    "type": "integer",
-                    "minimum": 0.0
+                "duration": {
+                    "description": "The duration of time (in seconds) items with a matching category will spend cooling down before becoming usable again.",
+                    "type": "number"
                 }
             },
             "required": [
-                "slot",
-                "value"
+                "category",
+                "duration"
             ]
         },
-        "1206516236": {
-            "title": "minecraft:glint v1.20.50",
-            "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+        "1658474219": {
+            "title": "minecraft:repairable v1.20.50",
+            "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
+            "type": "object",
+            "properties": {
+                "repair_items": {
+                    "title": "sequence container",
+                    "description": "List of repair item entries. Each entry needs to define a list of strings for `items` that can be used for the repair and an optional `repair_amount` for how much durability is gained.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/3256164975"
+                    }
+                }
+            }
+        },
+        "3389099981": {
+            "title": "minecraft:allow_off_hand v1.20.50",
+            "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
             "oneOf": [
                 {
                     "type": "boolean"
@@ -33,37 +47,85 @@
                     "type": "object",
                     "properties": {
                         "value": {
-                            "description": "Determines whether the item has the glint effect.",
+                            "description": "Determines whether the item can be placed in the off hand slot.",
                             "type": "boolean"
                         }
                     }
                 }
             ]
         },
-        "1398826300": {
-            "title": "struct SharedTypes::IntRange",
+        "2499855414": {
+            "title": "minecraft:digger v1.20.50",
+            "description": "Digger item component specifies how quickly this item can dig specific blocks.",
             "type": "object",
             "properties": {
-                "max": {
-                    "type": "integer"
+                "use_efficiency": {
+                    "description": "Determines whether this item should be impacted if the efficiency enchantment is applied to it.",
+                    "type": "boolean"
                 },
-                "min": {
-                    "type": "integer"
+                "destroy_speeds": {
+                    "title": "sequence container",
+                    "description": "A list of blocks to dig with correlating speeds of digging.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1899103179"
+                    }
                 }
             }
         },
-        "1531870811": {
-            "title": "struct SharedTypes::Legacy::ItemDescriptor",
+        "3246981949": {
+            "title": "minecraft:use_animation v1.20.50",
+            "description": "Use_animation specifies which animation is played when the player uses the item.",
             "oneOf": [
                 {
-                    "type": "string"
+                    "title": "enum SharedTypes::Legacy::UseAnimation",
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "eat",
+                        "drink",
+                        "block",
+                        "bow",
+                        "camera",
+                        "crossbow",
+                        "spear",
+                        "spyglass",
+                        "brush"
+                    ]
                 },
                 {
-                    "title": "associative container",
                     "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
+                    "properties": {
+                        "value": {
+                            "title": "enum SharedTypes::Legacy::UseAnimation",
+                            "description": "Specifies which animation to play when the the item is used.",
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "eat",
+                                "drink",
+                                "block",
+                                "bow",
+                                "camera",
+                                "crossbow",
+                                "spear",
+                                "spyglass",
+                                "brush"
+                            ]
+                        }
                     }
+                }
+            ]
+        },
+        "2794205495": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptor",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2770948419"
+                },
+                {
+                    "type": "string",
+                    "minLength": 1
                 }
             ]
         },
@@ -89,86 +151,54 @@
                 }
             ]
         },
-        "1658474219": {
-            "title": "minecraft:repairable v1.20.50",
-            "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
+        "857819254": {
+            "title": "minecraft:block_placer v1.21.40",
+            "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
             "type": "object",
             "properties": {
-                "repair_items": {
-                    "title": "sequence container",
-                    "description": "List of repair item entries. Each entry needs to define a list of strings for `items` that can be used for the repair and an optional `repair_amount` for how much durability is gained.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/3256164975"
-                    }
-                }
-            }
-        },
-        "1661309668": {
-            "title": "minecraft:hover_text_color v1.20.50",
-            "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
-            "oneOf": [
-                {
+                "block": {
+                    "description": "Defines the block that will be placed.",
                     "type": "string"
                 },
-                {
+                "use_on": {
+                    "title": "sequence container",
+                    "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2794205495"
+                    }
+                },
+                "replace_block_item": {
+                    "description": "If true, the item will be registered as the item for this block. This item will be returned by default when the block is broken/picked. Note: the identifier for this item must match the block's identifier for this field to be valid.",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "block"
+            ]
+        },
+        "2770948419": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "states": {
+                    "title": "associative container",
                     "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Specifies the color of the item's hover text.",
-                            "type": "string"
-                        }
+                    "additionalProperties": {
+                        "$ref": "#/definitions/517105782"
                     }
-                }
-            ]
-        },
-        "1754804474": {
-            "title": "minecraft:interact_button v1.20.50",
-            "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "string"
-                }
-            ]
-        },
-        "1873913113": {
-            "title": "minecraft:storage_item v1.21.60",
-            "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
-            "type": "object",
-            "properties": {
-                "allow_nested_storage_items": {
-                    "description": "Determines whether another Storage Item is allowed inside of this item. Default is true.",
-                    "type": "boolean"
-                },
-                "allowed_items": {
-                    "title": "sequence container",
-                    "description": "List of items that are exclusively allowed in this Storage Item. If empty all items are allowed.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/1531870811"
-                    }
-                },
-                "banned_items": {
-                    "title": "sequence container",
-                    "description": "List of items that are not allowed in this Storage Item.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/1531870811"
-                    }
-                },
-                "max_slots": {
-                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
-                    "type": "integer",
-                    "maximum": 64.0
                 }
             }
         },
-        "1889822164": {
-            "title": "minecraft:hand_equipped v1.20.50",
-            "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+        "3178615832": {
+            "title": "minecraft:stacked_by_data v1.20.50",
+            "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
             "oneOf": [
                 {
                     "type": "boolean"
@@ -177,119 +207,70 @@
                     "type": "object",
                     "properties": {
                         "value": {
-                            "description": "Determines whether the item is rendered like a tool while in the player's hand.",
+                            "description": "Determines whether the same item with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
                             "type": "boolean"
                         }
                     }
                 }
             ]
         },
-        "1899103179": {
-            "title": "struct SharedTypes::v1_20_50::DiggerItemComponent::BlockInfo",
-            "type": "object",
-            "properties": {
-                "block": {
-                    "description": "Block to be dug.",
-                    "$ref": "#/definitions/2794205495"
-                },
-                "speed": {
-                    "description": "Digging speed for the correlating block(s).",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "block",
-                "speed"
-            ]
-        },
-        "1956551060": {
-            "title": "minecraft:durability_sensor v1.21.10",
-            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
-            "type": "object",
-            "properties": {
-                "durability_thresholds": {
-                    "title": "sequence container",
-                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
-                    "type": "array",
-                    "items": {
-                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
-                        "$ref": "#/definitions/764203503"
-                    },
-                    "minItems": 1
-                }
-            },
-            "required": [
-                "durability_thresholds"
-            ]
-        },
-        "2041267453": {
-            "title": "minecraft:wearable v1.20.50",
-            "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
-            "type": "object",
-            "properties": {
-                "protection": {
-                    "description": "How much protection the wearable item provides. Default is set to 0.",
-                    "type": "integer",
-                    "minimum": 0.0
-                },
-                "slot": {
-                    "title": "enum SharedTypes::Legacy::EquipmentSlot",
-                    "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
-                    "type": "string",
-                    "enum": [
-                        "slot.weapon.offhand",
-                        "slot.armor.head",
-                        "slot.armor.chest",
-                        "slot.armor.legs",
-                        "slot.armor.feet"
-                    ]
-                }
-            },
-            "required": [
-                "slot"
-            ]
-        },
-        "2063418195": {
-            "title": "minecraft:damage_absorption v1.21.10",
-            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
-            "type": "object",
-            "properties": {
-                "absorbable_causes": {
-                    "title": "sequence container",
-                    "description": "List of damage causes that can be absorbed by the item. By default, no damage cause is absorbed.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "minItems": 1
-                }
-            },
-            "required": [
-                "absorbable_causes"
-            ]
-        },
-        "2267778531": {
-            "title": "struct SharedTypes::Legacy::ExpressionNode::StringRepresentation",
+        "517105782": {
+            "title": "compound_proxy",
             "oneOf": [
+                {
+                    "type": "integer"
+                },
                 {
                     "type": "string"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "expression": {
-                            "type": "string"
-                        },
-                        "version": {
-                            "type": "integer"
-                        }
-                    },
-                    "required": [
-                        "expression",
-                        "version"
-                    ]
+                    "type": "boolean"
                 }
             ]
+        },
+        "3126701690": {
+            "title": "minecraft:can_destroy_in_creative v1.20.50",
+            "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item can be used to destroy blocks while in creative mode.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3168558347": {
+            "title": "minecraft:tags v1.20.50",
+            "description": "The tags component specifies which tags an item has on it.",
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "title": "sequence container",
+                    "description": "An array that can contain multiple item tags.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "2942400907": {
+            "title": "minecraft:display_name v1.20.50",
+            "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+            "type": "object",
+            "properties": {
+                "value": {
+                    "description": "Name shown for an item.",
+                    "type": "string"
+                }
+            }
         },
         "2333685719": {
             "title": "minecraft:bundle_interaction v1.21.30",
@@ -304,9 +285,29 @@
                 }
             }
         },
-        "2359991381": {
-            "title": "minecraft:liquid_clipped v1.20.50",
-            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+        "608914689": {
+            "title": "minecraft:projectile v1.20.50",
+            "description": "Projectile items shoot out, like an arrow.",
+            "type": "object",
+            "properties": {
+                "minimum_critical_power": {
+                    "description": "Specifies how long a player must charge a projectile for it to critically hit.",
+                    "type": "number"
+                },
+                "projectile_entity": {
+                    "description": "Which entity is to be fired as a projectile.",
+                    "type": "string",
+                    "minLength": 0,
+                    "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                }
+            },
+            "required": [
+                "projectile_entity"
+            ]
+        },
+        "3875281249": {
+            "title": "minecraft:should_despawn v1.20.50",
+            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
             "oneOf": [
                 {
                     "type": "boolean"
@@ -315,111 +316,59 @@
                     "type": "object",
                     "properties": {
                         "value": {
-                            "description": "Deterines whether the item interacts with liquid blocks on use.",
+                            "description": "Determines whether the item should eventually despawn while floating in the world.",
                             "type": "boolean"
                         }
                     }
                 }
             ]
         },
-        "2499855414": {
-            "title": "minecraft:digger v1.20.50",
-            "description": "Digger item component specifies how quickly this item can dig specific blocks.",
+        "3133202100": {
+            "title": "minecraft:compostable v1.21.50",
+            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
             "type": "object",
             "properties": {
-                "destroy_speeds": {
-                    "title": "sequence container",
-                    "description": "A list of blocks to dig with correlating speeds of digging.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/1899103179"
-                    }
-                },
-                "use_efficiency": {
-                    "description": "Determines whether this item should be impacted if the efficiency enchantment is applied to it.",
-                    "type": "boolean"
-                }
-            }
-        },
-        "268086052": {
-            "title": "minecraft:food v1.20.50",
-            "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
-            "type": "object",
-            "properties": {
-                "can_always_eat": {
-                    "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
-                    "type": "boolean"
-                },
-                "nutrition": {
-                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
-                    "type": "integer"
-                },
-                "saturation_modifier": {
-                    "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
-                    "type": "number",
-                    "minimum": 0.0
-                },
-                "using_converts_to": {
-                    "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
-                    "$ref": "#/definitions/1531870811"
-                }
-            }
-        },
-        "2681068491": {
-            "title": "struct SharedTypes::v1_20_50::ShooterItemComponent::Ammunition",
-            "type": "object",
-            "properties": {
-                "item": {
-                    "description": "Ammunition item description identifier.",
-                    "$ref": "#/definitions/1531870811"
-                },
-                "search_inventory": {
-                    "description": "Can search inventory? Default is set to false.",
-                    "type": "boolean"
-                },
-                "use_in_creative": {
-                    "description": "Can use in creative mode? Default is set to false.",
-                    "type": "boolean"
-                },
-                "use_offhand": {
-                    "description": "Can use off-hand? Default is set to false.",
-                    "type": "boolean"
+                "composting_chance": {
+                    "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 100.0
                 }
             },
             "required": [
-                "item"
+                "composting_chance"
             ]
         },
-        "2770948419": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+        "3494639353": {
+            "title": "minecraft:durability v1.20.50",
+            "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
+                "max_durability": {
+                    "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
+                    "type": "integer",
+                    "minimum": 0.0
                 },
-                "states": {
-                    "title": "associative container",
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/517105782"
-                    }
+                "damage_chance": {
+                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
+                    "$ref": "#/definitions/1398826300"
+                }
+            },
+            "required": [
+                "max_durability"
+            ]
+        },
+        "1398826300": {
+            "title": "struct SharedTypes::IntRange",
+            "type": "object",
+            "properties": {
+                "min": {
+                    "type": "integer"
                 },
-                "tags": {
-                    "type": "string"
+                "max": {
+                    "type": "integer"
                 }
             }
-        },
-        "2794205495": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptor",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/2770948419"
-                },
-                {
-                    "type": "string",
-                    "minLength": 1
-                }
-            ]
         },
         "2817495317": {
             "title": "minecraft:max_stack_size v1.20.50",
@@ -443,30 +392,137 @@
                 }
             ]
         },
-        "2942400907": {
-            "title": "minecraft:display_name v1.20.50",
-            "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+        "842194090": {
+            "title": "minecraft:storage_weight_modifier v1.21.60",
+            "description": "Specifies the maximum weight limit that a storage item can hold",
             "type": "object",
             "properties": {
-                "value": {
-                    "description": "Name shown for an item.",
-                    "type": "string"
+                "weight_in_storage_item": {
+                    "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
+                    "type": "integer",
+                    "minimum": 0.0
                 }
             }
+        },
+        "1889822164": {
+            "title": "minecraft:hand_equipped v1.20.50",
+            "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item is rendered like a tool while in the player's hand.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3308324084": {
+            "title": "minecraft:fuel v1.20.50",
+            "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
+            "oneOf": [
+                {
+                    "type": "number",
+                    "minimum": 0.05000000074505806
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "duration": {
+                            "description": "Amount of time, in seconds, this fuel will cook items.",
+                            "type": "number",
+                            "minimum": 0.05000000074505806
+                        }
+                    }
+                }
+            ]
+        },
+        "2063418195": {
+            "title": "minecraft:damage_absorption v1.21.10",
+            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "absorbable_causes": {
+                    "title": "sequence container",
+                    "description": "List of damage causes that can be absorbed by the item. By default, no damage cause is absorbed.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "absorbable_causes"
+            ]
+        },
+        "268086052": {
+            "title": "minecraft:food v1.20.50",
+            "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+            "type": "object",
+            "properties": {
+                "nutrition": {
+                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
+                    "type": "integer"
+                },
+                "saturation_modifier": {
+                    "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
+                    "type": "number",
+                    "minimum": 0.0
+                },
+                "can_always_eat": {
+                    "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
+                    "type": "boolean"
+                },
+                "using_converts_to": {
+                    "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
+                    "$ref": "#/definitions/1531870811"
+                }
+            }
+        },
+        "435751873": {
+            "title": "minecraft:use_modifiers v1.20.50",
+            "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
+            "type": "object",
+            "properties": {
+                "use_duration": {
+                    "description": "How long the item takes to use in seconds.",
+                    "type": "number",
+                    "minimum": 0.0
+                },
+                "movement_modifier": {
+                    "description": "Modifier value to scale the players movement speed when item is in use.",
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0
+                }
+            }
+        },
+        "1531870811": {
+            "title": "struct SharedTypes::Legacy::ItemDescriptor",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "title": "associative container",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            ]
         },
         "3053237679": {
             "title": "minecraft:record v1.20.50",
             "description": "Record Item Component. Used by record items to play music.",
             "type": "object",
             "properties": {
-                "comparator_signal": {
-                    "description": "Specifies signal strength for comparator blocks to use, from 1 - 13.",
-                    "type": "integer"
-                },
-                "duration": {
-                    "description": "Specifies duration of sound event in seconds, float value.",
-                    "type": "number"
-                },
                 "sound_event": {
                     "title": "enum SharedTypes::Legacy::LevelSoundEvent",
                     "description": "Sound event type: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, pigstep, otherside, 5, relic.",
@@ -974,56 +1030,67 @@
                         "close_long",
                         "undefined"
                     ]
+                },
+                "duration": {
+                    "description": "Specifies duration of sound event in seconds, float value.",
+                    "type": "number"
+                },
+                "comparator_signal": {
+                    "description": "Specifies signal strength for comparator blocks to use, from 1 - 13.",
+                    "type": "integer"
                 }
             }
         },
-        "3126701690": {
-            "title": "minecraft:can_destroy_in_creative v1.20.50",
-            "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+        "2681068491": {
+            "title": "struct SharedTypes::v1_20_50::ShooterItemComponent::Ammunition",
+            "type": "object",
+            "properties": {
+                "item": {
+                    "description": "Ammunition item description identifier.",
+                    "$ref": "#/definitions/1531870811"
+                },
+                "search_inventory": {
+                    "description": "Can search inventory? Default is set to false.",
+                    "type": "boolean"
+                },
+                "use_in_creative": {
+                    "description": "Can use in creative mode? Default is set to false.",
+                    "type": "boolean"
+                },
+                "use_offhand": {
+                    "description": "Can use off-hand? Default is set to false.",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "item"
+            ]
+        },
+        "3375297728": {
+            "title": "minecraft:rarity v1.21.30",
+            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
             "oneOf": [
                 {
-                    "type": "boolean"
+                    "type": "string"
                 },
                 {
                     "type": "object",
                     "properties": {
                         "value": {
-                            "description": "Determines whether the item can be used to destroy blocks while in creative mode.",
-                            "type": "boolean"
+                            "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
+                            "type": "string"
                         }
                     }
                 }
             ]
         },
-        "3133202100": {
-            "title": "minecraft:compostable v1.21.50",
-            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
-            "type": "object",
-            "properties": {
-                "composting_chance": {
-                    "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
-                    "type": "integer",
-                    "minimum": 1.0,
-                    "maximum": 100.0
-                }
-            },
-            "required": [
-                "composting_chance"
-            ]
-        },
-        "3168558347": {
-            "title": "minecraft:tags v1.20.50",
-            "description": "The tags component specifies which tags an item has on it.",
-            "type": "object",
-            "properties": {
-                "tags": {
-                    "title": "sequence container",
-                    "description": "An array that can contain multiple item tags.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
+        "4150838471": {
+            "title": "minecraft:custom_components v1.21.60",
+            "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$"
             }
         },
         "3173009623": {
@@ -1046,78 +1113,54 @@
                 }
             ]
         },
-        "3178615832": {
-            "title": "minecraft:stacked_by_data v1.20.50",
-            "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
-            "oneOf": [
-                {
+        "1899103179": {
+            "title": "struct SharedTypes::v1_20_50::DiggerItemComponent::BlockInfo",
+            "type": "object",
+            "properties": {
+                "block": {
+                    "description": "Block to be dug.",
+                    "$ref": "#/definitions/2794205495"
+                },
+                "speed": {
+                    "description": "Digging speed for the correlating block(s).",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "block",
+                "speed"
+            ]
+        },
+        "3715727616": {
+            "title": "minecraft:throwable v1.20.50",
+            "description": "Throwable items can be thrown by the player, such as a snowball.",
+            "type": "object",
+            "properties": {
+                "do_swing_animation": {
+                    "description": "Determines whether the item should use the swing animation when thrown. Default is set to false.",
                     "type": "boolean"
                 },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Determines whether the same item with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
-                            "type": "boolean"
-                        }
-                    }
-                }
-            ]
-        },
-        "3178719147": {
-            "title": "struct SharedTypes::Legacy::ExpressionNode",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/2267778531"
+                "min_draw_duration": {
+                    "description": "The minimum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
                 },
-                {
+                "max_draw_duration": {
+                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
+                },
+                "scale_power_by_draw_duration": {
+                    "description": "Whether or not the power of the throw increases with duration charged. Default is set to false.",
+                    "type": "boolean"
+                },
+                "launch_power_scale": {
+                    "description": "The scale at which the power of the throw increases. Default is set to 1.0.",
+                    "type": "number"
+                },
+                "max_launch_power": {
+                    "description": "The maximum power to launch the throwable item. Default is set to 1.0.",
                     "type": "number"
                 }
-            ]
-        },
-        "3246981949": {
-            "title": "minecraft:use_animation v1.20.50",
-            "description": "Use_animation specifies which animation is played when the player uses the item.",
-            "oneOf": [
-                {
-                    "title": "enum SharedTypes::Legacy::UseAnimation",
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "eat",
-                        "drink",
-                        "block",
-                        "bow",
-                        "camera",
-                        "crossbow",
-                        "spear",
-                        "spyglass",
-                        "brush"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "title": "enum SharedTypes::Legacy::UseAnimation",
-                            "description": "Specifies which animation to play when the the item is used.",
-                            "type": "string",
-                            "enum": [
-                                "none",
-                                "eat",
-                                "drink",
-                                "block",
-                                "bow",
-                                "camera",
-                                "crossbow",
-                                "spear",
-                                "spyglass",
-                                "brush"
-                            ]
-                        }
-                    }
-                }
-            ]
+            }
         },
         "3256164975": {
             "title": "struct SharedTypes::v1_20_50::RepairableItemComponent::RepairItemEntry",
@@ -1151,258 +1194,98 @@
                 }
             ]
         },
-        "3308324084": {
-            "title": "minecraft:fuel v1.20.50",
-            "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
-            "oneOf": [
-                {
-                    "type": "number",
-                    "minimum": 0.05000000074505806
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "duration": {
-                            "description": "Amount of time, in seconds, this fuel will cook items.",
-                            "type": "number",
-                            "minimum": 0.05000000074505806
-                        }
-                    }
-                }
-            ]
-        },
-        "3375297728": {
-            "title": "minecraft:rarity v1.21.30",
-            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
-                            "type": "string"
-                        }
-                    }
-                }
-            ]
-        },
-        "3389099981": {
-            "title": "minecraft:allow_off_hand v1.20.50",
-            "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Determines whether the item can be placed in the off hand slot.",
-                            "type": "boolean"
-                        }
-                    }
-                }
-            ]
-        },
-        "34598326": {
-            "title": "minecraft:storage_weight_limit v1.21.60",
-            "description": "Specifies the maximum weight limit that a storage item can hold",
+        "853889472": {
+            "title": "minecraft:entity_placer v1.20.50",
+            "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
             "type": "object",
             "properties": {
-                "max_weight_limit": {
-                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
-                    "type": "integer",
-                    "maximum": 64.0
-                }
-            }
-        },
-        "3494639353": {
-            "title": "minecraft:durability v1.20.50",
-            "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
-            "type": "object",
-            "properties": {
-                "damage_chance": {
-                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
-                    "$ref": "#/definitions/1398826300"
-                },
-                "max_durability": {
-                    "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
-                    "type": "integer",
-                    "minimum": 0.0
-                }
-            },
-            "required": [
-                "max_durability"
-            ]
-        },
-        "3602397325": {
-            "title": "minecraft:dyeable v1.21.30",
-            "type": "object",
-            "properties": {
-                "default_color": {
-                    "$ref": "#/definitions/3915697282"
-                }
-            }
-        },
-        "3715727616": {
-            "title": "minecraft:throwable v1.20.50",
-            "description": "Throwable items can be thrown by the player, such as a snowball.",
-            "type": "object",
-            "properties": {
-                "do_swing_animation": {
-                    "description": "Determines whether the item should use the swing animation when thrown. Default is set to false.",
-                    "type": "boolean"
-                },
-                "launch_power_scale": {
-                    "description": "The scale at which the power of the throw increases. Default is set to 1.0.",
-                    "type": "number"
-                },
-                "max_draw_duration": {
-                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
-                    "type": "number"
-                },
-                "max_launch_power": {
-                    "description": "The maximum power to launch the throwable item. Default is set to 1.0.",
-                    "type": "number"
-                },
-                "min_draw_duration": {
-                    "description": "The minimum duration to draw a throwable item. Default is set to 0.0.",
-                    "type": "number"
-                },
-                "scale_power_by_draw_duration": {
-                    "description": "Whether or not the power of the throw increases with duration charged. Default is set to false.",
-                    "type": "boolean"
-                }
-            }
-        },
-        "3781185164": {
-            "title": "minecraft:shooter v1.20.50",
-            "description": "Shooter Item Component.",
-            "type": "object",
-            "properties": {
-                "ammunition": {
-                    "title": "sequence container",
-                    "description": "Ammunition.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/2681068491"
-                    }
-                },
-                "charge_on_draw": {
-                    "description": "Charge on draw? Default is set to false.",
-                    "type": "boolean"
-                },
-                "max_draw_duration": {
-                    "description": "Draw Duration. Default is set to 0.",
-                    "type": "number"
-                },
-                "scale_power_by_draw_duration": {
-                    "description": "Scale power by draw duration? Default is set to false.",
-                    "type": "boolean"
-                }
-            }
-        },
-        "3875281249": {
-            "title": "minecraft:should_despawn v1.20.50",
-            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Determines whether the item should eventually despawn while floating in the world.",
-                            "type": "boolean"
-                        }
-                    }
-                }
-            ]
-        },
-        "3915697282": {
-            "title": "Color255RGB",
-            "oneOf": [
-                {
-                    "type": "string",
-                    "pattern": "^#[a-fA-F0-9]{6}$"
-                },
-                {
-                    "title": "sequence container",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                }
-            ],
-            "$metaProperties": {
-                "CEREAL_EDITOR_SCHEMA_TAG": "[editor(type:color)]"
-            }
-        },
-        "4150838471": {
-            "title": "minecraft:custom_components v1.21.60",
-            "description": "Specifies an array of custom components defined in a script that should be added to this item.",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$"
-            }
-        },
-        "435751873": {
-            "title": "minecraft:use_modifiers v1.20.50",
-            "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
-            "type": "object",
-            "properties": {
-                "movement_modifier": {
-                    "description": "Modifier value to scale the players movement speed when item is in use.",
-                    "type": "number",
-                    "minimum": 0.0,
-                    "maximum": 1.0
-                },
-                "use_duration": {
-                    "description": "How long the item takes to use in seconds.",
-                    "type": "number",
-                    "minimum": 0.0
-                }
-            }
-        },
-        "517105782": {
-            "title": "compound_proxy",
-            "oneOf": [
-                {
-                    "type": "integer"
-                },
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "boolean"
-                }
-            ]
-        },
-        "608914689": {
-            "title": "minecraft:projectile v1.20.50",
-            "description": "Projectile items shoot out, like an arrow.",
-            "type": "object",
-            "properties": {
-                "minimum_critical_power": {
-                    "description": "Specifies how long a player must charge a projectile for it to critically hit.",
-                    "type": "number"
-                },
-                "projectile_entity": {
-                    "description": "Which entity is to be fired as a projectile.",
+                "entity": {
+                    "description": "The entity to be placed in the world.",
                     "type": "string",
                     "minLength": 0,
                     "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                },
+                "dispense_on": {
+                    "title": "sequence container",
+                    "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2794205495"
+                    }
+                },
+                "use_on": {
+                    "title": "sequence container",
+                    "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2794205495"
+                    }
+                }
+            }
+        },
+        "2359991381": {
+            "title": "minecraft:liquid_clipped v1.20.50",
+            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Deterines whether the item interacts with liquid blocks on use.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1956551060": {
+            "title": "minecraft:durability_sensor v1.21.10",
+            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "durability_thresholds": {
+                    "title": "sequence container",
+                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
+                    "type": "array",
+                    "items": {
+                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
+                        "$ref": "#/definitions/764203503"
+                    },
+                    "minItems": 1
                 }
             },
             "required": [
-                "projectile_entity"
+                "durability_thresholds"
+            ]
+        },
+        "2041267453": {
+            "title": "minecraft:wearable v1.20.50",
+            "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
+            "type": "object",
+            "properties": {
+                "slot": {
+                    "title": "enum SharedTypes::Legacy::EquipmentSlot",
+                    "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
+                    "type": "string",
+                    "enum": [
+                        "slot.weapon.offhand",
+                        "slot.armor.head",
+                        "slot.armor.chest",
+                        "slot.armor.legs",
+                        "slot.armor.feet"
+                    ]
+                },
+                "protection": {
+                    "description": "How much protection the wearable item provides. Default is set to 0.",
+                    "type": "integer",
+                    "minimum": 0.0
+                }
+            },
+            "required": [
+                "slot"
             ]
         },
         "764203503": {
@@ -2020,140 +1903,277 @@
                 }
             }
         },
-        "842194090": {
-            "title": "minecraft:storage_weight_modifier v1.21.60",
+        "3602397325": {
+            "title": "minecraft:dyeable v1.21.30",
+            "type": "object",
+            "properties": {
+                "default_color": {
+                    "$ref": "#/definitions/3915697282"
+                }
+            }
+        },
+        "1661309668": {
+            "title": "minecraft:hover_text_color v1.20.50",
+            "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Specifies the color of the item's hover text.",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "3915697282": {
+            "title": "Color255RGB",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                    "title": "sequence container",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            ],
+            "$metaProperties": {
+                "CEREAL_EDITOR_SCHEMA_TAG": "[editor(type:color)]"
+            }
+        },
+        "1095951327": {
+            "title": "minecraft:enchantable v1.20.50",
+            "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+            "type": "object",
+            "properties": {
+                "value": {
+                    "description": "Specifies the value of the enchantment (minimum of 0).",
+                    "type": "integer",
+                    "minimum": 0.0
+                },
+                "slot": {
+                    "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "value",
+                "slot"
+            ]
+        },
+        "2267778531": {
+            "title": "struct SharedTypes::Legacy::ExpressionNode::StringRepresentation",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "expression": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "expression",
+                        "version"
+                    ]
+                }
+            ]
+        },
+        "1206516236": {
+            "title": "minecraft:glint v1.20.50",
+            "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item has the glint effect.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1754804474": {
+            "title": "minecraft:interact_button v1.20.50",
+            "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "3178719147": {
+            "title": "struct SharedTypes::Legacy::ExpressionNode",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2267778531"
+                },
+                {
+                    "type": "number"
+                }
+            ]
+        },
+        "34598326": {
+            "title": "minecraft:storage_weight_limit v1.21.60",
             "description": "Specifies the maximum weight limit that a storage item can hold",
             "type": "object",
             "properties": {
-                "weight_in_storage_item": {
-                    "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
+                "max_weight_limit": {
+                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
                     "type": "integer",
-                    "minimum": 0.0
+                    "maximum": 64.0
                 }
             }
         },
-        "853889472": {
-            "title": "minecraft:entity_placer v1.20.50",
-            "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
+        "3781185164": {
+            "title": "minecraft:shooter v1.20.50",
+            "description": "Shooter Item Component.",
             "type": "object",
             "properties": {
-                "dispense_on": {
+                "ammunition": {
                     "title": "sequence container",
-                    "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
+                    "description": "Ammunition.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/2794205495"
+                        "$ref": "#/definitions/2681068491"
                     }
                 },
-                "entity": {
-                    "description": "The entity to be placed in the world.",
-                    "type": "string",
-                    "minLength": 0,
-                    "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                "max_draw_duration": {
+                    "description": "Draw Duration. Default is set to 0.",
+                    "type": "number"
                 },
-                "use_on": {
-                    "title": "sequence container",
-                    "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/2794205495"
-                    }
-                }
-            }
-        },
-        "857819254": {
-            "title": "minecraft:block_placer v1.21.40",
-            "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
-            "type": "object",
-            "properties": {
-                "block": {
-                    "description": "Defines the block that will be placed.",
-                    "type": "string"
-                },
-                "replace_block_item": {
-                    "description": "If true, the item will be registered as the item for this block. This item will be returned by default when the block is broken/picked. Note: the identifier for this item must match the block's identifier for this field to be valid.",
+                "scale_power_by_draw_duration": {
+                    "description": "Scale power by draw duration? Default is set to false.",
                     "type": "boolean"
                 },
-                "use_on": {
-                    "title": "sequence container",
-                    "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/2794205495"
-                    }
+                "charge_on_draw": {
+                    "description": "Charge on draw? Default is set to false.",
+                    "type": "boolean"
                 }
-            },
-            "required": [
-                "block"
-            ]
+            }
         },
-        "886176099": {
-            "title": "minecraft:cooldown v1.20.50",
-            "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
+        "1873913113": {
+            "title": "minecraft:storage_item v1.21.60",
+            "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
             "type": "object",
             "properties": {
-                "category": {
-                    "description": "The type of cool down for this item. All items with a cool down component with the same category are put on cool down when one is used.",
-                    "type": "string"
+                "max_slots": {
+                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
+                    "type": "integer",
+                    "maximum": 64.0
                 },
-                "duration": {
-                    "description": "The duration of time (in seconds) items with a matching category will spend cooling down before becoming usable again.",
-                    "type": "number"
+                "allow_nested_storage_items": {
+                    "description": "Determines whether another Storage Item is allowed inside of this item. Default is true.",
+                    "type": "boolean"
+                },
+                "banned_items": {
+                    "title": "sequence container",
+                    "description": "List of items that are not allowed in this Storage Item.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1531870811"
+                    }
+                },
+                "allowed_items": {
+                    "title": "sequence container",
+                    "description": "List of items that are exclusively allowed in this Storage Item. If empty all items are allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1531870811"
+                    }
                 }
-            },
-            "required": [
-                "category",
-                "duration"
-            ]
+            }
         }
     },
     "title": "components v1.21.60",
     "description": "List of all components used in this item.",
     "type": "object",
     "properties": {
+        "minecraft:tags": {
+            "description": "The tags component specifies which tags an item has on it.",
+            "$ref": "#/definitions/3168558347"
+        },
         "minecraft:allow_off_hand": {
             "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
             "$ref": "#/definitions/3389099981"
-        },
-        "minecraft:block_placer": {
-            "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
-            "$ref": "#/definitions/857819254"
-        },
-        "minecraft:bundle_interaction": {
-            "description": "[EXPERIMENTAL] Adds bundle-specific interactions and tooltip to the item. Requires a \"minecraft:storage_item\" component.",
-            "$ref": "#/definitions/2333685719"
         },
         "minecraft:can_destroy_in_creative": {
             "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
             "$ref": "#/definitions/3126701690"
         },
-        "minecraft:compostable": {
-            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
-            "$ref": "#/definitions/3133202100"
-        },
         "minecraft:cooldown": {
             "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
             "$ref": "#/definitions/886176099"
+        },
+        "minecraft:rarity": {
+            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
+            "$ref": "#/definitions/3375297728"
+        },
+        "minecraft:max_stack_size": {
+            "description": "The max_stack_size component specifies how many of the item can be stacked together.",
+            "$ref": "#/definitions/2817495317"
+        },
+        "minecraft:bundle_interaction": {
+            "description": "[EXPERIMENTAL] Adds bundle-specific interactions and tooltip to the item. Requires a \"minecraft:storage_item\" component.",
+            "$ref": "#/definitions/2333685719"
+        },
+        "minecraft:compostable": {
+            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
+            "$ref": "#/definitions/3133202100"
         },
         "minecraft:custom_components": {
             "description": "Specifies an array of custom components defined in a script that should be added to this item.",
             "$ref": "#/definitions/4150838471"
         },
+        "minecraft:damage_absorption": {
+            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
+            "$ref": "#/definitions/2063418195"
+        },
         "minecraft:damage": {
             "description": "The damage component determines how much extra damage the item does on attack.",
             "$ref": "#/definitions/3173009623"
         },
-        "minecraft:damage_absorption": {
-            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
-            "$ref": "#/definitions/2063418195"
+        "minecraft:record": {
+            "description": "Record Item Component. Used by record items to play music.",
+            "$ref": "#/definitions/3053237679"
         },
         "minecraft:digger": {
             "description": "Digger item component specifies how quickly this item can dig specific blocks.",
             "$ref": "#/definitions/2499855414"
         },
+        "minecraft:use_animation": {
+            "description": "Use_animation specifies which animation is played when the player uses the item.",
+            "$ref": "#/definitions/3246981949"
+        },
         "minecraft:display_name": {
             "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
             "$ref": "#/definitions/2942400907"
+        },
+        "minecraft:throwable": {
+            "description": "Throwable items can be thrown by the player, such as a snowball.",
+            "$ref": "#/definitions/3715727616"
         },
         "minecraft:durability": {
             "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
@@ -2162,6 +2182,10 @@
         "minecraft:durability_sensor": {
             "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
             "$ref": "#/definitions/1956551060"
+        },
+        "minecraft:should_despawn": {
+            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+            "$ref": "#/definitions/3875281249"
         },
         "minecraft:dyeable": {
             "$ref": "#/definitions/3602397325"
@@ -2206,21 +2230,13 @@
             "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
             "$ref": "#/definitions/2359991381"
         },
-        "minecraft:max_stack_size": {
-            "description": "The max_stack_size component specifies how many of the item can be stacked together.",
-            "$ref": "#/definitions/2817495317"
+        "minecraft:block_placer": {
+            "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
+            "$ref": "#/definitions/857819254"
         },
         "minecraft:projectile": {
             "description": "Projectile items shoot out, like an arrow.",
             "$ref": "#/definitions/608914689"
-        },
-        "minecraft:rarity": {
-            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
-            "$ref": "#/definitions/3375297728"
-        },
-        "minecraft:record": {
-            "description": "Record Item Component. Used by record items to play music.",
-            "$ref": "#/definitions/3053237679"
         },
         "minecraft:repairable": {
             "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
@@ -2229,10 +2245,6 @@
         "minecraft:shooter": {
             "description": "Shooter Item Component.",
             "$ref": "#/definitions/3781185164"
-        },
-        "minecraft:should_despawn": {
-            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
-            "$ref": "#/definitions/3875281249"
         },
         "minecraft:stacked_by_data": {
             "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
@@ -2249,18 +2261,6 @@
         "minecraft:storage_weight_modifier": {
             "description": "Specifies the maximum weight limit that a storage item can hold",
             "$ref": "#/definitions/842194090"
-        },
-        "minecraft:tags": {
-            "description": "The tags component specifies which tags an item has on it.",
-            "$ref": "#/definitions/3168558347"
-        },
-        "minecraft:throwable": {
-            "description": "Throwable items can be thrown by the player, such as a snowball.",
-            "$ref": "#/definitions/3715727616"
-        },
-        "minecraft:use_animation": {
-            "description": "Use_animation specifies which animation is played when the player uses the item.",
-            "$ref": "#/definitions/3246981949"
         },
         "minecraft:use_modifiers": {
             "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",

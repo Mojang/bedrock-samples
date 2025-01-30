@@ -1127,18 +1127,12 @@
     "disable_anim_fast_forward": true
   },
 
-  "failure_text_wait_animation": {
-    "anim_type": "wait",
-    "$failure_timeout|default": 5.0,
-    "duration": "$failure_timeout",
-    "next": "@common_store.failure_text_alpha_animation"
-  },
-
   "failure_text_alpha_animation": {
     "anim_type": "alpha",
     "easing": "linear",
     "from": 0,
-    "to": 1
+    "to": 1,
+    "play_event": "anim_store_base_error_visible_start"
   },
 
   "error_image_animation": {
@@ -1176,12 +1170,19 @@
       {
         "progress_loading_outline@common_store.banner_fill": {
           "ignored": "$hide_failure_text",
-          "visible": "(not $hide_failure_text) or (not $hide_progress_loading_outline)",
           "size": [ "100%sm + 8px", "100%" ],
           "layer": 1,
           "alpha": 0,
           "anims": [
-            "@common_store.failure_text_wait_animation"
+            "@common_store.failure_text_alpha_animation"
+          ],
+          "visible": "#store_error_visible or (not $hide_progress_loading_outline)",
+          "bindings": [
+            {
+              "binding_name": "#store_error_visible",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
+            }
           ]
         }
       },
@@ -1215,7 +1216,7 @@
                             "texture": "textures/ui/ErrorGlyph",
                             "alpha": 0,
                             "anims": [
-                              "@common_store.failure_text_wait_animation"
+                              "@common_store.failure_text_alpha_animation"
                             ]
                           }
                         }
@@ -1240,7 +1241,7 @@
                       "text": "#store_failure_text",
                       "alpha": 0,
                       "anims": [
-                        "@common_store.failure_text_wait_animation"
+                        "@common_store.failure_text_alpha_animation"
                       ],
                       "bindings": [
                         {
@@ -1267,7 +1268,7 @@
                 "anchor_to": "bottom_middle",
                 "anchor_from": "bottom_middle",
                 "anims": [
-                  "@common_store.failure_text_wait_animation"
+                  "@common_store.failure_text_alpha_animation"
                 ],
                 "uv_size": [ 194, 80 ],
                 "uv": "@common_store.error_image_animation",
@@ -1279,6 +1280,14 @@
                   }
                 ]
               }
+            }
+          ],
+          "visible": "#store_error_visible",
+          "bindings": [
+            {
+              "binding_name": "#store_error_visible",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
             }
           ]
         }
@@ -1296,12 +1305,18 @@
           "offset": [ 1, 2 ],
           "text": "#store_failure_code",
           "alpha": 0,
+          "visible": "#store_error_visible",
           "anims": [
-            "@common_store.failure_text_wait_animation"
+            "@common_store.failure_text_alpha_animation"
           ],
           "bindings": [
             {
               "binding_name": "#store_failure_code"
+            },
+            {
+              "binding_name": "#store_error_visible",
+              "binding_name_override": "#visible",
+              "binding_condition": "always"
             }
           ]
         }
@@ -8447,7 +8462,6 @@
           ],
           "bindings": [
             {
-              "ignored": "(not $is_persona_sdl_enabled)",
               "binding_type": "$store_factory_binding_type",
               "binding_collection_name": "$store_factory_collection_name",
               "binding_name": "#sdl_dropdown_data_row_visible",
