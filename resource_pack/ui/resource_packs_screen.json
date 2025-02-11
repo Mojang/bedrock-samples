@@ -15,6 +15,12 @@
     "texture": "textures/ui/Gray"
   }, //pack buttons background
 
+  "yellow_image": {
+    "type": "image",
+    "texture": "textures/ui/White",
+    "color": [ 1.0, 0.9098, 0.4 ]
+  }, //addons warning background
+
   "white_image": {
     "type": "panel",
     "$glyph_color|default": [ 1.0, 1.0, 1.0 ],
@@ -2760,12 +2766,98 @@
     ]
   }, //checkbox text at top of page for realms only
 
+  "addon_header_control": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "layer": 3,
+    "$black_color": [ 0.0, 0.0, 0.0 ],
+
+    "controls": [
+      {
+        "header_description_stack_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            {
+              "padding_0": {
+                "type": "panel",
+                "size": [ "fill", "100%" ]
+              }
+            },
+            {
+              "description_center_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  {
+                    "label": {
+                      "type": "label",
+                      "text": "resourcePack.warning.multiple.addon",
+                      "color": "$black_color"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "padding_1": {
+                "type": "panel",
+                "size": [ 2, "100%" ]
+              }
+            },
+            {
+              "link_center_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  {
+                    "addon_link_button@common_buttons.underline_button": {
+                      "size": [ "100%c", "100%c" ],
+                      "$pressed_button_name": "button.addonLink",
+                      "offset": [ 0, 1 ],
+                      "$single_label_size": [ "default", "default" ],
+                      "$single_line_font_scale_factor": 1.0,
+                      "$font_type": "default",
+                      "$dark_button_default_text_color": "$black_color",
+                      "$underline_default_color": "$black_color",
+                      "$single_line_label_text": "resourcePack.warning.multiple.addon.link"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "padding_2": {
+                "type": "panel",
+                "size": [ "fill", "100%" ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "panel_bg": {
     "type": "panel",
     "controls": [
       { "black_background@resource_packs.black_image": { "layer": 1 } },
       {
         "gray@resource_packs.gray_image": {
+          "size": [ "100%-2px", "100%-2px" ],
+          "layer": 2
+        }
+      }
+    ]
+  },
+
+  "addon_panel_bg": {
+    "type": "panel",
+    "controls": [
+      { "black_background@resource_packs.black_image": { "layer": 1 } },
+      {
+        "yellow@resource_packs.yellow_image": {
           "size": [ "100%-2px", "100%-2px" ],
           "layer": 2
         }
@@ -2849,6 +2941,7 @@
           "visible": "$show_checkbox",
           "size": [ "100%", 30 ],
           "$force_pack_download_binding_type|default": "none",
+          "$focus_override_down": "addon_stacking_warning_panel",
 
           "controls": [
             { "panel_bg@resource_packs.panel_bg": {} },
@@ -2875,11 +2968,36 @@
         }
       },
       {
+        "addon_stacking_warning_panel": {
+          "type": "panel",
+          "size": [ "100%", 30 ],
+          "$focus_id": "addon_stacking_warning_panel",
+
+          "controls": [
+            { "addon_panel_bg@resource_packs.addon_panel_bg": {} },
+            { "header_control@resource_packs.addon_header_control": {} }
+          ],
+          "bindings": [
+            {
+              "binding_name": "$addon_stacking_warning_visibility_binding",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "offset_1": {
+          "type": "panel",
+          "size": [ "100%", "2px" ]
+        }
+      },
+      {
         "selected_packs_title_panel": {
           "type": "stack_panel",
           "orientation": "horizontal",
           "size": [ "100%", 20 ],
           "$button_collection_name": "$selected_pack_items",
+          "$focus_override_up": "addon_stacking_warning_panel",
           "controls": [
             {
               "selected_packs_title_button@resource_packs.selected_packs_title_button": {}
@@ -3085,7 +3203,7 @@
         }
       },
       {
-        "offset_1": {
+        "offset_2": {
           "type": "panel",
           "size": [ "100%", "6px" ]
         }

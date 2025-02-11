@@ -1,0 +1,2339 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "3108590287",
+    "definitions": {
+        "1095951327": {
+            "title": "minecraft:enchantable v1.20.50",
+            "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+            "type": "object",
+            "properties": {
+                "slot": {
+                    "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "Specifies the value of the enchantment (minimum of 0).",
+                    "type": "integer",
+                    "minimum": 0.0
+                }
+            },
+            "required": [
+                "slot",
+                "value"
+            ]
+        },
+        "1206516236": {
+            "title": "minecraft:glint v1.20.50",
+            "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item has the glint effect.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1398826300": {
+            "title": "struct SharedTypes::IntRange",
+            "type": "object",
+            "properties": {
+                "max": {
+                    "type": "integer"
+                },
+                "min": {
+                    "type": "integer"
+                }
+            }
+        },
+        "1531870811": {
+            "title": "struct SharedTypes::Legacy::ItemDescriptor",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "title": "associative container",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "1618184314": {
+            "title": "minecraft:icon v1.20.60",
+            "description": "Icon item component determines which icon graphic will be used to represent the item in the UI and elsewhere.",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "textures": {
+                            "title": "associative container",
+                            "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes can be specified here too. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "1658474219": {
+            "title": "minecraft:repairable v1.20.50",
+            "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
+            "type": "object",
+            "properties": {
+                "repair_items": {
+                    "title": "sequence container",
+                    "description": "List of repair item entries. Each entry needs to define a list of strings for `items` that can be used for the repair and an optional `repair_amount` for how much durability is gained.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/3256164975"
+                    }
+                }
+            }
+        },
+        "1661309668": {
+            "title": "minecraft:hover_text_color v1.20.50",
+            "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Specifies the color of the item's hover text.",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "1754804474": {
+            "title": "minecraft:interact_button v1.20.50",
+            "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "1866815117": {
+            "title": "description v1.21.60",
+            "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "description": "Unique name for the item that must include a namespace and must not use the Minecraft namespace unless overriding a Vanilla item.",
+                    "type": "string"
+                },
+                "menu_category": {
+                    "description": "menu_category contains the creative group name and category for this item.",
+                    "$ref": "#/definitions/3342154574"
+                }
+            },
+            "required": [
+                "identifier"
+            ]
+        },
+        "1873913113": {
+            "title": "minecraft:storage_item v1.21.60",
+            "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
+            "type": "object",
+            "properties": {
+                "allow_nested_storage_items": {
+                    "description": "Determines whether another Storage Item is allowed inside of this item. Default is true.",
+                    "type": "boolean"
+                },
+                "allowed_items": {
+                    "title": "sequence container",
+                    "description": "List of items that are exclusively allowed in this Storage Item. If empty all items are allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1531870811"
+                    }
+                },
+                "banned_items": {
+                    "title": "sequence container",
+                    "description": "List of items that are not allowed in this Storage Item.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1531870811"
+                    }
+                },
+                "max_slots": {
+                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
+                    "type": "integer",
+                    "maximum": 64.0
+                }
+            }
+        },
+        "1889822164": {
+            "title": "minecraft:hand_equipped v1.20.50",
+            "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item is rendered like a tool while in the player's hand.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1899103179": {
+            "title": "struct SharedTypes::v1_20_50::DiggerItemComponent::BlockInfo",
+            "type": "object",
+            "properties": {
+                "block": {
+                    "description": "Block to be dug.",
+                    "$ref": "#/definitions/2794205495"
+                },
+                "speed": {
+                    "description": "Digging speed for the correlating block(s).",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "block",
+                "speed"
+            ]
+        },
+        "1956551060": {
+            "title": "minecraft:durability_sensor v1.21.10",
+            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "durability_thresholds": {
+                    "title": "sequence container",
+                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
+                    "type": "array",
+                    "items": {
+                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
+                        "$ref": "#/definitions/764203503"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "durability_thresholds"
+            ]
+        },
+        "2041267453": {
+            "title": "minecraft:wearable v1.20.50",
+            "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
+            "type": "object",
+            "properties": {
+                "protection": {
+                    "description": "How much protection the wearable item provides. Default is set to 0.",
+                    "type": "integer",
+                    "minimum": 0.0
+                },
+                "slot": {
+                    "title": "enum SharedTypes::Legacy::EquipmentSlot",
+                    "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
+                    "type": "string",
+                    "enum": [
+                        "slot.weapon.offhand",
+                        "slot.armor.head",
+                        "slot.armor.chest",
+                        "slot.armor.legs",
+                        "slot.armor.feet"
+                    ]
+                }
+            },
+            "required": [
+                "slot"
+            ]
+        },
+        "2063418195": {
+            "title": "minecraft:damage_absorption v1.21.10",
+            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "absorbable_causes": {
+                    "title": "sequence container",
+                    "description": "List of damage causes that can be absorbed by the item. By default, no damage cause is absorbed.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "absorbable_causes"
+            ]
+        },
+        "2267778531": {
+            "title": "struct SharedTypes::Legacy::ExpressionNode::StringRepresentation",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "expression": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "expression",
+                        "version"
+                    ]
+                }
+            ]
+        },
+        "2333685719": {
+            "title": "minecraft:bundle_interaction v1.21.30",
+            "description": "[EXPERIMENTAL] Adds bundle-specific interactions and tooltip to the item. Requires a \"minecraft:storage_item\" component.",
+            "type": "object",
+            "properties": {
+                "num_viewable_slots": {
+                    "description": "The maximum number of slots in the bundle viewable by the plater. Can be from 1 to 64. Default is 12.",
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 64.0
+                }
+            }
+        },
+        "2359991381": {
+            "title": "minecraft:liquid_clipped v1.20.50",
+            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Deterines whether the item interacts with liquid blocks on use.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "2499855414": {
+            "title": "minecraft:digger v1.20.50",
+            "description": "Digger item component specifies how quickly this item can dig specific blocks.",
+            "type": "object",
+            "properties": {
+                "destroy_speeds": {
+                    "title": "sequence container",
+                    "description": "A list of blocks to dig with correlating speeds of digging.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1899103179"
+                    }
+                },
+                "use_efficiency": {
+                    "description": "Determines whether this item should be impacted if the efficiency enchantment is applied to it.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "268086052": {
+            "title": "minecraft:food v1.20.50",
+            "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+            "type": "object",
+            "properties": {
+                "can_always_eat": {
+                    "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
+                    "type": "boolean"
+                },
+                "nutrition": {
+                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
+                    "type": "integer"
+                },
+                "saturation_modifier": {
+                    "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
+                    "type": "number",
+                    "minimum": 0.0
+                },
+                "using_converts_to": {
+                    "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
+                    "$ref": "#/definitions/1531870811"
+                }
+            }
+        },
+        "2681068491": {
+            "title": "struct SharedTypes::v1_20_50::ShooterItemComponent::Ammunition",
+            "type": "object",
+            "properties": {
+                "item": {
+                    "description": "Ammunition item description identifier.",
+                    "$ref": "#/definitions/1531870811"
+                },
+                "search_inventory": {
+                    "description": "Can search inventory? Default is set to false.",
+                    "type": "boolean"
+                },
+                "use_in_creative": {
+                    "description": "Can use in creative mode? Default is set to false.",
+                    "type": "boolean"
+                },
+                "use_offhand": {
+                    "description": "Can use off-hand? Default is set to false.",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "item"
+            ]
+        },
+        "2770948419": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "states": {
+                    "title": "associative container",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/517105782"
+                    }
+                },
+                "tags": {
+                    "type": "string"
+                }
+            }
+        },
+        "2794205495": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptor",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2770948419"
+                },
+                {
+                    "type": "string",
+                    "minLength": 1
+                }
+            ]
+        },
+        "2817495317": {
+            "title": "minecraft:max_stack_size v1.20.50",
+            "description": "The max_stack_size component specifies how many of the item can be stacked together.",
+            "oneOf": [
+                {
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 64.0
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Specifies how many of the item that can be stacked.",
+                            "type": "integer",
+                            "minimum": 1.0,
+                            "maximum": 64.0
+                        }
+                    }
+                }
+            ]
+        },
+        "2942400907": {
+            "title": "minecraft:display_name v1.20.50",
+            "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+            "type": "object",
+            "properties": {
+                "value": {
+                    "description": "Name shown for an item.",
+                    "type": "string"
+                }
+            }
+        },
+        "3053237679": {
+            "title": "minecraft:record v1.20.50",
+            "description": "Record Item Component. Used by record items to play music.",
+            "type": "object",
+            "properties": {
+                "comparator_signal": {
+                    "description": "Specifies signal strength for comparator blocks to use, from 1 - 13.",
+                    "type": "integer"
+                },
+                "duration": {
+                    "description": "Specifies duration of sound event in seconds, float value.",
+                    "type": "number"
+                },
+                "sound_event": {
+                    "title": "enum SharedTypes::Legacy::LevelSoundEvent",
+                    "description": "Sound event type: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, pigstep, otherside, 5, relic.",
+                    "type": "string",
+                    "enum": [
+                        "item.use.on",
+                        "hit",
+                        "step",
+                        "step.baby",
+                        "fly",
+                        "jump",
+                        "jump.prevent",
+                        "break",
+                        "place",
+                        "heavy.step",
+                        "gallop",
+                        "fall",
+                        "hurt",
+                        "hurt.baby",
+                        "hurt.in.water",
+                        "death",
+                        "death.baby",
+                        "death.in.water",
+                        "death.to.zombie",
+                        "ambient",
+                        "ambient.baby",
+                        "ambient.in.water",
+                        "ambient.in.air",
+                        "ambient.tame",
+                        "ambient.pollinate",
+                        "breathe",
+                        "mad",
+                        "boost",
+                        "bow",
+                        "squish.big",
+                        "squish.small",
+                        "fall.big",
+                        "fall.small",
+                        "splash",
+                        "fizz",
+                        "flap",
+                        "swim",
+                        "drink",
+                        "drink.honey",
+                        "drink.milk",
+                        "eat",
+                        "takeoff",
+                        "shake",
+                        "plop",
+                        "land",
+                        "saddle",
+                        "armor",
+                        "mob.armor_stand.place",
+                        "add.chest",
+                        "throw",
+                        "attack",
+                        "attack.nodamage",
+                        "attack.strong",
+                        "warn",
+                        "shear",
+                        "milk",
+                        "thunder",
+                        "explode",
+                        "fire",
+                        "ignite",
+                        "fuse",
+                        "stare",
+                        "spawn",
+                        "born",
+                        "shoot",
+                        "break.block",
+                        "launch",
+                        "blast",
+                        "large.blast",
+                        "twinkle",
+                        "remedy",
+                        "unfect",
+                        "convert_to_drowned",
+                        "levelup",
+                        "bow.hit",
+                        "bullet.hit",
+                        "extinguish.fire",
+                        "item.fizz",
+                        "chest.open",
+                        "chest.closed",
+                        "shulkerbox.open",
+                        "shulkerbox.closed",
+                        "enderchest.open",
+                        "enderchest.closed",
+                        "power.on",
+                        "power.off",
+                        "attach",
+                        "detach",
+                        "deny",
+                        "tripod",
+                        "pop",
+                        "drop.slot",
+                        "note",
+                        "thorns",
+                        "piston.in",
+                        "piston.out",
+                        "portal",
+                        "water",
+                        "lava.pop",
+                        "lava",
+                        "beacon.activate",
+                        "beacon.ambient",
+                        "beacon.deactivate",
+                        "beacon.power",
+                        "conduit.activate",
+                        "conduit.ambient",
+                        "conduit.attack",
+                        "conduit.deactivate",
+                        "conduit.short",
+                        "bubble.pop",
+                        "bubble.up",
+                        "bubble.upinside",
+                        "bubble.down",
+                        "bubble.downinside",
+                        "burp",
+                        "bucket.fill.water",
+                        "bucket.empty.water",
+                        "bucket.fill.lava",
+                        "bucket.empty.lava",
+                        "bucket.fill.fish",
+                        "bucket.empty.fish",
+                        "armor.equip_chain",
+                        "armor.equip_diamond",
+                        "armor.equip_elytra",
+                        "armor.equip_generic",
+                        "armor.equip_gold",
+                        "armor.equip_iron",
+                        "armor.equip_leather",
+                        "armor.equip_netherite",
+                        "record.13",
+                        "record.cat",
+                        "record.blocks",
+                        "record.chirp",
+                        "record.creator",
+                        "record.creator_music_box",
+                        "record.far",
+                        "record.mall",
+                        "record.mellohi",
+                        "record.stal",
+                        "record.strad",
+                        "record.ward",
+                        "record.11",
+                        "record.wait",
+                        "record.pigstep",
+                        "record.precipice",
+                        "record.relic",
+                        "record.otherside",
+                        "record.5",
+                        "flop",
+                        "elderguardian.curse",
+                        "teleport",
+                        "shulker.open",
+                        "shulker.close",
+                        "mob.warning",
+                        "mob.warning.baby",
+                        "haggle",
+                        "haggle.yes",
+                        "haggle.no",
+                        "haggle.idle",
+                        "disappeared",
+                        "reappeared",
+                        "chorusgrow",
+                        "chorusdeath",
+                        "glass",
+                        "potion.brewed",
+                        "cast.spell",
+                        "prepare.attack",
+                        "prepare.summon",
+                        "prepare.wololo",
+                        "fang",
+                        "charge",
+                        "camera.take_picture",
+                        "leashknot.break",
+                        "leashknot.place",
+                        "growl",
+                        "whine",
+                        "pant",
+                        "purr",
+                        "purreow",
+                        "death.min.volume",
+                        "death.mid.volume",
+                        "imitate.blaze",
+                        "imitate.cave_spider",
+                        "imitate.creeper",
+                        "imitate.elder_guardian",
+                        "imitate.ender_dragon",
+                        "imitate.enderman",
+                        "imitate.endermite",
+                        "imitate.evocation_illager",
+                        "imitate.ghast",
+                        "imitate.husk",
+                        "imitate.magma_cube",
+                        "imitate.polar_bear",
+                        "imitate.shulker",
+                        "imitate.silverfish",
+                        "imitate.skeleton",
+                        "imitate.slime",
+                        "imitate.spider",
+                        "imitate.stray",
+                        "imitate.vex",
+                        "imitate.vindication_illager",
+                        "imitate.witch",
+                        "imitate.wither",
+                        "imitate.wither_skeleton",
+                        "imitate.wolf",
+                        "imitate.zombie",
+                        "imitate.zombie_pigman",
+                        "imitate.zombie_villager",
+                        "block.end_portal_frame.fill",
+                        "block.end_portal.spawn",
+                        "random.anvil_use",
+                        "bottle.dragonbreath",
+                        "balloonpop",
+                        "sparkler.active",
+                        "item.trident.hit",
+                        "item.trident.hit_ground",
+                        "item.trident.return",
+                        "item.trident.riptide_1",
+                        "item.trident.riptide_2",
+                        "item.trident.riptide_3",
+                        "item.trident.throw",
+                        "item.trident.thunder",
+                        "block.fletching_table.use",
+                        "elemconstruct.open",
+                        "icebomb.hit",
+                        "lt.reaction.icebomb",
+                        "lt.reaction.bleach",
+                        "lt.reaction.epaste",
+                        "lt.reaction.epaste2",
+                        "lt.reaction.fertilizer",
+                        "lt.reaction.fireball",
+                        "lt.reaction.mgsalt",
+                        "lt.reaction.miscfire",
+                        "lt.reaction.fire",
+                        "lt.reaction.miscexplosion",
+                        "lt.reaction.miscmystical",
+                        "lt.reaction.miscmystical2",
+                        "lt.reaction.product",
+                        "sparkler.use",
+                        "glowstick.use",
+                        "block.turtle_egg.break",
+                        "block.turtle_egg.crack",
+                        "block.turtle_egg.hatch",
+                        "block.turtle_egg.attack",
+                        "block.sniffer_egg.crack",
+                        "block.sniffer_egg.hatch",
+                        "block.frog_spawn.hatch",
+                        "block.frog_spawn.break",
+                        "swoop",
+                        "presneeze",
+                        "sneeze",
+                        "scared",
+                        "ambient.aggressive",
+                        "ambient.worried",
+                        "cant_breed",
+                        "block.scaffolding.climb",
+                        "block.bamboo_sapling.place",
+                        "crossbow.loading.start",
+                        "crossbow.loading.middle",
+                        "crossbow.loading.end",
+                        "crossbow.shoot",
+                        "crossbow.quick_charge.start",
+                        "crossbow.quick_charge.middle",
+                        "crossbow.quick_charge.end",
+                        "item.shield.block",
+                        "portal.travel",
+                        "item.book.put",
+                        "block.grindstone.use",
+                        "block.bell.hit",
+                        "block.campfire.crackle",
+                        "block.sweet_berry_bush.hurt",
+                        "block.sweet_berry_bush.pick",
+                        "block.stonecutter.use",
+                        "block.cartography_table.use",
+                        "block.composter.empty",
+                        "block.composter.fill",
+                        "block.composter.fill_success",
+                        "block.composter.ready",
+                        "roar",
+                        "stun",
+                        "block.barrel.open",
+                        "block.barrel.close",
+                        "raid.horn",
+                        "ui.stonecutter.take_result",
+                        "ui.cartography_table.take_result",
+                        "ui.loom.take_result",
+                        "block.smoker.smoke",
+                        "block.blastfurnace.fire_crackle",
+                        "block.smithing_table.use",
+                        "block.loom.use",
+                        "ambient.in.raid",
+                        "screech",
+                        "sleep",
+                        "block.furnace.lit",
+                        "convert_mooshroom",
+                        "milk_suspiciously",
+                        "celebrate",
+                        "block.beehive.enter",
+                        "block.beehive.exit",
+                        "block.beehive.shear",
+                        "block.beehive.work",
+                        "block.beehive.drip",
+                        "ambient.cave",
+                        "angry",
+                        "retreat",
+                        "converted_to_zombified",
+                        "step_lava",
+                        "tempt",
+                        "panic",
+                        "admire",
+                        "particle.soul_escape.quiet",
+                        "particle.soul_escape.loud",
+                        "respawn_anchor.charge",
+                        "respawn_anchor.deplete",
+                        "respawn_anchor.set_spawn",
+                        "respawn_anchor.ambient",
+                        "ambient.crimson_forest.mood",
+                        "ambient.warped_forest.mood",
+                        "ambient.soulsand_valley.mood",
+                        "ambient.nether_wastes.mood",
+                        "ambient.crimson_forest.additions",
+                        "ambient.warped_forest.additions",
+                        "ambient.soulsand_valley.additions",
+                        "ambient.nether_wastes.additions",
+                        "ambient.basalt_deltas.additions",
+                        "ambient.crimson_forest.loop",
+                        "ambient.warped_forest.loop",
+                        "ambient.soulsand_valley.loop",
+                        "ambient.nether_wastes.loop",
+                        "ambient.basalt_deltas.loop",
+                        "lodestone_compass.link_compass_to_lodestone",
+                        "ambient.basalt_deltas.mood",
+                        "power.on.sculk_sensor",
+                        "power.off.sculk_sensor",
+                        "smithing_table.use",
+                        "default",
+                        "lay_egg",
+                        "lay_spawn",
+                        "bucket.fill.powder_snow",
+                        "bucket.empty.powder_snow",
+                        "cauldron_drip.water.pointed_dripstone",
+                        "cauldron_drip.lava.pointed_dripstone",
+                        "tilt_down.big_dripleaf",
+                        "tilt_up.big_dripleaf",
+                        "drip.water.pointed_dripstone",
+                        "pick_berries.cave_vines",
+                        "drip.lava.pointed_dripstone",
+                        "copper.wax.on",
+                        "copper.wax.off",
+                        "scrape",
+                        "item.spyglass.use",
+                        "item.spyglass.stop_using",
+                        "chime.amethyst_block",
+                        "mob.player.hurt_drown",
+                        "mob.player.hurt_on_fire",
+                        "mob.player.hurt_freeze",
+                        "ambient.screamer",
+                        "hurt.screamer",
+                        "death.screamer",
+                        "milk.screamer",
+                        "jump_to_block",
+                        "pre_ram",
+                        "pre_ram.screamer",
+                        "ram_impact",
+                        "ram_impact.screamer",
+                        "squid.ink_squirt",
+                        "glow_squid.ink_squirt",
+                        "convert_to_stray",
+                        "cake.add_candle",
+                        "extinguish.candle",
+                        "ambient.candle",
+                        "block.click",
+                        "block.click.fail",
+                        "block.sculk_catalyst.bloom",
+                        "block.sculk_shrieker.shriek",
+                        "nearby_close",
+                        "nearby_closer",
+                        "nearby_closest",
+                        "agitated",
+                        "listening",
+                        "heartbeat",
+                        "tongue",
+                        "item_given",
+                        "item_taken",
+                        "item_thrown",
+                        "irongolem.crack",
+                        "irongolem.repair",
+                        "horn_break",
+                        "horn_call0",
+                        "horn_call1",
+                        "horn_call2",
+                        "horn_call3",
+                        "horn_call4",
+                        "horn_call5",
+                        "horn_call6",
+                        "horn_call7",
+                        "imitate.warden",
+                        "listening_angry",
+                        "sonic_boom",
+                        "sonic_charge",
+                        "convert_to_frog",
+                        "block.sculk.spread",
+                        "charge.sculk",
+                        "block.sculk_sensor.place",
+                        "block.sculk_shrieker.place",
+                        "block.enchanting_table.use",
+                        "bundle.drop_contents",
+                        "bundle.insert",
+                        "bundle.insert_fail",
+                        "bundle.remove_one",
+                        "step_sand",
+                        "dash_ready",
+                        "pressure_plate.click_off",
+                        "pressure_plate.click_on",
+                        "button.click_off",
+                        "button.click_on",
+                        "door.open",
+                        "door.close",
+                        "trapdoor.open",
+                        "trapdoor.close",
+                        "fence_gate.open",
+                        "fence_gate.close",
+                        "insert",
+                        "pickup",
+                        "insert_enchanted",
+                        "pickup_enchanted",
+                        "shatter_pot",
+                        "break_pot",
+                        "brush",
+                        "brush_completed",
+                        "block.sign.waxed_interact_fail",
+                        "note.bass",
+                        "pumpkin.carve",
+                        "mob.husk.convert_to_zombie",
+                        "mob.pig.death",
+                        "mob.hoglin.converted_to_zombified",
+                        "ambient.underwater.enter",
+                        "ambient.underwater.exit",
+                        "bottle.fill",
+                        "bottle.empty",
+                        "block.decorated_pot.insert",
+                        "block.decorated_pot.insert_fail",
+                        "crafter.craft",
+                        "crafter.fail",
+                        "crafter.disable_slot",
+                        "block.copper_bulb.turn_on",
+                        "block.copper_bulb.turn_off",
+                        "breeze_wind_charge.burst",
+                        "imitate.breeze",
+                        "trial_spawner.open_shutter",
+                        "trial_spawner.detect_player",
+                        "trial_spawner.close_shutter",
+                        "trial_spawner.spawn_mob",
+                        "trial_spawner.eject_item",
+                        "trial_spawner.ambient",
+                        "mob.armadillo.brush",
+                        "mob.armadillo.scute_drop",
+                        "armor.equip_wolf",
+                        "armor.unequip_wolf",
+                        "reflect",
+                        "vault.open_shutter",
+                        "vault.close_shutter",
+                        "vault.eject_item",
+                        "vault.insert_item",
+                        "vault.insert_item_fail",
+                        "vault.ambient",
+                        "vault.activate",
+                        "vault.deactivate",
+                        "hurt.reduced",
+                        "wind_charge.burst",
+                        "armor.break_wolf",
+                        "armor.crack_wolf",
+                        "armor.repair_wolf",
+                        "mace.smash_air",
+                        "mace.smash_ground",
+                        "mace.heavy_smash_ground",
+                        "trial_spawner.charge_activate",
+                        "trial_spawner.ambient_ominous",
+                        "apply_effect.bad_omen",
+                        "apply_effect.raid_omen",
+                        "apply_effect.trial_omen",
+                        "ominous_item_spawner.spawn_item",
+                        "ominous_bottle.end_use",
+                        "ominous_item_spawner.spawn_item_begin",
+                        "ominous_item_spawner.about_to_spawn_item",
+                        "imitate.bogged",
+                        "vault.reject_rewarded_player",
+                        "imitate.drowned",
+                        "sponge.absorb",
+                        "imitate.creaking",
+                        "block.creaking_heart.trail",
+                        "creaking_heart_spawn",
+                        "activate",
+                        "deactivate",
+                        "freeze",
+                        "unfreeze",
+                        "open",
+                        "open_long",
+                        "close",
+                        "close_long",
+                        "undefined"
+                    ]
+                }
+            }
+        },
+        "3126701690": {
+            "title": "minecraft:can_destroy_in_creative v1.20.50",
+            "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item can be used to destroy blocks while in creative mode.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3133202100": {
+            "title": "minecraft:compostable v1.21.50",
+            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
+            "type": "object",
+            "properties": {
+                "composting_chance": {
+                    "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 100.0
+                }
+            },
+            "required": [
+                "composting_chance"
+            ]
+        },
+        "3168558347": {
+            "title": "minecraft:tags v1.20.50",
+            "description": "The tags component specifies which tags an item has on it.",
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "title": "sequence container",
+                    "description": "An array that can contain multiple item tags.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "3173009623": {
+            "title": "minecraft:damage v1.20.50",
+            "description": "The damage component determines how much extra damage the item does on attack.",
+            "oneOf": [
+                {
+                    "type": "integer",
+                    "minimum": 0.0
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Specifies how much extra damage the item does, must be a positive number.",
+                            "type": "integer",
+                            "minimum": 0.0
+                        }
+                    }
+                }
+            ]
+        },
+        "3178615832": {
+            "title": "minecraft:stacked_by_data v1.20.50",
+            "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the same item with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3178719147": {
+            "title": "struct SharedTypes::Legacy::ExpressionNode",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2267778531"
+                },
+                {
+                    "type": "number"
+                }
+            ]
+        },
+        "3246981949": {
+            "title": "minecraft:use_animation v1.20.50",
+            "description": "Use_animation specifies which animation is played when the player uses the item.",
+            "oneOf": [
+                {
+                    "title": "enum SharedTypes::Legacy::UseAnimation",
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "eat",
+                        "drink",
+                        "block",
+                        "bow",
+                        "camera",
+                        "crossbow",
+                        "spear",
+                        "spyglass",
+                        "brush"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "title": "enum SharedTypes::Legacy::UseAnimation",
+                            "description": "Specifies which animation to play when the the item is used.",
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "eat",
+                                "drink",
+                                "block",
+                                "bow",
+                                "camera",
+                                "crossbow",
+                                "spear",
+                                "spyglass",
+                                "brush"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "3256164975": {
+            "title": "struct SharedTypes::v1_20_50::RepairableItemComponent::RepairItemEntry",
+            "oneOf": [
+                {
+                    "title": "sequence container",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1531870811"
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "items": {
+                            "title": "sequence container",
+                            "description": "Items that may be used to repair an item.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/1531870811"
+                            }
+                        },
+                        "repair_amount": {
+                            "description": "How much the item is repaired.",
+                            "$ref": "#/definitions/3178719147"
+                        }
+                    },
+                    "required": [
+                        "items"
+                    ]
+                }
+            ]
+        },
+        "3308324084": {
+            "title": "minecraft:fuel v1.20.50",
+            "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
+            "oneOf": [
+                {
+                    "type": "number",
+                    "minimum": 0.05000000074505806
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "duration": {
+                            "description": "Amount of time, in seconds, this fuel will cook items.",
+                            "type": "number",
+                            "minimum": 0.05000000074505806
+                        }
+                    }
+                }
+            ]
+        },
+        "3342154574": {
+            "title": "menu_category v1.21.60",
+            "description": "menu_category contains the creative group name and category for this item.",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "title": "enum CreativeItemCategory",
+                    "description": "Creative category where this item belongs. Defaults to \"none\".",
+                    "type": "string",
+                    "enum": [
+                        "construction",
+                        "nature",
+                        "equipment",
+                        "items",
+                        "none"
+                    ]
+                },
+                "group": {
+                    "description": "The Creative Group that this item belongs to. Group name is limited to 256 characters. The name also must start with a namespace.",
+                    "type": "string",
+                    "maxLength": 256,
+                    "pattern": "^(?:.)+:(?:.)+$"
+                },
+                "is_hidden_in_commands": {
+                    "description": "Determines whether or not this item can be used with commands. Commands can use items by default if a category is set.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "3375297728": {
+            "title": "minecraft:rarity v1.21.30",
+            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "3389099981": {
+            "title": "minecraft:allow_off_hand v1.20.50",
+            "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item can be placed in the off hand slot.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "34598326": {
+            "title": "minecraft:storage_weight_limit v1.21.60",
+            "description": "Specifies the maximum weight limit that a storage item can hold",
+            "type": "object",
+            "properties": {
+                "max_weight_limit": {
+                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
+                    "type": "integer",
+                    "maximum": 64.0
+                }
+            }
+        },
+        "3494639353": {
+            "title": "minecraft:durability v1.20.50",
+            "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
+            "type": "object",
+            "properties": {
+                "damage_chance": {
+                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
+                    "$ref": "#/definitions/1398826300"
+                },
+                "max_durability": {
+                    "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
+                    "type": "integer",
+                    "minimum": 0.0
+                }
+            },
+            "required": [
+                "max_durability"
+            ]
+        },
+        "3602397325": {
+            "title": "minecraft:dyeable v1.21.30",
+            "type": "object",
+            "properties": {
+                "default_color": {
+                    "$ref": "#/definitions/3915697282"
+                }
+            }
+        },
+        "3715727616": {
+            "title": "minecraft:throwable v1.20.50",
+            "description": "Throwable items can be thrown by the player, such as a snowball.",
+            "type": "object",
+            "properties": {
+                "do_swing_animation": {
+                    "description": "Determines whether the item should use the swing animation when thrown. Default is set to false.",
+                    "type": "boolean"
+                },
+                "launch_power_scale": {
+                    "description": "The scale at which the power of the throw increases. Default is set to 1.0.",
+                    "type": "number"
+                },
+                "max_draw_duration": {
+                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
+                },
+                "max_launch_power": {
+                    "description": "The maximum power to launch the throwable item. Default is set to 1.0.",
+                    "type": "number"
+                },
+                "min_draw_duration": {
+                    "description": "The minimum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
+                },
+                "scale_power_by_draw_duration": {
+                    "description": "Whether or not the power of the throw increases with duration charged. Default is set to false.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "3781185164": {
+            "title": "minecraft:shooter v1.20.50",
+            "description": "Shooter Item Component.",
+            "type": "object",
+            "properties": {
+                "ammunition": {
+                    "title": "sequence container",
+                    "description": "Ammunition.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2681068491"
+                    }
+                },
+                "charge_on_draw": {
+                    "description": "Charge on draw? Default is set to false.",
+                    "type": "boolean"
+                },
+                "max_draw_duration": {
+                    "description": "Draw Duration. Default is set to 0.",
+                    "type": "number"
+                },
+                "scale_power_by_draw_duration": {
+                    "description": "Scale power by draw duration? Default is set to false.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "3875281249": {
+            "title": "minecraft:should_despawn v1.20.50",
+            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item should eventually despawn while floating in the world.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3915697282": {
+            "title": "Color255RGB",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                    "title": "sequence container",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            ],
+            "$metaProperties": {
+                "CEREAL_EDITOR_SCHEMA_TAG": "[editor(type:color)]"
+            }
+        },
+        "4012773087": {
+            "title": "components v1.21.60",
+            "description": "List of all components used in this item.",
+            "type": "object",
+            "properties": {
+                "minecraft:allow_off_hand": {
+                    "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
+                    "$ref": "#/definitions/3389099981"
+                },
+                "minecraft:block_placer": {
+                    "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
+                    "$ref": "#/definitions/857819254"
+                },
+                "minecraft:bundle_interaction": {
+                    "description": "[EXPERIMENTAL] Adds bundle-specific interactions and tooltip to the item. Requires a \"minecraft:storage_item\" component.",
+                    "$ref": "#/definitions/2333685719"
+                },
+                "minecraft:can_destroy_in_creative": {
+                    "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+                    "$ref": "#/definitions/3126701690"
+                },
+                "minecraft:compostable": {
+                    "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
+                    "$ref": "#/definitions/3133202100"
+                },
+                "minecraft:cooldown": {
+                    "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
+                    "$ref": "#/definitions/886176099"
+                },
+                "minecraft:custom_components": {
+                    "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+                    "$ref": "#/definitions/4150838471"
+                },
+                "minecraft:damage": {
+                    "description": "The damage component determines how much extra damage the item does on attack.",
+                    "$ref": "#/definitions/3173009623"
+                },
+                "minecraft:damage_absorption": {
+                    "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
+                    "$ref": "#/definitions/2063418195"
+                },
+                "minecraft:digger": {
+                    "description": "Digger item component specifies how quickly this item can dig specific blocks.",
+                    "$ref": "#/definitions/2499855414"
+                },
+                "minecraft:display_name": {
+                    "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+                    "$ref": "#/definitions/2942400907"
+                },
+                "minecraft:durability": {
+                    "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
+                    "$ref": "#/definitions/3494639353"
+                },
+                "minecraft:durability_sensor": {
+                    "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+                    "$ref": "#/definitions/1956551060"
+                },
+                "minecraft:dyeable": {
+                    "$ref": "#/definitions/3602397325"
+                },
+                "minecraft:enchantable": {
+                    "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
+                    "$ref": "#/definitions/1095951327"
+                },
+                "minecraft:entity_placer": {
+                    "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
+                    "$ref": "#/definitions/853889472"
+                },
+                "minecraft:food": {
+                    "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+                    "$ref": "#/definitions/268086052"
+                },
+                "minecraft:fuel": {
+                    "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
+                    "$ref": "#/definitions/3308324084"
+                },
+                "minecraft:glint": {
+                    "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+                    "$ref": "#/definitions/1206516236"
+                },
+                "minecraft:hand_equipped": {
+                    "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+                    "$ref": "#/definitions/1889822164"
+                },
+                "minecraft:hover_text_color": {
+                    "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
+                    "$ref": "#/definitions/1661309668"
+                },
+                "minecraft:icon": {
+                    "description": "Icon item component determines which icon graphic will be used to represent the item in the UI and elsewhere.",
+                    "$ref": "#/definitions/1618184314"
+                },
+                "minecraft:interact_button": {
+                    "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
+                    "$ref": "#/definitions/1754804474"
+                },
+                "minecraft:liquid_clipped": {
+                    "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+                    "$ref": "#/definitions/2359991381"
+                },
+                "minecraft:max_stack_size": {
+                    "description": "The max_stack_size component specifies how many of the item can be stacked together.",
+                    "$ref": "#/definitions/2817495317"
+                },
+                "minecraft:projectile": {
+                    "description": "Projectile items shoot out, like an arrow.",
+                    "$ref": "#/definitions/608914689"
+                },
+                "minecraft:rarity": {
+                    "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
+                    "$ref": "#/definitions/3375297728"
+                },
+                "minecraft:record": {
+                    "description": "Record Item Component. Used by record items to play music.",
+                    "$ref": "#/definitions/3053237679"
+                },
+                "minecraft:repairable": {
+                    "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
+                    "$ref": "#/definitions/1658474219"
+                },
+                "minecraft:shooter": {
+                    "description": "Shooter Item Component.",
+                    "$ref": "#/definitions/3781185164"
+                },
+                "minecraft:should_despawn": {
+                    "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+                    "$ref": "#/definitions/3875281249"
+                },
+                "minecraft:stacked_by_data": {
+                    "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
+                    "$ref": "#/definitions/3178615832"
+                },
+                "minecraft:storage_item": {
+                    "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
+                    "$ref": "#/definitions/1873913113"
+                },
+                "minecraft:storage_weight_limit": {
+                    "description": "Specifies the maximum weight limit that a storage item can hold",
+                    "$ref": "#/definitions/34598326"
+                },
+                "minecraft:storage_weight_modifier": {
+                    "description": "Specifies the maximum weight limit that a storage item can hold",
+                    "$ref": "#/definitions/842194090"
+                },
+                "minecraft:tags": {
+                    "description": "The tags component specifies which tags an item has on it.",
+                    "$ref": "#/definitions/3168558347"
+                },
+                "minecraft:throwable": {
+                    "description": "Throwable items can be thrown by the player, such as a snowball.",
+                    "$ref": "#/definitions/3715727616"
+                },
+                "minecraft:use_animation": {
+                    "description": "Use_animation specifies which animation is played when the player uses the item.",
+                    "$ref": "#/definitions/3246981949"
+                },
+                "minecraft:use_modifiers": {
+                    "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
+                    "$ref": "#/definitions/435751873"
+                },
+                "minecraft:wearable": {
+                    "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
+                    "$ref": "#/definitions/2041267453"
+                }
+            }
+        },
+        "4150838471": {
+            "title": "minecraft:custom_components v1.21.60",
+            "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$"
+            }
+        },
+        "435751873": {
+            "title": "minecraft:use_modifiers v1.20.50",
+            "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
+            "type": "object",
+            "properties": {
+                "movement_modifier": {
+                    "description": "Modifier value to scale the players movement speed when item is in use.",
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0
+                },
+                "use_duration": {
+                    "description": "How long the item takes to use in seconds.",
+                    "type": "number",
+                    "minimum": 0.0
+                }
+            }
+        },
+        "517105782": {
+            "title": "compound_proxy",
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "boolean"
+                }
+            ]
+        },
+        "608914689": {
+            "title": "minecraft:projectile v1.20.50",
+            "description": "Projectile items shoot out, like an arrow.",
+            "type": "object",
+            "properties": {
+                "minimum_critical_power": {
+                    "description": "Specifies how long a player must charge a projectile for it to critically hit.",
+                    "type": "number"
+                },
+                "projectile_entity": {
+                    "description": "Which entity is to be fired as a projectile.",
+                    "type": "string",
+                    "minLength": 0,
+                    "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                }
+            },
+            "required": [
+                "projectile_entity"
+            ]
+        },
+        "764203503": {
+            "title": "minecraft:durability_sensor durability_threshold v1.21.10",
+            "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
+            "type": "object",
+            "properties": {
+                "durability": {
+                    "description": "The effects are emitted when the item durability value is less than or equal to this value.",
+                    "type": "integer"
+                },
+                "particle_type": {
+                    "title": "enum ParticleType",
+                    "description": "Particle effect to emit when the threshold is met.",
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "bubble",
+                        "bubblemanual",
+                        "crit",
+                        "blockforcefield",
+                        "smoke",
+                        "explode",
+                        "evaporation",
+                        "flame",
+                        "candleflame",
+                        "lava",
+                        "largesmoke",
+                        "reddust",
+                        "risingborderdust",
+                        "iconcrack",
+                        "snowballpoof",
+                        "largeexplode",
+                        "hugeexplosion",
+                        "breezewindexplosion",
+                        "mobflame",
+                        "heart",
+                        "terrain",
+                        "townaura",
+                        "portal",
+                        "watersplash",
+                        "watersplashmanual",
+                        "waterwake",
+                        "dripwater",
+                        "driplava",
+                        "driphoney",
+                        "stalactitedripwater",
+                        "stalactitedriplava",
+                        "fallingdust",
+                        "mobspell",
+                        "mobspellambient",
+                        "mobspellinstantaneous",
+                        "ink",
+                        "slime",
+                        "rainsplash",
+                        "villagerangry",
+                        "villagerhappy",
+                        "enchantingtable",
+                        "trackingemitter",
+                        "note",
+                        "witchspell",
+                        "carrotboost",
+                        "mobappearance",
+                        "endrod",
+                        "dragonbreath",
+                        "spit",
+                        "totem",
+                        "food",
+                        "fireworksstarter",
+                        "fireworks",
+                        "fireworksoverlay",
+                        "balloongas",
+                        "coloredflame",
+                        "sparkler",
+                        "conduit",
+                        "bubblecolumnup",
+                        "bubblecolumndown",
+                        "sneeze",
+                        "shulkerbullet",
+                        "bleach",
+                        "dragondestroyblock",
+                        "myceliumdust",
+                        "fallingborderdust",
+                        "campfiresmoke",
+                        "campfiresmoketall",
+                        "dragonbreathfire",
+                        "dragonbreathtrail",
+                        "soul",
+                        "obsidiantear",
+                        "portalreverse",
+                        "snowflake",
+                        "wax",
+                        "electricspark",
+                        "shriek",
+                        "sculksoul",
+                        "sonicexplosion",
+                        "dustplume",
+                        "whitesmoke",
+                        "vaultconnection",
+                        "windexplosion",
+                        "wolfarmorcrack",
+                        "creakingcrumble",
+                        "paleoakleaves",
+                        "eyeblossomopen",
+                        "eyeblossomclose"
+                    ]
+                },
+                "sound_event": {
+                    "title": "enum SharedTypes::Legacy::LevelSoundEvent",
+                    "description": "Sound effect to emit when the threshold is met.",
+                    "type": "string",
+                    "enum": [
+                        "item.use.on",
+                        "hit",
+                        "step",
+                        "step.baby",
+                        "fly",
+                        "jump",
+                        "jump.prevent",
+                        "break",
+                        "place",
+                        "heavy.step",
+                        "gallop",
+                        "fall",
+                        "hurt",
+                        "hurt.baby",
+                        "hurt.in.water",
+                        "death",
+                        "death.baby",
+                        "death.in.water",
+                        "death.to.zombie",
+                        "ambient",
+                        "ambient.baby",
+                        "ambient.in.water",
+                        "ambient.in.air",
+                        "ambient.tame",
+                        "ambient.pollinate",
+                        "breathe",
+                        "mad",
+                        "boost",
+                        "bow",
+                        "squish.big",
+                        "squish.small",
+                        "fall.big",
+                        "fall.small",
+                        "splash",
+                        "fizz",
+                        "flap",
+                        "swim",
+                        "drink",
+                        "drink.honey",
+                        "drink.milk",
+                        "eat",
+                        "takeoff",
+                        "shake",
+                        "plop",
+                        "land",
+                        "saddle",
+                        "armor",
+                        "mob.armor_stand.place",
+                        "add.chest",
+                        "throw",
+                        "attack",
+                        "attack.nodamage",
+                        "attack.strong",
+                        "warn",
+                        "shear",
+                        "milk",
+                        "thunder",
+                        "explode",
+                        "fire",
+                        "ignite",
+                        "fuse",
+                        "stare",
+                        "spawn",
+                        "born",
+                        "shoot",
+                        "break.block",
+                        "launch",
+                        "blast",
+                        "large.blast",
+                        "twinkle",
+                        "remedy",
+                        "unfect",
+                        "convert_to_drowned",
+                        "levelup",
+                        "bow.hit",
+                        "bullet.hit",
+                        "extinguish.fire",
+                        "item.fizz",
+                        "chest.open",
+                        "chest.closed",
+                        "shulkerbox.open",
+                        "shulkerbox.closed",
+                        "enderchest.open",
+                        "enderchest.closed",
+                        "power.on",
+                        "power.off",
+                        "attach",
+                        "detach",
+                        "deny",
+                        "tripod",
+                        "pop",
+                        "drop.slot",
+                        "note",
+                        "thorns",
+                        "piston.in",
+                        "piston.out",
+                        "portal",
+                        "water",
+                        "lava.pop",
+                        "lava",
+                        "beacon.activate",
+                        "beacon.ambient",
+                        "beacon.deactivate",
+                        "beacon.power",
+                        "conduit.activate",
+                        "conduit.ambient",
+                        "conduit.attack",
+                        "conduit.deactivate",
+                        "conduit.short",
+                        "bubble.pop",
+                        "bubble.up",
+                        "bubble.upinside",
+                        "bubble.down",
+                        "bubble.downinside",
+                        "burp",
+                        "bucket.fill.water",
+                        "bucket.empty.water",
+                        "bucket.fill.lava",
+                        "bucket.empty.lava",
+                        "bucket.fill.fish",
+                        "bucket.empty.fish",
+                        "armor.equip_chain",
+                        "armor.equip_diamond",
+                        "armor.equip_elytra",
+                        "armor.equip_generic",
+                        "armor.equip_gold",
+                        "armor.equip_iron",
+                        "armor.equip_leather",
+                        "armor.equip_netherite",
+                        "record.13",
+                        "record.cat",
+                        "record.blocks",
+                        "record.chirp",
+                        "record.creator",
+                        "record.creator_music_box",
+                        "record.far",
+                        "record.mall",
+                        "record.mellohi",
+                        "record.stal",
+                        "record.strad",
+                        "record.ward",
+                        "record.11",
+                        "record.wait",
+                        "record.pigstep",
+                        "record.precipice",
+                        "record.relic",
+                        "record.otherside",
+                        "record.5",
+                        "flop",
+                        "elderguardian.curse",
+                        "teleport",
+                        "shulker.open",
+                        "shulker.close",
+                        "mob.warning",
+                        "mob.warning.baby",
+                        "haggle",
+                        "haggle.yes",
+                        "haggle.no",
+                        "haggle.idle",
+                        "disappeared",
+                        "reappeared",
+                        "chorusgrow",
+                        "chorusdeath",
+                        "glass",
+                        "potion.brewed",
+                        "cast.spell",
+                        "prepare.attack",
+                        "prepare.summon",
+                        "prepare.wololo",
+                        "fang",
+                        "charge",
+                        "camera.take_picture",
+                        "leashknot.break",
+                        "leashknot.place",
+                        "growl",
+                        "whine",
+                        "pant",
+                        "purr",
+                        "purreow",
+                        "death.min.volume",
+                        "death.mid.volume",
+                        "imitate.blaze",
+                        "imitate.cave_spider",
+                        "imitate.creeper",
+                        "imitate.elder_guardian",
+                        "imitate.ender_dragon",
+                        "imitate.enderman",
+                        "imitate.endermite",
+                        "imitate.evocation_illager",
+                        "imitate.ghast",
+                        "imitate.husk",
+                        "imitate.magma_cube",
+                        "imitate.polar_bear",
+                        "imitate.shulker",
+                        "imitate.silverfish",
+                        "imitate.skeleton",
+                        "imitate.slime",
+                        "imitate.spider",
+                        "imitate.stray",
+                        "imitate.vex",
+                        "imitate.vindication_illager",
+                        "imitate.witch",
+                        "imitate.wither",
+                        "imitate.wither_skeleton",
+                        "imitate.wolf",
+                        "imitate.zombie",
+                        "imitate.zombie_pigman",
+                        "imitate.zombie_villager",
+                        "block.end_portal_frame.fill",
+                        "block.end_portal.spawn",
+                        "random.anvil_use",
+                        "bottle.dragonbreath",
+                        "balloonpop",
+                        "sparkler.active",
+                        "item.trident.hit",
+                        "item.trident.hit_ground",
+                        "item.trident.return",
+                        "item.trident.riptide_1",
+                        "item.trident.riptide_2",
+                        "item.trident.riptide_3",
+                        "item.trident.throw",
+                        "item.trident.thunder",
+                        "block.fletching_table.use",
+                        "elemconstruct.open",
+                        "icebomb.hit",
+                        "lt.reaction.icebomb",
+                        "lt.reaction.bleach",
+                        "lt.reaction.epaste",
+                        "lt.reaction.epaste2",
+                        "lt.reaction.fertilizer",
+                        "lt.reaction.fireball",
+                        "lt.reaction.mgsalt",
+                        "lt.reaction.miscfire",
+                        "lt.reaction.fire",
+                        "lt.reaction.miscexplosion",
+                        "lt.reaction.miscmystical",
+                        "lt.reaction.miscmystical2",
+                        "lt.reaction.product",
+                        "sparkler.use",
+                        "glowstick.use",
+                        "block.turtle_egg.break",
+                        "block.turtle_egg.crack",
+                        "block.turtle_egg.hatch",
+                        "block.turtle_egg.attack",
+                        "block.sniffer_egg.crack",
+                        "block.sniffer_egg.hatch",
+                        "block.frog_spawn.hatch",
+                        "block.frog_spawn.break",
+                        "swoop",
+                        "presneeze",
+                        "sneeze",
+                        "scared",
+                        "ambient.aggressive",
+                        "ambient.worried",
+                        "cant_breed",
+                        "block.scaffolding.climb",
+                        "block.bamboo_sapling.place",
+                        "crossbow.loading.start",
+                        "crossbow.loading.middle",
+                        "crossbow.loading.end",
+                        "crossbow.shoot",
+                        "crossbow.quick_charge.start",
+                        "crossbow.quick_charge.middle",
+                        "crossbow.quick_charge.end",
+                        "item.shield.block",
+                        "portal.travel",
+                        "item.book.put",
+                        "block.grindstone.use",
+                        "block.bell.hit",
+                        "block.campfire.crackle",
+                        "block.sweet_berry_bush.hurt",
+                        "block.sweet_berry_bush.pick",
+                        "block.stonecutter.use",
+                        "block.cartography_table.use",
+                        "block.composter.empty",
+                        "block.composter.fill",
+                        "block.composter.fill_success",
+                        "block.composter.ready",
+                        "roar",
+                        "stun",
+                        "block.barrel.open",
+                        "block.barrel.close",
+                        "raid.horn",
+                        "ui.stonecutter.take_result",
+                        "ui.cartography_table.take_result",
+                        "ui.loom.take_result",
+                        "block.smoker.smoke",
+                        "block.blastfurnace.fire_crackle",
+                        "block.smithing_table.use",
+                        "block.loom.use",
+                        "ambient.in.raid",
+                        "screech",
+                        "sleep",
+                        "block.furnace.lit",
+                        "convert_mooshroom",
+                        "milk_suspiciously",
+                        "celebrate",
+                        "block.beehive.enter",
+                        "block.beehive.exit",
+                        "block.beehive.shear",
+                        "block.beehive.work",
+                        "block.beehive.drip",
+                        "ambient.cave",
+                        "angry",
+                        "retreat",
+                        "converted_to_zombified",
+                        "step_lava",
+                        "tempt",
+                        "panic",
+                        "admire",
+                        "particle.soul_escape.quiet",
+                        "particle.soul_escape.loud",
+                        "respawn_anchor.charge",
+                        "respawn_anchor.deplete",
+                        "respawn_anchor.set_spawn",
+                        "respawn_anchor.ambient",
+                        "ambient.crimson_forest.mood",
+                        "ambient.warped_forest.mood",
+                        "ambient.soulsand_valley.mood",
+                        "ambient.nether_wastes.mood",
+                        "ambient.crimson_forest.additions",
+                        "ambient.warped_forest.additions",
+                        "ambient.soulsand_valley.additions",
+                        "ambient.nether_wastes.additions",
+                        "ambient.basalt_deltas.additions",
+                        "ambient.crimson_forest.loop",
+                        "ambient.warped_forest.loop",
+                        "ambient.soulsand_valley.loop",
+                        "ambient.nether_wastes.loop",
+                        "ambient.basalt_deltas.loop",
+                        "lodestone_compass.link_compass_to_lodestone",
+                        "ambient.basalt_deltas.mood",
+                        "power.on.sculk_sensor",
+                        "power.off.sculk_sensor",
+                        "smithing_table.use",
+                        "default",
+                        "lay_egg",
+                        "lay_spawn",
+                        "bucket.fill.powder_snow",
+                        "bucket.empty.powder_snow",
+                        "cauldron_drip.water.pointed_dripstone",
+                        "cauldron_drip.lava.pointed_dripstone",
+                        "tilt_down.big_dripleaf",
+                        "tilt_up.big_dripleaf",
+                        "drip.water.pointed_dripstone",
+                        "pick_berries.cave_vines",
+                        "drip.lava.pointed_dripstone",
+                        "copper.wax.on",
+                        "copper.wax.off",
+                        "scrape",
+                        "item.spyglass.use",
+                        "item.spyglass.stop_using",
+                        "chime.amethyst_block",
+                        "mob.player.hurt_drown",
+                        "mob.player.hurt_on_fire",
+                        "mob.player.hurt_freeze",
+                        "ambient.screamer",
+                        "hurt.screamer",
+                        "death.screamer",
+                        "milk.screamer",
+                        "jump_to_block",
+                        "pre_ram",
+                        "pre_ram.screamer",
+                        "ram_impact",
+                        "ram_impact.screamer",
+                        "squid.ink_squirt",
+                        "glow_squid.ink_squirt",
+                        "convert_to_stray",
+                        "cake.add_candle",
+                        "extinguish.candle",
+                        "ambient.candle",
+                        "block.click",
+                        "block.click.fail",
+                        "block.sculk_catalyst.bloom",
+                        "block.sculk_shrieker.shriek",
+                        "nearby_close",
+                        "nearby_closer",
+                        "nearby_closest",
+                        "agitated",
+                        "listening",
+                        "heartbeat",
+                        "tongue",
+                        "item_given",
+                        "item_taken",
+                        "item_thrown",
+                        "irongolem.crack",
+                        "irongolem.repair",
+                        "horn_break",
+                        "horn_call0",
+                        "horn_call1",
+                        "horn_call2",
+                        "horn_call3",
+                        "horn_call4",
+                        "horn_call5",
+                        "horn_call6",
+                        "horn_call7",
+                        "imitate.warden",
+                        "listening_angry",
+                        "sonic_boom",
+                        "sonic_charge",
+                        "convert_to_frog",
+                        "block.sculk.spread",
+                        "charge.sculk",
+                        "block.sculk_sensor.place",
+                        "block.sculk_shrieker.place",
+                        "block.enchanting_table.use",
+                        "bundle.drop_contents",
+                        "bundle.insert",
+                        "bundle.insert_fail",
+                        "bundle.remove_one",
+                        "step_sand",
+                        "dash_ready",
+                        "pressure_plate.click_off",
+                        "pressure_plate.click_on",
+                        "button.click_off",
+                        "button.click_on",
+                        "door.open",
+                        "door.close",
+                        "trapdoor.open",
+                        "trapdoor.close",
+                        "fence_gate.open",
+                        "fence_gate.close",
+                        "insert",
+                        "pickup",
+                        "insert_enchanted",
+                        "pickup_enchanted",
+                        "shatter_pot",
+                        "break_pot",
+                        "brush",
+                        "brush_completed",
+                        "block.sign.waxed_interact_fail",
+                        "note.bass",
+                        "pumpkin.carve",
+                        "mob.husk.convert_to_zombie",
+                        "mob.pig.death",
+                        "mob.hoglin.converted_to_zombified",
+                        "ambient.underwater.enter",
+                        "ambient.underwater.exit",
+                        "bottle.fill",
+                        "bottle.empty",
+                        "block.decorated_pot.insert",
+                        "block.decorated_pot.insert_fail",
+                        "crafter.craft",
+                        "crafter.fail",
+                        "crafter.disable_slot",
+                        "block.copper_bulb.turn_on",
+                        "block.copper_bulb.turn_off",
+                        "breeze_wind_charge.burst",
+                        "imitate.breeze",
+                        "trial_spawner.open_shutter",
+                        "trial_spawner.detect_player",
+                        "trial_spawner.close_shutter",
+                        "trial_spawner.spawn_mob",
+                        "trial_spawner.eject_item",
+                        "trial_spawner.ambient",
+                        "mob.armadillo.brush",
+                        "mob.armadillo.scute_drop",
+                        "armor.equip_wolf",
+                        "armor.unequip_wolf",
+                        "reflect",
+                        "vault.open_shutter",
+                        "vault.close_shutter",
+                        "vault.eject_item",
+                        "vault.insert_item",
+                        "vault.insert_item_fail",
+                        "vault.ambient",
+                        "vault.activate",
+                        "vault.deactivate",
+                        "hurt.reduced",
+                        "wind_charge.burst",
+                        "armor.break_wolf",
+                        "armor.crack_wolf",
+                        "armor.repair_wolf",
+                        "mace.smash_air",
+                        "mace.smash_ground",
+                        "mace.heavy_smash_ground",
+                        "trial_spawner.charge_activate",
+                        "trial_spawner.ambient_ominous",
+                        "apply_effect.bad_omen",
+                        "apply_effect.raid_omen",
+                        "apply_effect.trial_omen",
+                        "ominous_item_spawner.spawn_item",
+                        "ominous_bottle.end_use",
+                        "ominous_item_spawner.spawn_item_begin",
+                        "ominous_item_spawner.about_to_spawn_item",
+                        "imitate.bogged",
+                        "vault.reject_rewarded_player",
+                        "imitate.drowned",
+                        "sponge.absorb",
+                        "imitate.creaking",
+                        "block.creaking_heart.trail",
+                        "creaking_heart_spawn",
+                        "activate",
+                        "deactivate",
+                        "freeze",
+                        "unfreeze",
+                        "open",
+                        "open_long",
+                        "close",
+                        "close_long",
+                        "undefined"
+                    ]
+                }
+            }
+        },
+        "842194090": {
+            "title": "minecraft:storage_weight_modifier v1.21.60",
+            "description": "Specifies the maximum weight limit that a storage item can hold",
+            "type": "object",
+            "properties": {
+                "weight_in_storage_item": {
+                    "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
+                    "type": "integer",
+                    "minimum": 0.0
+                }
+            }
+        },
+        "853889472": {
+            "title": "minecraft:entity_placer v1.20.50",
+            "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
+            "type": "object",
+            "properties": {
+                "dispense_on": {
+                    "title": "sequence container",
+                    "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2794205495"
+                    }
+                },
+                "entity": {
+                    "description": "The entity to be placed in the world.",
+                    "type": "string",
+                    "minLength": 0,
+                    "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                },
+                "use_on": {
+                    "title": "sequence container",
+                    "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2794205495"
+                    }
+                }
+            }
+        },
+        "857819254": {
+            "title": "minecraft:block_placer v1.21.40",
+            "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
+            "type": "object",
+            "properties": {
+                "block": {
+                    "description": "Defines the block that will be placed.",
+                    "type": "string"
+                },
+                "replace_block_item": {
+                    "description": "If true, the item will be registered as the item for this block. This item will be returned by default when the block is broken/picked. Note: the identifier for this item must match the block's identifier for this field to be valid.",
+                    "type": "boolean"
+                },
+                "use_on": {
+                    "title": "sequence container",
+                    "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2794205495"
+                    }
+                }
+            },
+            "required": [
+                "block"
+            ]
+        },
+        "886176099": {
+            "title": "minecraft:cooldown v1.20.50",
+            "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "description": "The type of cool down for this item. All items with a cool down component with the same category are put on cool down when one is used.",
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "The duration of time (in seconds) items with a matching category will spend cooling down before becoming usable again.",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "category",
+                "duration"
+            ]
+        }
+    },
+    "title": "minecraft:item v1.21.60",
+    "description": "Item definition includes the \"description\" and \"components\" sections.",
+    "type": "object",
+    "properties": {
+        "components": {
+            "description": "List of all components used in this item.",
+            "$ref": "#/definitions/4012773087"
+        },
+        "description": {
+            "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
+            "$ref": "#/definitions/1866815117"
+        }
+    },
+    "required": [
+        "description"
+    ]
+}

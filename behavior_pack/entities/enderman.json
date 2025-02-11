@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.40",
+  "format_version": "1.21.60",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:enderman",
@@ -32,11 +32,41 @@
         "minecraft:behavior.melee_box_attack": {
           "priority": 2
         }
+      },
+      "minecraft:riding": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "is_riding", "subject": "self", "operator": "==", "value": false
+            },
+            "event": "minecraft:stopped_riding"
+          }
+        }
+      },
+      "minecraft:not_riding": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "is_riding", "subject": "self", "operator": "==", "value": true
+            },
+            "event": "minecraft:started_riding"
+          }
+        },
+        "minecraft:teleport": {
+          "random_teleports": true,
+          "max_random_teleport_time": 30,
+          "random_teleport_cube": [ 32, 32, 32 ],
+          "target_distance": 16,
+          "target_teleport_chance": 0.05,
+          "light_teleport_chance": 0.05
+        }
       }
     },
 
     "components": {
       "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:renders_when_invisible": {
       },
       "minecraft:experience_reward": {
         "on_death": "query.last_hit_by_player ? 5 : 0"
@@ -94,7 +124,7 @@
         "search_radius": 64.0,
         "set_target": "once_and_stop_scanning",
         "find_players_only": true,
-        "looked_at_cooldown": 5.0,
+        "min_looked_at_duration": 0.25,
         "filters": {
           "test": "has_equipment", "domain": "head", "subject": "other", "operator": "not", "value": "carved_pumpkin"
         }
@@ -174,7 +204,8 @@
         },
         "add": {
           "component_groups": [
-            "minecraft:enderman_calm"
+            "minecraft:enderman_calm",
+            "minecraft:not_riding"
           ]
         }
       },
@@ -199,6 +230,30 @@
         "add": {
           "component_groups": [
             "minecraft:enderman_calm"
+          ]
+        }
+      },
+      "minecraft:stopped_riding": {
+        "add": {
+          "component_groups": [
+            "minecraft:not_riding"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:riding"
+          ]
+        }
+      },
+      "minecraft:started_riding": {
+        "add": {
+          "component_groups": [
+            "minecraft:riding"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:not_riding"
           ]
         }
       }

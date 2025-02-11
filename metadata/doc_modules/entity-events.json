@@ -1,0 +1,223 @@
+{
+   "name" : "Entity Events",
+   "nodes" : [
+      {
+         "header_level" : 1,
+         "name" : "This describes the structure of the Events section.",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "",
+            "\t\tEntity events can be structured by a combination of 'sequence' and 'randomize' nodes.",
+            "\t\t'sequence' nodes are array nodes and will execute all entries in order from first element to last.",
+            "\t\t'randomize' nodes are array nodes that will pick one entry to execute, based on a weight.",
+            "\t\t'filters' can also be added within 'sequence' and 'randomize' nodes to restrict execution.",
+            "",
+            "\t\tWithin 'randomize' and 'sequence' nodes, you can specify a few operations.",
+            "\t\t'trigger', 'filters', 'add', and 'remove'.",
+            "\t\tYou can read about 'filters' in the 'Filters' section of the documentation.",
+            "\t\t'trigger' can be used to fire additional entity events when an event is hit.",
+            "\t\t'add' can be used to add component groups to your entity.",
+            "\t\t'remove' can be used to remove component groups from your entity.",
+            "",
+            "\t\tWhen an event is received, the effects of that event are determined immediately, but those changes",
+            "\t\tare not applied to the entity until the entity ticks on the server side of the game. This means",
+            "\t\tfilters in later entries in a 'sequence' array won't see changes from earlier in that array.",
+            "\t\tIt also means that when one entity sends an event to another entity, it could take effect on the same",
+            "\t\tgame tick or on the next tick, depending on whether the target entity has already been updated.",
+            "\t"
+         ],
+         "header_level" : 1,
+         "name" : "Overview",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "",
+            "\t\tA 'format_version' of '1.19.20' or higher is required to properly evaluate filters specified on an entity event definition",
+            "\t\tat the root level of the event, that is any filter that is not underneath a 'sequence' or 'randomize' node.",
+            "\t\tContent with a lower version will use the old behavior, which was to ignore root level filters.",
+            "\t"
+         ],
+         "header_level" : 1,
+         "name" : "Versioned Changes",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "",
+            "\t\tThe 'randomize' node is an array node that will pick one entry to execute, based on a weight.",
+            "\t\tIf no weight is specified, a node will have a weight of 1.0.",
+            "\t\tIf you add a weight of 4.0 in one node, and 8.0 in another, then those nodes will have a 33.33% (4 / (4 + 8)) and 66.66% (8 / (4 + 8)) chance of executing, respectively.",
+            "\t"
+         ],
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"randomize\": [",
+                  "\t\t\t{",
+                  "\t\t\t\t\"weight\": <float>",
+                  "\t\t\t\t// actions like 'add' or 'remove'",
+                  "\t\t\t}",
+                  "\t\t]",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Randomize Node",
+         "show_in_index" : true
+      },
+      {
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"sequence\": [",
+                  "\t\t\t{",
+                  "\t\t\t\t// I will execute first! c:",
+                  "\t\t\t},",
+                  "\t\t\t{",
+                  "\t\t\t\t// I will execute last! :c",
+                  "\t\t\t}",
+                  "\t\t]",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Sequence Node",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "Triggers additional entity events when hit. For example, you could use a randomize node in minecraft:entity_spawned to choose either an adult or baby event for adding component groups."
+         ],
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"sample:spawn_adult\": {",
+                  "\t\t\t// add adult component groups",
+                  "\t\t},",
+                  "\t\t\"sample:spawn_baby\": {",
+                  "\t\t\t// add baby component groups",
+                  "\t\t},",
+                  "\t\t\"minecraft:entity_spawned\": {",
+                  "\t\t\t\"randomize\": [",
+                  "\t\t\t\t{",
+                  "\t\t\t\t\t\"weight\": 50.0,",
+                  "\t\t\t\t\t\"trigger\": \"sample:spawn_adult\"",
+                  "\t\t\t\t},",
+                  "\t\t\t\t{",
+                  "\t\t\t\t\t\"weight\": 50.0,",
+                  "\t\t\t\t\t\"trigger\": \"sample:spawn_baby\"",
+                  "\t\t\t\t}",
+                  "\t\t\t]",
+                  "\t\t}",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Trigger",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "Adds component groups to the current entity. These groups must be defined in the 'component_groups' section of the file. As entities can only have one component of each type active, any components in a group that is being added will replace previously added components. Additionally, adding a component group that is already active will cause those components to be re-initialized. For some types of components like minecraft:is_baby, re-initializing an already active component has no effect, but for other component types the associated logic will start over. For example, an already-added minecraft:timer that is added again will start its timing logic over."
+         ],
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"sequence\": [",
+                  "\t\t\t{",
+                  "\t\t\t\t\"add\": { \"component_groups\": [ \"one\" ] }",
+                  "\t\t\t},",
+                  "\t\t\t{",
+                  "\t\t\t\t\"add\": { \"component_groups\": [ \"two\", \"five\", \"etc..\" ] }",
+                  "\t\t\t}",
+                  "\t\t]",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Add Component Group",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "Removes component groups from the current entity. This can be any group you have defined in the 'component_groups' section of the file."
+         ],
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"sequence\": [",
+                  "\t\t\t{",
+                  "\t\t\t\t\"remove\": { \"component_groups\": [ \"one\" ] }",
+                  "\t\t\t},",
+                  "\t\t\t{",
+                  "\t\t\t\t\"remove\": { \"component_groups\": [ \"two\", \"five\", \"etc..\" ] }",
+                  "\t\t\t}",
+                  "\t\t]",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Remove Component Group",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "Sets the value of an entity property. The property must be defined in the 'properties' section of the file. "
+         ],
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"set_property\": {",
+                  "\t\t\t\"minecraft:has_nectar\": false",
+                  "\t\t}",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Set Entity Property",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "Queues a command to be run on the entity. The command will run within the next tick unless the entity has been removed."
+         ],
+         "examples" : [
+            {
+               "name" : "Example:",
+               "text" : [
+                  "\t\t\"queue_command\": {",
+                  "\t\t\t\"command\": \"say I have died!\"",
+                  "\t\t}",
+                  "\t"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "Queue Command",
+         "show_in_index" : true
+      }
+   ],
+   "version" : "1.21.60.10"
+}

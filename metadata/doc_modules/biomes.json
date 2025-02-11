@@ -1,0 +1,1280 @@
+{
+   "name" : "Biomes",
+   "nodes" : [
+      {
+         "description" : [
+            "Minecraft biomes can have different terrain characteristics. By writing custom biome data you could:",
+            "1) Change the general shape of the terrain.",
+            "2) Change the ratio of frequency of biome types.",
+            "3) Change the blocks that make up the biome, both at the surface and down below.",
+            "4) Change the distribution of decorative features like trees, grass, and flowers.",
+            "5) Change the mobs that spawn.",
+            "6) Change the climate.",
+            "7) ...and more!"
+         ],
+         "header_level" : 1,
+         "name" : "Overview",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "All biomes should specify the version that they target via the \"format_version\" field. The remainder of the biome data is divided up into independent JSON sub-objects, or components. ",
+            "In general, a component defines what game behaviors a biome participates in, and the component fields define how it participates. ",
+            "",
+            "There are basically two categories of components:",
+            "1) Namespaced components, such as those with a 'name:' prefix, that map to specific behaviors in-game. They may have member fields that parameterize that behavior. Only names that have a valid mapping are supported.",
+            "2) 'tags' which are defined under the \"minecraft:tags\" component. Tags consist of alphanumeric characters, along with '.' and '_'. A tag is attached to the biome so that either code or data may check for its existence. ",
+            ""
+         ],
+         "examples" : [
+            {
+               "name" : "Here is a sample biome schema with additional details and the full list of namespaced components.",
+               "text" : [
+                  "{",
+                  "  \"plains\": {",
+                  "    \"format_version\": \"1.20.60\",",
+                  "",
+                  "    \"minecraft:climate\": {",
+                  "      \"downfall\": 0.4,",
+                  "      \"snow_accumulation\": [ 0.0, 0.125 ],",
+                  "      \"temperature\": 0.8",
+                  "    },",
+                  "    \"minecraft:overworld_height\": {",
+                  "      \"noise_type\": \"lowlands\"",
+                  "    },",
+                  "    \"minecraft:surface_parameters\": {",
+                  "      \"sea_floor_depth\": 7,",
+                  "      \"sea_floor_material\": \"minecraft:gravel\",",
+                  "      \"foundation_material\": \"minecraft:stone\",",
+                  "      \"mid_material\": \"minecraft:dirt\",",
+                  "      \"top_material\": \"minecraft:grass_block\"",
+                  "    },",
+                  "    \"minecraft:overworld_generation_rules\": {",
+                  "      \"hills_transformation\": [",
+                  "        [ \"forest_hills\", 1 ],",
+                  "        [ \"forest\", 2 ]",
+                  "      ],",
+                  "      \"mutate_transformation\": \"sunflower_plains\",",
+                  "      \"generate_for_climates\": [",
+                  "        [ \"medium\", 3 ],",
+                  "        [ \"warm\", 1 ],",
+                  "        [ \"cold\", 1 ]",
+                  "      ]",
+                  "    },",
+                  "",
+                  "    \"minecraft:tags\": {",
+                  "      \"tags\": [",
+                  "        \"animal\",",
+                  "        \"monster\",",
+                  "        \"overworld\",",
+                  "        \"plains\"",
+                  "      ]",
+                  "    }",
+                  "  }",
+                  "}"
+               ]
+            }
+         ],
+         "examples_print_mode" : "code",
+         "header_level" : 1,
+         "name" : "JSON Format",
+         "show_in_index" : true
+      },
+      {
+         "description" : [
+            "Biomes are read from JSON files in the biomes subfolders of behavior packs. Loading enforces one biome per file; and the file name and the actual biome name must match. Adding a file with a new name to the biome data location will make it available for the game to use, while existing biomes can be overridden using files that match their existing name. Note that if you add a new biome, you'll need to write component data that allows it to participate in world generation (as shown in the full schema below), or else it won't show up in your worlds!"
+         ],
+         "header_level" : 1,
+         "name" : "Adding Biomes",
+         "show_in_index" : true
+      },
+      {
+         "header_level" : 1,
+         "name" : "Schema",
+         "nodes" : [
+            {
+               "description" : [ "Any components that this Biome uses" ],
+               "header_level" : 2,
+               "name" : "Biome Components",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Generates surface on blocks with non-solid blocks above or below." ],
+                     "header_level" : 3,
+                     "name" : "minecraft:capped_surface",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:climate",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Probability that creatures will spawn within the biome when a chunk is generated."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:creature_spawn_probability",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Similar to overworld_surface. Adds icebergs." ],
+                     "header_level" : 3,
+                     "name" : "minecraft:frozen_ocean_surface",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Similar to overworld_surface. Adds colored strata and optional pillars."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:mesa_surface",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Noise parameters used to drive mountain terrain generation in Overworld."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:mountain_parameters",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:multinoise_generation_rules",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:overworld_generation_rules",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Noise parameters used to drive terrain height in the Overworld." ],
+                     "header_level" : 3,
+                     "name" : "minecraft:overworld_height",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Specify fine-detail changes to blocks used in terrain generation (based on a noise function)."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:surface_material_adjustments",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the blocks used for the default Minecraft Overworld terrain generation."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:surface_parameters",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Similar to overworld_surface. Adds swamp surface details." ],
+                     "header_level" : 3,
+                     "name" : "minecraft:swamp_surface",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Attach arbitrary string tags to this biome." ],
+                     "header_level" : 3,
+                     "name" : "minecraft:tags",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Use default Minecraft End terrain generation." ],
+                     "header_level" : 3,
+                     "name" : "minecraft:the_end_surface",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Contains a description and components to define a Biome." ],
+               "header_level" : 2,
+               "name" : "Biome Definition",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Components for this Biome." ],
+                     "header_level" : 3,
+                     "name" : "components",
+                     "show_in_index" : true,
+                     "type" : "Object of type Biome Components"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Non-component settings, including the Biome name." ],
+                     "header_level" : 3,
+                     "name" : "description",
+                     "show_in_index" : true,
+                     "type" : "Object of type Biome Description"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Contains non-component settings for a Biome." ],
+               "header_level" : 2,
+               "name" : "Biome Description",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "The name of the Biome, used by other features like the '/locate biome' command."
+                     ],
+                     "header_level" : 3,
+                     "name" : "identifier",
+                     "show_in_index" : true,
+                     "type" : "String"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Contains a format version and a biome definition" ],
+               "header_level" : 2,
+               "name" : "Biome JSON File",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Version of the JSON schema used by this file" ],
+                     "header_level" : 3,
+                     "name" : "format_version",
+                     "show_in_index" : true,
+                     "type" : "String"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "A single biome definition" ],
+                     "header_level" : 3,
+                     "name" : "minecraft:biome",
+                     "show_in_index" : true,
+                     "type" : "Object of type Biome Definition"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Specifies a particular block. Can be a string block name or a JSON object"
+               ],
+               "header_level" : 2,
+               "name" : "Block Specifier",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Name of the block" ],
+                     "header_level" : 3,
+                     "name" : "name",
+                     "show_in_index" : true,
+                     "type" : "String"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Contains members named after each state, with boolean, integer, or string values."
+                     ],
+                     "header_level" : 3,
+                     "name" : "states",
+                     "show_in_index" : true,
+                     "type" : "Object"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "A JSON field that specifies a Molang expression. Can be an integer, float, boolean, or string."
+               ],
+               "header_level" : 2,
+               "name" : "Molang Expression",
+               "show_in_index" : true
+            },
+            {
+               "description" : [ "Generates surface on blocks with non-solid blocks above or below." ],
+               "header_level" : 2,
+               "name" : "minecraft:capped_surface",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Material used to decorate surface near sea level." ],
+                     "header_level" : 3,
+                     "name" : "beach_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Materials used for the surface ceiling." ],
+                     "header_level" : 3,
+                     "name" : "ceiling_materials",
+                     "show_in_index" : true,
+                     "type" : "Array of Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Materials used for the surface floor." ],
+                     "header_level" : 3,
+                     "name" : "floor_materials",
+                     "show_in_index" : true,
+                     "type" : "Array of Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Material used to replace solid blocks that are not surface blocks." ],
+                     "header_level" : 3,
+                     "name" : "foundation_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Material used to replace air blocks below sea level." ],
+                     "header_level" : 3,
+                     "name" : "sea_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:climate",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Density of ash precipitation visuals" ],
+                     "header_level" : 3,
+                     "name" : "ash",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Density of blue spore precipitation visuals" ],
+                     "header_level" : 3,
+                     "name" : "blue_spores",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Amount that precipitation affects colors and block changes" ],
+                     "header_level" : 3,
+                     "name" : "downfall",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Density of blue spore precipitation visuals" ],
+                     "header_level" : 3,
+                     "name" : "red_spores",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Minimum and maximum snow level, each multiple of 0.125 is another snow layer"
+                     ],
+                     "header_level" : 3,
+                     "name" : "snow_accumulation",
+                     "show_in_index" : true,
+                     "type" : "Array of 2 Floats"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Temperature affects a variety of visual and behavioral things, including snow and ice placement, sponge drying, and sky color"
+                     ],
+                     "header_level" : 3,
+                     "name" : "temperature",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Density of white ash precipitation visuals" ],
+                     "header_level" : 3,
+                     "name" : "white_ash",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Probability that creatures will spawn within the biome when a chunk is generated."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:creature_spawn_probability",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation."
+                     ],
+                     "header_level" : 3,
+                     "name" : "probability",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Similar to overworld_surface. Adds icebergs." ],
+               "header_level" : 2,
+               "name" : "minecraft:frozen_ocean_surface",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used deep underground in this biome" ],
+                     "header_level" : 3,
+                     "name" : "foundation_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used in a layer below the surface of this biome"
+                     ],
+                     "header_level" : 3,
+                     "name" : "mid_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls how deep below the world water level the floor should occur"
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_depth",
+                     "show_in_index" : true,
+                     "type" : "Integer"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used as a floor for bodies of water in this biome"
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the bodies of water in this biome" ],
+                     "header_level" : 3,
+                     "name" : "sea_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the surface of this biome" ],
+                     "header_level" : 3,
+                     "name" : "top_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Similar to overworld_surface. Adds colored strata and optional pillars."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:mesa_surface",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Whether the mesa generates with pillars" ],
+                     "header_level" : 3,
+                     "name" : "bryce_pillars",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Base clay block to use" ],
+                     "header_level" : 3,
+                     "name" : "clay_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used deep underground in this biome" ],
+                     "header_level" : 3,
+                     "name" : "foundation_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Hardened clay block to use" ],
+                     "header_level" : 3,
+                     "name" : "hard_clay_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Places coarse dirt and grass at high altitudes" ],
+                     "header_level" : 3,
+                     "name" : "has_forest",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used in a layer below the surface of this biome"
+                     ],
+                     "header_level" : 3,
+                     "name" : "mid_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls how deep below the world water level the floor should occur"
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_depth",
+                     "show_in_index" : true,
+                     "type" : "Integer"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used as a floor for bodies of water in this biome"
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the bodies of water in this biome" ],
+                     "header_level" : 3,
+                     "name" : "sea_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the surface of this biome" ],
+                     "header_level" : 3,
+                     "name" : "top_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Noise parameters used to drive mountain terrain generation in Overworld."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:mountain_parameters",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Does nothing" ],
+                     "header_level" : 3,
+                     "name" : "peaks_factor",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Defines surface material for steep slopes" ],
+                     "header_level" : 3,
+                     "name" : "steep_material_adjustment",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:mountain_parameters - steep_material_adjustment settings"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high"
+                     ],
+                     "header_level" : 3,
+                     "name" : "top_slide",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:mountain_parameters - top_slide settings"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Defines surface material for steep slopes" ],
+               "header_level" : 2,
+               "name" : "minecraft:mountain_parameters - steep_material_adjustment settings",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Enable for east-facing slopes" ],
+                     "header_level" : 3,
+                     "name" : "east_slopes",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Block type use as steep material" ],
+                     "header_level" : 3,
+                     "name" : "material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Enable for north-facing slopes" ],
+                     "header_level" : 3,
+                     "name" : "north_slopes",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Enable for south-facing slopes" ],
+                     "header_level" : 3,
+                     "name" : "south_slopes",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "Enable for west-facing slopes" ],
+                     "header_level" : 3,
+                     "name" : "west_slopes",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:mountain_parameters - top_slide settings",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "If false, top slide will be disabled. If true, other parameters will be taken into account."
+                     ],
+                     "header_level" : 3,
+                     "name" : "enabled",
+                     "show_in_index" : true,
+                     "type" : "Boolean"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:multinoise_generation_rules",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Altitude with which this biome should be generated, relative to other biomes."
+                     ],
+                     "header_level" : 3,
+                     "name" : "target_altitude",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Humidity with which this biome should be generated, relative to other biomes."
+                     ],
+                     "header_level" : 3,
+                     "name" : "target_humidity",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Temperature with which this biome should be generated, relative to other biomes."
+                     ],
+                     "header_level" : 3,
+                     "name" : "target_temperature",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Weirdness with which this biome should be generated, relative to other biomes."
+                     ],
+                     "header_level" : 3,
+                     "name" : "target_weirdness",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Weight with which this biome should be generated, relative to other biomes."
+                     ],
+                     "header_level" : 3,
+                     "name" : "weight",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:overworld_generation_rules",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the world generation climate categories that this biome can spawn for. A single biome can be associated with multiple categories with different weightings."
+                     ],
+                     "header_level" : 3,
+                     "name" : "generate_for_climates",
+                     "show_in_index" : true,
+                     "type" : "Array of Object of type minecraft:overworld_generation_rules - Weighted climate categories settings"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "What biome to switch to when converting to a hilly biome" ],
+                     "header_level" : 3,
+                     "name" : "hills_transformation",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:overworld_generation_rules - Weighted biome names settings"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "What biome to switch to when converting to a mutated biome" ],
+                     "header_level" : 3,
+                     "name" : "mutate_transformation",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:overworld_generation_rules - Weighted biome names settings"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "What biome to switch to when converting to a river biome (if not the Vanilla 'river' biome)"
+                     ],
+                     "header_level" : 3,
+                     "name" : "river_transformation",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:overworld_generation_rules - Weighted biome names settings"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [ "What biome to switch to when adjacent to an ocean biome" ],
+                     "header_level" : 3,
+                     "name" : "shore_transformation",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:overworld_generation_rules - Weighted biome names settings"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Can be just the string name of a Biome, or an array of any size. If an array, each entry can be a Biome name string, or an array of size 2, where the first entry is a Biome name and the second entry is a positive integer representing how that Biome is weighted against other entries. If no weight is provided, a weight of 1 is used."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:overworld_generation_rules - Weighted biome names settings",
+               "show_in_index" : true
+            },
+            {
+               "description" : [
+                  "An array of any size containing arrays of exactly two elements. For each contained array, the first element is a climate category string ('medium', 'warm', 'lukewarm', 'cold', or 'frozen'). The second element is a positive integer for how much that entry is weighted relative to other entries."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:overworld_generation_rules - Weighted climate categories settings",
+               "show_in_index" : true
+            },
+            {
+               "description" : [ "Noise parameters used to drive terrain height in the Overworld." ],
+               "header_level" : 2,
+               "name" : "minecraft:overworld_height",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "First value is depth - more negative means deeper underwater, while more positive means higher. Second value is scale, which affects how much noise changes as it moves from the surface."
+                     ],
+                     "header_level" : 3,
+                     "name" : "noise_params",
+                     "show_in_index" : true,
+                     "type" : "Array of 2 Floats"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Specifies a preset based on a built-in setting rather than manually using noise_params"
+                     ],
+                     "header_level" : 3,
+                     "name" : "noise_type",
+                     "show_in_index" : true,
+                     "type" : "\"default\", \"default_mutated\", \"river\", \"ocean\", \"deep_ocean\", \"lowlands\", \"taiga\", \"mountains\", \"highlands\", \"extreme\", \"less_extreme\", \"beach\", \"stone_beach\", \"mushroom\", \"swamp\""
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Specify fine-detail changes to blocks used in terrain generation (based on a noise function)."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:surface_material_adjustments",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "All adjustments that match the column's noise values will be applied in the order listed."
+                     ],
+                     "header_level" : 3,
+                     "name" : "adjustments",
+                     "show_in_index" : true,
+                     "type" : "Array of Object of type minecraft:surface_material_adjustments - surface adjustment settings"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "The specific blocks used for this surface adjustment" ],
+               "header_level" : 2,
+               "name" : "minecraft:surface_material_adjustments - surface adjustment materials settings",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the block type used deep underground in this biome when this adjustment is active."
+                     ],
+                     "header_level" : 3,
+                     "name" : "foundation_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the block type used in a layer below the surface of this biome when this adjustment is active."
+                     ],
+                     "header_level" : 3,
+                     "name" : "mid_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the block type used as a floor for bodies of water in this biome when this adjustment is active."
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the block type used in the bodies of water in this biome when this adjustment is active."
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Controls the block type used for the surface of this biome when this adjustment is active."
+                     ],
+                     "header_level" : 3,
+                     "name" : "top_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "An adjustment to generated terrain, replacing blocks based on the specified settings."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:surface_material_adjustments - surface adjustment settings",
+               "nodes" : [
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Defines a range of noise values [min, max] for which this adjustment should be applied."
+                     ],
+                     "header_level" : 3,
+                     "name" : "height_range",
+                     "show_in_index" : true,
+                     "type" : "Array of 2 Molang expressions"
+                  },
+                  {
+                     "default" : "Required",
+                     "header_level" : 3,
+                     "name" : "materials",
+                     "show_in_index" : true,
+                     "type" : "Object of type minecraft:surface_material_adjustments - surface adjustment materials settings"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "The scale to multiply by the position when accessing the noise value for the material adjustments."
+                     ],
+                     "header_level" : 3,
+                     "name" : "noise_frequency_scale",
+                     "show_in_index" : true,
+                     "type" : "Float"
+                  },
+                  {
+                     "default" : "Optional",
+                     "description" : [
+                        "Defines a range of noise values [min, max] for which this adjustment should be applied."
+                     ],
+                     "header_level" : 3,
+                     "name" : "noise_range",
+                     "show_in_index" : true,
+                     "type" : "Array of 2 Floats"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [
+                  "Controls the blocks used for the default Minecraft Overworld terrain generation."
+               ],
+               "header_level" : 2,
+               "name" : "minecraft:surface_parameters",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used deep underground in this biome." ],
+                     "header_level" : 3,
+                     "name" : "foundation_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used in a layer below the surface of this biome."
+                     ],
+                     "header_level" : 3,
+                     "name" : "mid_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls how deep below the world water level the floor should occur."
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_depth",
+                     "show_in_index" : true,
+                     "type" : "Integer"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used as a floor for bodies of water in this biome."
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the bodies of water in this biome." ],
+                     "header_level" : 3,
+                     "name" : "sea_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the surface of this biome." ],
+                     "header_level" : 3,
+                     "name" : "top_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Similar to overworld_surface. Adds swamp surface details." ],
+               "header_level" : 2,
+               "name" : "minecraft:swamp_surface",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used deep underground in this biome." ],
+                     "header_level" : 3,
+                     "name" : "foundation_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used in a layer below the surface of this biome."
+                     ],
+                     "header_level" : 3,
+                     "name" : "mid_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls how deep below the world water level the floor should occur."
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_depth",
+                     "show_in_index" : true,
+                     "type" : "Integer"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [
+                        "Controls the block type used as a floor for bodies of water in this biome."
+                     ],
+                     "header_level" : 3,
+                     "name" : "sea_floor_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the bodies of water in this biome." ],
+                     "header_level" : 3,
+                     "name" : "sea_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  },
+                  {
+                     "default" : "Required",
+                     "description" : [ "Controls the block type used for the surface of this biome." ],
+                     "header_level" : 3,
+                     "name" : "top_material",
+                     "show_in_index" : true,
+                     "type" : "Object of type Block Specifier"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Attach arbitrary string tags to this biome." ],
+               "header_level" : 2,
+               "name" : "minecraft:tags",
+               "nodes" : [
+                  {
+                     "default" : "Required",
+                     "description" : [ "Array of string tags used by other systems such as entity spawning" ],
+                     "header_level" : 3,
+                     "name" : "tags",
+                     "show_in_index" : true,
+                     "type" : "Array of String"
+                  }
+               ],
+               "nodes_as_table" : true,
+               "show_in_index" : true,
+               "table_default_title" : "Required?",
+               "table_description_title" : "Description",
+               "table_name_title" : "Name",
+               "table_type_title" : "Type"
+            },
+            {
+               "description" : [ "Use default Minecraft End terrain generation." ],
+               "header_level" : 2,
+               "name" : "minecraft:the_end_surface",
+               "show_in_index" : true
+            }
+         ],
+         "nodes_as_table" : false,
+         "show_in_index" : true
+      }
+   ],
+   "version" : "1.21.60.10"
+}

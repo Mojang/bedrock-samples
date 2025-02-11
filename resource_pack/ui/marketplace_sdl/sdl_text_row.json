@@ -65,19 +65,67 @@
     ]
   },
 
-  "label_hover": {
-    "type": "panel",
-    "size": [ "100%", "100%" ],
+  "sdl_header_component_factory@sdl_label.sdl_label_factory": {
+    "layer": 2,
     "anchor_to": "top_middle",
     "anchor_from": "top_middle",
-    "controls": [
+    "$sdl_label_max_size": [ "100%", "default" ],
+    "$sdl_label_binding_type": "collection",
+    "$sdl_label_binding_name": "#header_label_from_style",
+    "$sdl_label_text_color": "#header_label_color",
+    "$sdl_label_font_type": "#header_label_font_type",
+    "$sdl_label_font_scalar": "#header_label_font_scale",
+    "$sdl_label_alignment": "#header_label_alignment",
+
+    "$sdl_factory_bindings": [
       {
-        "hover@common.focus_border_white": {
-          "size": [ "100%", "100%" ],
-          "offset": [ 0, 2 ],
-          "anchor_to": "top_middle",
-          "anchor_from": "top_middle"
-        }
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_name": "#header_label_id",
+        "binding_type": "collection",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_name_override": "#collection_length"
+      }
+    ],
+
+    // If we don't define this here it can be overwritten from above us in the visual tree
+    "$sdl_label_bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_binding_name"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_text_color",
+        "binding_name_override": "#color"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_font_type",
+        "binding_name_override": "#font_type"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_font_scalar",
+        "binding_name_override": "#font_scale_factor"
+      },
+      {
+        "binding_type": "$sdl_label_binding_type",
+        "binding_collection_name": "$sdl_label_collection_name",
+        "binding_name": "$sdl_label_alignment",
+        "binding_name_override": "#text_alignment"
       }
     ]
   },
@@ -90,10 +138,82 @@
     "focus_enabled": true
   },
 
-  "sdl_text_row": {
+  "sdl_header_component_panel": {
     "type": "panel",
     "anchor_to": "center",
-    "size": [ "100% - 2px", "100%cm + 3px" ],
+    "size": [ "100%", "100%cm" ],
+    "controls": [
+      {
+        "header_background@common_store.store_description_background": {
+          "size": "$background_size",
+          "anchor_to": "top_middle",
+          "anchor_from": "top_middle",
+          "$background_size|default": [ "100%", "100%sm" ],
+          "offset": [ 0, 2 ],
+          "layer": 1,
+          "bindings": [
+            {
+              "binding_name": "#show_header_background",
+              "binding_type": "collection",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_name_override": "#visible"
+            },
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            }
+          ]
+        }
+      },
+      {
+        "header_internals@common.tts_activate_sibling": {
+          "anchor_to": "top_middle",
+          "anchor_from": "top_middle"
+        }
+      },
+      {
+        "header_highlight": {
+          "type": "image",
+          "size": [ "100%", "100%sm" ],
+          "anchor_to": "top_middle",
+          "anchor_from": "top_middle",
+          "offset": [ 0, 2 ],
+          "layer": 2,
+          "texture": "textures/ui/call_out_header",
+          "bindings": [
+            {
+              "binding_name": "#header_bg_color_visible",
+              "binding_name_override": "#visible",
+              "binding_type": "collection",
+              "binding_collection_name": "$store_factory_collection_name"
+            },
+            {
+              "binding_name": "#header_bg_color",
+              "binding_type": "collection",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_name_override": "#color"
+            },
+            {
+              "binding_type": "$store_factory_collection_details",
+              "binding_collection_name": "$store_factory_collection_name",
+              "binding_collection_prefix": "$store_factory_collection_prefix"
+            }
+          ]
+        }
+      },
+      {
+        "text_row_header_text@sdl_text_row.sdl_header_component_factory": {
+          "$sdl_factory_size": [ "100%", "100%c" ]
+        }
+      }
+    ]
+  },
+
+  "sdl_text_row_component_panel": {
+    "type": "panel",
+    "anchor_to": "center",
+    "size": [ "100%", "100%cm" ],
     "controls": [
       {
         "text_background@common_store.store_description_background": {
@@ -117,25 +237,9 @@
         }
       },
       {
-        "text_row_internals@sdl_text_row.label_button": {
+        "text_row_selector@common.tts_activate_sibling": {
           "anchor_to": "top_middle",
-          "anchor_from": "top_middle",
-          "tts_inherit_siblings": true,
-          "controls": [
-            {
-              "default": {
-                "type": "panel",
-                "size": [ "100%", "100%" ]
-              }
-            },
-            {
-              "pressed@sdl_text_row.label_hover": {}
-            },
-            {
-              "hover@sdl_text_row.label_hover": {}
-            }
-
-          ]
+          "anchor_from": "top_middle"
         }
       },
       {
@@ -165,8 +269,8 @@
         }
       },
       {
-        "text_row_text@sdl_text_row.sdl_text_row_factory": {
-          "$sdl_factory_size": [ "100% - 2px", "100%c" ]
+        "text_row_component_text@sdl_text_row.sdl_text_row_factory": {
+          "$sdl_factory_size": [ "100%", "100%c" ]
         }
       }
     ]
@@ -184,8 +288,18 @@
         }
       },
       {
-        "text_row@sdl_text_row.sdl_text_row": {
-          "size": [ "fill", "100%cm + 2px" ]
+        "headercomp_and_textcomp_panel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "fill", "100%c" ],
+          "controls": [
+            {
+              "text_row_header_text_panel@sdl_text_row.sdl_header_component_panel": {}
+            },
+            {
+              "text_row_text_panel@sdl_text_row.sdl_text_row_component_panel": {}
+            }
+          ]
         }
       },
       {

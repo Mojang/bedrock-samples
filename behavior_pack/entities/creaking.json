@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.50",
+  "format_version": "1.21.60",
   "use_beta_features": true,
   "minecraft:entity": {
     "description": {
@@ -37,6 +37,8 @@
       "minecraft:attack": {
         "damage": 3
       },
+      "minecraft:nameable": {
+      },
       "minecraft:physics": {
       },
       "minecraft:jump.static": {
@@ -55,8 +57,32 @@
       },
       "minecraft:is_hidden_when_invisible": {
       },
-      "minecraft:environment_sensor": {
+      "minecraft:renders_when_invisible": {
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      }
+    },
+
+    "component_groups": {
+      "minecraft:spawned_by_player": {
+        "minecraft:navigation.walk": {
+          "can_path_over_water": true,
+          "can_path_over_lava": false,
+          "avoid_damage_blocks": true
+        },
+        "minecraft:hurt_on_condition": {
+          "damage_conditions": [
+            {
+              "filters": { "test": "in_lava" },
+              "cause": "lava",
+              "damage_per_tick": 4
+            }
+          ]
+        },
+        "minecraft:environment_sensor": {
           "triggers": [
+            // This trigger needs to be aligned with the analogous one defined in "minecraft:spawned_by_creaking_heart".
             {
               "filters": {
                 "all_of": [
@@ -76,48 +102,11 @@
                 ]
               },
               "event": "minecraft:become_neutral"
-            },
-            {
-              "filters": {
-                "all_of": [
-                  { "test": "int_property", "domain": "minecraft:creaking_swaying_ticks", "operator": ">", "value": 0 },
-                  { "test": "int_property", "domain": "minecraft:creaking_swaying_ticks", "operator": "<=", "value": 5 }
-                ]
-              },
-              "event": "minecraft:increment_swaying_ticks"
-            },
-            {
-              "filters": {
-                "test": "int_property", "domain": "minecraft:creaking_swaying_ticks", "operator": ">", "value": 5
-               },
-              "event": "minecraft:reset_swaying_ticks"
-            }
-          ]
-        }
-    },
-
-    "component_groups": {
-      "minecraft:spawned_by_player": {
-        "minecraft:nameable": {
-        },
-        "minecraft:navigation.walk": {
-          "can_path_over_water": true,
-          "can_path_over_lava": false,
-          "avoid_damage_blocks": true
-        },
-        "minecraft:hurt_on_condition": {
-          "damage_conditions": [
-            {
-              "filters": { "test": "in_lava" },
-              "cause": "lava",
-              "damage_per_tick": 4
             }
           ]
         }
       },
       "minecraft:spawned_by_creaking_heart": {
-        "minecraft:transient": {
-        },
         "minecraft:dimension_bound": {
         },
         "minecraft:fire_immune": {
@@ -163,6 +152,78 @@
             {
               "cause": "all",
               "deals_damage": "no_but_side_effects_apply"
+            }
+          ]
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            // This trigger needs to be aligned with the analogous one defined in "minecraft:spawned_by_player".
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "any_of": [
+                      { "test": "enum_property", "domain": "minecraft:creaking_state", "value": "hostile_observed" },
+                      { "test": "enum_property", "domain": "minecraft:creaking_state", "value": "hostile_unobserved" }
+                    ]
+                  },
+                  {
+                    "any_of": [
+                      { "test": "has_target", "value": false },
+                      { "test": "actor_health", "subject": "target", "value": 0 },
+                      { "test": "target_distance", "operator": ">", "value": 24 }
+                    ]
+                  }
+                ]
+              },
+              "event": "minecraft:become_neutral"
+            },
+            // Force the Creaking to despawn if the conditions for it being spawned are no longer met.
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "none_of": [
+                      { "test": "enum_property", "domain": "minecraft:creaking_state", "value": "twitching" },
+                      { "test": "has_nametag" }
+                    ]
+                  },
+                  {
+                    "any_of": [
+                      { "test": "home_distance", "operator": ">", "value": 34 },
+                      // These values correspond to the rising and setting times of the moon, as in Dimension::isMoonVisible
+                      { "test": "hourly_clock_time", "operator": ">", "value": 23400 },
+                      { "test": "hourly_clock_time", "operator": "<=", "value": 12600 }
+                    ]
+                  }
+                ]
+              },
+              "event": "minecraft:crumble_and_notify_creaking_heart"
+            },
+            {
+              "filters": {
+                "all_of": [
+                  { "test": "enum_property", "domain": "minecraft:creaking_state", "operator": "not", "value": "twitching" },
+                  { "test": "is_bound_to_creaking_heart", "value": false }
+                ]
+              },
+              "event": "minecraft:crumble"
+            },
+            // Make sure that the Creaking sways for exactly 5 ticks.
+            {
+              "filters": {
+                "all_of": [
+                  { "test": "int_property", "domain": "minecraft:creaking_swaying_ticks", "operator": ">", "value": 0 },
+                  { "test": "int_property", "domain": "minecraft:creaking_swaying_ticks", "operator": "<=", "value": 5 }
+                ]
+              },
+              "event": "minecraft:increment_swaying_ticks"
+            },
+            {
+              "filters": {
+                "test": "int_property", "domain": "minecraft:creaking_swaying_ticks", "operator": ">", "value": 5
+              },
+              "event": "minecraft:reset_swaying_ticks"
             }
           ]
         }
@@ -259,6 +320,10 @@
               { "test": "has_equipment", "subject": "other", "domain": "head", "value": "carved_pumpkin" }
             ]
           }
+        },
+        "minecraft:ambient_sound_interval": {
+          // We need to override the ambient sound to be something else or it will play even after the component is removed.
+          "event_name": "undefined"
         }
       },
       "minecraft:hostile_unobserved": {
@@ -467,14 +532,26 @@
           "sound": "death"
         }
       },
+      "minecraft:crumble_and_notify_creaking_heart": {
+        "execute_event_on_home_block": {
+          "event": "minecraft:on_spawned_creaking_crumbling"
+        },
+        "trigger": "minecraft:crumble"
+      },
       "minecraft:damaged_by_player": {
         "execute_event_on_home_block": {
           "event": "minecraft:on_spawned_creaking_damaged_by_player"
         },
-        "trigger": "minecraft:increment_swaying_ticks"
+        "trigger": "minecraft:increment_swaying_ticks",
+        "emit_vibration": {
+          "vibration": "entity_act"
+        }
       },
       "minecraft:damaged_by_entity": {
-        "trigger": "minecraft:increment_swaying_ticks"
+        "trigger": "minecraft:increment_swaying_ticks",
+        "emit_vibration": {
+          "vibration": "entity_act"
+        }
       },
       "minecraft:increment_swaying_ticks": {
         "set_property": {
