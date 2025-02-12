@@ -200,7 +200,7 @@
             "properties": {
                 "block": {
                     "description": "Defines the block that will be placed.",
-                    "type": "string"
+                    "$ref": "#/definitions/1527037515"
                 },
                 "use_on": {
                     "title": "sequence container",
@@ -219,24 +219,9 @@
                 "block"
             ]
         },
-        "2770948419": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "string"
-                },
-                "states": {
-                    "title": "associative container",
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/517105782"
-                    }
-                }
-            }
+        "1527037515": {
+            "title": "struct SharedTypes::Reference<0>",
+            "type": "string"
         },
         "3178615832": {
             "title": "minecraft:stacked_by_data v1.20.50",
@@ -269,6 +254,25 @@
                     "type": "boolean"
                 }
             ]
+        },
+        "2770948419": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "states": {
+                    "title": "associative container",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/517105782"
+                    }
+                }
+            }
         },
         "3126701690": {
             "title": "minecraft:can_destroy_in_creative v1.20.50",
@@ -419,14 +423,14 @@
             "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
             "type": "object",
             "properties": {
+                "damage_chance": {
+                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
+                    "$ref": "#/definitions/1398826300"
+                },
                 "max_durability": {
                     "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
                     "type": "integer",
                     "minimum": 0.0
-                },
-                "damage_chance": {
-                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
-                    "$ref": "#/definitions/1398826300"
                 }
             },
             "required": [
@@ -529,14 +533,14 @@
             "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
             "type": "object",
             "properties": {
-                "nutrition": {
-                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
-                    "type": "integer"
-                },
                 "saturation_modifier": {
                     "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
                     "type": "number",
                     "minimum": 0.0
+                },
+                "nutrition": {
+                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
+                    "type": "integer"
                 },
                 "can_always_eat": {
                     "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
@@ -1075,17 +1079,17 @@
             "title": "struct SharedTypes::v1_20_50::ShooterItemComponent::Ammunition",
             "type": "object",
             "properties": {
-                "item": {
-                    "description": "Ammunition item description identifier.",
-                    "$ref": "#/definitions/1531870811"
+                "use_in_creative": {
+                    "description": "Can use in creative mode? Default is set to false.",
+                    "type": "boolean"
                 },
                 "search_inventory": {
                     "description": "Can search inventory? Default is set to false.",
                     "type": "boolean"
                 },
-                "use_in_creative": {
-                    "description": "Can use in creative mode? Default is set to false.",
-                    "type": "boolean"
+                "item": {
+                    "description": "Ammunition item description identifier.",
+                    "$ref": "#/definitions/1531870811"
                 },
                 "use_offhand": {
                     "description": "Can use off-hand? Default is set to false.",
@@ -1174,13 +1178,13 @@
                     "description": "The minimum duration to draw a throwable item. Default is set to 0.0.",
                     "type": "number"
                 },
-                "max_draw_duration": {
-                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
-                    "type": "number"
-                },
                 "scale_power_by_draw_duration": {
                     "description": "Whether or not the power of the throw increases with duration charged. Default is set to false.",
                     "type": "boolean"
+                },
+                "max_draw_duration": {
+                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
                 },
                 "launch_power_scale": {
                     "description": "The scale at which the power of the throw increases. Default is set to 1.0.",
@@ -1229,12 +1233,6 @@
             "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
             "type": "object",
             "properties": {
-                "entity": {
-                    "description": "The entity to be placed in the world.",
-                    "type": "string",
-                    "minLength": 0,
-                    "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
-                },
                 "dispense_on": {
                     "title": "sequence container",
                     "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
@@ -1242,6 +1240,12 @@
                     "items": {
                         "$ref": "#/definitions/2794205495"
                     }
+                },
+                "entity": {
+                    "description": "The entity to be placed in the world.",
+                    "type": "string",
+                    "minLength": 0,
+                    "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
                 },
                 "use_on": {
                     "title": "sequence container",
@@ -2078,13 +2082,13 @@
                         "$ref": "#/definitions/2681068491"
                     }
                 },
-                "max_draw_duration": {
-                    "description": "Draw Duration. Default is set to 0.",
-                    "type": "number"
-                },
                 "scale_power_by_draw_duration": {
                     "description": "Scale power by draw duration? Default is set to false.",
                     "type": "boolean"
+                },
+                "max_draw_duration": {
+                    "description": "Draw Duration. Default is set to 0.",
+                    "type": "number"
                 },
                 "charge_on_draw": {
                     "description": "Charge on draw? Default is set to false.",

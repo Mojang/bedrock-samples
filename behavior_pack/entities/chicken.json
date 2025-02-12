@@ -1,11 +1,19 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.70",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:chicken",
       "spawn_category": "creature",
       "is_spawnable": true,
-      "is_summonable": true
+      "is_summonable": true,
+      "properties": {
+        "minecraft:climate_variant": {
+          "type": "enum",
+          "values": [ "temperate", "warm", "cold" ],
+          "default": "temperate",
+          "client_sync": true
+        }
+      }
     },
 
     "component_groups": {
@@ -61,7 +69,10 @@
             "pumpkin_seeds",
             "pitcher_pod",
             "torchflower_seeds"
-          ]
+          ],
+          "property_inheritance": {
+            "minecraft:climate_variant": {}
+          }
         },
         "minecraft:behavior.breed": {
           "priority": 3,
@@ -77,15 +88,68 @@
           }
         },
         "minecraft:spawn_entity": {
-          "entities": {
-            "min_wait_time": 300,
-            "max_wait_time": 600,
-            "spawn_sound": "plop",
-            "spawn_item": "egg",
-            "filters": {
-              "test": "rider_count", "subject": "self", "operator": "==", "value": 0
+          "entities": [
+            {
+              "min_wait_time": 300,
+              "max_wait_time": 600,
+              "spawn_sound": "plop",
+              "spawn_item": "egg",
+              "filters": [
+                {
+                  "test": "rider_count",
+                  "subject": "self",
+                  "operator": "==",
+                  "value": 0
+                },
+                {
+                  "test": "enum_property",
+                  "subject": "self",
+                  "domain": "minecraft:climate_variant",
+                  "value": "temperate"
+                }
+              ]
+            },
+            {
+              "min_wait_time": 300,
+              "max_wait_time": 600,
+              "spawn_sound": "plop",
+              "spawn_item": "brown_egg",
+              "filters": [
+                {
+                  "test": "rider_count",
+                  "subject": "self",
+                  "operator": "==",
+                  "value": 0
+                },
+                {
+                  "test": "enum_property",
+                  "subject": "self",
+                  "domain": "minecraft:climate_variant",
+                  "value": "warm"
+                }
+              ]
+            },
+            {
+              "min_wait_time": 300,
+              "max_wait_time": 600,
+              "spawn_sound": "plop",
+              "spawn_item": "blue_egg",
+              "filters": [
+                {
+                  "test": "rider_count",
+                  "subject": "self",
+                  "operator": "==",
+                  "value": 0
+                },
+                {
+                  "test": "enum_property",
+                  "subject": "self",
+                  "domain": "minecraft:climate_variant",
+                  "value": "cold"
+                }
+              ]
             }
-          }
+          ]
         }
       }
     },
@@ -125,7 +189,7 @@
       "minecraft:damage_sensor": {
         "triggers": {
           "cause": "fall",
-          "deals_damage": false
+          "deals_damage": "no"
         }
       },
       "minecraft:leashable": {
@@ -200,23 +264,45 @@
     },
 
     "events": {
-      "from_egg": {
-        "add": { "component_groups": [ "minecraft:chicken_baby" ] }
-      },
-
       "minecraft:entity_spawned": {
-        "randomize": [
+        "sequence": [
           {
-            "weight": 95,
-            "trigger": "minecraft:spawn_adult"
+            "randomize": [
+              {
+                "weight": 95,
+                "trigger": "minecraft:spawn_adult"
+              },
+              {
+                "weight": 5,
+                "add": {
+                  "component_groups": [
+                    "minecraft:chicken_baby"
+                  ]
+                }
+              }
+            ]
           },
           {
-            "weight": 5,
-            "add": {
-              "component_groups": [
-                "minecraft:chicken_baby"
-              ]
-            }
+            "first_valid": [
+              {
+                "filters": {
+                  "test": "has_biome_tag",
+                  "value": "spawns_warm_variant_farm_animals"
+                },
+                "set_property": {
+                  "minecraft:climate_variant": "warm"
+                }
+              },
+              {
+                "filters": {
+                  "test": "has_biome_tag",
+                  "value": "spawns_cold_variant_farm_animals"
+                },
+                "set_property": {
+                  "minecraft:climate_variant": "cold"
+                }
+              }
+            ]
           }
         ]
       },
@@ -249,6 +335,17 @@
           "component_groups": [
             "minecraft:chicken_adult"
           ]
+        }
+      },
+
+      "minecraft:hatch_warm": {
+        "set_property": {
+          "minecraft:climate_variant": "warm"
+        }
+      },
+      "minecraft:hatch_cold": {
+        "set_property": {
+          "minecraft:climate_variant": "cold"
         }
       }
     }
