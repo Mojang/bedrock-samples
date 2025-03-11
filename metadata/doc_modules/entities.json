@@ -17665,7 +17665,7 @@
                            "header_level" : 2,
                            "name" : "on_escape",
                            "show_in_index" : true,
-                           "type" : "Trigger"
+                           "type" : "Array"
                         },
                         {
                            "default" : "0",
@@ -17708,7 +17708,7 @@
                            "header_level" : 2,
                            "name" : "target_blocks",
                            "show_in_index" : true,
-                           "type" : "List"
+                           "type" : "Array"
                         },
                         {
                            "default" : "nearest",
@@ -17793,7 +17793,7 @@
                               "Whether or not to ignore direct line of sight while this entity is running away from other specified entities."
                            ],
                            "header_level" : 2,
-                           "name" : "ignore_visibilty",
+                           "name" : "ignore_visibility",
                            "show_in_index" : true,
                            "type" : "Boolean"
                         },
@@ -18158,7 +18158,7 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "[ 0.0, 0.0 ]",
+                           "default" : "[0.0, 0.0]",
                            "description" : [
                               "The number of blocks above the target that the next anchor point can be set. This value is used only when the entity is tracking a target."
                            ],
@@ -18178,7 +18178,7 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "[ 0.0, 0.0 ]",
+                           "default" : "[0.0, 0.0]",
                            "description" : [
                               "Vertical distance from the anchor point this entity must stay within, upon a successful height adjustment."
                            ],
@@ -18208,7 +18208,7 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "[ 5.0, 15.0 ]",
+                           "default" : "[5.0, 15.0]",
                            "description" : [
                               "Horizontal distance from the anchor point this entity must stay within upon a successful radius adjustment."
                            ],
@@ -18485,6 +18485,69 @@
                            "name" : "attack_chance",
                            "show_in_index" : true,
                            "type" : "Decimal"
+                        },
+                        {
+                           "default" : "false",
+                           "description" : [ "If true, this entity can attack its owner." ],
+                           "header_level" : 2,
+                           "name" : "attack_owner",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
+                           "description" : [ "Filters which types of targets are valid for this entity." ],
+                           "header_level" : 2,
+                           "name" : "entity_types",
+                           "show_in_index" : true,
+                           "type" : "Minecraft Filter"
+                        },
+                        {
+                           "default" : "false",
+                           "description" : [ "If true, this entity requires a path to the target." ],
+                           "header_level" : 2,
+                           "name" : "must_reach",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
+                           "default" : "false",
+                           "description" : [
+                              "Determines if target-validity requires this entity to be in range only, or both in range and in sight."
+                           ],
+                           "header_level" : 2,
+                           "name" : "must_see",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
+                           "default" : "3.0",
+                           "description" : [
+                              "Time (in seconds) the target must not be seen by this entity to become invalid. Used only if \"must_see\" is true."
+                           ],
+                           "header_level" : 2,
+                           "name" : "must_see_forget_duration",
+                           "show_in_index" : true,
+                           "type" : "Decimal"
+                        },
+                        {
+                           "default" : "0.0",
+                           "description" : [
+                              "Time (in seconds) this entity can continue attacking the target after the target is no longer valid."
+                           ],
+                           "header_level" : 2,
+                           "name" : "persist_time",
+                           "show_in_index" : true,
+                           "type" : "Decimal"
+                        },
+                        {
+                           "default" : "0.0",
+                           "description" : [
+                              "Maximum distance this entity can be from the target when following it, otherwise the target becomes invalid. This value is only used if the entity doesn't declare \"minecraft:follow_range\"."
+                           ],
+                           "header_level" : 2,
+                           "name" : "within_radius",
+                           "show_in_index" : true,
+                           "type" : "Decimal"
                         }
                      ],
                      "nodes_as_table" : true,
@@ -18558,14 +18621,6 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "N/A",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "max_dist",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
                            "default" : "0.55",
                            "description" : [
                               "Maximum base time (in seconds) to recalculate new attack path to target (before increases applied)."
@@ -18600,6 +18655,14 @@
                            "description" : [ "Defines the event to trigger when this entity successfully attacks." ],
                            "header_level" : 2,
                            "name" : "on_attack",
+                           "show_in_index" : true,
+                           "type" : "Trigger"
+                        },
+                        {
+                           "default" : "N/A",
+                           "description" : [ "Defines the event to trigger when this entity kills the target." ],
+                           "header_level" : 2,
+                           "name" : "on_kill",
                            "show_in_index" : true,
                            "type" : "Trigger"
                         },
@@ -18674,28 +18737,12 @@
                            "type" : "Boolean"
                         },
                         {
-                           "default" : "false",
-                           "description" : [ "Allows the actor to be set to persist upon targeting a player" ],
-                           "header_level" : 2,
-                           "name" : "set_persistent",
-                           "show_in_index" : true,
-                           "type" : "Boolean"
-                        },
-                        {
                            "default" : "1",
                            "description" : [
                               "This multiplier modifies the attacking entity's speed when moving toward the target."
                            ],
                            "header_level" : 2,
                            "name" : "speed_multiplier",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
-                           "default" : "N/a",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "target_dist",
                            "show_in_index" : true,
                            "type" : "Decimal"
                         },
@@ -18769,6 +18816,7 @@
                            "type" : "Decimal"
                         },
                         {
+                           "default" : "0.0",
                            "description" : [
                               "The minimum idle time in seconds between the last detected disturbance to the start of digging."
                            ],
@@ -18896,7 +18944,9 @@
                      "nodes" : [
                         {
                            "default" : "10",
-                           "description" : [ "Time (in seconds), after roar, to breath flame." ],
+                           "description" : [
+                              "Time (in seconds) between each start of the cycle to roar, then breath flame."
+                           ],
                            "header_level" : 2,
                            "name" : "cooldown_time",
                            "show_in_index" : true,
@@ -19347,7 +19397,7 @@
                            "header_level" : 2,
                            "name" : "eat_and_replace_block_pairs",
                            "show_in_index" : true,
-                           "type" : "List"
+                           "type" : "Array"
                         },
                         {
                            "default" : "N/A",
@@ -19479,7 +19529,7 @@
                            "header_level" : 2,
                            "name" : "cooldown_time",
                            "show_in_index" : true,
-                           "type" : "Integer"
+                           "type" : "Decimal"
                         },
                         {
                            "default" : "5.00",
@@ -20034,6 +20084,26 @@
                      "name" : "minecraft:behavior.float_wander",
                      "nodes" : [
                         {
+                           "default" : "false",
+                           "description" : [
+                              "If true, the mob will have an additional buffer zone around it to avoid collisions with blocks when picking a position to wander to."
+                           ],
+                           "header_level" : 4,
+                           "name" : "additional_collision_buffer",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
+                           "default" : "false",
+                           "description" : [
+                              "If true allows the mob to navigate through liquids on its way to the target position."
+                           ],
+                           "header_level" : 4,
+                           "name" : "allow_navigating_through_liquids",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
                            "default" : "[0.0, 0.0]",
                            "description" : [
                               "Range of time in seconds the mob will float around before landing and choosing to do something else"
@@ -20064,12 +20134,42 @@
                         {
                            "default" : "false",
                            "description" : [
+                              "If true, will prioritize finding random positions in the vicinity of surfaces, i.e. blocks that are not Air or Liquid."
+                           ],
+                           "header_level" : 4,
+                           "name" : "navigate_around_surface",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
+                           "default" : "false",
+                           "description" : [
                               "If true, the mob will randomly pick a new point while moving to the previously selected one"
                            ],
                            "header_level" : 4,
                            "name" : "random_reselect",
                            "show_in_index" : true,
                            "type" : "Boolean"
+                        },
+                        {
+                           "default" : "0",
+                           "description" : [
+                              "The horizontal distance in blocks that the goal will check for a surface from a candidate position. Only valid when `navigate_around_surface` is true."
+                           ],
+                           "header_level" : 4,
+                           "name" : "surface_xz_dist",
+                           "show_in_index" : true,
+                           "type" : "Integer"
+                        },
+                        {
+                           "default" : "0",
+                           "description" : [
+                              "The vertical distance in blocks that the goal will check for a surface from a candidate position. Only valid when `navigate_around_surface` is true."
+                           ],
+                           "header_level" : 4,
+                           "name" : "surface_y_dist",
+                           "show_in_index" : true,
+                           "type" : "Integer"
                         },
                         {
                            "default" : "true",
@@ -20239,6 +20339,24 @@
                      "name" : "minecraft:behavior.follow_mob",
                      "nodes" : [
                         {
+                           "description" : [
+                              "If non-empty, provides criteria for filtering which nearby Mobs can be followed. If empty default criteria will be used, which will exclude Players, Squid variants, Fish variants, Tadpoles, Dolphins, and mobs of the same type as the owner of the Goal."
+                           ],
+                           "header_level" : 4,
+                           "name" : "filters",
+                           "show_in_index" : true,
+                           "type" : "Minecraft Filter"
+                        },
+                        {
+                           "description" : [
+                              "The type of actor to prefer following. If left unspecified, a random actor among those in range will be chosen."
+                           ],
+                           "header_level" : 4,
+                           "name" : "preferred_actor_type",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        },
+                        {
                            "default" : "0",
                            "description" : [ "The distance in blocks it will look for a mob to follow" ],
                            "header_level" : 4,
@@ -20261,6 +20379,16 @@
                            "name" : "stop_distance",
                            "show_in_index" : true,
                            "type" : "Decimal"
+                        },
+                        {
+                           "default" : "true",
+                           "description" : [
+                              "If true, the mob will respect the 'minecraft:home' component's 'restriction_radius' field when choosing a target to follow. If false, it will choose target position without considering home restrictions."
+                           ],
+                           "header_level" : 4,
+                           "name" : "use_home_position_restriction",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
                         }
                      ],
                      "nodes_as_table" : true,
@@ -20423,7 +20551,7 @@
                            "header_level" : 2,
                            "name" : "on_item_throw",
                            "show_in_index" : true,
-                           "type" : "Trigger"
+                           "type" : "Array"
                         },
                         {
                            "default" : "3.000000",
@@ -20488,7 +20616,7 @@
                            "header_level" : 2,
                            "name" : "on_item_throw",
                            "show_in_index" : true,
-                           "type" : "Trigger"
+                           "type" : "Array"
                         },
                         {
                            "default" : "3.000000",
@@ -20582,14 +20710,14 @@
                            "header_level" : 2,
                            "name" : "on_failed",
                            "show_in_index" : true,
-                           "type" : "Trigger"
+                           "type" : "Array"
                         },
                         {
                            "description" : [ "Event(s) to run when this mob gets home." ],
                            "header_level" : 2,
                            "name" : "on_home",
                            "show_in_index" : true,
-                           "type" : "Trigger"
+                           "type" : "Array"
                         },
                         {
                            "default" : "1.0",
@@ -21947,14 +22075,6 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "N/A",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "max_dist",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
                            "default" : "0.55",
                            "description" : [
                               "Maximum base time (in seconds) to recalculate new attack path to target (before increases applied)."
@@ -21989,6 +22109,14 @@
                            "description" : [ "Defines the event to trigger when this entity successfully attacks." ],
                            "header_level" : 2,
                            "name" : "on_attack",
+                           "show_in_index" : true,
+                           "type" : "Trigger"
+                        },
+                        {
+                           "default" : "N/A",
+                           "description" : [ "Defines the event to trigger when this entity kills the target." ],
+                           "header_level" : 2,
+                           "name" : "on_kill",
                            "show_in_index" : true,
                            "type" : "Trigger"
                         },
@@ -22063,28 +22191,12 @@
                            "type" : "Boolean"
                         },
                         {
-                           "default" : "false",
-                           "description" : [ "Allows the actor to be set to persist upon targeting a player" ],
-                           "header_level" : 2,
-                           "name" : "set_persistent",
-                           "show_in_index" : true,
-                           "type" : "Boolean"
-                        },
-                        {
                            "default" : "1",
                            "description" : [
                               "This multiplier modifies the attacking entity's speed when moving toward the target."
                            ],
                            "header_level" : 2,
                            "name" : "speed_multiplier",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
-                           "default" : "N/a",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "target_dist",
                            "show_in_index" : true,
                            "type" : "Decimal"
                         },
@@ -22188,14 +22300,6 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "N/A",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "max_dist",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
                            "default" : "0.55",
                            "description" : [
                               "Maximum base time (in seconds) to recalculate new attack path to target (before increases applied)."
@@ -22230,6 +22334,14 @@
                            "description" : [ "Defines the event to trigger when this entity successfully attacks." ],
                            "header_level" : 2,
                            "name" : "on_attack",
+                           "show_in_index" : true,
+                           "type" : "Trigger"
+                        },
+                        {
+                           "default" : "N/A",
+                           "description" : [ "Defines the event to trigger when this entity kills the target." ],
+                           "header_level" : 2,
+                           "name" : "on_kill",
                            "show_in_index" : true,
                            "type" : "Trigger"
                         },
@@ -22294,28 +22406,12 @@
                            "type" : "Boolean"
                         },
                         {
-                           "default" : "false",
-                           "description" : [ "Allows the actor to be set to persist upon targeting a player" ],
-                           "header_level" : 2,
-                           "name" : "set_persistent",
-                           "show_in_index" : true,
-                           "type" : "Boolean"
-                        },
-                        {
                            "default" : "1",
                            "description" : [
                               "This multiplier modifies the attacking entity's speed when moving toward the target."
                            ],
                            "header_level" : 2,
                            "name" : "speed_multiplier",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
-                           "default" : "N/a",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "target_dist",
                            "show_in_index" : true,
                            "type" : "Decimal"
                         },
@@ -22459,7 +22555,7 @@
                   },
                   {
                      "description" : [
-                        "Allows an entity to move around a target. If the entity is too close (i.e. closer than destination range min and height difference limit) it will try to move away from its target. If the entity is too far away from its target it will try to move closer to a random position within the destination range. A randomized amount of those positions will be behind the target, and the spread can be tweaked with 'destination_pos_search_spread_degrees'."
+                        "Allows an entity to move around a target. If the entity is too close (i.e. closer than destination range min and height difference limit) it will try to move away from its target. If the entity is too far away from its target it will try to move closer to a random position within the destination range. A randomized amount of those positions will be behind the target, and the spread can be tweaked with 'destination_pos_spread_degrees'."
                      ],
                      "header_level" : 3,
                      "name" : "minecraft:behavior.move_around_target",
@@ -22470,7 +22566,7 @@
                               "This angle (in degrees) is used for controlling the spread when picking a destination position behind the target. A zero spread angle means the destination position will be straight behind the target with no variance. A 90 degree spread angle means the destination position can be up to 45 degrees to the left and to the right of the position straight behind the target's view direction.."
                            ],
                            "header_level" : 2,
-                           "name" : "destination_pos_search_spread_degrees",
+                           "name" : "destination_pos_spread_degrees",
                            "show_in_index" : true,
                            "type" : "Decimal"
                         },
@@ -23280,17 +23376,7 @@
                               "Time range (in seconds) between searching for an attack target, range is in (0, \"attack_interval\"]. Only used if \"attack_interval\" is greater than 0, otherwise \"scan_interval\" is used."
                            ],
                            "header_level" : 2,
-                           "name" : "attack_interval",
-                           "show_in_index" : true,
-                           "type" : "Integer"
-                        },
-                        {
-                           "default" : "0",
-                           "description" : [
-                              "Alias for \"attack_interval\"; provides the same functionality as \"attack_interval\"."
-                           ],
-                           "header_level" : 2,
-                           "name" : "attack_interval_min",
+                           "name" : "attack_interval|attack_interval_min",
                            "show_in_index" : true,
                            "type" : "Integer"
                         },
@@ -23306,62 +23392,8 @@
                            "description" : [ "Filters which types of targets are valid for this entity." ],
                            "header_level" : 2,
                            "name" : "entity_types",
-                           "nodes" : [
-                              {
-                                 "description" : [ "Conditions that make this target a valid type." ],
-                                 "header_level" : 3,
-                                 "name" : "filters",
-                                 "show_in_index" : true,
-                                 "type" : "Minecraft Filter"
-                              },
-                              {
-                                 "default" : "16",
-                                 "description" : [
-                                    "To be a valid target choice, the target type cannot be farther away from this entity than \"max_dist\"."
-                                 ],
-                                 "header_level" : 3,
-                                 "name" : "max_dist",
-                                 "show_in_index" : true,
-                                 "type" : "Decimal"
-                              },
-                              {
-                                 "default" : "false",
-                                 "description" : [
-                                    "Determines if target-validity requires this entity to be in range only, or both in range and in sight."
-                                 ],
-                                 "header_level" : 3,
-                                 "name" : "must_see",
-                                 "show_in_index" : true,
-                                 "type" : "Boolean"
-                              },
-                              {
-                                 "default" : "3.0",
-                                 "description" : [
-                                    "Time (in seconds) the target must not be seen by this entity to become invalid. Used only if \"must_see\" is true."
-                                 ],
-                                 "header_level" : 3,
-                                 "name" : "must_see_forget_duration",
-                                 "show_in_index" : true,
-                                 "type" : "Boolean"
-                              },
-                              {
-                                 "default" : "false",
-                                 "description" : [
-                                    "If true, the mob will stop being targeted if it stops meeting any conditions."
-                                 ],
-                                 "header_level" : 3,
-                                 "name" : "reevaluate_description",
-                                 "show_in_index" : true,
-                                 "type" : "Boolean"
-                              }
-                           ],
-                           "nodes_as_table" : true,
                            "show_in_index" : true,
-                           "table_default_title" : "Default Value",
-                           "table_description_title" : "Description",
-                           "table_name_title" : "Name",
-                           "table_type_title" : "Type",
-                           "type" : "JSON Object"
+                           "type" : "Minecraft Filter"
                         },
                         {
                            "default" : "false",
@@ -24352,7 +24384,7 @@
                            "header_level" : 2,
                            "name" : "friend_types",
                            "show_in_index" : true,
-                           "type" : "Array"
+                           "type" : "Minecraft Filter"
                         },
                         {
                            "default" : "50.00",
@@ -24408,7 +24440,7 @@
                      "name" : "minecraft:behavior.play_dead",
                      "nodes" : [
                         {
-                           "default" : "true",
+                           "default" : "false",
                            "description" : [
                               "Whether the mob will receive the regeneration effect while playing dead."
                            ],
@@ -24608,19 +24640,19 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "4.000000",
+                           "default" : "4",
                            "description" : [ "The minimum distance at which the mob can start a ram attack." ],
                            "header_level" : 2,
                            "name" : "min_ram_distance",
                            "show_in_index" : true,
-                           "type" : "Decimal"
+                           "type" : "Integer"
                         },
                         {
                            "description" : [ "The event to trigger when attacking" ],
                            "header_level" : 2,
                            "name" : "on_start",
                            "show_in_index" : true,
-                           "type" : "Trigger"
+                           "type" : "Array"
                         },
                         {
                            "description" : [ "The sound to play when an entity is about to perform a ram attack." ],
@@ -24630,12 +24662,12 @@
                            "type" : "String"
                         },
                         {
-                           "default" : "7.000000",
+                           "default" : "7",
                            "description" : [ "The distance at which the mob start to run with ram speed." ],
                            "header_level" : 2,
                            "name" : "ram_distance",
                            "show_in_index" : true,
-                           "type" : "Decimal"
+                           "type" : "Integer"
                         },
                         {
                            "description" : [ "The sound to play when an entity is impacting on a ram attack." ],
@@ -25020,14 +25052,14 @@
                            "type" : "Range [a, b]"
                         },
                         {
-                           "default" : "5.000000",
+                           "default" : "5",
                            "description" : [
                               "Amount of retries to find a valid target position within search range."
                            ],
                            "header_level" : 2,
                            "name" : "find_valid_position_retries",
                            "show_in_index" : true,
-                           "type" : "Decimal"
+                           "type" : "Integer"
                         },
                         {
                            "default" : "1.500000",
@@ -25091,24 +25123,24 @@
                            "type" : "Trigger"
                         },
                         {
-                           "default" : "10.000000",
+                           "default" : "10",
                            "description" : [
                               "Width and length of the volume around the entity used to find a valid target position"
                            ],
                            "header_level" : 2,
                            "name" : "search_range_xz",
                            "show_in_index" : true,
-                           "type" : "Decimal"
+                           "type" : "Integer"
                         },
                         {
-                           "default" : "7.000000",
+                           "default" : "7",
                            "description" : [
                               "Height of the volume around the entity used to find a valid target position"
                            ],
                            "header_level" : 2,
                            "name" : "search_range_y",
                            "show_in_index" : true,
-                           "type" : "Decimal"
+                           "type" : "Integer"
                         },
                         {
                            "default" : "0.000000",
@@ -25143,7 +25175,7 @@
                            "header_level" : 2,
                            "name" : "target_blocks",
                            "show_in_index" : true,
-                           "type" : "List"
+                           "type" : "Array"
                         },
                         {
                            "default" : "2.250000",
@@ -26755,14 +26787,6 @@
                            "type" : "Decimal"
                         },
                         {
-                           "default" : "N/A",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "max_dist",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
                            "default" : "0.55",
                            "description" : [
                               "Maximum base time (in seconds) to recalculate new attack path to target (before increases applied)."
@@ -26797,6 +26821,14 @@
                            "description" : [ "Defines the event to trigger when this entity successfully attacks." ],
                            "header_level" : 2,
                            "name" : "on_attack",
+                           "show_in_index" : true,
+                           "type" : "Trigger"
+                        },
+                        {
+                           "default" : "N/A",
+                           "description" : [ "Defines the event to trigger when this entity kills the target." ],
+                           "header_level" : 2,
+                           "name" : "on_kill",
                            "show_in_index" : true,
                            "type" : "Trigger"
                         },
@@ -26871,14 +26903,6 @@
                            "type" : "Boolean"
                         },
                         {
-                           "default" : "false",
-                           "description" : [ "Allows the actor to be set to persist upon targeting a player" ],
-                           "header_level" : 2,
-                           "name" : "set_persistent",
-                           "show_in_index" : true,
-                           "type" : "Boolean"
-                        },
-                        {
                            "default" : "1",
                            "description" : [
                               "This multiplier modifies the attacking entity's speed when moving toward the target."
@@ -26895,14 +26919,6 @@
                            ],
                            "header_level" : 2,
                            "name" : "stomp_range_multiplier",
-                           "show_in_index" : true,
-                           "type" : "Decimal"
-                        },
-                        {
-                           "default" : "N/a",
-                           "description" : [ "Unused. No effect on \"minecraft:behavior.melee_attack\"." ],
-                           "header_level" : 2,
-                           "name" : "target_dist",
                            "show_in_index" : true,
                            "type" : "Decimal"
                         },
@@ -27490,7 +27506,7 @@
                            "header_level" : 2,
                            "name" : "entity_types",
                            "show_in_index" : true,
-                           "type" : "JSON Object"
+                           "type" : "Minecraft Filter"
                         },
                         {
                            "default" : "2",
@@ -32475,7 +32491,7 @@
                         {
                            "default" : "4",
                            "description" : [
-                              "Distance in blocks at which the 'spring' effect starts acting to keep this entity close to the entity that leashed it."
+                              "Distance in blocks at which the \"spring\" effect starts acting to keep this entity close to the entity that leashed it."
                            ],
                            "header_level" : 4,
                            "name" : "soft_distance",
@@ -35020,6 +35036,18 @@
                            "type" : "Boolean"
                         },
                         {
+                           "default" : "default",
+                           "description" : [
+                              "Defines where riders are placed when dismounting this entity:",
+                              "- \"default\", riders are placed on a valid ground position around the entity, or at the center of the entity's collision box if none is found.",
+                              "- \"on_top_center\", riders are placed at the center of the top of the entity's collision box."
+                           ],
+                           "header_level" : 4,
+                           "name" : "dismount_mode",
+                           "show_in_index" : true,
+                           "type" : "Enumerator"
+                        },
+                        {
                            "description" : [ "List of entities that can ride this entity." ],
                            "header_level" : 4,
                            "name" : "family_types",
@@ -35032,6 +35060,24 @@
                            ],
                            "header_level" : 4,
                            "name" : "interact_text",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        },
+                        {
+                           "description" : [
+                              "Event to execute on the owner entity when an entity starts riding it."
+                           ],
+                           "header_level" : 4,
+                           "name" : "on_rider_enter_event",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        },
+                        {
+                           "description" : [
+                              "Event to execute on the owner entity when an entity stops riding it."
+                           ],
+                           "header_level" : 4,
+                           "name" : "on_rider_exit_event",
                            "show_in_index" : true,
                            "type" : "String"
                         },
@@ -39898,5 +39944,5 @@
          "show_in_index" : true
       }
    ],
-   "version" : "1.21.70.26"
+   "version" : "1.21.80.20"
 }
