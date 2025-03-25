@@ -239,7 +239,7 @@
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingFilterProfanity": {
-          "ignored": "(not $build_platform_UWP or $disable_toggle_filter_profanity)",
+          "ignored": "(not ($build_platform_UWP or $is_ios or $google_os) or $disable_toggle_filter_profanity)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -247,7 +247,7 @@
 
       {
         "filter_profanity_toggle@settings_common.option_toggle": {
-          "ignored": "(not $build_platform_UWP or $disable_toggle_filter_profanity)",
+          "ignored": "(not ($build_platform_UWP or $is_ios or $google_os) or $disable_toggle_filter_profanity)",
           "$option_label": "options.filterProfanity",
           "$option_binding_name": "#filter_profanity",
           "$option_enabled_binding_name": "#filter_profanity_enabled",
@@ -1435,16 +1435,10 @@
           "type": "panel",
           "size": [ "100%", "62px + 8px" ],
           "$manage_button_size|default": [ "50% - 1px", 30 ],
-          "variables": [
-            {
-              "requires": "$is_windows_10_mobile",
-              "$manage_button_size": [ "100%", 30 ]
-            }
-          ],
           "controls": [
             {
               "change_gamertag_button@settings_common.action_button": {
-                "ignored": "($is_windows_10_mobile or $is_ios or $is_android)",
+                "ignored": "($is_ios or $is_android)",
                 "size": [ "50% - 1px", 30 ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left",
@@ -1454,7 +1448,7 @@
             },
             {
               "change_gamertag_button_mobile@settings_common.link_button": {
-                "ignored": "(not ($is_windows_10_mobile or $is_ios or $is_android))",
+                "ignored": "(not ($is_ios or $is_android))",
                 "size": [ "50% - 1px", 30 ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left",
@@ -4468,28 +4462,6 @@
     ]
   },
   */
-  "csb_info_label@common.minecraftTenLabel": {
-    "text": "options.viewSubscriptions.button.info",
-    "color": "$text_color",
-    "offset": [ 0, -1 ]
-  },
-
-  "csb_cancel_label@common.minecraftTenLabel": {
-    "text": "gui.cancel",
-    "color": "$text_color",
-    "offset": [ 0, -1 ]
-  },
-
-  "csb_buy_label@common.minecraftTenLabel": {
-    "text": "#csb_price",
-    "color": "$text_color",
-    "offset": [ 0, -1 ],
-    "bindings": [
-      {
-        "binding_name": "#csb_price"
-      }
-    ]
-  },
 
   "left_button_label@common.minecraftTenLabel": {
     "$left_button_text|default": "#left_button_text",
@@ -4507,7 +4479,7 @@
   },
 
   "right_button_label@common.minecraftTenLabel": {
-    "text": "options.viewSubscriptions.button.info",
+    "text": "$right_button_label_text",
     "color": "$text_color",
     "offset": [ 0, -1 ]
   },
@@ -4525,7 +4497,7 @@
       },
       {
         "left_button_panel": {
-          "ignored": "$pre_release",
+          "ignored": "($pre_release or $left_button_ignored)",
           "type": "panel",
           "size": [ "49%", "100%" ],
           "controls": [
@@ -4579,7 +4551,7 @@
       },
       {
         "pad_1": {
-          "ignored": "$pre_release",
+          "ignored": "($pre_release or $left_button_ignored)",
           "type": "panel",
           "size": [ 4, "100%" ],
           "bindings": [
@@ -4875,7 +4847,10 @@
     "$realm_collection_name|default": "",
     "controls": [
       {
-        "top_panel@general_section.realms_subscription_main": {}
+        "top_panel@general_section.realms_subscription_main": {
+          "$left_button_ignored": false,
+          "$right_button_label_text": "options.viewSubscriptions.button.info"
+        }
       },
       {
         "pad_1": {
@@ -5239,6 +5214,7 @@
       },
       {
         "csb_purchased_with_cancel@csb_subscription_panel.csb_container": {
+          "$left_button_ignored": false,
           "$left_button": "cancel@csb_subscription_panel.csb_cancel_button",
           "$csb_panel_bindings|default": [
             {
@@ -5250,6 +5226,7 @@
       },
       {
         "csb_purchased_with_buy@csb_subscription_panel.csb_container": {
+          "$left_button_ignored": true,
           "$left_button": "buy@csb_subscription_panel.csb_buy_container",
           "$csb_panel_bindings|default": [
             {
@@ -5397,15 +5374,10 @@
       {
         "realms_plus_header_label@common.minecraftTenLabel": {
           "ignored": "$pre_release",
-          "text": "#available_or_additional_subscriptions_text",
+          "text": "options.viewSubscriptions.additionalSubscriptions",
           "text_alignment": "left",
           "color": "$body_text_color",
-          "size": [ "100%", 12 ],
-          "bindings": [
-            {
-              "binding_name": "#available_or_additional_subscriptions_text"
-            }
-          ]
+          "size": [ "100%", 12 ]
         }
       },
       {
@@ -5416,82 +5388,24 @@
         }
       },
       {
-        "realms_plus_buy_offer@general_section.realms_subscription_main": {
-          "ignored": "$pre_release",
-          "$realm_collection_name": "realms_plus_subscriptions_collection",
-          "$right_pressed_button_name": "button.realms_plus_right_button",
-          "$left_pressed_button_name": "button.realms_plus_buy_button",
-          "$left_button_label_bindings": [
-            {
-              "binding_name": "#price_text",
-              "binding_type": "collection",
-              "binding_collection_name": "$realm_collection_name"
-            }
-          ],
-          "$left_button_visible_bindings": [],
-          "$left_button_text": "#price_text",
-          "$name": "options.viewSubscriptions.tenPlayers",
-          "$name_bindings": [],
-          "$description": "#upsell_text",
-          "$description_bindings": [
-            {
-              "binding_name": "#upsell_text",
-              "binding_type": "collection",
-              "binding_collection_name": "$realm_collection_name"
-            }
-          ],
-          "bindings": [
-            {
-              "binding_name": "#can_buy_more_subscriptions",
-              "binding_name_override": "#visible",
-              "binding_type": "collection",
-              "binding_collection_name": "$realm_collection_name"
-            }
-          ]
-        }
-      },
-      {
-        "pad_1": {
-          "ignored": "$pre_release",
-          "type": "panel",
-          "size": [ "100%", 6 ]
-        }
-      },
-      {
         "additional_realms_buy_offer@general_section.realms_subscription_main": {
           "ignored": "$pre_release",
           "$realm_collection_name": "additional_realms_subscriptions_collection",
           "$right_pressed_button_name": "button.additional_realms_right_button",
+          "$left_button_ignored": true,
+          "$right_button_label_text": "options.viewSubscriptions.addRealmsServer.button",
           "$left_pressed_button_name": "button.additional_realms_buy_button",
-          "$left_button_label_bindings": [
-            {
-              "binding_name": "#price_text",
-              "binding_type": "collection",
-              "binding_collection_name": "$realm_collection_name"
-            }
-          ],
-          "$left_button_visible_bindings": [],
           "$image_controls": [
             {
               "image": {
                 "type": "image",
                 "size": [ "100%", "100%" ],
-                "texture": "textures/ui/realms_art_icon"
+                "texture": "textures/ui/subscription_Realms"
               }
             }
           ],
-          "$image_size": [ "85.1315%y", 70 ],
-          "$left_button_text": "#price_text",
-          "$name": "options.viewSubscriptions.twoPlayers",
-          "$name_bindings": [],
-          "$description": "#upsell_text",
-          "$description_bindings": [
-            {
-              "binding_name": "#upsell_text",
-              "binding_type": "collection",
-              "binding_collection_name": "$realm_collection_name"
-            }
-          ],
+          "$name": "options.viewSubscriptions.realmsServer",
+          "$description": "options.viewSubscriptions.addRealmsServer.Body",
           "bindings": [
             {
               "binding_name": "#can_buy_more_subscriptions",
@@ -5504,7 +5418,6 @@
       },
       {
         "pad_8": {
-          "ignored": "$pre_release",
           "type": "panel",
           "size": [ "100%", 6 ]
         }
@@ -5512,6 +5425,7 @@
       //csb panel
       {
         "csb_buy_panel@csb_subscription_panel.csb_container": {
+          "$left_button_ignored": true,
           "$left_button": "csbBuy@csb_subscription_panel.csb_buy_container"
         }
       },
@@ -7188,10 +7102,6 @@
               }
             },
             {
-              "current_sandbox_label@general_section.sandbox_label": {
-              }
-            },
-            {
               "spacer_0": {
                 "type": "panel",
                 "size": [ "100%", 4 ]
@@ -7426,9 +7336,6 @@
               }
             },
             {
-              "current_sandbox_label@general_section.sandbox_label": {}
-            },
-            {
               "spacer_0": {
                 "type": "panel",
                 "size": [ "100%", 4 ]
@@ -7535,13 +7442,177 @@
     ]
   },
 
-  "sandbox_label": {
-    "type": "label",
-    "offset": [ 3, 0 ],
-    "text": "options.dev_sandboxRetail",
-    "text_alignment": "left",
-    "color": "$body_text_color",
-    "layer": 1
+  "debug_override_realms_features_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
+    "controls": [
+      {
+        "override_realms_features_panel_background": {
+          "type": "stack_panel",
+          "size": [ "90%", "100%c" ],
+          "controls": [
+            {
+              "option_toggle_realms_feature_override@settings_common.option_toggle": {
+                "$option_label": "options.dev_overrideRealmsFeatures",
+                "$option_binding_name": "#dev_show_override_realms_features",
+                "$option_enabled_binding_name": "#dev_show_override_realms_features_enabled",
+                "$toggle_name": "dev_show_override_realms_features"
+              }
+            },
+            {
+              "spacer_0": {
+                "type": "panel",
+                "size": [ "100%", 4 ]
+              }
+            },
+            {
+              "override_realms_features_options_panel": {
+                "type": "stack_panel",
+                "size": [ "100%", "100%c" ],
+                "bindings": [
+                  {
+                    "binding_name": "#dev_show_override_realms_features",
+                    "binding_name_override": "#visible"
+                  }
+                ],
+                "controls": [
+                  {
+                    "add_realms_features_panel": {
+                      "type": "stack_panel",
+                      "size": [ "100%", 40 ],
+                      "orientation": "horizontal",
+                      "controls": [
+                        {
+                          "text_edit_realms_features@settings_common.option_text_edit": {
+                            "$option_generic_panel_size": [ "fill", "100%c" ],
+                            "$option_label": "options.dev_addRealmsFeatureId",
+                            "$text_box_name": "dev_realms_feature_id",
+                            "$option_binding_name": "#dev_realms_feature_id",
+                            "$option_enabled_binding_name": "#dev_realms_feature_id_enabled",
+                            "$max_text_edit_length": 50
+                          }
+                        },
+                        {
+                          "add_button_panel": {
+                            "type": "panel",
+                            "size": [ 40, "100%" ],
+                            "controls": [
+                              {
+                                "add_button@common_buttons.light_text_button": {
+                                  "$pressed_button_name": "button.add_realms_feature_by_name",
+                                  "size": [ 40, 30 ],
+                                  "offset": [ 0, 1 ],
+                                  "anchor_from": "bottom_right",
+                                  "anchor_to": "bottom_right",
+                                  "$button_text": "options.dev_addLabel"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "realms_feature_cache_management_panel": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100%", 30 ],
+                      "controls": [
+                        {
+                          "reset_to_default@common_buttons.light_text_button": {
+                            "size": [ "50%", "100%" ],
+                            "$pressed_button_name": "button.reset_to_default_realms_features",
+                            "$button_text": "options.dev_resetToDefault"
+                          }
+                        },
+                        {
+                          "clear_realms_features@common_buttons.light_text_button": {
+                            "size": [ "50%", "100%" ],
+                            "$pressed_button_name": "button.clear_realms_feature_list",
+                            "$button_text": "options.dev_clearFlights"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "current_realms_features_label_panel@common_store.banner_fill": {
+                "size": [ "100%", 18 ],
+                "controls": [
+                  {
+                    "realms_features_label": {
+                      "type": "label",
+                      "offset": [ 3, 0 ],
+                      "text": "options.dev_currentRealmsFeaturesTitle",
+                      "text_alignment": "left",
+                      "color": "$body_text_color",
+                      "layer": 1
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "realms_features_grid": {
+                "type": "grid",
+                "size": [ "100%", "100%c" ],
+                "grid_item_template": "general_section.realms_feature_grid_item",
+                "grid_dimension_binding": "#realms_features_grid_dimension",
+                "collection_name": "realms_features_collection",
+                "bindings": [
+                  {
+                    "binding_name": "#realms_features_grid_dimension",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
+            },
+            {
+              "unused_realms_features_label_panel@common_store.banner_fill": {
+                "size": [ "100%", 18 ],
+                "controls": [
+                  {
+                    "realms_features_label": {
+                      "type": "label",
+                      "offset": [ 3, 0 ],
+                      "text": "options.dev_unusedRealmsFeaturesTitle",
+                      "text_alignment": "left",
+                      "color": "$body_text_color",
+                      "layer": 1
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "unused_realms_features_grid": {
+                "type": "grid",
+                "size": [ "100%", "100%c" ],
+                "grid_item_template": "general_section.unused_realms_feature_grid_item",
+                "grid_dimension_binding": "#unused_realms_features_grid_dimension",
+                "collection_name": "unused_realms_features_collection",
+                "bindings": [
+                  {
+                    "binding_name": "#unused_realms_features_grid_dimension",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#dev_display_realms_features_panel",
+        "binding_name_override": "#visible"
+      }
+    ]
   },
 
   "progression_grid_item": {
@@ -7600,6 +7671,122 @@
   "remove_progression_icon": {
     "type": "image",
     "texture": "textures/ui/realms_red_x"
+  },
+
+  "realms_feature_grid_item": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", 18 ],
+    "controls": [
+      {
+        "realms_feature_id_panel@common_store.banner_fill": {
+          "size": [ "fill", "100%" ],
+          "controls": [
+            {
+              "realms_feature_id": {
+                "type": "label",
+                "size": [ "100% - 3px", 10 ],
+                "offset": [ 3, 0 ],
+                "text": "#realms_feature_id",
+                "text_alignment": "left",
+                "color": "$body_text_color",
+                "layer": 1,
+                "bindings": [
+                  {
+                    "binding_name": "#realms_feature_id",
+                    "binding_type": "collection",
+                    "binding_collection_name": "realms_features_collection",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "disable_button@common_buttons.light_content_button": {
+          "$pressed_button_name": "button.disable_realms_feature",
+          "size": [ 20, "100%" ],
+          "$button_content": "general_section.disable_realms_feature_icon",
+          "layer": 2,
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "realms_features_collection",
+              "binding_condition": "visible"
+            },
+            {
+              "binding_name": "#dev_show_override_realms_features",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "disable_realms_feature_icon": {
+    "type": "image",
+    "texture": "textures/ui/realms_red_x"
+  },
+
+  "unused_realms_feature_grid_item": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%", 18 ],
+    "controls": [
+      {
+        "unused_realms_feature_id_panel@common_store.banner_fill": {
+          "size": [ "fill", "100%" ],
+          "controls": [
+            {
+              "unused_realms_feature_id": {
+                "type": "label",
+                "size": [ "100% - 3px", 10 ],
+                "offset": [ 3, 0 ],
+                "text": "#unused_realms_feature_id",
+                "text_alignment": "left",
+                "color": "$body_text_color",
+                "layer": 1,
+                "bindings": [
+                  {
+                    "binding_name": "#unused_realms_feature_id",
+                    "binding_type": "collection",
+                    "binding_collection_name": "unused_realms_features_collection",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "enable_button@common_buttons.light_content_button": {
+          "$pressed_button_name": "button.enable_realms_feature",
+          "size": [ 18, "100%" ],
+          "$button_content": "general_section.enable_realms_feature_icon",
+          "layer": 2,
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "unused_realms_features_collection",
+              "binding_condition": "visible"
+            },
+            {
+              "binding_name": "#dev_show_override_realms_features",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "enable_realms_feature_icon": {
+    "type": "image",
+    "texture": "textures/ui/realms_green_check"
   },
 
   "treatment_grid_item": {
@@ -9076,6 +9263,23 @@
           "$pressed_button_name": "button.dev_allocate_texture_handles",
           "$button_text": "Allocate 4k Texture Handles"
         }
+      },
+      {
+        "padding_deferred_debug": {
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
+      },
+      {
+        "deferred_platform_override@settings_common.option_dropdown": {
+          "$option_label": "Deferred Platform Override",
+          "$dropdown_content": "general_section.deferred_platform_override_dropdown_content",
+          "$dropdown_area": "content_area",
+          "$dropdown_name": "deferred_platform_override_dropdown",
+          "$options_dropdown_toggle_label_binding": "#deferred_platform_override_dropdown_toggle_label",
+          "$option_enabled_binding_name": "#deferred_platform_override_dropdown_enabled",
+          "$dropdown_scroll_content_size": [ "100%", "400%" ]
+        }
       }
     ]
   },
@@ -9230,8 +9434,33 @@
             }
           ]
         }
+      },
+      {
+        "realms_features_override_panel": {
+          "type": "stack_panel",
+          "size": [ "100%", "100%c" ],
+          "orientation": "vertical",
+          "controls": [
+            {
+              "option_toggle_realms_features_override@settings_common.option_toggle": {
+                "$option_label": "options.dev_displayRealmsFeaturesPanel",
+                "$option_binding_name": "#dev_display_realms_features_panel",
+                "$option_enabled_binding_name": "#dev_display_realms_features_panel_enabled",
+                "$toggle_name": "dev_display_realms_features_panel"
+              }
+            },
+            {
+              "override_realms_features_panel@general_section.debug_override_realms_features_panel": {}
+            }
+          ]
+        }
+      },
+      {
+        "realms_debug_options_spacer_2": {
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
       }
-
     ]
   },
 
@@ -9382,7 +9611,7 @@
           "controls": [
             {
               "option_version_override@settings_common.option_toggle": {
-                "$option_label": "Xforge Client Version Override",
+                "$option_label": "Client Version Override",
                 "$option_binding_name": "#dev_use_version_override",
                 "$option_enabled_binding_name": "#dev_use_version_override_enabled",
                 "$toggle_name": "dev_use_version_override"
@@ -9941,6 +10170,32 @@
     ]
   },
 
+  "new_send_invites_screen_grid_item@settings_common.radio_with_label": {
+    "$toggle_state_binding_name": "#initial_selected",
+    "$radio_label_text": "#description",
+    "$radio_label_bindings": [
+      {
+        "binding_name": "#description",
+        "binding_type": "collection",
+        "binding_condition": "once",
+        "binding_collection_name": "dev_new_send_invites_screen_radio"
+      }
+    ],
+    "$radio_toggle_group": true,
+    "$toggle_binding_type": "collection",
+    "$toggle_name": "dev_new_send_invites_screen_radio",
+    "$toggle_grid_collection_name": "dev_new_send_invites_screen_radio",
+    "$option_enabled_binding_name": "",
+    "bindings": [
+      {
+        "binding_name": "#default_focus_precedence",
+        "binding_type": "collection",
+        "binding_condition": "visible",
+        "binding_collection_name": "dev_new_send_invites_screen_radio"
+      }
+    ]
+  },
+
   "new_death_grid_item@settings_common.radio_with_label": {
     "$toggle_state_binding_name": "#initial_selected",
     "$radio_label_text": "#description",
@@ -10305,6 +10560,43 @@
       },
       {
         "new_player_permissions_screen_radio_button_spacer": {
+          "type": "panel",
+          "size": [ "100%", 10 ]
+        }
+      },
+
+      /* Send Invites Screen Overrides */
+      {
+        "new_send_invites_radio_label": {
+          "type": "label",
+          "text": "New Send Invites Screen",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "new_send_invites_screen_radio_label_spacer": {
+          "type": "panel",
+          "size": [ "100%", 3 ]
+        }
+      },
+      {
+        "new_send_invites_screen_radio_button": {
+          "type": "grid",
+          "size": [ "100%", "100%c" ],
+          "grid_item_template": "general_section.new_send_invites_screen_grid_item",
+          "grid_dimension_binding": "#dev_new_send_invites_screen_radio_dimension",
+          "collection_name": "dev_new_send_invites_screen_radio",
+          "bindings": [
+            {
+              "binding_name": "#dev_new_send_invites_screen_radio_dimension",
+              "binding_condition": "visible"
+            }
+          ]
+        }
+      },
+      {
+        "new_send_invites_screen_radio_button_spacer": {
           "type": "panel",
           "size": [ "100%", 10 ]
         }
@@ -11302,6 +11594,12 @@
           "$toggle_state_binding_name": "#debug_hud_radio_oreui",
           "$radio_label_text": "options.dev_enableDebugHudOverlay.OreUI"
         }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#debug_hud_radio_cachestorageusage",
+          "$radio_label_text": "options.dev_enableDebugHudOverlay.cachestorageusage"
+        }
       }
     ]
   },
@@ -11397,6 +11695,64 @@
         "@settings_common.radio_with_label": {
           "$toggle_state_binding_name": "#vsync_adaptive",
           "$radio_label_text": "options.vsync.adaptive"
+        }
+      }
+    ]
+  },
+  "deferred_platform_override_dropdown_content@settings_common.option_radio_dropdown_group": {
+    "$radio_buttons": [
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#none",
+          "$radio_label_text": "None"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#android",
+          "$radio_label_text": "Android"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#ios",
+          "$radio_label_text": "iOS"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#switch",
+          "$radio_label_text": "Switch"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#console",
+          "$radio_label_text": "Console"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#console_gen8",
+          "$radio_label_text": "Console Gen 8"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#console_gen8_5",
+          "$radio_label_text": "Console Gen 8.5"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#console_gen9",
+          "$radio_label_text": "Console Gen 9"
+        }
+      },
+      {
+        "@settings_common.radio_with_label": {
+          "$toggle_state_binding_name": "#pc",
+          "$radio_label_text": "PC"
         }
       }
     ]

@@ -1,11 +1,19 @@
 {
-  "format_version": "1.12.0",
+  "format_version": "1.21.70",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:egg",
       "is_spawnable": false,
       "is_summonable": true,
-      "is_experimental": false
+      "is_experimental": false,
+      "properties": {
+        "minecraft:climate_variant": {
+          "type": "enum",
+          "values": [ "temperate", "warm", "cold" ],
+          "default": "temperate",
+          "client_sync": true
+        }
+      }
     },
     "components": {
       "minecraft:collision_box": {
@@ -25,21 +33,53 @@
             "first_spawn_count": 1,
             "second_spawn_count": 4,
             "spawn_definition": "minecraft:chicken",
-            "spawn_baby": true
+            "spawn_baby": true,
+            "on_spawn": [
+              {
+                "filters": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:climate_variant",
+                  "value": "warm"
+                },
+                "event": "minecraft:hatch_warm"
+              },
+              {
+                "filters": {
+                  "test": "enum_property",
+                  "subject": "other",
+                  "domain": "minecraft:climate_variant",
+                  "value": "cold"
+                },
+                "event": "minecraft:hatch_cold"
+              }
+            ]
           },
           "remove_on_hit": {},
           "particle_on_hit": {
             "particle_type": "iconcrack",
             "num_particles": 6,
             "on_entity_hit": true,
-            "on_other_hit": true
+            "on_other_hit": true,
+            "particle_item_name": {
+              "brown_egg": {
+                "test": "enum_property",
+                "domain": "minecraft:climate_variant",
+                "value": "warm"
+              },
+              "blue_egg": {
+                "test": "enum_property",
+                "domain": "minecraft:climate_variant",
+                "value": "cold"
+              }
+            }
           }
         },
         "power": 1.5,
         "gravity": 0.03,
         "angle_offset": 0.0
       },
-	    "minecraft:physics": {
+      "minecraft:physics": {
       },
       "minecraft:pushable": {
         "is_pushable": true,
@@ -50,6 +90,23 @@
           "max_optimized_distance": 80.0,
           "max_dropped_ticks": 7,
           "use_motion_prediction_hints": true
+        }
+      }
+    },
+    "events": {
+      "minecraft:spawn_temperate": {
+        "set_property": {
+          "minecraft:climate_variant": "temperate"
+        }
+      },
+      "minecraft:spawn_cold": {
+        "set_property": {
+          "minecraft:climate_variant": "cold"
+        }
+      },
+      "minecraft:spawn_warm": {
+        "set_property": {
+          "minecraft:climate_variant": "warm"
         }
       }
     }

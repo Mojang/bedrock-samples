@@ -230,6 +230,34 @@
                   },
                   {
                      "description" : [
+                        "Sets the particles that will be used when block is destroyed. This component can be omitted."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:destruction_particles",
+                     "nodes" : [
+                        {
+                           "description" : [ "The texture name used for the particle." ],
+                           "header_level" : 4,
+                           "name" : "texture",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        },
+                        {
+                           "description" : [
+                              "Optional, tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\""
+                           ],
+                           "header_level" : 4,
+                           "name" : "tint_method",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        }
+                     ],
+                     "nodes_as_table" : false,
+                     "show_in_index" : true,
+                     "type" : "JSON Object"
+                  },
+                  {
+                     "description" : [
                         "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name."
                      ],
                      "header_level" : 3,
@@ -451,12 +479,33 @@
                   },
                   {
                      "description" : [
-                        "Sets the color of the block when rendered to a map. The color is represented as a hex value in the format \"#RRGGBB\". May also be expressed as an array of [R, G, B] from 0 to 255. If this component is omitted, the block will not show up on the map."
+                        "Sets the color of the block when rendered to a map. If this component is omitted, the block will not show up on the map."
                      ],
                      "header_level" : 3,
                      "name" : "minecraft:map_color",
+                     "nodes" : [
+                        {
+                           "description" : [
+                              "The color is represented as a hex value in the format \"#RRGGBB\". May also be expressed as an array of [R, G, B] from 0 to 255."
+                           ],
+                           "header_level" : 4,
+                           "name" : "color",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        },
+                        {
+                           "description" : [
+                              "Optional, tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\""
+                           ],
+                           "header_level" : 4,
+                           "name" : "tint_method",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        }
+                     ],
+                     "nodes_as_table" : false,
                      "show_in_index" : true,
-                     "type" : "String"
+                     "type" : "JSON Object"
                   },
                   {
                      "description" : [
@@ -473,7 +522,8 @@
                               "\t\t},",
                               "\t\t\"ends\" : {",
                               "\t\t\t\"texture\": \"log_top\",",
-                              "\t\t\t\"render_method\" : \"opaque\"",
+                              "\t\t\t\"render_method\" : \"opaque\",",
+                              "\t\t\t\"isotropic\": true",
                               "\t\t},",
                               "\t\t\"up\" : \"ends\",",
                               "\t\t\"some_face_material_name\" : \"ends\"",
@@ -492,6 +542,12 @@
                            "header_level" : 4,
                            "name" : "Material Instance",
                            "nodes" : [
+                              {
+                                 "description" : [ "isotropic" ],
+                                 "header_level" : 5,
+                                 "name" : "Boolean",
+                                 "show_in_index" : true
+                              },
                               {
                                  "default" : "true",
                                  "description" : [
@@ -530,6 +586,16 @@
                                  "name" : "texture",
                                  "show_in_index" : true,
                                  "type" : "String"
+                              },
+                              {
+                                 "default" : "none",
+                                 "description" : [
+                                    "Tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\""
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "tint_method",
+                                 "show_in_index" : true,
+                                 "type" : "Boolean"
                               }
                            ],
                            "nodes_as_table" : true,
@@ -790,6 +856,16 @@
                   },
                   {
                      "description" : [
+                        "A block with this component can be replaced when another block is placed in the same block position.",
+                        "Experimental toggles required: Upcoming Creator Features (in format versions before 1.21.60)"
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:replaceable",
+                     "show_in_index" : true,
+                     "type" : "Identifier String"
+                  },
+                  {
+                     "description" : [
                         "Defines the area of the block that is selected by the player's cursor. If set to true, default values are used. If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used."
                      ],
                      "header_level" : 3,
@@ -895,7 +971,7 @@
                      "name" : "Example",
                      "text" : [
                         "{",
-                        "  \"format_version\": \"1.21.60\",",
+                        "  \"format_version\": \"1.21.70\",",
                         "  \"minecraft:block\": {",
                         "    \"description\": {",
                         "      \"identifier\": \"design:lavenderstone\"",
@@ -1008,7 +1084,9 @@
                         },
                         {
                            "default" : "0.0",
-                           "description" : [ "The duration of the mob effect." ],
+                           "description" : [
+                              "The duration of the mob effect in seconds. Can also be set to \"infinite\""
+                           ],
                            "header_level" : 4,
                            "name" : "duration",
                            "show_in_index" : true,
@@ -1712,5 +1790,5 @@
          "show_in_index" : true
       }
    ],
-   "version" : "1.21.60.10"
+   "version" : "1.21.70.3"
 }
