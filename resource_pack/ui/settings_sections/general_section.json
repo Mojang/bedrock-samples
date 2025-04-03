@@ -239,7 +239,7 @@
       // Add some padding between the buttons/toggles to reduce the impression upon the eyes. (ADO:515619)
       {
         "paddingFilterProfanity": {
-          "ignored": "(not ($build_platform_UWP or $is_ios or $google_os) or $disable_toggle_filter_profanity)",
+          "ignored": "(not $supports_profanity_filtering or $disable_toggle_filter_profanity)",
           "type": "panel",
           "size": "$spatialPatternsPadding"
         }
@@ -247,7 +247,7 @@
 
       {
         "filter_profanity_toggle@settings_common.option_toggle": {
-          "ignored": "(not ($build_platform_UWP or $is_ios or $google_os) or $disable_toggle_filter_profanity)",
+          "ignored": "(not $supports_profanity_filtering or $disable_toggle_filter_profanity)",
           "$option_label": "options.filterProfanity",
           "$option_binding_name": "#filter_profanity",
           "$option_enabled_binding_name": "#filter_profanity_enabled",
@@ -3627,6 +3627,9 @@
           "size": [ "100%", "100%c + 4px" ],
           "controls": [
             {
+              "graphics_mode_option@general_section.graphics_mode_option": {}
+            },
+            {
               "graphics_mode@settings_common.option_dropdown_no_scroll": {
                 "$option_label": "options.graphicsMode",
                 "$dropdown_content": "general_section.graphics_mode_dropdown_content",
@@ -4092,6 +4095,67 @@
         }
       },
       { "max_framerate_option_popup@general_section.max_framerate_option_popup": {} }
+    ]
+  },
+
+  "graphics_mode_option_image": {
+    "type": "image",
+    "size": [ 7, 11 ],
+    "texture": "textures/ui/infobulb"
+  },
+
+  "graphics_mode_option_popup@common.static_tooltip_popup_with_image_and_text": {
+    "size": [ "100% - 4px", "100%cm + 8px" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "bottom_middle",
+    "$tooltip_panel_offset": [ 0, -10 ],
+    "$tooltip_popup_image": "textures/ui/infobulb",
+    "$tooltip_button_binding_type": "global",
+    "$tooltip_button_collection_name": "",
+    "$tooltip_popup_visible_binding|default": "#graphics_mode_option_tooltip_visible",
+    "$tooltip_text_binding_name": "#graphics_mode_option_tooltip_text",
+    "$tooltip_chevron_anchor": "bottom_right",
+    "$tooltip_popup_chevron_offset": [ "-30%x", "100%y - 3px" ]
+  },
+
+  "graphics_mode_option": {
+    "type": "panel",
+    "size": [ "100%", 0 ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "$option_enabled_binding_name": "#graphics_mode_option_warning_visible",
+    "controls": [
+      {
+        "graphics_mode_option_image@general_section.graphics_mode_option_image": {
+          "offset": [ -14, 0 ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "layer": 3,
+          "controls": [
+            {
+              "hover_detection_input_panel": {
+                "type": "input_panel",
+                "consume_hover_events": false,
+                "focus_enabled": true,
+                "tts_skip_message": true,
+                "button_mappings": [
+                  {
+                    "to_button_id": "button.graphics_mode_option_is_hovered",
+                    "mapping_type": "pressed"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      { "graphics_mode_option_popup@general_section.graphics_mode_option_popup": {} }
+    ],
+    "bindings": [
+      {
+        "binding_name": "#graphics_mode_option_warning_visible",
+        "binding_name_override": "#visible"
+      }
     ]
   },
 
@@ -7219,7 +7283,7 @@
                 ],
                 "bindings": [
                   {
-                    "binding_name": "(not #override_progressions_loading_visible)",
+                    "binding_name": "(not #override_configurations_loading_visible)",
                     "binding_name_override": "#visible"
                   }
                 ]
@@ -7238,7 +7302,7 @@
                     "binding_condition": "visible"
                   },
                   {
-                    "binding_name": "#override_progressions_loading_visible",
+                    "binding_name": "#override_configurations_loading_visible",
                     "binding_name_override": "#visible"
                   }
                 ]
@@ -7275,7 +7339,7 @@
                 ],
                 "bindings": [
                   {
-                    "binding_name": "(not #override_progressions_loading_visible)",
+                    "binding_name": "(not #override_configurations_loading_visible)",
                     "binding_name_override": "#visible"
                   }
                 ]
@@ -7294,7 +7358,7 @@
                     "binding_condition": "visible"
                   },
                   {
-                    "binding_name": "#override_progressions_loading_visible",
+                    "binding_name": "#override_configurations_loading_visible",
                     "binding_name_override": "#visible"
                   }
                 ]
@@ -7318,21 +7382,21 @@
     ]
   },
 
-  "debug_override_progressions_panel": {
+  "debug_override_configurations_panel": {
     "type": "panel",
     "size": [ "100%", "100%c" ],
     "controls": [
       {
-        "override_progressions_panel_background": {
+        "override_configurations_panel_background": {
           "type": "stack_panel",
           "size": [ "90%", "100%c" ],
           "controls": [
             {
-              "option_toggle_progression_override@settings_common.option_toggle": {
-                "$option_label": "options.dev_experimentalProgressions",
-                "$option_binding_name": "#dev_show_override_progressions",
-                "$option_enabled_binding_name": "#dev_show_override_progressions_enabled",
-                "$toggle_name": "dev_show_override_progressions"
+              "option_toggle_configuration_override@settings_common.option_toggle": {
+                "$option_label": "options.dev_experimentalConfigurations",
+                "$option_binding_name": "#dev_show_override_configurations",
+                "$option_enabled_binding_name": "#dev_show_override_configurations_enabled",
+                "$toggle_name": "dev_show_override_configurations"
               }
             },
             {
@@ -7342,29 +7406,29 @@
               }
             },
             {
-              "override_progression_options_panel": {
+              "override_configuration_options_panel": {
                 "type": "stack_panel",
                 "size": [ "100%", "100%c" ],
                 "bindings": [
                   {
-                    "binding_name": "#dev_show_override_progressions",
+                    "binding_name": "#dev_show_override_configurations",
                     "binding_name_override": "#visible"
                   }
                 ],
                 "controls": [
                   {
-                    "add_progressions_panel": {
+                    "add_configurations_panel": {
                       "type": "stack_panel",
                       "size": [ "100%", 40 ],
                       "orientation": "horizontal",
                       "controls": [
                         {
-                          "text_edit_progression@settings_common.option_text_edit": {
+                          "text_edit_configuration@settings_common.option_text_edit": {
                             "$option_generic_panel_size": [ "fill", "100%c" ],
-                            "$option_label": "options.dev_addProgressionId",
-                            "$text_box_name": "dev_progression_id",
-                            "$option_binding_name": "#dev_progression_id",
-                            "$option_enabled_binding_name": "#dev_progression_id_enabled",
+                            "$option_label": "options.dev_addConfigurationId",
+                            "$text_box_name": "dev_configuration_id",
+                            "$option_binding_name": "#dev_configuration_id",
+                            "$option_enabled_binding_name": "#dev_configuration_id_enabled",
                             "$max_text_edit_length": 50
                           }
                         },
@@ -7375,7 +7439,7 @@
                             "controls": [
                               {
                                 "add_button@common_buttons.light_text_button": {
-                                  "$pressed_button_name": "button.add_progression_by_name",
+                                  "$pressed_button_name": "button.add_configuration_by_name",
                                   "size": [ 40, 30 ],
                                   "offset": [ 0, 1 ],
                                   "anchor_from": "bottom_right",
@@ -7390,7 +7454,7 @@
                     }
                   },
                   {
-                    "progression_cache_management_panel": {
+                    "configuration_cache_management_panel": {
                       "type": "stack_panel",
                       "orientation": "horizontal",
                       "size": [ "100%", 30 ],
@@ -7398,14 +7462,14 @@
                         {
                           "reset_to_default@common_buttons.light_text_button": {
                             "size": [ "50%", "100%" ],
-                            "$pressed_button_name": "button.reset_to_default_progressions",
+                            "$pressed_button_name": "button.reset_to_default_configurations",
                             "$button_text": "options.dev_resetToDefault"
                           }
                         },
                         {
-                          "clear_progressions@common_buttons.light_text_button": {
+                          "clear_configurations@common_buttons.light_text_button": {
                             "size": [ "50%", "100%" ],
-                            "$pressed_button_name": "button.clear_progression_list",
+                            "$pressed_button_name": "button.clear_configuration_list",
                             "$button_text": "options.dev_clearFlights"
                           }
                         }
@@ -7416,15 +7480,15 @@
               }
             },
             {
-              "progression_grid": {
+              "configuration_grid": {
                 "type": "grid",
                 "size": [ "100%", "100%c" ],
-                "grid_item_template": "general_section.progression_grid_item",
-                "grid_dimension_binding": "#progressions_grid_dimension",
-                "collection_name": "progression_collection",
+                "grid_item_template": "general_section.configuration_grid_item",
+                "grid_dimension_binding": "#configurations_grid_dimension",
+                "collection_name": "configuration_collection",
                 "bindings": [
                   {
-                    "binding_name": "#progressions_grid_dimension",
+                    "binding_name": "#configurations_grid_dimension",
                     "binding_condition": "visible"
                   }
                 ]
@@ -7436,7 +7500,7 @@
     ],
     "bindings": [
       {
-        "binding_name": "#dev_display_progressions_panel",
+        "binding_name": "#dev_display_configurations_panel",
         "binding_name_override": "#visible"
       }
     ]
@@ -7615,29 +7679,29 @@
     ]
   },
 
-  "progression_grid_item": {
+  "configuration_grid_item": {
     "type": "stack_panel",
     "orientation": "horizontal",
     "size": [ "100%", 18 ],
     "controls": [
       {
-        "progression_id_panel@common_store.banner_fill": {
+        "configuration_id_panel@common_store.banner_fill": {
           "size": [ "fill", "100%" ],
           "controls": [
             {
-              "progression_id": {
+              "configuration_id": {
                 "type": "label",
                 "size": [ "100% - 3px", 10 ],
                 "offset": [ 3, 0 ],
-                "text": "#progression_id",
+                "text": "#configuration_id",
                 "text_alignment": "left",
                 "color": "$body_text_color",
                 "layer": 1,
                 "bindings": [
                   {
-                    "binding_name": "#progression_id",
+                    "binding_name": "#configuration_id",
                     "binding_type": "collection",
-                    "binding_collection_name": "progression_collection",
+                    "binding_collection_name": "configuration_collection",
                     "binding_condition": "visible"
                   }
                 ]
@@ -7648,18 +7712,18 @@
       },
       {
         "remove_button@common_buttons.light_content_button": {
-          "$pressed_button_name": "button.remove_progression",
+          "$pressed_button_name": "button.remove_configuration",
           "size": [ 20, "100%" ],
-          "$button_content": "general_section.remove_progression_icon",
+          "$button_content": "general_section.remove_configuration_icon",
           "layer": 2,
           "bindings": [
             {
               "binding_type": "collection_details",
-              "binding_collection_name": "progression_collection",
+              "binding_collection_name": "configuration_collection",
               "binding_condition": "visible"
             },
             {
-              "binding_name": "#dev_show_override_progressions",
+              "binding_name": "#dev_show_override_configurations",
               "binding_name_override": "#visible"
             }
           ]
@@ -7668,7 +7732,7 @@
     ]
   },
 
-  "remove_progression_icon": {
+  "remove_configuration_icon": {
     "type": "image",
     "texture": "textures/ui/realms_red_x"
   },
@@ -9150,20 +9214,7 @@
           "$button_text": "options.dev_folders_portSettingsFolder"
         }
       },
-      {
-        "padding_new_player_path_toggles": {
-          "type": "panel",
-          "size": [ "100%", 3 ]
-        }
-      },
-      {
-        "new_player_path_character_selector_enabled@settings_common.option_toggle": {
-          "$option_label": "options.new_player_path_character_selector",
-          "$option_binding_name": "#new_player_path_character_selector",
-          "$option_enabled_binding_name": "#new_player_path_character_selector_enabled",
-          "$toggle_name": "new_player_path_character_selector"
-        }
-      },
+
       {
         "padding_reset_day_one": {
           "type": "panel",
@@ -11276,21 +11327,21 @@
         }
       },
       {
-        "progression_override_panel": {
+        "configuration_override_panel": {
           "type": "stack_panel",
           "size": [ "100%", "100%c" ],
           "orientation": "vertical",
           "controls": [
             {
-              "option_toggle_progression_override@settings_common.option_toggle": {
-                "$option_label": "options.dev_displayProgressionsPanel",
-                "$option_binding_name": "#dev_display_progressions_panel",
-                "$option_enabled_binding_name": "#dev_display_progressions_panel_enabled",
-                "$toggle_name": "dev_display_progressions_panel"
+              "option_toggle_configuration_override@settings_common.option_toggle": {
+                "$option_label": "options.dev_displayConfigurationsPanel",
+                "$option_binding_name": "#dev_display_configurations_panel",
+                "$option_enabled_binding_name": "#dev_display_configurations_panel_enabled",
+                "$toggle_name": "dev_display_configurations_panel"
               }
             },
             {
-              "override_progressions_panel@general_section.debug_override_progressions_panel": {}
+              "override_configurations_panel@general_section.debug_override_configurations_panel": {}
             }
           ]
         }
