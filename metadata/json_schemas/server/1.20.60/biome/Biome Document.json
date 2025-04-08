@@ -1,77 +1,25 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "1325498408",
-    "x-minecraft-version": "1.21.80-beta.23",
+    "x-minecraft-version": "1.21.80-beta.27",
     "definitions": {
         "3728836809": {
             "title": "Biome Definition",
             "description": "Contains a description and components to define a Biome.",
             "type": "object",
             "properties": {
-                "components": {
-                    "description": "Components for this Biome.",
-                    "$ref": "#/definitions/471566442"
-                },
                 "description": {
                     "description": "Non-component settings, including the Biome name.",
                     "$ref": "#/definitions/2794612011"
-                }
-            },
-            "required": [
-                "description",
-                "components"
-            ]
-        },
-        "2794612011": {
-            "title": "Biome Description",
-            "description": "Contains non-component settings for a Biome.",
-            "type": "object",
-            "properties": {
-                "identifier": {
-                    "description": "The name of the Biome, used by other features like the '/locate biome' command.",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "identifier"
-            ]
-        },
-        "3076687790": {
-            "title": "Block Specifier",
-            "description": "Specifies a particular block. Can be a string block name or a JSON object",
-            "oneOf": [
-                {
-                    "type": "string"
                 },
-                {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "description": "Name of the block",
-                            "type": "string"
-                        },
-                        "states": {
-                            "description": "Contains members named after each state, with boolean, integer, or string values.",
-                            "type": "object",
-                            "additionalProperties": {
-                                "oneOf": [
-                                    {
-                                        "type": "integer"
-                                    },
-                                    {
-                                        "type": "boolean"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ]
+                "components": {
+                    "description": "Components for this Biome.",
+                    "$ref": "#/definitions/471566442"
                 }
+            },
+            "required": [
+                "components",
+                "description"
             ]
         },
         "2278320139": {
@@ -150,6 +98,10 @@
                     "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
                     "$ref": "#/definitions/1167427373"
                 },
+                "minecraft:replace_biomes": {
+                    "description": "Replaces a specified portion of one or more Minecraft biomes.",
+                    "$ref": "#/definitions/320104782"
+                },
                 "minecraft:swamp_surface": {
                     "description": "Similar to overworld_surface. Adds swamp surface details.",
                     "$ref": "#/definitions/416340115"
@@ -163,6 +115,43 @@
                     "$ref": "#/definitions/3315029981"
                 }
             }
+        },
+        "3263934683": {
+            "title": "minecraft:surface_material_adjustments - surface adjustment settings",
+            "description": "An adjustment to generated terrain, replacing blocks based on the specified settings.",
+            "type": "object",
+            "properties": {
+                "materials": {
+                    "description": "The specific blocks used for this surface adjustment",
+                    "$ref": "#/definitions/1287813091"
+                },
+                "noise_range": {
+                    "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "height_range": {
+                    "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
+                    "type": "array",
+                    "items": {
+                        "description": "A JSON field that specifies a Molang expression. Can be an integer, float, boolean, or string.",
+                        "$ref": "#/definitions/73298661"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "noise_frequency_scale": {
+                    "description": "The scale to multiply by the position when accessing the noise value for the material adjustments.",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "materials"
+            ]
         },
         "114123883": {
             "title": "minecraft:frozen_ocean_surface",
@@ -201,43 +190,6 @@
                 "foundation_material",
                 "top_material",
                 "sea_material"
-            ]
-        },
-        "3263934683": {
-            "title": "minecraft:surface_material_adjustments - surface adjustment settings",
-            "description": "An adjustment to generated terrain, replacing blocks based on the specified settings.",
-            "type": "object",
-            "properties": {
-                "materials": {
-                    "description": "The specific blocks used for this surface adjustment",
-                    "$ref": "#/definitions/1287813091"
-                },
-                "noise_range": {
-                    "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    },
-                    "minItems": 2,
-                    "maxItems": 2
-                },
-                "height_range": {
-                    "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
-                    "type": "array",
-                    "items": {
-                        "description": "A JSON field that specifies a Molang expression. Can be an integer, float, boolean, or string.",
-                        "$ref": "#/definitions/73298661"
-                    },
-                    "minItems": 2,
-                    "maxItems": 2
-                },
-                "noise_frequency_scale": {
-                    "description": "The scale to multiply by the position when accessing the noise value for the material adjustments.",
-                    "type": "number"
-                }
-            },
-            "required": [
-                "materials"
             ]
         },
         "910282102": {
@@ -298,18 +250,43 @@
                 }
             ]
         },
-        "6061611": {
-            "title": "minecraft:creature_spawn_probability",
-            "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
-            "type": "object",
-            "properties": {
-                "probability": {
-                    "description": "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation.",
-                    "type": "number",
-                    "minimum": 0.0,
-                    "maximum": 0.75
+        "3076687790": {
+            "title": "Block Specifier",
+            "description": "Specifies a particular block. Can be a string block name or a JSON object",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "description": "Name of the block",
+                            "type": "string"
+                        },
+                        "states": {
+                            "description": "Contains members named after each state, with boolean, integer, or string values.",
+                            "type": "object",
+                            "additionalProperties": {
+                                "oneOf": [
+                                    {
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "type": "boolean"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ]
                 }
-            }
+            ]
         },
         "70508991": {
             "title": "minecraft:overworld_generation_rules",
@@ -339,6 +316,19 @@
                 "shore_transformation": {
                     "description": "What biome to switch to when adjacent to an ocean biome",
                     "$ref": "#/definitions/2586207614"
+                }
+            }
+        },
+        "6061611": {
+            "title": "minecraft:creature_spawn_probability",
+            "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
+            "type": "object",
+            "properties": {
+                "probability": {
+                    "description": "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation.",
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 0.75
                 }
             }
         },
@@ -722,6 +712,61 @@
                 "sea_material"
             ]
         },
+        "320104782": {
+            "title": "minecraft:replace_biomes",
+            "description": "Replaces a specified portion of one or more Minecraft biomes.",
+            "type": "object",
+            "properties": {
+                "replacements": {
+                    "description": "List of biome replacement configurations. Retroactively adding a new replacement to the front of this list will cause the world generation to change. Please add any new replacements to the end of the list.",
+                    "type": "array",
+                    "items": {
+                        "description": "Represents the replacement information used to determine the placement of the overriding biome.",
+                        "$ref": "#/definitions/716969038"
+                    }
+                }
+            },
+            "required": [
+                "replacements"
+            ]
+        },
+        "716969038": {
+            "title": "Biome Replacement",
+            "description": "Represents the replacement information used to determine the placement of the overriding biome.",
+            "type": "object",
+            "properties": {
+                "dimension": {
+                    "description": "Dimension in which this replacement can happen. Must be 'minecraft:overworld'.",
+                    "type": "string"
+                },
+                "amount": {
+                    "description": "Noise value used to determine whether or not the replacement is attempted, similar to a percentage. Must be in the range (0.0, 1.0].",
+                    "type": "number",
+                    "exclusiveMinimum": 0.0,
+                    "maximum": 1.0
+                },
+                "targets": {
+                    "description": "Biomes that are going to be replaced by the overriding biome.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                },
+                "noise_frequency_scale": {
+                    "description": "Scaling value used to alter the frequency of replacement attempts. A lower frequency will mean a bigger contiguous biome area that occurs less often. A higher frequency will mean smaller contiguous biome areas that occur more often. Must be in the range (0.0, 100.0].",
+                    "type": "number",
+                    "exclusiveMinimum": 0.0,
+                    "maximum": 100.0
+                }
+            },
+            "required": [
+                "dimension",
+                "targets",
+                "amount",
+                "noise_frequency_scale"
+            ]
+        },
         "3315029981": {
             "title": "minecraft:tags",
             "description": "Attach arbitrary string tags to this biome.",
@@ -737,6 +782,20 @@
             },
             "required": [
                 "tags"
+            ]
+        },
+        "2794612011": {
+            "title": "Biome Description",
+            "description": "Contains non-component settings for a Biome.",
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "description": "The name of the Biome, used by other features like the '/locate biome' command.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "identifier"
             ]
         }
     },
