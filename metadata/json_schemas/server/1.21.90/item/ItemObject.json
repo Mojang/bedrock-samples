@@ -1,19 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "1162783841",
-    "x-minecraft-version": "1.21.80-beta.0",
+    "$id": "3209403096",
+    "x-format-version": "1.21.90",
+    "x-minecraft-version": "1.21.90-beta.20",
     "definitions": {
-        "1493629372": {
-            "title": "struct SharedTypes::Reference<3>",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "string"
-                }
-            ]
-        },
         "886176099": {
             "title": "minecraft:cooldown",
             "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
@@ -33,6 +23,10 @@
                 "duration"
             ]
         },
+        "1425698818": {
+            "title": "struct SharedTypes::Identifier<3>",
+            "type": "string"
+        },
         "1866815117": {
             "title": "description",
             "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
@@ -40,7 +34,7 @@
             "properties": {
                 "identifier": {
                     "description": "Unique name for the item that must include a namespace and must not use the Minecraft namespace unless overriding a Vanilla item.",
-                    "$ref": "#/definitions/1459401151"
+                    "$ref": "#/definitions/1425698818"
                 },
                 "menu_category": {
                     "description": "menu_category contains the creative group name and category for this item.",
@@ -51,42 +45,57 @@
                 "identifier"
             ]
         },
-        "2770948419": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+        "1095951327": {
+            "title": "minecraft:enchantable",
+            "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
+                "value": {
+                    "description": "Specifies the value of the enchantment (minimum of 0).",
+                    "type": "integer",
+                    "minimum": 0.0
                 },
-                "tags": {
+                "slot": {
+                    "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
                     "type": "string"
+                }
+            },
+            "required": [
+                "value",
+                "slot"
+            ]
+        },
+        "3342154574": {
+            "title": "menu_category",
+            "description": "menu_category contains the creative group name and category for this item.",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "title": "enum CreativeItemCategory",
+                    "description": "Creative category where this item belongs. Defaults to \"none\".",
+                    "type": "string",
+                    "enum": [
+                        "construction",
+                        "nature",
+                        "equipment",
+                        "items",
+                        "none"
+                    ]
                 },
-                "states": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/517105782"
-                    }
+                "group": {
+                    "description": "The Creative Group that this item belongs to. Group name is limited to 256 characters. The name also must start with a namespace.",
+                    "type": "string",
+                    "maxLength": 256,
+                    "pattern": "^(?:.)+:(?:.)+$"
+                },
+                "is_hidden_in_commands": {
+                    "description": "Determines whether or not this item can be used with commands. Commands can use items by default if a category is set.",
+                    "type": "boolean"
                 }
             }
         },
-        "1459401151": {
-            "title": "struct SharedTypes::Identifier<2>",
-            "type": "string"
-        },
-        "1754804474": {
-            "title": "minecraft:interact_button",
-            "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "string"
-                }
-            ]
-        },
-        "2333463437": {
-            "title": "components v1.21.80",
+        "3635230096": {
+            "title": "components",
             "description": "List of all components used in this item.",
             "type": "object",
             "properties": {
@@ -121,10 +130,6 @@
                 "minecraft:compostable": {
                     "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
                     "$ref": "#/definitions/3133202100"
-                },
-                "minecraft:custom_components": {
-                    "description": "Specifies an array of custom components defined in a script that should be added to this item.",
-                    "$ref": "#/definitions/4150838471"
                 },
                 "minecraft:damage_absorption": {
                     "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
@@ -248,72 +253,13 @@
                 "minecraft:wearable": {
                     "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
                     "$ref": "#/definitions/2041267453"
+                },
+                "minecraft:custom_components": {
+                    "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+                    "deprecated": true,
+                    "$ref": "#/definitions/4150838471"
                 }
             }
-        },
-        "1095951327": {
-            "title": "minecraft:enchantable",
-            "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
-            "type": "object",
-            "properties": {
-                "value": {
-                    "description": "Specifies the value of the enchantment (minimum of 0).",
-                    "type": "integer",
-                    "minimum": 0.0
-                },
-                "slot": {
-                    "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "value",
-                "slot"
-            ]
-        },
-        "3342154574": {
-            "title": "menu_category",
-            "description": "menu_category contains the creative group name and category for this item.",
-            "type": "object",
-            "properties": {
-                "category": {
-                    "title": "enum CreativeItemCategory",
-                    "description": "Creative category where this item belongs. Defaults to \"none\".",
-                    "type": "string",
-                    "enum": [
-                        "construction",
-                        "nature",
-                        "equipment",
-                        "items",
-                        "none"
-                    ]
-                },
-                "group": {
-                    "description": "The Creative Group that this item belongs to. Group name is limited to 256 characters. The name also must start with a namespace.",
-                    "type": "string",
-                    "maxLength": 256,
-                    "pattern": "^(?:.)+:(?:.)+$"
-                },
-                "is_hidden_in_commands": {
-                    "description": "Determines whether or not this item can be used with commands. Commands can use items by default if a category is set.",
-                    "type": "boolean"
-                }
-            }
-        },
-        "2794205495": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptor",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/2770948419"
-                },
-                {
-                    "type": "string",
-                    "minLength": 1
-                },
-                {
-                    "$ref": "#/definitions/2770948419"
-                }
-            ]
         },
         "2499855414": {
             "title": "minecraft:digger",
@@ -374,6 +320,21 @@
                             ]
                         }
                     }
+                }
+            ]
+        },
+        "2794205495": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptor",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2770948419"
+                },
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "$ref": "#/definitions/2770948419"
                 }
             ]
         },
@@ -444,6 +405,24 @@
                     }
                 }
             ]
+        },
+        "2770948419": {
+            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "states": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/517105782"
+                    }
+                }
+            }
         },
         "3126701690": {
             "title": "minecraft:can_destroy_in_creative",
@@ -544,7 +523,7 @@
                 },
                 "projectile_entity": {
                     "description": "Which entity is to be fired as a projectile.",
-                    "$ref": "#/definitions/1493335182",
+                    "$ref": "#/definitions/1527331705",
                     "minLength": 0,
                     "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
                 }
@@ -553,14 +532,138 @@
                 "projectile_entity"
             ]
         },
-        "1493335182": {
-            "title": "struct SharedTypes::Reference<1>",
+        "1527331705": {
+            "title": "struct SharedTypes::Reference<2>",
             "oneOf": [
                 {
                     "type": "string"
                 },
                 {
                     "type": "string"
+                }
+            ]
+        },
+        "1956551060": {
+            "title": "minecraft:durability_sensor",
+            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "durability_thresholds": {
+                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
+                    "type": "array",
+                    "items": {
+                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
+                        "$ref": "#/definitions/764203503"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "durability_thresholds"
+            ]
+        },
+        "2359991381": {
+            "title": "minecraft:liquid_clipped",
+            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Deterines whether the item interacts with liquid blocks on use.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3494639353": {
+            "title": "minecraft:durability",
+            "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
+            "type": "object",
+            "properties": {
+                "damage_chance": {
+                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
+                    "$ref": "#/definitions/1398826300"
+                },
+                "max_durability": {
+                    "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
+                    "type": "integer",
+                    "minimum": 0.0
+                }
+            },
+            "required": [
+                "max_durability"
+            ]
+        },
+        "3133202100": {
+            "title": "minecraft:compostable",
+            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
+            "type": "object",
+            "properties": {
+                "composting_chance": {
+                    "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 100.0
+                }
+            },
+            "required": [
+                "composting_chance"
+            ]
+        },
+        "3875281249": {
+            "title": "minecraft:should_despawn",
+            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item should eventually despawn while floating in the world.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1398826300": {
+            "title": "struct SharedTypes::IntRange",
+            "type": "object",
+            "properties": {
+                "min": {
+                    "type": "integer"
+                },
+                "max": {
+                    "type": "integer"
+                }
+            }
+        },
+        "2817495317": {
+            "title": "minecraft:max_stack_size",
+            "description": "The max_stack_size component specifies how many of the item can be stacked together.",
+            "oneOf": [
+                {
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 64.0
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Specifies how many of the item that can be stacked.",
+                            "type": "integer",
+                            "minimum": 1.0,
+                            "maximum": 64.0
+                        }
+                    }
                 }
             ]
         },
@@ -656,93 +759,6 @@
                 }
             }
         },
-        "3494639353": {
-            "title": "minecraft:durability",
-            "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
-            "type": "object",
-            "properties": {
-                "damage_chance": {
-                    "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
-                    "$ref": "#/definitions/1398826300"
-                },
-                "max_durability": {
-                    "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
-                    "type": "integer",
-                    "minimum": 0.0
-                }
-            },
-            "required": [
-                "max_durability"
-            ]
-        },
-        "3133202100": {
-            "title": "minecraft:compostable",
-            "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
-            "type": "object",
-            "properties": {
-                "composting_chance": {
-                    "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
-                    "type": "integer",
-                    "minimum": 1.0,
-                    "maximum": 100.0
-                }
-            },
-            "required": [
-                "composting_chance"
-            ]
-        },
-        "3875281249": {
-            "title": "minecraft:should_despawn",
-            "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Determines whether the item should eventually despawn while floating in the world.",
-                            "type": "boolean"
-                        }
-                    }
-                }
-            ]
-        },
-        "1398826300": {
-            "title": "struct SharedTypes::IntRange",
-            "type": "object",
-            "properties": {
-                "min": {
-                    "type": "integer"
-                },
-                "max": {
-                    "type": "integer"
-                }
-            }
-        },
-        "2817495317": {
-            "title": "minecraft:max_stack_size",
-            "description": "The max_stack_size component specifies how many of the item can be stacked together.",
-            "oneOf": [
-                {
-                    "type": "integer",
-                    "minimum": 1.0,
-                    "maximum": 64.0
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Specifies how many of the item that can be stacked.",
-                            "type": "integer",
-                            "minimum": 1.0,
-                            "maximum": 64.0
-                        }
-                    }
-                }
-            ]
-        },
         "1531870811": {
             "title": "struct SharedTypes::Legacy::ItemDescriptor",
             "oneOf": [
@@ -771,7 +787,7 @@
                             "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes and bundle open textures can be specified here too. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
                             "type": "object",
                             "additionalProperties": {
-                                "$ref": "#/definitions/1493629372"
+                                "$ref": "#/definitions/3673881199"
                             }
                         }
                     }
@@ -1371,15 +1387,6 @@
                 "item"
             ]
         },
-        "4150838471": {
-            "title": "minecraft:custom_components",
-            "description": "Specifies an array of custom components defined in a script that should be added to this item.",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$"
-            }
-        },
         "3173009623": {
             "title": "minecraft:damage",
             "description": "The damage component determines how much extra damage the item does on attack.",
@@ -1399,6 +1406,15 @@
                     }
                 }
             ]
+        },
+        "4150838471": {
+            "title": "minecraft:custom_components",
+            "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$"
+            }
         },
         "1899103179": {
             "title": "struct SharedTypes::v1_20_50::DiggerItemComponent::BlockInfo",
@@ -1463,7 +1479,7 @@
                 },
                 "entity": {
                     "description": "The entity to be placed in the world.",
-                    "$ref": "#/definitions/1493335182",
+                    "$ref": "#/definitions/1527331705",
                     "minLength": 0,
                     "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
                 },
@@ -1503,43 +1519,6 @@
                     "required": [
                         "items"
                     ]
-                }
-            ]
-        },
-        "1956551060": {
-            "title": "minecraft:durability_sensor",
-            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
-            "type": "object",
-            "properties": {
-                "durability_thresholds": {
-                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
-                    "type": "array",
-                    "items": {
-                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
-                        "$ref": "#/definitions/764203503"
-                    },
-                    "minItems": 1
-                }
-            },
-            "required": [
-                "durability_thresholds"
-            ]
-        },
-        "2359991381": {
-            "title": "minecraft:liquid_clipped",
-            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Deterines whether the item interacts with liquid blocks on use.",
-                            "type": "boolean"
-                        }
-                    }
                 }
             ]
         },
@@ -2282,6 +2261,29 @@
                 }
             ]
         },
+        "3673881199": {
+            "title": "struct SharedTypes::Reference<4>",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "1754804474": {
+            "title": "minecraft:interact_button",
+            "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
         "3178719147": {
             "title": "struct SharedTypes::Legacy::ExpressionNode",
             "oneOf": [
@@ -2362,13 +2364,13 @@
             }
         }
     },
-    "title": "minecraft:item v1.21.80",
+    "title": "minecraft:item v1.21.90",
     "description": "Item definition includes the \"description\" and \"components\" sections.",
     "type": "object",
     "properties": {
         "components": {
             "description": "List of all components used in this item.",
-            "$ref": "#/definitions/2333463437"
+            "$ref": "#/definitions/3635230096"
         },
         "description": {
             "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",

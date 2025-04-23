@@ -1,4 +1,4 @@
-<h1>ENTITIES DOCUMENTATION </br>Version: 1.21.80.28</h1>
+<h1>ENTITIES DOCUMENTATION </br>Version: 1.21.90.0</h1>
 This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
@@ -21667,10 +21667,16 @@ Allows this entity to be leashed and defines the conditions and events for this 
 <table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:2;">
 <tr> <th style="border-style:solid; border-width:2;">Name</th> <th style="border-style:solid; border-width:2;">Type</th> <th style="border-style:solid; border-width:2;">Default Value</th> <th style="border-style:solid; border-width:2;">Description</th> </tr>
 <tr>
+<td style="border-style:solid; border-width:2; padding:8px">can_be_cut</td>
+<td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
+<td style="border-style:solid; border-width:2; padding:8px">true</td>
+<td style="border-style:solid; border-width:2; padding:8px">If true, players can cut both incoming and outgoing leashes by using shears on the entity.</br></td>
+</tr>
+<tr>
 <td style="border-style:solid; border-width:2; padding:8px">can_be_stolen</td>
 <td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
-<td style="border-style:solid; border-width:2; padding:8px">false</td>
-<td style="border-style:solid; border-width:2; padding:8px">If true, players can leash this entity even if it is already leashed to another mob.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">true</td>
+<td style="border-style:solid; border-width:2; padding:8px">If true, players can leash this entity even if it is already leashed to another entity.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">on_leash</td>
@@ -21688,7 +21694,7 @@ Allows this entity to be leashed and defines the conditions and events for this 
 <td style="border-style:solid; border-width:2; padding:8px">on_unleash_interact_only</td>
 <td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
 <td style="border-style:solid; border-width:2; padding:8px">false</td>
-<td style="border-style:solid; border-width:2; padding:8px">When set to true, "on_unleash" does not trigger when the entity gets unleashed for other reasons such as being stolen or the leash breaking.</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">When set to true, "on_unleash" does not trigger when the entity gets unleashed for reasons other than the player directly interacting with it.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">presets</td>
@@ -21705,23 +21711,50 @@ Allows this entity to be leashed and defines the conditions and events for this 
 <tr>
 <td style="border-style:solid; border-width:1; padding:9px">hard_distance</td>
 <td style="border-style:solid; border-width:1; padding:9px">Decimal</td>
-<td style="border-style:solid; border-width:1; padding:9px">6</td>
-<td style="border-style:solid; border-width:1; padding:9px">Distance in blocks at which the leash stiffens, restricting movement.</br></td>
+<td style="border-style:solid; border-width:1; padding:9px">7</td>
+<td style="border-style:solid; border-width:1; padding:9px">Distance (in blocks) over which the entity starts being pulled toward the leash holder with an spring-like force.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:1; padding:9px">max_distance</td>
 <td style="border-style:solid; border-width:1; padding:9px">Decimal</td>
-<td style="border-style:solid; border-width:1; padding:9px">10</td>
+<td style="border-style:solid; border-width:1; padding:9px">12</td>
 <td style="border-style:solid; border-width:1; padding:9px">Distance in blocks at which the leash breaks.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:1; padding:9px">rotation_adjustment</td>
+<td style="border-style:solid; border-width:1; padding:9px">Decimal</td>
+<td style="border-style:solid; border-width:1; padding:9px">0</td>
+<td style="border-style:solid; border-width:1; padding:9px">Adjusts the rotation at which the entity reaches equilibrium, when "spring_type" is set to "dampened" or "quad_dampened".</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:1; padding:9px">soft_distance</td>
 <td style="border-style:solid; border-width:1; padding:9px">Decimal</td>
 <td style="border-style:solid; border-width:1; padding:9px">4</td>
-<td style="border-style:solid; border-width:1; padding:9px">Distance in blocks at which the "spring" effect starts acting to keep this entity close to the entity that leashed it.</br></td>
+<td style="border-style:solid; border-width:1; padding:9px">Distance (in blocks) over which the entity begins pathfinding toward the leash holder, if able.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:1; padding:9px">spring_type</td>
+<td style="border-style:solid; border-width:1; padding:9px">Enumerator</td>
+<td style="border-style:solid; border-width:1; padding:9px">dampened</td>
+<td style="border-style:solid; border-width:1; padding:9px">Defines the type of spring-like force that pulls the entity towards its leash holder:</br>- "bouncy": Simulates a highly elastic spring that never reaches an equilibrium if the leashed entity is suspended mid-air.</br>- "dampened": Simulates a dampened spring attached to the front of the leashed entity's collision. It reaches an equilibrium if the entity is suspended mid-air and aligns with the movement direction.</br>- "quad_dampened": Simulates four dampened springs connected to the center of each side of the entities' collisions. It reaches an equilibrium if the entity is suspended mid-air and gradually aligns with the leash holder over time.</br></td>
 </tr>
 </table>
 </td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h2><p id="minecraft:leashable_to">minecraft:leashable_to</p></h2>
+
+Allows players to leash entities to this entity, retrieve those already leashed to it, or free them using shears.</br><h3></h3>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:2;">
+<tr> <th style="border-style:solid; border-width:2;">Name</th> <th style="border-style:solid; border-width:2;">Type</th> <th style="border-style:solid; border-width:2;">Default Value</th> <th style="border-style:solid; border-width:2;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">can_retrieve_from</td>
+<td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
+<td style="border-style:solid; border-width:2; padding:8px">false</td>
+<td style="border-style:solid; border-width:2; padding:8px">Allows players to retrieve entities that are leashed to this entity.</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -23369,6 +23402,10 @@ Defines the ravager's response to their melee attack being blocked.</br><h3></h3
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
+
+<h2><p id="minecraft:remove_in_peaceful">minecraft:remove_in_peaceful</p></h2>
+
+Denotes entities that are not allowed to exist in "Peaceful" difficulty.</br><a href="#Index">Back to top</a><br><br>
 
 <h2><p id="minecraft:rideable">minecraft:rideable</p></h2>
 
@@ -25447,6 +25484,10 @@ Sets the mapping of internal animation controller references to actual animation
 <td style="border-style:solid; border-width:2; padding:8px">893445039</br></td>
 </tr>
 <tr>
+<td style="border-style:solid; border-width:2; padding:8px">minecraft:leashable_to</td>
+<td style="border-style:solid; border-width:2; padding:8px">1636924761</br></td>
+</tr>
+<tr>
 <td style="border-style:solid; border-width:2; padding:8px">minecraft:looked_at</td>
 <td style="border-style:solid; border-width:2; padding:8px">-1189178052</br></td>
 </tr>
@@ -25579,6 +25620,10 @@ Sets the mapping of internal animation controller references to actual animation
 <td style="border-style:solid; border-width:2; padding:8px">-2073986952</br></td>
 </tr>
 <tr>
+<td style="border-style:solid; border-width:2; padding:8px">minecraft:remove_in_peaceful</td>
+<td style="border-style:solid; border-width:2; padding:8px">-1079443828</br></td>
+</tr>
+<tr>
 <td style="border-style:solid; border-width:2; padding:8px">minecraft:rideable</td>
 <td style="border-style:solid; border-width:2; padding:8px">1656173828</br></td>
 </tr>
@@ -25699,6 +25744,10 @@ Sets the mapping of internal animation controller references to actual animation
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">minecraft:ambient_sound_interval</td>
 <td style="border-style:solid; border-width:2; padding:8px">-1314051310</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">minecraft:body_rotation_always_follows_head</td>
+<td style="border-style:solid; border-width:2; padding:8px">1766999981</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">minecraft:body_rotation_axis_aligned</td>
@@ -25978,6 +26027,10 @@ Level sound event to be played as the ambient sound</br><a href="#Index">Back to
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
+
+<h2><p id="minecraft:body_rotation_always_follows_head">minecraft:body_rotation_always_follows_head</p></h2>
+
+Causes the entity's body to always be automatically rotated to align with the entity's head.</br>Does not override the "minecraft:body_rotation_blocked" component.</br><a href="#Index">Back to top</a><br><br>
 
 <h2><p id="minecraft:body_rotation_axis_aligned">minecraft:body_rotation_axis_aligned</p></h2>
 

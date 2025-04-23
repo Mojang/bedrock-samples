@@ -32784,9 +32784,19 @@
                      "name" : "minecraft:leashable",
                      "nodes" : [
                         {
-                           "default" : "false",
+                           "default" : "true",
                            "description" : [
-                              "If true, players can leash this entity even if it is already leashed to another mob."
+                              "If true, players can cut both incoming and outgoing leashes by using shears on the entity."
+                           ],
+                           "header_level" : 4,
+                           "name" : "can_be_cut",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
+                        },
+                        {
+                           "default" : "true",
+                           "description" : [
+                              "If true, players can leash this entity even if it is already leashed to another entity."
                            ],
                            "header_level" : 4,
                            "name" : "can_be_stolen",
@@ -32810,7 +32820,7 @@
                         {
                            "default" : "false",
                            "description" : [
-                              "When set to true, \"on_unleash\" does not trigger when the entity gets unleashed for other reasons such as being stolen or the leash breaking."
+                              "When set to true, \"on_unleash\" does not trigger when the entity gets unleashed for reasons other than the player directly interacting with it."
                            ],
                            "header_level" : 4,
                            "name" : "on_unleash_interact_only",
@@ -32834,9 +32844,9 @@
                                  "type" : "Minecraft Filter"
                               },
                               {
-                                 "default" : "6",
+                                 "default" : "7",
                                  "description" : [
-                                    "Distance in blocks at which the leash stiffens, restricting movement."
+                                    "Distance (in blocks) over which the entity starts being pulled toward the leash holder with an spring-like force."
                                  ],
                                  "header_level" : 5,
                                  "name" : "hard_distance",
@@ -32844,7 +32854,7 @@
                                  "type" : "Decimal"
                               },
                               {
-                                 "default" : "10",
+                                 "default" : "12",
                                  "description" : [ "Distance in blocks at which the leash breaks." ],
                                  "header_level" : 5,
                                  "name" : "max_distance",
@@ -32852,14 +32862,37 @@
                                  "type" : "Decimal"
                               },
                               {
+                                 "default" : "0",
+                                 "description" : [
+                                    "Adjusts the rotation at which the entity reaches equilibrium, when \"spring_type\" is set to \"dampened\" or \"quad_dampened\"."
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "rotation_adjustment",
+                                 "show_in_index" : true,
+                                 "type" : "Decimal"
+                              },
+                              {
                                  "default" : "4",
                                  "description" : [
-                                    "Distance in blocks at which the \"spring\" effect starts acting to keep this entity close to the entity that leashed it."
+                                    "Distance (in blocks) over which the entity begins pathfinding toward the leash holder, if able."
                                  ],
                                  "header_level" : 5,
                                  "name" : "soft_distance",
                                  "show_in_index" : true,
                                  "type" : "Decimal"
+                              },
+                              {
+                                 "default" : "dampened",
+                                 "description" : [
+                                    "Defines the type of spring-like force that pulls the entity towards its leash holder:",
+                                    "- \"bouncy\": Simulates a highly elastic spring that never reaches an equilibrium if the leashed entity is suspended mid-air.",
+                                    "- \"dampened\": Simulates a dampened spring attached to the front of the leashed entity's collision. It reaches an equilibrium if the entity is suspended mid-air and aligns with the movement direction.",
+                                    "- \"quad_dampened\": Simulates four dampened springs connected to the center of each side of the entities' collisions. It reaches an equilibrium if the entity is suspended mid-air and gradually aligns with the leash holder over time."
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "spring_type",
+                                 "show_in_index" : true,
+                                 "type" : "Enumerator"
                               }
                            ],
                            "nodes_as_table" : true,
@@ -32869,6 +32902,31 @@
                            "table_name_title" : "Name",
                            "table_type_title" : "Type",
                            "type" : "List"
+                        }
+                     ],
+                     "nodes_as_table" : true,
+                     "show_in_index" : true,
+                     "table_default_title" : "Default Value",
+                     "table_description_title" : "Description",
+                     "table_name_title" : "Name",
+                     "table_type_title" : "Type"
+                  },
+                  {
+                     "description" : [
+                        "Allows players to leash entities to this entity, retrieve those already leashed to it, or free them using shears."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:leashable_to",
+                     "nodes" : [
+                        {
+                           "default" : "false",
+                           "description" : [
+                              "Allows players to retrieve entities that are leashed to this entity."
+                           ],
+                           "header_level" : 4,
+                           "name" : "can_retrieve_from",
+                           "show_in_index" : true,
+                           "type" : "Boolean"
                         }
                      ],
                      "nodes_as_table" : true,
@@ -35379,6 +35437,14 @@
                      "table_description_title" : "Description",
                      "table_name_title" : "Name",
                      "table_type_title" : "Type"
+                  },
+                  {
+                     "description" : [
+                        "Denotes entities that are not allowed to exist in \"Peaceful\" difficulty."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:remove_in_peaceful",
+                     "show_in_index" : true
                   },
                   {
                      "description" : [
@@ -38522,6 +38588,12 @@
                            "show_in_index" : false
                         },
                         {
+                           "description" : [ "1636924761" ],
+                           "header_level" : 4,
+                           "name" : "minecraft:leashable_to",
+                           "show_in_index" : false
+                        },
+                        {
                            "description" : [ "-1189178052" ],
                            "header_level" : 4,
                            "name" : "minecraft:looked_at",
@@ -38720,6 +38792,12 @@
                            "show_in_index" : false
                         },
                         {
+                           "description" : [ "-1079443828" ],
+                           "header_level" : 4,
+                           "name" : "minecraft:remove_in_peaceful",
+                           "show_in_index" : false
+                        },
+                        {
                            "description" : [ "1656173828" ],
                            "header_level" : 4,
                            "name" : "minecraft:rideable",
@@ -38893,6 +38971,12 @@
                            "description" : [ "-1314051310" ],
                            "header_level" : 4,
                            "name" : "minecraft:ambient_sound_interval",
+                           "show_in_index" : false
+                        },
+                        {
+                           "description" : [ "1766999981" ],
+                           "header_level" : 4,
+                           "name" : "minecraft:body_rotation_always_follows_head",
                            "show_in_index" : false
                         },
                         {
@@ -39317,6 +39401,15 @@
                      "table_description_title" : "Description",
                      "table_name_title" : "Name",
                      "table_type_title" : "Type"
+                  },
+                  {
+                     "description" : [
+                        "Causes the entity's body to always be automatically rotated to align with the entity's head.",
+                        "Does not override the \"minecraft:body_rotation_blocked\" component."
+                     ],
+                     "header_level" : 3,
+                     "name" : "minecraft:body_rotation_always_follows_head",
+                     "show_in_index" : true
                   },
                   {
                      "description" : [
@@ -40322,5 +40415,5 @@
          "show_in_index" : true
       }
    ],
-   "version" : "1.21.80.28"
+   "version" : "1.21.90.0"
 }
