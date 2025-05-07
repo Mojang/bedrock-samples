@@ -2,10 +2,10 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "3757951932",
     "x-format-version": "1.21.10",
-    "x-minecraft-version": "1.21.90-beta.21",
+    "x-minecraft-version": "1.21.90-beta.23",
     "definitions": {
         "3178719147": {
-            "title": "struct SharedTypes::Legacy::ExpressionNode",
+            "title": "Molang expression",
             "oneOf": [
                 {
                     "$ref": "#/definitions/2267778531"
@@ -13,6 +13,18 @@
                 {
                     "type": "number"
                 }
+            ]
+        },
+        "3998097047": {
+            "title": "particle_sound_effect_event",
+            "type": "object",
+            "properties": {
+                "event_name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "event_name"
             ]
         },
         "3230253040": {
@@ -73,18 +85,6 @@
                 }
             }
         },
-        "3998097047": {
-            "title": "particle_sound_effect_event",
-            "type": "object",
-            "properties": {
-                "event_name": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "event_name"
-            ]
-        },
         "2715320761": {
             "title": "hashed_string",
             "type": "string"
@@ -128,13 +128,33 @@
                     "$ref": "#/definitions/2715320761"
                 },
                 "texture": {
-                    "type": "string"
+                    "$ref": "#/definitions/2003508019"
                 }
             },
             "required": [
                 "material",
                 "texture"
             ]
+        },
+        "3582790723": {
+            "title": "emitter_local_space",
+            "$ref": "#/definitions/2541832801"
+        },
+        "2417259002": {
+            "title": "particle_initial_spin",
+            "type": "object",
+            "properties": {
+                "rotation": {
+                    "$ref": "#/definitions/3178719147"
+                },
+                "rotation_rate": {
+                    "$ref": "#/definitions/3178719147"
+                }
+            }
+        },
+        "2003508019": {
+            "title": "struct SharedTypes::FileReference<6>",
+            "type": "string"
         },
         "1626134911": {
             "title": "particle_event_node",
@@ -167,7 +187,7 @@
             }
         },
         "2267778531": {
-            "title": "struct SharedTypes::Legacy::ExpressionNode::StringRepresentation",
+            "title": "Molang string",
             "oneOf": [
                 {
                     "type": "string"
@@ -398,22 +418,6 @@
                 }
             }
         },
-        "3582790723": {
-            "title": "emitter_local_space",
-            "$ref": "#/definitions/2541832801"
-        },
-        "2417259002": {
-            "title": "particle_initial_spin",
-            "type": "object",
-            "properties": {
-                "rotation": {
-                    "$ref": "#/definitions/3178719147"
-                },
-                "rotation_rate": {
-                    "$ref": "#/definitions/3178719147"
-                }
-            }
-        },
         "3040571073": {
             "title": "emitter_lifetime_expression",
             "type": "object",
@@ -430,7 +434,7 @@
             "title": "particle_expire_if_in_blocks",
             "type": "array",
             "items": {
-                "type": "string"
+                "$ref": "#/definitions/1527037515"
             }
         },
         "2541832801": {
@@ -481,6 +485,20 @@
                     }
                 }
             }
+        },
+        "1527037515": {
+            "title": "struct SharedTypes::Reference<0>",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "3627722690": {
+            "title": "particle_appearance_lighting"
         },
         "4239102682": {
             "title": "emitter_initialization",
@@ -630,6 +648,18 @@
                 }
             ]
         },
+        "44664202": {
+            "title": "emitter_rate_manual",
+            "type": "object",
+            "properties": {
+                "max_particles": {
+                    "$ref": "#/definitions/3178719147"
+                }
+            },
+            "required": [
+                "max_particles"
+            ]
+        },
         "3907782844": {
             "title": "emitter_lifetime_events travel_distance_events",
             "type": "object",
@@ -645,18 +675,6 @@
             "required": [
                 "distance",
                 "effects"
-            ]
-        },
-        "44664202": {
-            "title": "emitter_rate_manual",
-            "type": "object",
-            "properties": {
-                "max_particles": {
-                    "$ref": "#/definitions/3178719147"
-                }
-            },
-            "required": [
-                "max_particles"
             ]
         },
         "2992796413": {
@@ -683,15 +701,6 @@
                 }
             ]
         },
-        "795889148": {
-            "title": "emitter_lifetime_once",
-            "type": "object",
-            "properties": {
-                "active_time": {
-                    "$ref": "#/definitions/3178719147"
-                }
-            }
-        },
         "4184501408": {
             "title": "particle_motion_parametric",
             "type": "object",
@@ -713,6 +722,15 @@
                     "maxItems": 3
                 },
                 "rotation": {
+                    "$ref": "#/definitions/3178719147"
+                }
+            }
+        },
+        "795889148": {
+            "title": "emitter_lifetime_once",
+            "type": "object",
+            "properties": {
+                "active_time": {
                     "$ref": "#/definitions/3178719147"
                 }
             }
@@ -791,17 +809,6 @@
                 }
             }
         },
-        "3821509436": {
-            "title": "particle_appearance_tinting color_data",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/2992796413"
-                },
-                {
-                    "$ref": "#/definitions/1411270136"
-                }
-            ]
-        },
         "772645837": {
             "title": "particle_appearance_billboard flipbook_data",
             "type": "object",
@@ -846,6 +853,17 @@
             "required": [
                 "base_UV",
                 "max_frame"
+            ]
+        },
+        "3821509436": {
+            "title": "particle_appearance_tinting color_data",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2992796413"
+                },
+                {
+                    "$ref": "#/definitions/1411270136"
+                }
             ]
         },
         "3649962860": {
@@ -1008,14 +1026,11 @@
                 "mode"
             ]
         },
-        "3627722690": {
-            "title": "particle_appearance_lighting"
-        },
         "2039086753": {
             "title": "particle_expire_if_not_in_blocks",
             "type": "array",
             "items": {
-                "type": "string"
+                "$ref": "#/definitions/1527037515"
             }
         },
         "49717204": {
@@ -1116,19 +1131,19 @@
             "title": "particle_curve_bezier_chain node_proxy",
             "type": "object",
             "properties": {
-                "value": {
+                "left_value": {
                     "type": "number"
                 },
-                "left_value": {
+                "value": {
                     "type": "number"
                 },
                 "right_value": {
                     "type": "number"
                 },
-                "slope": {
+                "left_slope": {
                     "type": "number"
                 },
-                "left_slope": {
+                "slope": {
                     "type": "number"
                 },
                 "right_slope": {
