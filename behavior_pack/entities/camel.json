@@ -7,6 +7,7 @@
       "is_spawnable": true,
       "is_summonable": true
     },
+
     "component_groups": {
       "minecraft:camel_saddled": {
         "minecraft:is_saddled": {
@@ -70,14 +71,54 @@
                   "all_of": [
                     { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
-                },
-                "target": "self"
+                }
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            // Removing the Saddle while the Camel is standing. Keep consistent with the next interaction.
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_sitting", "subject": "self", "value": false },
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              // Bigger offset when the Camel is standing.
+              "drop_item_y_offset": 2,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            },
+            // Removing the Saddle while the Camel is sitting. Keep consistent with the previous interaction.
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_sitting", "subject": "self" },
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              // Smaller offset when the Camel is sitting.
+              "drop_item_y_offset": 1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         },
@@ -148,6 +189,7 @@
         }
       }
     },
+
     "components": {
       // This component prevents Camel from spawning in spaces it doesn't fit. Without it, the correct collision box wont be set until the sitting/standing events are triggered.
       "minecraft:collision_box": {
@@ -191,12 +233,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -267,6 +304,7 @@
         "jump_prevented_value": 0.5625
       }
     },
+
     "events": {
       "minecraft:entity_spawned": {
         "randomize": [

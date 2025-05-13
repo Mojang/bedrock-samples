@@ -15,6 +15,7 @@
         }
       }
     },
+
     "component_groups": {
       "minecraft:pig_baby": {
         "minecraft:is_baby": {
@@ -30,13 +31,11 @@
             "target": "self"
           }
         },
-
         "minecraft:behavior.follow_parent": {
           "priority": 6,
           "speed_multiplier": 1.1
         }
       },
-
       "minecraft:pig_transform": {
         "minecraft:transformation": {
           "into": "minecraft:pig_zombie",
@@ -44,7 +43,6 @@
           "delay": 0.5
         }
       },
-
       "minecraft:pig_adult": {
         "minecraft:experience_reward": {
           "on_bred": "Math.Random(1,7)",
@@ -75,7 +73,6 @@
           }
         }
       },
-
       "minecraft:pig_unsaddled": {
         "minecraft:interact": {
           "interactions": [
@@ -100,12 +97,32 @@
           }
         }
       },
-
       "minecraft:pig_saddled": {
         "minecraft:is_saddled": {
         },
         "minecraft:loot": {
           "table": "loot_tables/entities/pig_saddled.json"
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_sneak_held", "subject": "other", "value": false },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 }
+                  ]
+                },
+                "event": "minecraft:on_unsaddled"
+              },
+              "hurt_item": 1,
+              "spawn_items": { "table": "loot_tables/entities/saddle.json" },
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            }
+          ]
         },
         "minecraft:boostable": {
           "speed_multiplier": 1.35,
@@ -144,16 +161,8 @@
         "triggers": {
           "on_damage": {
             "filters": [
-              {
-                "test": "is_family",
-                "subject": "other",
-                "value": "lightning"
-              },
-              {
-                "test": "is_difficulty",
-                "operator": "!=",
-                "value": "peaceful"
-              }
+              { "test": "is_family", "subject": "other", "value": "lightning" },
+              { "test": "is_difficulty", "operator": "!=", "value": "peaceful" }
             ],
             "event": "become_zombie"
           },
@@ -176,7 +185,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -256,8 +265,6 @@
 
     "events": {
       "become_zombie": {
-        "remove": {
-        },
         "add": {
           "component_groups": [
             "minecraft:pig_transform"
@@ -337,6 +344,18 @@
         "add": {
           "component_groups": [
             "minecraft:pig_saddled"
+          ]
+        }
+      },
+      "minecraft:on_unsaddled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:pig_saddled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:pig_unsaddled"
           ]
         }
       },

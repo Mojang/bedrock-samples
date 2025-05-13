@@ -7,6 +7,7 @@
       "is_spawnable": true,
       "is_summonable": true
     },
+
     "component_groups": {
       "minecraft:donkey_baby": {
         "minecraft:is_baby": {
@@ -178,7 +179,6 @@
                   "all_of": [
                     { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
                 },
@@ -186,6 +186,24 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.equip"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         },
@@ -201,7 +219,6 @@
           }
         },
         "minecraft:behavior.player_ride_tamed": {
-
         },
         "minecraft:inventory": {
           "inventory_size": 16,
@@ -238,6 +255,7 @@
           ]
         }
       },
+
       "minecraft:donkey_unchested": {
         "minecraft:interact": {
           "interactions": [
@@ -248,7 +266,6 @@
                   "all_of": [
                     { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
                 },
@@ -258,11 +275,28 @@
               "interact_text": "action.interact.saddle"
             },
             {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            },
+            {
               "play_sounds": "armor.equip_generic",
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneaking", "subject": "other", "value": false },
                     { "test": "has_equipment", "domain": "hand", "subject": "other", "value": "chest" }
                   ]
@@ -297,6 +331,24 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -337,12 +389,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -479,6 +526,25 @@
         }
       },
 
+      "minecraft:spawn_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:donkey_adult",
+            "minecraft:donkey_wild"
+          ]
+        }
+      },
+
+      "minecraft:spawn_tame_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:donkey_adult",
+            "minecraft:donkey_tamed",
+            "minecraft:donkey_unchested"
+          ]
+        }
+      },
+
       "minecraft:on_tame": {
         "remove": {
           "component_groups": [
@@ -527,6 +593,7 @@
           ]
         }
       },
+
       "minecraft:donkey_unsaddled": {
         "remove": {
           "component_groups": [

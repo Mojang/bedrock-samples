@@ -166,7 +166,6 @@
           "seats": {
             "position": [ 0.0, 1.1, -0.2 ]
           }
-
         },
         "minecraft:interact": {
           "interactions": [
@@ -191,7 +190,6 @@
                         { "test": "has_equipment", "subject": "player", "domain": "hand", "value": "diamond_horse_armor" }
                       ]
                     },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
                 },
@@ -201,13 +199,37 @@
               "interact_text": "action.interact.equiphorsearmor"
             },
             {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    {
+                      "any_of": [
+                        { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "leather_horse_armor" },
+                        { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "iron_horse_armor" },
+                        { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "golden_horse_armor" },
+                        { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "diamond_horse_armor" }
+                      ]
+                    },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "1",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removehorsearmor",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            },
+            {
               "play_sounds": "saddle",
               "on_interact": {
                 "filters": {
                   "all_of": [
                     { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
                 },
@@ -215,6 +237,24 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         },
@@ -397,12 +437,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -681,6 +716,7 @@
           ]
         }
       },
+
       "minecraft:horse_unsaddled": {
         "remove": {
           "component_groups": [
