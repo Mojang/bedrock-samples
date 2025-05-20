@@ -7,20 +7,25 @@
         "default": "ghast"
       },
       "geometry": {
-        "default": "geometry.happy_ghast"
+        "default": "geometry.happy_ghast",
+        "ropes": "geometry.happy_ghast_ropes"
       },
       "textures": {
-        "adult": "textures/entity/happy_ghast/adult",
-        "baby": "textures/entity/happy_ghast/baby"
+        "ghastling": "textures/entity/happy_ghast/ghastling",
+        "happy_ghast": "textures/entity/happy_ghast/happy_ghast",
+        "ropes": "textures/entity/happy_ghast/happy_ghast_ropes"
       },
       "render_controllers": [
-        "controller.render.happy_ghast"
+        "controller.render.happy_ghast",
+        "controller.render.happy_ghast_ropes"
       ],
       "scripts": {
         "pre_animation": [
-          "variable.shrink_scalar = 30.0f / 32.0f;",
           "variable.is_harnessed = query.equipment_count > 0;",
-          "variable.scale = variable.is_harnessed ? variable.shrink_scalar : 1.0f;"
+          "variable.shrink_scalar_to_avoid_z_fighting = 3.975f / 4.0f;",
+          "variable.shrink_scalar_when_harnessed = variable.is_harnessed ? (16.0f / 17.0f) : 1.0f;",
+          "variable.scale = variable.shrink_scalar_to_avoid_z_fighting * variable.shrink_scalar_when_harnessed;",
+          "variable.render_ropes = variable.is_harnessed && query.has_any_leashed_entity_of_type('minecraft:boat', 'minecraft:chest_boat', 'minecraft:horse', 'minecraft:skeleton_horse', 'minecraft:zombie_horse', 'minecraft:mule', 'minecraft:donkey', 'minecraft:camel', 'minecraft:sniffer');"
         ],
         "animate": [
           "move_controller",

@@ -19,6 +19,10 @@
       "minecraft:type_family": {
         "family": [ "happy_ghast", "mob" ]
       },
+      "minecraft:collision_box": {
+        "width": 4.0,
+        "height": 4.0
+      },
       "minecraft:physics": {
         "has_gravity": false
       },
@@ -79,13 +83,6 @@
 
     "component_groups": {
       "minecraft:adult": {
-        "minecraft:scale": {
-          "value":  3.999
-        },
-        "minecraft:collision_box": {
-          "width": 1.0,
-          "height": 1.0
-        },
         "minecraft:health": {
           "value": 20,
           "max": 20
@@ -108,49 +105,61 @@
           "relative_range": false,
           "subsensors": [
             {
-              "event": "minecraft:on_no_player_detected_above",
+              "event": "minecraft:become_mobile",
               "cooldown": 0.0,
               "y_offset": 5.0,
               "range": [ 3.0, 1.0 ],
               "minimum_count": 0,
               "maximum_count": 0,
-              // This filter must be exactly the same as the one for minecraft:on_player_detected_above.
+              // This filter must match exactly the one used by all other subsensors.
               "event_filters": {
-                "test": "is_riding_self", "subject": "other", "value": false
+                "all_of": [
+                  { "test": "is_riding_self", "subject": "other", "value": false },
+                  { "test": "actor_health", "operator" : ">", "value": 0 }
+                ]
               }
             },
             {
-              "event": "minecraft:on_player_detected_above",
+              "event": "minecraft:become_mobile",
+              "cooldown": 0.0,
+              "y_offset": 4.0,
+              "range": [ 2.0, 1.0 ],
+              "minimum_count": 0,
+              "maximum_count": 0,
+              // This filter must match exactly the one used by all other subsensors.
+              "event_filters": {
+                "all_of": [
+                  { "test": "is_riding_self", "subject": "other", "value": false },
+                  { "test": "actor_health", "operator" : ">", "value": 0 }
+                ]
+              }
+            },
+            {
+              "event": "minecraft:become_immobile",
               "cooldown": 0.0,
               "y_offset": 5.0,
               "range": [ 3.0, 1.0 ],
               "minimum_count": 1,
-              // This filter must be exactly the same as the one for minecraft:on_no_player_detected_above.
+              // This filter must match exactly the one used by all other subsensors.
               "event_filters": {
-                "test": "is_riding_self", "subject": "other", "value": false
+                "all_of": [
+                  { "test": "is_riding_self", "subject": "other", "value": false },
+                  { "test": "actor_health", "operator" : ">", "value": 0 }
+                ]
               }
             },
             {
-              "event": "minecraft:on_no_player_detected_above",
+              "event": "minecraft:become_immobile",
               "cooldown": 0.0,
-              "y_offset": 4.5,
-              "range": [ 2.0, 1.5 ],
-              "minimum_count": 0,
-              "maximum_count": 0,
-              // This filter must be exactly the same as the one for minecraft:on_player_detected_above.
-              "event_filters": {
-                "test": "is_riding_self", "subject": "other", "value": false
-              }
-            },
-            {
-              "event": "minecraft:on_player_detected_above",
-              "cooldown": 0.0,
-              "y_offset": 4.5,
-              "range": [ 2.0, 1.5 ],
+              "y_offset": 4.0,
+              "range": [ 2.0, 1.0 ],
               "minimum_count": 1,
-              // This filter must be exactly the same as the one for minecraft:on_no_player_detected_above.
+              // This filter must match exactly the one used by all other subsensors.
               "event_filters": {
-                "test": "is_riding_self", "subject": "other", "value": false
+                "all_of": [
+                  { "test": "is_riding_self", "subject": "other", "value": false },
+                  { "test": "actor_health", "operator" : ">", "value": 0 }
+                ]
               }
             }
           ]
@@ -208,11 +217,7 @@
         "minecraft:is_baby": {
         },
         "minecraft:scale": {
-          "value":  1.999
-        },
-        "minecraft:collision_box": {
-          "width": 0.95,
-          "height": 0.95
+          "value": 0.2375 // Resulting in a final size of 0.95.
         },
         "minecraft:health": {
           "value": 20,
@@ -410,28 +415,28 @@
             {
               "min_rider_count": 0,
               "max_rider_count": 4,
-              "position": [ 0.0, 0.95, 0.45 ],
+              "position": [ 0.0, 3.8, 1.7 ],
               "third_person_camera_radius": 8.0,
               "camera_relax_distance_smoothing": 6.0
             },
             {
               "min_rider_count": 1,
               "max_rider_count": 4,
-              "position": [ -0.45, 0.95, 0.0 ],
+              "position": [ -1.7, 3.8, 0.0 ],
               "third_person_camera_radius": 8.0,
               "camera_relax_distance_smoothing": 6.0
             },
             {
               "min_rider_count": 2,
               "max_rider_count": 4,
-              "position": [ 0.0, 0.95, -0.45 ],
+              "position": [ 0.0, 3.8, -1.7 ],
               "third_person_camera_radius": 8.0,
               "camera_relax_distance_smoothing": 6.0
             },
             {
               "min_rider_count": 3,
               "max_rider_count": 4,
-              "position": [ 0.45, 0.95, 0.0 ],
+              "position": [ 1.7, 3.8, 0.0 ],
               "third_person_camera_radius": 8.0,
               "camera_relax_distance_smoothing": 6.0
             }
@@ -551,7 +556,7 @@
           "minecraft:can_move": true
         }
       },
-      "minecraft:on_player_detected_above": {
+      "minecraft:become_immobile": {
         "filters": {
           "test": "bool_property", "domain": "minecraft:can_move", "value": true
         },
@@ -571,7 +576,7 @@
         "stop_movement": {
         }
       },
-      "minecraft:on_no_player_detected_above": {
+      "minecraft:become_mobile": {
         "filters": {
           "test": "bool_property", "domain": "minecraft:can_move", "value": false
         },
