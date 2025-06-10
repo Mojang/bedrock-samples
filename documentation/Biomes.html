@@ -1,4 +1,4 @@
-<h1>BIOMES DOCUMENTATION </br>Version: 1.21.90.28</h1>
+<h1>BIOMES DOCUMENTATION </br>Version: 1.21.100.20</h1>
 This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
@@ -42,12 +42,14 @@ Minecraft biomes can have different terrain characteristics. By writing custom b
 
 <h1><p id="JSON Format">JSON Format</p></h1>
 
-All biomes should specify the version that they target via the "format_version" field. The remainder of the biome data is divided up into independent JSON sub-objects, or components. </br>In general, a component defines what game behaviors a biome participates in, and the component fields define how it participates. </br></br>There are basically two categories of components:</br>1) Namespaced components, such as those with a 'name:' prefix, that map to specific behaviors in-game. They may have member fields that parameterize that behavior. Only names that have a valid mapping are supported.</br>2) 'tags' which are defined under the "minecraft:tags" component. Tags consist of alphanumeric characters, along with '.' and '_'. A tag is attached to the biome so that either code or data may check for its existence. </br></br><h2></h2>
-Here is a sample biome schema with additional details and the full list of namespaced components.<br / ><textarea readonly="true" cols="51" rows="32">
+All biomes should specify the version that they target via the "format_version" field. Biomes should also specify a "description" sub-object with a namespaced "identifier" field that uniquely labels the biome. The remainder of the biome data is divided up into independent JSON sub-objects, or components. </br>In general, a component defines what game behaviors a biome participates in, and the component fields define how it participates. </br></br>There are basically two categories of components:</br>1) Namespaced components, such as those with a 'name:' prefix, that map to specific behaviors in-game. They may have member fields that parameterize that behavior. Only names that have a valid mapping are supported.</br>2) 'tags' which are defined under the "minecraft:tags" component. Tags consist of alphanumeric characters, along with '.' and '_'. A tag is attached to the biome so that either code or data may check for its existence. </br></br><h2></h2>
+Here is a sample biome schema with additional details and the full list of namespaced components.<br / ><textarea readonly="true" cols="61" rows="32">
 {
-  "plains": {
-    "format_version": "1.20.60",
-
+  "format_version": "1.20.60",
+  "minecraft:biome": {
+    "description": {
+      "identifier": "minecraft:plains"
+    },
     "minecraft:climate": {
       "downfall": 0.4,
       "snow_accumulation": [ 0.0, 0.125 ],
@@ -65,10 +67,10 @@ Here is a sample biome schema with additional details and the full list of names
     },
     "minecraft:overworld_generation_rules": {
       "hills_transformation": [
-        [ "forest_hills", 1 ],
-        [ "forest", 2 ]
+        [ "minecraft:forest_hills", 1 ],
+        [ "minecraft:forest", 2 ]
       ],
-      "mutate_transformation": "sunflower_plains",
+      "mutate_transformation": "minecraft:sunflower_plains",
       "generate_for_climates": [
         [ "medium", 3 ],
         [ "warm", 1 ],
@@ -91,7 +93,7 @@ Here is a sample biome schema with additional details and the full list of names
 
 <h1><p id="Adding Biomes">Adding Biomes</p></h1>
 
-Biomes are read from JSON files in the biomes subfolders of behavior packs. Loading enforces one biome per file; and the file name and the actual biome name must match. Adding a file with a new name to the biome data location will make it available for the game to use, while existing biomes can be overridden using files that match their existing name. Note that if you add a new biome, you'll need to write component data that allows it to participate in world generation (as shown in the full schema below), or else it won't show up in your worlds!</br><a href="#Index">Back to top</a><br><br>
+Biomes are read from JSON files in the biomes subfolders of behavior packs. Loading enforces one biome per file. The biome's identifier acts as its name and must be namespaced. Adding a file with a new name to the biome data location will make it available for the game to use, while existing biomes can be overridden using another biome with the same identifier. Note that if you add a new biome, you'll need to write component data that allows it to participate in world generation (as shown in the full schema below), or else it won't show up in your worlds!</br><a href="#Index">Back to top</a><br><br>
 
 <h1><p id="Schema">Schema</p></h1>
 
@@ -223,7 +225,7 @@ Contains non-component settings for a Biome.</br><h2></h2>
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">identifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type struct SharedTypes::Identifier<0></td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">The name of the Biome, used by other features like the '/locate biome' command. Identifiers should only be lowercase.</br></td>
 </tr>
@@ -277,7 +279,7 @@ Represents the replacement information used to determine the placement of the ov
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">targets</td>
-<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type struct SharedTypes::Reference<0></td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Biomes that are going to be replaced by the overriding biome. Target biomes must not contain namespaces.</br></td>
 </tr>
@@ -292,7 +294,7 @@ Specifies a particular block. Can be a string block name or a JSON object</br><h
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">name</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type struct SharedTypes::Reference<1></td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Name of the block</br></td>
 </tr>

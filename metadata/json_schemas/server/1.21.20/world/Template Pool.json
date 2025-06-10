@@ -2,10 +2,9 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "1382973118",
     "x-format-version": "1.21.20",
-    "x-minecraft-version": "1.21.90-beta.28",
+    "x-minecraft-version": "1.21.100-beta.20",
     "definitions": {
         "1872243302": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructureTemplatePool::Description",
             "type": "object",
             "properties": {
                 "identifier": {
@@ -18,14 +17,15 @@
             ]
         },
         "2726507774": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructureTemplatePool::SinglePoolElement",
             "type": "object",
             "properties": {
                 "element_type": {
-                    "title": "enum SharedTypes::v1_21_20::JigsawStructureTemplatePool::ElementType",
-                    "description": "The type of element. Currently, only minecraft:single_pool_element is supported.",
+                    "title": "",
+                    "description": "The type of element.",
                     "type": "string",
+                    "const": "minecraft:single_pool_element",
                     "enum": [
+                        "minecraft:empty_pool_element",
                         "minecraft:single_pool_element"
                     ]
                 },
@@ -36,29 +36,34 @@
                 "processors": {
                     "description": "The identifier of the processor list to use when placing the structure.",
                     "type": "string"
-                }
-            },
-            "required": [
-                "element_type",
-                "location",
-                "processors"
-            ]
-        },
-        "1755372388": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructureTemplatePool::TemplatePoolElement",
-            "type": "object",
-            "properties": {
-                "element": {
-                    "description": "A grouping of a Structure Template, the Processor List to use when placing the structure, and its weight that determines the likelihood of the element being chosen.",
-                    "$ref": "#/definitions/2726507774"
                 },
                 "projection": {
-                    "title": "enum SharedTypes::v1_21_20::JigsawStructureTemplatePool::Projection",
+                    "title": "",
                     "description": "Specifies how structures should be placed relative to the terrain.",
                     "type": "string",
                     "enum": [
                         "rigid",
                         "terrain_matching"
+                    ]
+                }
+            },
+            "required": [
+                "element_type",
+                "location"
+            ]
+        },
+        "1755372388": {
+            "type": "object",
+            "properties": {
+                "element": {
+                    "description": "A grouping of a Structure Template, the Processor List to use when placing the structure, and its weight that determines the likelihood of the element being chosen.",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/2360259677"
+                        },
+                        {
+                            "$ref": "#/definitions/2726507774"
+                        }
                     ]
                 },
                 "weight": {
@@ -70,6 +75,24 @@
             },
             "required": [
                 "element"
+            ]
+        },
+        "2360259677": {
+            "type": "object",
+            "properties": {
+                "element_type": {
+                    "title": "",
+                    "description": "The type of element",
+                    "type": "string",
+                    "const": "minecraft:empty_pool_element",
+                    "enum": [
+                        "minecraft:empty_pool_element",
+                        "minecraft:single_pool_element"
+                    ]
+                }
+            },
+            "required": [
+                "element_type"
             ]
         }
     },
