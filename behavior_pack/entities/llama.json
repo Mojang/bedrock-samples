@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.10",
+  "format_version": "1.21.90",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:llama",
@@ -45,6 +45,8 @@
         },
         "minecraft:loot": {
           "table": "loot_tables/entities/llama.json"
+        },
+        "minecraft:leashable_to": {
         },
         "minecraft:behavior.breed": {
           "priority": 4,
@@ -189,6 +191,7 @@
           ]
         }
       },
+
       "minecraft:llama_unchested": {
         "minecraft:interact": {
           "interactions": [
@@ -215,7 +218,6 @@
                   "all_of": [
                     { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "carpet" },
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "carpet" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneaking", "subject": "other", "value": false }
                   ]
                 },
@@ -223,6 +225,24 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.equipcarpet"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "carpet" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removecarpet",
+              "play_sounds": "armor.unequip_generic",
+              "vibration": "shear"
             }
           ]
         }
@@ -248,6 +268,24 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.equipcarpet"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "carpet" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removecarpet",
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
             }
           ]
         }
@@ -279,6 +317,7 @@
             "target": "self"
           }
         },
+
         "minecraft:behavior.ranged_attack": {
           "priority": 2,
           "attack_radius": 64,
@@ -291,7 +330,20 @@
         "minecraft:damage_sensor": {
           "triggers": {
             "cause": "all",
-            "deals_damage": true
+            "deals_damage": "yes"
+          }
+        }
+      },
+
+      "minecraft:llama_unleashed": {
+        "minecraft:behavior.follow_caravan": {
+          "priority": 3,
+          "speed_multiplier": 2.1,
+          "entity_count": 10,
+          "entity_types": {
+            "filters": {
+              "test": "is_family", "subject": "other", "value": "llama"
+            }
           }
         }
       }
@@ -321,9 +373,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_lava", "subject": "self"
-            },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -345,10 +395,14 @@
         "max": 40
       },
       "minecraft:leashable": {
-        "soft_distance": 4.0,
-        "hard_distance": 6.0,
-        "max_distance": 10.0,
-        "can_be_stolen": true
+        "on_leash": {
+          "event": "minecraft:on_leash",
+          "target": "self"
+        },
+        "on_unleash": {
+          "event": "minecraft:on_unleash",
+          "target": "self"
+        }
       },
       "minecraft:balloonable": {
       },
@@ -376,18 +430,6 @@
       "minecraft:behavior.run_around_like_crazy": {
         "priority": 1,
         "speed_multiplier": 1.2
-      },
-      "minecraft:behavior.follow_caravan": {
-        "priority": 3,
-        "speed_multiplier": 2.1,
-        "entity_count": 10,
-        "entity_types": {
-          "filters": {
-            "test": "is_family",
-            "subject": "other",
-            "value": "llama"
-          }
-        }
       },
       "minecraft:behavior.panic": {
         "priority": 4,
@@ -427,11 +469,9 @@
       "minecraft:damage_sensor": {
         "triggers": {
           "cause": "all",
-          "deals_damage": true,
+          "deals_damage": "yes",
           "on_damage": {
-            "filters": {
-              "test": "in_caravan", "value": false
-            },
+            "filters": { "test": "in_caravan", "value": false },
             "event": "minecraft:become_angry"
           }
         }
@@ -580,6 +620,22 @@
         }
       },
 
+      "minecraft:on_leash": {
+        "remove": {
+          "component_groups": [
+            "minecraft:llama_unleashed"
+          ]
+        }
+      },
+
+      "minecraft:on_unleash": {
+        "add": {
+          "component_groups": [
+            "minecraft:llama_unleashed"
+          ]
+        }
+      },
+
       "minecraft:on_chest": {
         "remove": {
           "component_groups": [
@@ -681,7 +737,8 @@
       "minecraft:spawn_baby": {
         "add": {
           "component_groups": [
-            "minecraft:llama_baby"
+            "minecraft:llama_baby",
+            "minecraft:llama_unleashed"
           ]
         },
         "trigger": "minecraft:add_attributes"
@@ -691,7 +748,8 @@
         "add": {
           "component_groups": [
             "minecraft:llama_adult",
-            "minecraft:llama_wild"
+            "minecraft:llama_wild",
+            "minecraft:llama_unleashed"
           ]
         },
         "trigger": "minecraft:add_attributes"
@@ -702,7 +760,8 @@
           "component_groups": [
             "minecraft:llama_adult",
             "minecraft:llama_tamed",
-            "minecraft:llama_unchested"
+            "minecraft:llama_unchested",
+            "minecraft:llama_unleashed"
           ]
         },
         "trigger": "minecraft:add_attributes"

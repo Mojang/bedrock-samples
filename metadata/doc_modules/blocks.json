@@ -11,24 +11,6 @@
                "nodes" : [
                   {
                      "description" : [
-                        "A JSON object that contains a list of key/value pairs that map from bone name in the specified geometry file (key) to a boolean that tells whether the bone should be visible or not (value)."
-                     ],
-                     "header_level" : 3,
-                     "name" : "bone_visibility",
-                     "show_in_index" : true,
-                     "type" : "JSON Object"
-                  },
-                  {
-                     "description" : [
-                        "A string that allows culling rule to group multiple blocks together when comparing them. When using the minecraft namespace, the only allowed culling layer identifiers are : \"minecraft:culling_layer.undefined\" or \"minecraft:culling_layer.leaves\". When using no namespaces or a custom one, the names must start and end with an alpha-numeric character. Additionally, the feature is currently only usable behind the \"upcoming creator features\" toggle."
-                     ],
-                     "header_level" : 3,
-                     "name" : "culling_layer",
-                     "show_in_index" : true,
-                     "type" : "String"
-                  },
-                  {
-                     "description" : [
                         "Determines whether the block is breathable by defining if the block is treated as a `solid` or as `air`. The default is `solid` if this component is omitted."
                      ],
                      "header_level" : 3,
@@ -245,6 +227,15 @@
                      "name" : "minecraft:destruction_particles",
                      "nodes" : [
                         {
+                           "description" : [
+                              "Optional, number of particles to spawn of destruction. Default is 100, maximum is 255 inclusively"
+                           ],
+                           "header_level" : 4,
+                           "name" : "particle_count",
+                           "show_in_index" : true,
+                           "type" : "Integer"
+                        },
+                        {
                            "description" : [ "The texture name used for the particle." ],
                            "header_level" : 4,
                            "name" : "texture",
@@ -326,8 +317,71 @@
                      ],
                      "header_level" : 3,
                      "name" : "minecraft:geometry",
+                     "nodes" : [
+                        {
+                           "description" : [
+                              "The component can be defined as an object to gain control over more specific behaviors."
+                           ],
+                           "header_level" : 4,
+                           "name" : "As an object",
+                           "nodes" : [
+                              {
+                                 "description" : [
+                                    "A JSON object that contains a list of key/value pairs that map from bone name in the specified geometry file (key) to a boolean that tells whether the bone should be visible or not (value)."
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "bone_visibility",
+                                 "show_in_index" : true,
+                                 "type" : "JSON Object"
+                              },
+                              {
+                                 "description" : [ "Which block_culling .json file to use when rendering this block." ],
+                                 "header_level" : 5,
+                                 "name" : "culling",
+                                 "show_in_index" : true,
+                                 "type" : "String"
+                              },
+                              {
+                                 "default" : "minecraft:culling_layer.undefined",
+                                 "description" : [
+                                    "A string that allows culling rule to group multiple blocks together when comparing them. When using the minecraft namespace, the only allowed culling layer identifiers are : \"minecraft:culling_layer.undefined\" or \"minecraft:culling_layer.leaves\". When using no namespaces or a custom one, the names must start and end with an alpha-numeric character."
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "culling_layer",
+                                 "show_in_index" : true,
+                                 "type" : "String"
+                              },
+                              {
+                                 "description" : [
+                                    "The description identifier of the geometry to use to render this block."
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "identifier",
+                                 "show_in_index" : true,
+                                 "type" : "String"
+                              },
+                              {
+                                 "description" : [
+                                    "A Boolean locking UV orientation of all bones in the geometry, or an array of strings locking UV orientation of specific bones in the geometry. For performance reasons it is recommended to use the Boolean. Note that for cubes using Box UVs, rather than Per-face UVs, 'uv_lock' is only supported if the cube faces are square."
+                                 ],
+                                 "header_level" : 5,
+                                 "name" : "uv_lock",
+                                 "show_in_index" : true,
+                                 "type" : "Boolean / String Array"
+                              }
+                           ],
+                           "nodes_as_table" : true,
+                           "show_in_index" : true,
+                           "table_default_title" : "Default Value",
+                           "table_description_title" : "Description",
+                           "table_name_title" : "Name",
+                           "table_type_title" : "Type",
+                           "type" : "JSON Object"
+                        }
+                     ],
+                     "nodes_as_table" : false,
                      "show_in_index" : true,
-                     "type" : "Identifier String"
+                     "type" : "String / JSON Object"
                   },
                   {
                      "description" : [
@@ -618,6 +672,57 @@
                            "table_name_title" : "Name",
                            "table_type_title" : "Type",
                            "type" : "JSON Object"
+                        }
+                     ],
+                     "nodes_as_table" : false,
+                     "show_in_index" : true,
+                     "type" : "JSON Object"
+                  },
+                  {
+                     "description" : [
+                        "The description identifier of the movable component",
+                        "Experimental toggles required: Upcoming Creator Features"
+                     ],
+                     "examples" : [
+                        {
+                           "name" : "",
+                           "text" : [
+                              "\"minecraft:movable\": {",
+                              "\t\t\"movement_type\": \"push_pull\",",
+                              "\t\t\"sticky\": \"same\"",
+                              "\t}"
+                           ]
+                        }
+                     ],
+                     "examples_print_mode" : "code",
+                     "header_level" : 3,
+                     "name" : "minecraft:movable",
+                     "nodes" : [
+                        {
+                           "default" : "push_pull",
+                           "description" : [
+                              "[Required] How the block reacts to being pushed by another block like a piston. Must be one of the following options:",
+                              "\"push_pull\" - The default value for this field. The block will be pushed and pulled by a piston.",
+                              "\"push\" - The block will only be pulled by a piston and will ignore a sticky piston.",
+                              "\"popped\" - The block is destroyed when moved by a piston.",
+                              "\"immovable\" - The block is unaffected by a piston."
+                           ],
+                           "header_level" : 4,
+                           "name" : "movement_type",
+                           "show_in_index" : true,
+                           "type" : "String"
+                        },
+                        {
+                           "default" : "none",
+                           "description" : [
+                              "[Optional] How the block should handle adjacent blocks around it when being pushed by another block like a piston. Must be one of the following options:",
+                              "\"same\" - Adjacent blocks to this block will be moved when moved. This excludes other blocks with the \"same\" property. This will only work with the movement_type: \"push_pull\".",
+                              "\"none\" - The default and will not move adjacent blocks."
+                           ],
+                           "header_level" : 4,
+                           "name" : "sticky",
+                           "show_in_index" : true,
+                           "type" : "String"
                         }
                      ],
                      "nodes_as_table" : false,
@@ -991,7 +1096,7 @@
                      "name" : "Example",
                      "text" : [
                         "{",
-                        "  \"format_version\": \"1.21.80\",",
+                        "  \"format_version\": \"1.21.90\",",
                         "  \"minecraft:block\": {",
                         "    \"description\": {",
                         "      \"identifier\": \"design:lavenderstone\"",
@@ -1810,5 +1915,5 @@
          "show_in_index" : true
       }
    ],
-   "version" : "1.21.80.3"
+   "version" : "1.21.90.3"
 }

@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.60",
+  "format_version": "1.21.90",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:mule",
@@ -36,6 +36,10 @@
               "growth": 0.05
             },
             {
+              "item": "carrot",
+              "growth": 0.05
+            },
+            {
               "item": "golden_carrot",
               "growth": 0.05
             },
@@ -58,7 +62,6 @@
           "speed_multiplier": 1.0
         }
       },
-
       "minecraft:mule_adult": {
         "minecraft:experience_reward": {
           "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
@@ -66,12 +69,13 @@
         "minecraft:loot": {
           "table": "loot_tables/entities/horse.json"
         },
+        "minecraft:leashable_to": {
+        },
         "minecraft:behavior.run_around_like_crazy": {
           "priority": 1,
           "speed_multiplier": 1.2
         }
       },
-
       "minecraft:mule_wild": {
         "minecraft:rideable": {
           "seat_count": 1,
@@ -106,6 +110,10 @@
             },
             {
               "item": "apple",
+              "temper_mod": 3
+            },
+            {
+              "item": "carrot",
               "temper_mod": 3
             },
             {
@@ -144,7 +152,6 @@
           }
         }
       },
-
       "minecraft:mule_tamed": {
         "minecraft:is_tamed": {
         },
@@ -188,7 +195,6 @@
                 "filters": {
                   "all_of": [
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "chest"},
-                    { "test": "is_family", "subject": "other", "value": "player"},
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
                 },
@@ -205,7 +211,6 @@
                   "all_of": [
                     { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
                     { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
                     { "test": "is_sneak_held", "subject": "other", "value": false }
                   ]
                 },
@@ -213,11 +218,28 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
             }
           ]
         }
       },
-
       "minecraft:mule_chested": {
         "minecraft:is_chested": {
         },
@@ -238,6 +260,24 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
             }
           ]
         }
@@ -280,7 +320,7 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+            "filters": { "test": "in_lava", "subject": "self" },
             "cause": "lava",
             "damage_per_tick": 4
           }
@@ -304,9 +344,12 @@
         "value": 0.5
       },
       "minecraft:leashable": {
-        "soft_distance": 4.0,
-        "hard_distance": 6.0,
-        "max_distance": 10.0
+        "presets": [
+          {
+            "filter": { "test": "is_family", "subject": "other", "value": "happy_ghast" },
+            "spring_type": "quad_dampened"
+          }
+        ]
       },
       "minecraft:balloonable": {
       },
@@ -326,6 +369,10 @@
           },
           {
             "item": "apple",
+            "heal_amount": 3
+          },
+          {
+            "item": "carrot",
             "heal_amount": 3
           },
           {
@@ -405,7 +452,6 @@
           }
         ]
       },
-
       "minecraft:entity_born": {
         "add": {
           "component_groups": [
@@ -413,7 +459,24 @@
           ]
         }
       },
+      "minecraft:spawn_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:mule_adult",
+            "minecraft:mule_wild"
+          ]
+        }
+      },
 
+      "minecraft:spawn_tame_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:mule_adult",
+            "minecraft:mule_tamed",
+            "minecraft:mule_unchested"
+          ]
+        }
+      },
       "minecraft:on_tame": {
         "remove": {
           "component_groups": [
@@ -427,7 +490,6 @@
           ]
         }
       },
-
       "minecraft:ageable_grow_up": {
         "remove": {
           "component_groups": [
@@ -441,7 +503,6 @@
           ]
         }
       },
-
       "minecraft:on_chest": {
         "remove": {
           "component_groups": [
@@ -454,7 +515,6 @@
           ]
         }
       },
-
       "minecraft:mule_saddled": {
         "add": {
           "component_groups": [

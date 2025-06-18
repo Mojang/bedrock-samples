@@ -1,24 +1,14 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "1391327946",
-    "x-minecraft-version": "1.21.80-beta.3",
+    "x-format-version": "1.21.20",
+    "x-minecraft-version": "1.21.90-beta.3",
     "definitions": {
         "2581260060": {
             "title": "struct SharedTypes::v1_21_20::JigsawStructure::Processors::Capped",
             "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied.",
             "type": "object",
             "properties": {
-                "processor_type": {
-                    "title": "enum SharedTypes::v1_21_20::JigsawStructure::Processors::Type",
-                    "type": "string",
-                    "const": "minecraft:capped",
-                    "enum": [
-                        "minecraft:block_ignore",
-                        "minecraft:rule",
-                        "minecraft:capped",
-                        "minecraft:protected_blocks"
-                    ]
-                },
                 "delegate": {
                     "description": "The processor that will be executed.",
                     "oneOf": [
@@ -51,12 +41,23 @@
                             "$ref": "#/definitions/1740413124"
                         }
                     ]
+                },
+                "processor_type": {
+                    "title": "enum SharedTypes::v1_21_20::JigsawStructure::Processors::Type",
+                    "type": "string",
+                    "const": "minecraft:capped",
+                    "enum": [
+                        "minecraft:block_ignore",
+                        "minecraft:rule",
+                        "minecraft:capped",
+                        "minecraft:protected_blocks"
+                    ]
                 }
             },
             "required": [
-                "processor_type",
                 "delegate",
-                "limit"
+                "limit",
+                "processor_type"
             ]
         },
         "1810898542": {
@@ -90,14 +91,6 @@
             "description": "Replaces and modifies blocks based on a series of rules",
             "type": "object",
             "properties": {
-                "rules": {
-                    "description": "List of block rules evaluated on all blocks of a Structure Template. Block rules are evaluated in order. If a block rule succeeds and the output_state is set, the output_state block will be used as the input_predicate block for subsequent rules.",
-                    "type": "array",
-                    "items": {
-                        "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state.",
-                        "$ref": "#/definitions/3035388266"
-                    }
-                },
                 "processor_type": {
                     "title": "enum SharedTypes::v1_21_20::JigsawStructure::Processors::Type",
                     "type": "string",
@@ -108,6 +101,14 @@
                         "minecraft:capped",
                         "minecraft:protected_blocks"
                     ]
+                },
+                "rules": {
+                    "description": "List of block rules evaluated on all blocks of a Structure Template. Block rules are evaluated in order. If a block rule succeeds and the output_state is set, the output_state block will be used as the input_predicate block for subsequent rules.",
+                    "type": "array",
+                    "items": {
+                        "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state.",
+                        "$ref": "#/definitions/3035388266"
+                    }
                 }
             },
             "required": [
@@ -139,6 +140,10 @@
             "description": "Modifier will attempt to add loot to a block entity.",
             "type": "object",
             "properties": {
+                "loot_table": {
+                    "description": "The loot table to append",
+                    "type": "string"
+                },
                 "type": {
                     "title": "PositionalBlockRuleAxis",
                     "type": "string",
@@ -147,15 +152,11 @@
                         "minecraft:passthrough",
                         "minecraft:append_loot"
                     ]
-                },
-                "loot_table": {
-                    "description": "The loot table to append",
-                    "type": "string"
                 }
             },
             "required": [
-                "type",
-                "loot_table"
+                "loot_table",
+                "type"
             ]
         },
         "3035388266": {
@@ -163,6 +164,19 @@
             "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state.",
             "type": "object",
             "properties": {
+                "block_entity_modifier": {
+                    "description": "A block state modifier for block entities when all predicate match.",
+                    "oneOf": [
+                        {
+                            "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+                            "$ref": "#/definitions/45584192"
+                        },
+                        {
+                            "description": "Modifier will attempt to add loot to a block entity.",
+                            "$ref": "#/definitions/1134690608"
+                        }
+                    ]
+                },
                 "input_predicate": {
                     "description": "A predicate evaluated on the Structure Template block.",
                     "oneOf": [
@@ -181,19 +195,6 @@
                         {
                             "description": "Predicate that evaluates to true if the block at the specified location constains the tag.",
                             "$ref": "#/definitions/3034820683"
-                        }
-                    ]
-                },
-                "block_entity_modifier": {
-                    "description": "A block state modifier for block entities when all predicate match.",
-                    "oneOf": [
-                        {
-                            "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
-                            "$ref": "#/definitions/45584192"
-                        },
-                        {
-                            "description": "Modifier will attempt to add loot to a block entity.",
-                            "$ref": "#/definitions/1134690608"
                         }
                     ]
                 },
@@ -218,6 +219,10 @@
                         }
                     ]
                 },
+                "output_state": {
+                    "description": "Block to replace the world block with if all predicates evaluate to true.",
+                    "$ref": "#/definitions/3076687790"
+                },
                 "position_predicate": {
                     "description": "A predicate evaluated on the distance between the structure's world origin and the world block.",
                     "oneOf": [
@@ -230,47 +235,29 @@
                             "$ref": "#/definitions/3839910888"
                         }
                     ]
-                },
-                "output_state": {
-                    "description": "Block to replace the world block with if all predicates evaluate to true.",
-                    "$ref": "#/definitions/3076687790"
                 }
             },
             "required": [
                 "output_state"
             ]
         },
-        "3523914459": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::RandomBlockMatch",
-            "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+        "45584192": {
+            "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::Passthrough",
+            "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
             "type": "object",
             "properties": {
-                "predicate_type": {
+                "type": {
                     "title": "PositionalBlockRuleAxis",
                     "type": "string",
-                    "const": "minecraft:random_block_match",
+                    "const": "minecraft:passthrough",
                     "enum": [
-                        "minecraft:always_true",
-                        "minecraft:block_match",
-                        "minecraft:random_block_match",
-                        "minecraft:tag_match"
+                        "minecraft:passthrough",
+                        "minecraft:append_loot"
                     ]
-                },
-                "block": {
-                    "description": "The block to match against.",
-                    "type": "string"
-                },
-                "probability": {
-                    "description": "Probability of the evaluating to true when the block matches.",
-                    "type": "number",
-                    "minimum": 0.0,
-                    "exclusiveMaximum": 1.0
                 }
             },
             "required": [
-                "predicate_type",
-                "block",
-                "probability"
+                "type"
             ]
         },
         "4275912652": {
@@ -294,15 +281,44 @@
                 "predicate_type"
             ]
         },
+        "3523914459": {
+            "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::RandomBlockMatch",
+            "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+            "type": "object",
+            "properties": {
+                "block": {
+                    "description": "The block to match against.",
+                    "type": "string"
+                },
+                "predicate_type": {
+                    "title": "PositionalBlockRuleAxis",
+                    "type": "string",
+                    "const": "minecraft:random_block_match",
+                    "enum": [
+                        "minecraft:always_true",
+                        "minecraft:block_match",
+                        "minecraft:random_block_match",
+                        "minecraft:tag_match"
+                    ]
+                },
+                "probability": {
+                    "description": "Probability of the evaluating to true when the block matches.",
+                    "type": "number",
+                    "minimum": 0.0,
+                    "exclusiveMaximum": 1.0
+                }
+            },
+            "required": [
+                "block",
+                "predicate_type",
+                "probability"
+            ]
+        },
         "3034820683": {
             "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::TagMatch",
             "description": "Predicate that evaluates to true if the block at the specified location constains the tag.",
             "type": "object",
             "properties": {
-                "tag": {
-                    "description": "The tag to be matched",
-                    "type": "string"
-                },
                 "predicate_type": {
                     "title": "PositionalBlockRuleAxis",
                     "type": "string",
@@ -313,6 +329,10 @@
                         "minecraft:random_block_match",
                         "minecraft:tag_match"
                     ]
+                },
+                "tag": {
+                    "description": "The tag to be matched",
+                    "type": "string"
                 }
             },
             "required": [
@@ -325,6 +345,10 @@
             "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
             "type": "object",
             "properties": {
+                "block": {
+                    "description": "The block to match against.",
+                    "type": "string"
+                },
                 "predicate_type": {
                     "title": "PositionalBlockRuleAxis",
                     "type": "string",
@@ -335,109 +359,11 @@
                         "minecraft:random_block_match",
                         "minecraft:tag_match"
                     ]
-                },
-                "block": {
-                    "description": "The block to match against.",
-                    "type": "string"
                 }
             },
             "required": [
-                "predicate_type",
-                "block"
-            ]
-        },
-        "3839910888": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::AxisAlignedLinear",
-            "description": "Predicate that evalutes to true if the block is within the distance range along the provided axis and and random number is generated between chance range",
-            "type": "object",
-            "properties": {
-                "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
-                    "type": "string",
-                    "const": "minecraft:axis_aligned_linear_pos",
-                    "enum": [
-                        "minecraft:always_true",
-                        "minecraft:axis_aligned_linear_pos"
-                    ]
-                },
-                "axis": {
-                    "title": "PositionalBlockRuleAxis",
-                    "type": "string",
-                    "enum": [
-                        "x",
-                        "y",
-                        "z"
-                    ]
-                },
-                "min_chance": {
-                    "type": "number",
-                    "minimum": 0.0,
-                    "exclusiveMaximum": 1.0
-                },
-                "max_chance": {
-                    "type": "number",
-                    "minimum": 0.0,
-                    "exclusiveMaximum": 1.0
-                },
-                "max_dist": {
-                    "type": "integer",
-                    "minimum": 0.0
-                },
-                "min_dist": {
-                    "type": "integer",
-                    "minimum": 0.0
-                }
-            },
-            "required": [
+                "block",
                 "predicate_type"
-            ]
-        },
-        "3518228880": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructure::Processors::BlockIgnore",
-            "description": "Specifies block types in the template that should be ignored by other processors.",
-            "type": "object",
-            "properties": {
-                "processor_type": {
-                    "title": "enum SharedTypes::v1_21_20::JigsawStructure::Processors::Type",
-                    "type": "string",
-                    "const": "minecraft:block_ignore",
-                    "enum": [
-                        "minecraft:block_ignore",
-                        "minecraft:rule",
-                        "minecraft:capped",
-                        "minecraft:protected_blocks"
-                    ]
-                },
-                "blocks": {
-                    "description": "List of blocks evaluated on all blocks of a Structure Template. If a block is matched in the provided list the block will be ignored for processing.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "required": [
-                "processor_type",
-                "blocks"
-            ]
-        },
-        "45584192": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::Passthrough",
-            "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "PositionalBlockRuleAxis",
-                    "type": "string",
-                    "const": "minecraft:passthrough",
-                    "enum": [
-                        "minecraft:passthrough",
-                        "minecraft:append_loot"
-                    ]
-                }
-            },
-            "required": [
-                "type"
             ]
         },
         "3076687790": {
@@ -445,14 +371,14 @@
             "description": "Specifies a particular block. Can be a string block name or a JSON object",
             "oneOf": [
                 {
-                    "type": "string"
+                    "$ref": "#/definitions/1493335182"
                 },
                 {
                     "type": "object",
                     "properties": {
                         "name": {
                             "description": "Name of the block",
-                            "type": "string"
+                            "$ref": "#/definitions/1493335182"
                         },
                         "states": {
                             "description": "Contains members named after each state, with boolean, integer, or string values.",
@@ -476,6 +402,92 @@
                         "name"
                     ]
                 }
+            ]
+        },
+        "1493335182": {
+            "title": "struct SharedTypes::Reference<1>",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "3839910888": {
+            "title": "struct SharedTypes::v1_21_20::JigsawStructure::ProcessorRule::AxisAlignedLinear",
+            "description": "Predicate that evalutes to true if the block is within the distance range along the provided axis and and random number is generated between chance range",
+            "type": "object",
+            "properties": {
+                "axis": {
+                    "title": "PositionalBlockRuleAxis",
+                    "type": "string",
+                    "enum": [
+                        "x",
+                        "y",
+                        "z"
+                    ]
+                },
+                "max_chance": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "exclusiveMaximum": 1.0
+                },
+                "max_dist": {
+                    "type": "integer",
+                    "minimum": 0.0
+                },
+                "min_chance": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "exclusiveMaximum": 1.0
+                },
+                "min_dist": {
+                    "type": "integer",
+                    "minimum": 0.0
+                },
+                "predicate_type": {
+                    "title": "PositionalBlockRuleAxis",
+                    "type": "string",
+                    "const": "minecraft:axis_aligned_linear_pos",
+                    "enum": [
+                        "minecraft:always_true",
+                        "minecraft:axis_aligned_linear_pos"
+                    ]
+                }
+            },
+            "required": [
+                "predicate_type"
+            ]
+        },
+        "3518228880": {
+            "title": "struct SharedTypes::v1_21_20::JigsawStructure::Processors::BlockIgnore",
+            "description": "Specifies block types in the template that should be ignored by other processors.",
+            "type": "object",
+            "properties": {
+                "blocks": {
+                    "description": "List of blocks evaluated on all blocks of a Structure Template. If a block is matched in the provided list the block will be ignored for processing.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "processor_type": {
+                    "title": "enum SharedTypes::v1_21_20::JigsawStructure::Processors::Type",
+                    "type": "string",
+                    "const": "minecraft:block_ignore",
+                    "enum": [
+                        "minecraft:block_ignore",
+                        "minecraft:rule",
+                        "minecraft:capped",
+                        "minecraft:protected_blocks"
+                    ]
+                }
+            },
+            "required": [
+                "blocks",
+                "processor_type"
             ]
         },
         "1354340864": {
@@ -507,6 +519,14 @@
             "description": "Specifies a uniformly distributed integer",
             "type": "object",
             "properties": {
+                "max_inclusive": {
+                    "description": "Maximum value (inclusive)",
+                    "type": "integer"
+                },
+                "min_inclusive": {
+                    "description": "Minimum value (inclusive)",
+                    "type": "integer"
+                },
                 "type": {
                     "title": "enum SharedTypes::v1_21_20::IntProviderType",
                     "type": "string",
@@ -515,20 +535,12 @@
                         "constant",
                         "uniform"
                     ]
-                },
-                "min_inclusive": {
-                    "description": "Minimum value (inclusive)",
-                    "type": "integer"
-                },
-                "max_inclusive": {
-                    "description": "Maximum value (inclusive)",
-                    "type": "integer"
                 }
             },
             "required": [
-                "type",
+                "max_inclusive",
                 "min_inclusive",
-                "max_inclusive"
+                "type"
             ]
         },
         "1218029234": {

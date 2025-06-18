@@ -1,12 +1,11 @@
 {
-  "format_version": "1.16.0",
+  "format_version": "1.21.90",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:ghast",
       "spawn_category": "monster",
       "is_spawnable": true,
-      "is_summonable": true,
-      "is_experimental": false
+      "is_summonable": true
     },
 
     "components": {
@@ -28,8 +27,9 @@
         "max": 10
       },
       "minecraft:collision_box": {
+        // The extra 0.02 prevents the Ghast from spawning in areas where it would suffocate.
         "width": 4.02,
-        "height": 4
+        "height": 4.0
       },
       "minecraft:movement": {
         "value": 0.03
@@ -39,7 +39,10 @@
       },
       "minecraft:behavior.float_wander": {
         "priority": 2,
-        "must_reach": true
+        "must_reach": true,
+        "random_reselect": true,
+        "float_duration": [ 2, 7 ],
+        "float_wander_has_move_control": false
       },
       "minecraft:can_fly": {
       },
@@ -55,7 +58,7 @@
       "minecraft:damage_sensor": {
         "triggers": {
           "cause": "fall",
-          "deals_damage": false
+          "deals_damage": "no"
         }
       },
       "minecraft:jump.static": {
@@ -83,11 +86,7 @@
         "priority": 2,
         "entity_types": [
           {
-            "filters": {
-              "test": "is_family",
-              "subject": "other",
-              "value": "player"
-            },
+            "filters": { "test": "is_family", "subject": "other", "value": "player" },
             "max_dist": 28
           }
         ],

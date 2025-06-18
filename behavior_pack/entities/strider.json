@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.60",
+  "format_version": "1.21.90",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:strider",
@@ -7,12 +7,37 @@
       "is_spawnable": true,
       "is_summonable": true
     },
+
     "component_groups": {
       "minecraft:strider_saddled": {
         "minecraft:is_saddled": {
         },
         "minecraft:loot": {
           "table": "loot_tables/entities/strider_saddled.json"
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "is_sneak_held", "subject": "other", "value": false },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 }
+                  ]
+                },
+                "event": "minecraft:on_unsaddled"
+              },
+              "hurt_item": 1,
+              "spawn_items": {
+                "table": "loot_tables/entities/saddle.json",
+                "y_offset": 1.7
+              },
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
+            }
+          ]
         },
         "minecraft:boostable": {
           "speed_multiplier": 1.35,
@@ -33,7 +58,7 @@
           ],
           "interact_text": "action.interact.ride.strider",
           "seats": {
-            "position": [ 0.0, 1.6, -0.2 ]
+            "position": [ 0.0, 1.7, -0.2 ]
           }
         },
         "minecraft:item_controllable": {
@@ -44,7 +69,6 @@
           "mount_speed_multiplier": 1.45
         }
       },
-
       "minecraft:strider_unsaddled": {
         "minecraft:interact": {
           "interactions": [
@@ -62,7 +86,6 @@
           ]
         }
       },
-
       "minecraft:strider_piglin_jockey": {
         "minecraft:addrider": {
           "entity_type": "minecraft:zombie_pigman",
@@ -77,7 +100,7 @@
           ],
           "interact_text": "action.interact.ride.strider",
           "seats": {
-            "position": [ 0.0, 1.65, -0.2 ]
+            "position": [ 0.0, 1.7, -0.2 ]
           }
         }
       },
@@ -92,7 +115,7 @@
             "strider"
           ],
           "seats": {
-            "position": [ 0.0, 1.6, 0.0 ]
+            "position": [ 0.0, 1.7, 0.0 ]
           }
         }
       },
@@ -121,6 +144,8 @@
       "minecraft:strider_adult": {
         "minecraft:type_family": {
           "family": [ "strider", "strider_adult", "mob" ]
+        },
+        "minecraft:leashable_to": {
         },
         "minecraft:behavior.breed": {
           "priority": 4,
@@ -171,7 +196,6 @@
           ]
         }
       },
-
       "minecraft:detect_suffocating": {
         "minecraft:environment_sensor": {
           "triggers": [
@@ -201,7 +225,6 @@
           ]
         }
       },
-
       "minecraft:strider_pathing_behaviors": {
         "minecraft:behavior.rise_to_liquid_level": {
           "priority": 0,
@@ -244,20 +267,13 @@
       "minecraft:hurt_on_condition": {
         "damage_conditions": [
           {
-            "filters": {
-              "test": "in_contact_with_water",
-              "operator": "==",
-              "value": true
-            },
+            "filters": { "test": "in_contact_with_water" },
             "cause": "drowning",
             "damage_per_tick": 1
           }
         ]
       },
       "minecraft:leashable": {
-        "soft_distance": 4.0,
-        "hard_distance": 6.0,
-        "max_distance": 10.0
       },
       "minecraft:balloonable": {
       },
@@ -411,7 +427,6 @@
           ]
         }
       },
-
       "minecraft:on_saddled": {
         "remove": {
           "component_groups": [
@@ -424,7 +439,18 @@
           ]
         }
       },
-
+      "minecraft:on_unsaddled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:strider_saddled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:strider_unsaddled"
+          ]
+        }
+      },
       "start_suffocating": {
         "add": {
           "component_groups": [
@@ -432,7 +458,6 @@
           ]
         }
       },
-
       "stop_suffocating": {
         "add": {
           "component_groups": [

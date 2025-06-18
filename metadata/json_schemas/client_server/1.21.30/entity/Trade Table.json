@@ -1,7 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "3714031231",
-    "x-minecraft-version": "1.21.80-beta.3",
+    "x-format-version": "1.21.30",
+    "x-minecraft-version": "1.21.90-beta.3",
     "definitions": {
         "943617905": {
             "title": "struct SharedTypes::v1_21_30::TradeTier",
@@ -51,16 +52,16 @@
             "title": "struct SharedTypes::v1_21_30::TradeGroup",
             "type": "object",
             "properties": {
+                "num_to_select": {
+                    "type": "integer",
+                    "minimum": 0.0
+                },
                 "trades": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/3738829565"
                     },
                     "minItems": 1
-                },
-                "num_to_select": {
-                    "type": "integer",
-                    "minimum": 0.0
                 }
             },
             "required": [
@@ -84,6 +85,14 @@
                 {
                     "type": "object",
                     "properties": {
+                        "AND": {
+                            "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                            "$ref": "#/definitions/1088251937"
+                        },
+                        "NOT": {
+                            "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
+                            "$ref": "#/definitions/1088251937"
+                        },
                         "OR": {
                             "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
                             "$ref": "#/definitions/1088251937"
@@ -96,8 +105,8 @@
                             "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
                             "$ref": "#/definitions/1088251937"
                         },
-                        "AND": {
-                            "description": "Evaluates all tests in the group, all must pass in order for the group to pass.",
+                        "any": {
+                            "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
                             "$ref": "#/definitions/1088251937"
                         },
                         "any_of": {
@@ -105,14 +114,6 @@
                             "$ref": "#/definitions/1088251937"
                         },
                         "none_of": {
-                            "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
-                            "$ref": "#/definitions/1088251937"
-                        },
-                        "any": {
-                            "description": "Evaluates tests in the group, one or more must pass in order for the group to pass.",
-                            "$ref": "#/definitions/1088251937"
-                        },
-                        "NOT": {
                             "description": "Evaluates all tests in the group, all must fail in order for the group to pass.",
                             "$ref": "#/definitions/1088251937"
                         }
@@ -124,16 +125,6 @@
             "title": "struct SharedTypes::v1_21_30::Trade",
             "type": "object",
             "properties": {
-                "wants": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/1093643626"
-                    },
-                    "minItems": 1
-                },
-                "trader_exp": {
-                    "type": "integer"
-                },
                 "gives": {
                     "type": "array",
                     "items": {
@@ -147,56 +138,47 @@
                 "reward_exp": {
                     "type": "boolean"
                 },
+                "trader_exp": {
+                    "type": "integer"
+                },
+                "wants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/1093643626"
+                    },
+                    "minItems": 1
+                },
                 "weight": {
                     "type": "integer",
                     "minimum": 1.0
                 }
             },
             "required": [
-                "wants",
-                "gives"
-            ]
-        },
-        "56017534": {
-            "title": "struct SharedTypes::v1_21_30::TradeItem",
-            "type": "object",
-            "properties": {
-                "__DEP_fnctns": {
-                    "deprecated": true,
-                    "$ref": "#/definitions/315535208"
-                },
-                "functions": {
-                    "type": "array",
-                    "items": {
-                        "description": "Dynamic value"
-                    }
-                },
-                "item": {
-                    "type": "string"
-                },
-                "__DEP_fltrs": {
-                    "deprecated": true,
-                    "$ref": "#/definitions/315535208"
-                },
-                "quantity": {
-                    "$ref": "#/definitions/2298823339"
-                },
-                "price_multiplier": {
-                    "type": "number"
-                },
-                "filters": {
-                    "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
-                    "$ref": "#/definitions/1088251937"
-                }
-            },
-            "required": [
-                "item"
+                "gives",
+                "wants"
             ]
         },
         "4150989894": {
             "title": "Filter Test",
             "type": "object",
             "properties": {
+                "domain": {
+                    "description": "The domain the test should be performed in.",
+                    "oneOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "number"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
                 "operator": {
                     "description": "The comparison to apply with 'value'.",
                     "oneOf": [
@@ -213,10 +195,6 @@
                             "type": "string"
                         }
                     ]
-                },
-                "test": {
-                    "description": "The name of the test to apply.",
-                    "type": "string"
                 },
                 "subject": {
                     "description": "The subject of this filter test.",
@@ -235,22 +213,9 @@
                         }
                     ]
                 },
-                "domain": {
-                    "description": "The domain the test should be performed in.",
-                    "oneOf": [
-                        {
-                            "type": "boolean"
-                        },
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "number"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ]
+                "test": {
+                    "description": "The name of the test to apply.",
+                    "type": "string"
                 },
                 "value": {
                     "description": "The value being compared with the test.",
@@ -274,6 +239,53 @@
                 "test"
             ]
         },
+        "56017534": {
+            "title": "struct SharedTypes::v1_21_30::TradeItem",
+            "type": "object",
+            "properties": {
+                "__DEP_fltrs": {
+                    "deprecated": true,
+                    "$ref": "#/definitions/315535208"
+                },
+                "__DEP_fnctns": {
+                    "deprecated": true,
+                    "$ref": "#/definitions/315535208"
+                },
+                "filters": {
+                    "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+                    "$ref": "#/definitions/1088251937"
+                },
+                "functions": {
+                    "type": "array",
+                    "items": {
+                        "description": "Dynamic value"
+                    }
+                },
+                "item": {
+                    "$ref": "#/definitions/3673881199"
+                },
+                "price_multiplier": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "$ref": "#/definitions/2298823339"
+                }
+            },
+            "required": [
+                "item"
+            ]
+        },
+        "3673881199": {
+            "title": "struct SharedTypes::Reference<4>",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
         "2298823339": {
             "title": "struct SharedTypes::v1_21_30::TradeItem::Quantity",
             "oneOf": [
@@ -284,11 +296,11 @@
                 {
                     "type": "object",
                     "properties": {
-                        "min": {
+                        "max": {
                             "type": "integer",
                             "minimum": 1.0
                         },
-                        "max": {
+                        "min": {
                             "type": "integer",
                             "minimum": 1.0
                         }
