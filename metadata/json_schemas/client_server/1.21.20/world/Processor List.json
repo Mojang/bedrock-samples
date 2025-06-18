@@ -2,9 +2,10 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "1391327946",
     "x-format-version": "1.21.20",
-    "x-minecraft-version": "1.21.100-beta.20",
+    "x-minecraft-version": "1.21.100-beta.21",
     "definitions": {
         "2581260060": {
+            "title": "Capped",
             "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied.",
             "type": "object",
             "properties": {
@@ -42,7 +43,7 @@
                     ]
                 },
                 "processor_type": {
-                    "title": "",
+                    "title": "Jigsaw Processro Type",
                     "type": "string",
                     "const": "minecraft:capped",
                     "enum": [
@@ -60,11 +61,12 @@
             ]
         },
         "1810898542": {
+            "title": "Protected Block",
             "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world",
             "type": "object",
             "properties": {
                 "processor_type": {
-                    "title": "",
+                    "title": "Jigsaw Processro Type",
                     "type": "string",
                     "const": "minecraft:protected_blocks",
                     "enum": [
@@ -85,11 +87,12 @@
             ]
         },
         "3016468321": {
+            "title": "BlockRules",
             "description": "Replaces and modifies blocks based on a series of rules",
             "type": "object",
             "properties": {
                 "processor_type": {
-                    "title": "",
+                    "title": "Jigsaw Processro Type",
                     "type": "string",
                     "const": "minecraft:rule",
                     "enum": [
@@ -114,15 +117,16 @@
             ]
         },
         "1134690608": {
+            "title": "AppendLoot",
             "description": "Modifier will attempt to add loot to a block entity.",
             "type": "object",
             "properties": {
                 "loot_table": {
                     "description": "The loot table to append",
-                    "type": "string"
+                    "$ref": "#/definitions/1102139064"
                 },
                 "type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "BlockEntityModifierType",
                     "type": "string",
                     "const": "minecraft:append_loot",
                     "enum": [
@@ -235,11 +239,12 @@
             ]
         },
         "45584192": {
+            "title": "Passthrough",
             "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
             "type": "object",
             "properties": {
                 "type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "BlockEntityModifierType",
                     "type": "string",
                     "const": "minecraft:passthrough",
                     "enum": [
@@ -253,6 +258,7 @@
             ]
         },
         "1766729433": {
+            "title": "BlockStateMatch",
             "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
             "type": "object",
             "properties": {
@@ -261,7 +267,7 @@
                     "$ref": "#/definitions/3076687790"
                 },
                 "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "BlockType",
                     "type": "string",
                     "const": "minecraft:blockstate_match",
                     "enum": [
@@ -277,40 +283,6 @@
             "required": [
                 "block_state",
                 "predicate_type"
-            ]
-        },
-        "3589682888": {
-            "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
-            "type": "object",
-            "properties": {
-                "block_state": {
-                    "description": "The block state to match against.",
-                    "$ref": "#/definitions/3076687790"
-                },
-                "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
-                    "type": "string",
-                    "const": "minecraft:random_blockstate_match",
-                    "enum": [
-                        "minecraft:always_true",
-                        "minecraft:block_match",
-                        "minecraft:random_block_match",
-                        "minecraft:tag_match",
-                        "minecraft:blockstate_match",
-                        "minecraft:random_blockstate_match"
-                    ]
-                },
-                "probability": {
-                    "description": "Probability of the evaluating to true when the block matches.",
-                    "type": "number",
-                    "minimum": 0.0,
-                    "maximum": 1.0
-                }
-            },
-            "required": [
-                "block_state",
-                "predicate_type",
-                "probability"
             ]
         },
         "3076687790": {
@@ -351,7 +323,47 @@
                 }
             ]
         },
+        "1102139064": {
+            "title": "File Reference",
+            "type": "string"
+        },
+        "3589682888": {
+            "title": "RandomBlockStateMatch",
+            "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+            "type": "object",
+            "properties": {
+                "block_state": {
+                    "description": "The block state to match against.",
+                    "$ref": "#/definitions/3076687790"
+                },
+                "predicate_type": {
+                    "title": "BlockType",
+                    "type": "string",
+                    "const": "minecraft:random_blockstate_match",
+                    "enum": [
+                        "minecraft:always_true",
+                        "minecraft:block_match",
+                        "minecraft:random_block_match",
+                        "minecraft:tag_match",
+                        "minecraft:blockstate_match",
+                        "minecraft:random_blockstate_match"
+                    ]
+                },
+                "probability": {
+                    "description": "Probability of the evaluating to true when the block matches.",
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0
+                }
+            },
+            "required": [
+                "block_state",
+                "predicate_type",
+                "probability"
+            ]
+        },
         "1527331705": {
+            "title": "Reference",
             "oneOf": [
                 {
                     "type": "string"
@@ -361,38 +373,17 @@
                 }
             ]
         },
-        "4275912652": {
-            "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
-            "type": "object",
-            "properties": {
-                "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
-                    "type": "string",
-                    "const": "minecraft:always_true",
-                    "enum": [
-                        "minecraft:always_true",
-                        "minecraft:block_match",
-                        "minecraft:random_block_match",
-                        "minecraft:tag_match",
-                        "minecraft:blockstate_match",
-                        "minecraft:random_blockstate_match"
-                    ]
-                }
-            },
-            "required": [
-                "predicate_type"
-            ]
-        },
         "3523914459": {
+            "title": "RandomBlockMatch",
             "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
             "type": "object",
             "properties": {
                 "block": {
                     "description": "The block to match against.",
-                    "type": "string"
+                    "$ref": "#/definitions/1527331705"
                 },
                 "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "BlockType",
                     "type": "string",
                     "const": "minecraft:random_block_match",
                     "enum": [
@@ -417,12 +408,36 @@
                 "probability"
             ]
         },
+        "4275912652": {
+            "title": "AlwaysTrueBlock",
+            "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+            "type": "object",
+            "properties": {
+                "predicate_type": {
+                    "title": "BlockType",
+                    "type": "string",
+                    "const": "minecraft:always_true",
+                    "enum": [
+                        "minecraft:always_true",
+                        "minecraft:block_match",
+                        "minecraft:random_block_match",
+                        "minecraft:tag_match",
+                        "minecraft:blockstate_match",
+                        "minecraft:random_blockstate_match"
+                    ]
+                }
+            },
+            "required": [
+                "predicate_type"
+            ]
+        },
         "3034820683": {
+            "title": "TagMatch",
             "description": "Predicate that evaluates to true if the block at the specified location constains the tag.",
             "type": "object",
             "properties": {
                 "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "BlockType",
                     "type": "string",
                     "const": "minecraft:tag_match",
                     "enum": [
@@ -445,15 +460,16 @@
             ]
         },
         "2198589344": {
+            "title": "BlockMatch",
             "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
             "type": "object",
             "properties": {
                 "block": {
                     "description": "The block to match against.",
-                    "type": "string"
+                    "$ref": "#/definitions/1527331705"
                 },
                 "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "BlockType",
                     "type": "string",
                     "const": "minecraft:block_match",
                     "enum": [
@@ -472,11 +488,12 @@
             ]
         },
         "1556792771": {
+            "title": "AlwaysTruePos",
             "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
             "type": "object",
             "properties": {
                 "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "PosType",
                     "type": "string",
                     "const": "minecraft:always_true",
                     "enum": [
@@ -490,6 +507,7 @@
             ]
         },
         "3839910888": {
+            "title": "AxisAlignedLinear",
             "description": "Predicate that evalutes to true if the block is within the distance range along the provided axis and and random number is generated between chance range",
             "type": "object",
             "properties": {
@@ -521,7 +539,7 @@
                     "minimum": 0.0
                 },
                 "predicate_type": {
-                    "title": "PositionalBlockRuleAxis",
+                    "title": "PosType",
                     "type": "string",
                     "const": "minecraft:axis_aligned_linear_pos",
                     "enum": [
@@ -535,6 +553,7 @@
             ]
         },
         "3518228880": {
+            "title": "BlockIgnore",
             "description": "Specifies block types in the template that should be ignored by other processors.",
             "type": "object",
             "properties": {
@@ -542,11 +561,11 @@
                     "description": "List of blocks evaluated on all blocks of a Structure Template. If a block is matched in the provided list the block will be ignored for processing.",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/1527331705"
                     }
                 },
                 "processor_type": {
-                    "title": "",
+                    "title": "Jigsaw Processro Type",
                     "type": "string",
                     "const": "minecraft:block_ignore",
                     "enum": [
@@ -563,11 +582,12 @@
             ]
         },
         "1354340864": {
+            "title": "ConstantIntProvider",
             "description": "Specifies a constant integer",
             "type": "object",
             "properties": {
                 "type": {
-                    "title": "",
+                    "title": "IntProviderType",
                     "type": "string",
                     "const": "constant",
                     "enum": [
@@ -586,6 +606,7 @@
             ]
         },
         "1740413124": {
+            "title": "UniformIntProvider",
             "description": "Specifies a uniformly distributed integer",
             "type": "object",
             "properties": {
@@ -598,7 +619,7 @@
                     "type": "integer"
                 },
                 "type": {
-                    "title": "",
+                    "title": "IntProviderType",
                     "type": "string",
                     "const": "uniform",
                     "enum": [
@@ -614,16 +635,21 @@
             ]
         },
         "1218029234": {
+            "title": "Processor List Description",
             "type": "object",
             "properties": {
                 "identifier": {
                     "description": "Identifier of the Processor List. This is referenced by Template Pools when pairing processors with Structure Templates.",
-                    "type": "string"
+                    "$ref": "#/definitions/1424713080"
                 }
             },
             "required": [
                 "identifier"
             ]
+        },
+        "1424713080": {
+            "title": "Identifier",
+            "type": "string"
         }
     },
     "title": "Rules used by Jigsaw Structures to determine which blocks to modify or replace when placing a Structure Template in the world.",
