@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "106251308",
     "x-format-version": "1.20.60",
-    "x-minecraft-version": "1.21.100-beta.22",
+    "x-minecraft-version": "1.21.100-beta.23",
     "definitions": {
         "72946555": {
             "title": "minecraft:overworld",
@@ -94,6 +94,10 @@
                     "description": "Forces a biome to ether always be humid or never humid. Humidity effects the spread chance, and spread rate of fire in the biome",
                     "$ref": "#/definitions/3654699498"
                 },
+                "minecraft:map_tints": {
+                    "description": "Sets the color grass and foliage will be tinted by in this biome on the map.",
+                    "$ref": "#/definitions/333666056"
+                },
                 "minecraft:mountain_parameters": {
                     "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
                     "$ref": "#/definitions/4185018795"
@@ -132,55 +136,9 @@
                 }
             }
         },
-        "3978796423": {
-            "title": "minecraft:the_end",
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "SurfaceBuilderType",
-                    "description": "Use default Minecraft End terrain generation.",
-                    "type": "string",
-                    "const": "minecraft:the_end",
-                    "enum": [
-                        "minecraft:overworld",
-                        "minecraft:frozen_ocean",
-                        "minecraft:mesa",
-                        "minecraft:swamp",
-                        "minecraft:capped",
-                        "minecraft:the_end"
-                    ]
-                }
-            },
-            "required": [
-                "type"
-            ]
-        },
-        "458645028": {
-            "title": "minecraft:multinoise_generation_rules",
-            "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
-            "type": "object",
-            "properties": {
-                "target_altitude": {
-                    "description": "Altitude with which this biome should be generated, relative to other biomes.",
-                    "type": "number"
-                },
-                "target_humidity": {
-                    "description": "Humidity with which this biome should be generated, relative to other biomes.",
-                    "type": "number"
-                },
-                "target_temperature": {
-                    "description": "Temperature with which this biome should be generated, relative to other biomes.",
-                    "type": "number"
-                },
-                "target_weirdness": {
-                    "description": "Weirdness with which this biome should be generated, relative to other biomes.",
-                    "type": "number"
-                },
-                "weight": {
-                    "description": "Weight with which this biome should be generated, relative to other biomes.",
-                    "type": "number"
-                }
-            }
+        "3878857055": {
+            "title": "minecraft:partially_frozen",
+            "description": "Component will impact the temperature in a frozen biome, causing some areas to not be frozen. Ex: patchy ice, patchy snow"
         },
         "800202529": {
             "title": "minecraft:climate",
@@ -221,10 +179,6 @@
                     "type": "number"
                 }
             }
-        },
-        "3878857055": {
-            "title": "minecraft:partially_frozen",
-            "description": "Component will impact the temperature in a frozen biome, causing some areas to not be frozen. Ex: patchy ice, patchy snow"
         },
         "3654699498": {
             "title": "minecraft:humidity",
@@ -277,6 +231,31 @@
                 }
             }
         },
+        "3937875407": {
+            "title": "grass",
+            "description": "Sets the color grass will be tinted by in this biome on the map.",
+            "type": "object",
+            "properties": {
+                "tint": {
+                    "description": "Tint color used in this biome on the map.",
+                    "$ref": "#/definitions/3915697282"
+                },
+                "type": {
+                    "title": "GrassType",
+                    "description": "Controls the type of grass tint to use.",
+                    "type": "string",
+                    "const": "tint",
+                    "enum": [
+                        "tint",
+                        "noise"
+                    ]
+                }
+            },
+            "required": [
+                "tint",
+                "type"
+            ]
+        },
         "6061611": {
             "title": "minecraft:creature_spawn_probability",
             "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
@@ -287,6 +266,161 @@
                     "type": "number",
                     "minimum": 0.0,
                     "maximum": 0.75
+                }
+            }
+        },
+        "3915697282": {
+            "title": "Color255RGB",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            ],
+            "$metaProperties": {
+                "CEREAL_EDITOR_SCHEMA_TAG": "type:color"
+            }
+        },
+        "3626244290": {
+            "title": "minecraft:surface_builder",
+            "description": "Controls the materials used for terrain generation.",
+            "type": "object",
+            "properties": {
+                "builder": {
+                    "description": "Controls the block types used for terrain generation.",
+                    "oneOf": [
+                        {
+                            "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
+                            "$ref": "#/definitions/72946555"
+                        },
+                        {
+                            "description": "Similar to overworld_surface. Adds icebergs.",
+                            "$ref": "#/definitions/2608925209"
+                        },
+                        {
+                            "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
+                            "$ref": "#/definitions/415084889"
+                        },
+                        {
+                            "description": "Used to add decoration to the surface of swamp biomes such as water lilies.",
+                            "$ref": "#/definitions/424552073"
+                        },
+                        {
+                            "description": "Generates surface on blocks with non-solid blocks above or below.",
+                            "$ref": "#/definitions/2298712664"
+                        },
+                        {
+                            "$ref": "#/definitions/3978796423"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "builder"
+            ]
+        },
+        "333666056": {
+            "title": "minecraft:map_tints",
+            "description": "Sets the color grass and foliage will be tinted by in this biome on the map.",
+            "type": "object",
+            "properties": {
+                "foliage": {
+                    "description": "Sets the color foliage will be tinted by in this biome on the map.",
+                    "$ref": "#/definitions/3915697282"
+                },
+                "grass": {
+                    "description": "Controls whether the grass will use a custom tint color or a noise based tint color.",
+                    "oneOf": [
+                        {
+                            "description": "Sets the color grass will be tinted by in this biome on the map.",
+                            "$ref": "#/definitions/3937875407"
+                        },
+                        {
+                            "description": "Makes grass use the noise based colors for tinting in this biome on the map.",
+                            "$ref": "#/definitions/1703738264"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "grass"
+            ]
+        },
+        "1703738264": {
+            "title": "grass",
+            "description": "Makes grass use the noise based colors for tinting in this biome on the map.",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "GrassType",
+                    "description": "Controls the type of grass tint to use.",
+                    "type": "string",
+                    "const": "noise",
+                    "enum": [
+                        "tint",
+                        "noise"
+                    ]
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "3978796423": {
+            "title": "minecraft:the_end",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "SurfaceBuilderType",
+                    "description": "Use default Minecraft End terrain generation.",
+                    "type": "string",
+                    "const": "minecraft:the_end",
+                    "enum": [
+                        "minecraft:overworld",
+                        "minecraft:frozen_ocean",
+                        "minecraft:mesa",
+                        "minecraft:swamp",
+                        "minecraft:capped",
+                        "minecraft:the_end"
+                    ]
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "458645028": {
+            "title": "minecraft:multinoise_generation_rules",
+            "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
+            "type": "object",
+            "properties": {
+                "target_altitude": {
+                    "description": "Altitude with which this biome should be generated, relative to other biomes.",
+                    "type": "number"
+                },
+                "target_humidity": {
+                    "description": "Humidity with which this biome should be generated, relative to other biomes.",
+                    "type": "number"
+                },
+                "target_temperature": {
+                    "description": "Temperature with which this biome should be generated, relative to other biomes.",
+                    "type": "number"
+                },
+                "target_weirdness": {
+                    "description": "Weirdness with which this biome should be generated, relative to other biomes.",
+                    "type": "number"
+                },
+                "weight": {
+                    "description": "Weight with which this biome should be generated, relative to other biomes.",
+                    "type": "number"
                 }
             }
         },
@@ -455,14 +589,7 @@
         },
         "1527331705": {
             "title": "Reference",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "string"
-                }
-            ]
+            "type": "string"
         },
         "415084889": {
             "title": "minecraft:mesa",
@@ -667,14 +794,7 @@
         },
         "1493335182": {
             "title": "Reference",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "string"
-                }
-            ]
+            "type": "string"
         },
         "716969038": {
             "title": "Biome Replacement",
@@ -711,44 +831,6 @@
                 "dimension",
                 "noise_frequency_scale",
                 "targets"
-            ]
-        },
-        "3626244290": {
-            "title": "minecraft:surface_builder",
-            "description": "Controls the materials used for terrain generation.",
-            "type": "object",
-            "properties": {
-                "builder": {
-                    "description": "Controls the block types used for terrain generation.",
-                    "oneOf": [
-                        {
-                            "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
-                            "$ref": "#/definitions/72946555"
-                        },
-                        {
-                            "description": "Similar to overworld_surface. Adds icebergs.",
-                            "$ref": "#/definitions/2608925209"
-                        },
-                        {
-                            "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
-                            "$ref": "#/definitions/415084889"
-                        },
-                        {
-                            "description": "Used to add decoration to the surface of swamp biomes such as water lilies.",
-                            "$ref": "#/definitions/424552073"
-                        },
-                        {
-                            "description": "Generates surface on blocks with non-solid blocks above or below.",
-                            "$ref": "#/definitions/2298712664"
-                        },
-                        {
-                            "$ref": "#/definitions/3978796423"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "builder"
             ]
         },
         "2298712664": {

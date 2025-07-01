@@ -1,0 +1,192 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "1861715976",
+    "x-format-version": "1.21.100",
+    "x-minecraft-version": "1.21.100-beta.23",
+    "definitions": {
+        "1531870811": {
+            "title": "Item Descriptor",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "2770948419": {
+            "title": "BlockDescriptorProxy",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "states": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/517105782"
+                    }
+                },
+                "tags": {
+                    "type": "string"
+                }
+            }
+        },
+        "4021724221": {
+            "title": "Vec2",
+            "oneOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number"
+                        },
+                        "y": {
+                            "type": "number"
+                        }
+                    }
+                }
+            ]
+        },
+        "2794205495": {
+            "title": "Block Descriptor",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/2770948419"
+                },
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "$ref": "#/definitions/2770948419"
+                }
+            ]
+        },
+        "517105782": {
+            "title": "compound_proxy",
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "boolean"
+                }
+            ]
+        }
+    },
+    "title": "minecraft:behavior.transport_items",
+    "description": "A behavior that enables a mob to transport items from and to containers.",
+    "type": "object",
+    "properties": {
+        "allow_simultaneous_interaction": {
+            "description": "When true multiple mobs with the Transport Items Goal are allowed to simultaneously interact with a container. Default value: false.",
+            "type": "boolean"
+        },
+        "allowed_items": {
+            "description": "A list of item descriptors that are the only items the mob is allowed to transport. If this and \"disallowed_items\" are both empty, then all items are allowed. If non-empty \"disallowed_items\" must be empty. Default value: empty.",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/1531870811"
+            }
+        },
+        "control_flags": {
+            "type": "array",
+            "items": {
+                "title": "Goal's control flags",
+                "type": "string",
+                "enum": [
+                    "move",
+                    "look",
+                    "jump"
+                ]
+            }
+        },
+        "destination_container_types": {
+            "description": "A list of block descriptors that should be a container type to put items in. Default value: empty.",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/2794205495"
+            }
+        },
+        "disallowed_items": {
+            "description": "A list of item descriptors that are the mob is not allowed to transport. If non-empty \"allowed_items\" must be empty. Default value: emtpy.",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/1531870811"
+            }
+        },
+        "idle_cooldown": {
+            "description": "When the mob cannot find a container in which to get or put items, the goal will stop being active for this amount of time in seconds. Default value: 20.",
+            "type": "integer"
+        },
+        "initial_cooldown": {
+            "description": "How long the mob will wait after spawning or getting the goal added before the goal can start. Default value: 0.",
+            "type": "integer"
+        },
+        "interaction_time": {
+            "description": "The amount of time in seconds spent interacting with the containers. Default value: 3.",
+            "type": "number",
+            "minimum": 0.0
+        },
+        "max_stack_size": {
+            "description": "The maximum stack size that the mob will try to take from a container. Default value: 64.",
+            "type": "integer",
+            "minimum": 1.0,
+            "maximum": 64.0
+        },
+        "max_visited_containers": {
+            "description": "The maximum number of containers that the mob will try to take/place items from before going on cooldown and starting over. Default value: 16.",
+            "type": "integer"
+        },
+        "place_strategy": {
+            "title": "place_strategy",
+            "description": "The strategy to use for placing the transported item. Any - always place if there is room, With matching - place if there is a matching item in the container, With matching or empty - like With matching but will also place in empty containers Default value: any.",
+            "type": "string",
+            "enum": [
+                "any",
+                "with_matching",
+                "with_matching_or_empty"
+            ]
+        },
+        "priority": {
+            "type": "integer",
+            "minimum": 0.0
+        },
+        "search_distance": {
+            "description": "The maximum search distance horizontally and vertically at which to find containers for taking or placing items. Default value: Vec2(64,32).",
+            "$ref": "#/definitions/4021724221"
+        },
+        "search_strategy": {
+            "title": "search_strategy",
+            "description": "The strategy to use for finding source or destination containers. The nearest valid container or a random valid container in range. Default value: random.",
+            "type": "string",
+            "enum": [
+                "nearest",
+                "random"
+            ]
+        },
+        "source_container_types": {
+            "description": "A list of block descriptors that should be a container type to get items from. Default value: empty.",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/2794205495"
+            }
+        }
+    }
+}
