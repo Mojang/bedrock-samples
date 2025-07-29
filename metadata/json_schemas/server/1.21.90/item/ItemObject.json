@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "3209403096",
     "x-format-version": "1.21.90",
-    "x-minecraft-version": "1.21.110-beta.20",
+    "x-minecraft-version": "1.21.110-beta.21",
     "definitions": {
         "3635230096": {
             "title": "components",
@@ -72,6 +72,10 @@
                 "minecraft:entity_placer": {
                     "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
                     "$ref": "#/definitions/853889472"
+                },
+                "minecraft:fire_resistant": {
+                    "description": "Determines whether the item is immune to burning when dropped in fire or lava.",
+                    "$ref": "#/definitions/1326498368"
                 },
                 "minecraft:food": {
                     "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
@@ -2039,6 +2043,24 @@
                 }
             }
         },
+        "1326498368": {
+            "title": "minecraft:fire_resistant",
+            "description": "Determines whether the item is immune to burning when dropped in fire or lava.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item is immune to burning when dropped in fire or lava.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
         "3915697282": {
             "title": "Color255RGB",
             "oneOf": [
@@ -2126,6 +2148,87 @@
                 "value"
             ]
         },
+        "3781185164": {
+            "title": "minecraft:shooter",
+            "description": "Shooter Item Component.",
+            "type": "object",
+            "properties": {
+                "ammunition": {
+                    "description": "Ammunition.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/2681068491"
+                    }
+                },
+                "charge_on_draw": {
+                    "description": "Charge on draw? Default is set to false.",
+                    "type": "boolean"
+                },
+                "max_draw_duration": {
+                    "description": "Draw Duration. Default is set to 0.",
+                    "type": "number"
+                },
+                "scale_power_by_draw_duration": {
+                    "description": "Scale power by draw duration? Default is set to false.",
+                    "type": "boolean"
+                }
+            }
+        },
+        "34598326": {
+            "title": "minecraft:storage_weight_limit",
+            "description": "Specifies the maximum weight limit that a storage item can hold",
+            "type": "object",
+            "properties": {
+                "max_weight_limit": {
+                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
+                    "type": "integer",
+                    "maximum": 64.0
+                }
+            }
+        },
+        "2681068491": {
+            "title": "Ammunition",
+            "type": "object",
+            "properties": {
+                "item": {
+                    "description": "Ammunition item description identifier.",
+                    "$ref": "#/definitions/1531870811"
+                },
+                "search_inventory": {
+                    "description": "Can search inventory? Default is set to false.",
+                    "type": "boolean"
+                },
+                "use_in_creative": {
+                    "description": "Can use in creative mode? Default is set to false.",
+                    "type": "boolean"
+                },
+                "use_offhand": {
+                    "description": "Can use off-hand? Default is set to false.",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "item"
+            ]
+        },
+        "3375297728": {
+            "title": "minecraft:rarity",
+            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
         "1206516236": {
             "title": "minecraft:glint",
             "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
@@ -2183,49 +2286,6 @@
                 }
             ]
         },
-        "3375297728": {
-            "title": "minecraft:rarity",
-            "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
-                            "type": "string"
-                        }
-                    }
-                }
-            ]
-        },
-        "2681068491": {
-            "title": "Ammunition",
-            "type": "object",
-            "properties": {
-                "item": {
-                    "description": "Ammunition item description identifier.",
-                    "$ref": "#/definitions/1531870811"
-                },
-                "search_inventory": {
-                    "description": "Can search inventory? Default is set to false.",
-                    "type": "boolean"
-                },
-                "use_in_creative": {
-                    "description": "Can use in creative mode? Default is set to false.",
-                    "type": "boolean"
-                },
-                "use_offhand": {
-                    "description": "Can use off-hand? Default is set to false.",
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "item"
-            ]
-        },
         "3178719147": {
             "title": "Molang expression",
             "oneOf": [
@@ -2236,44 +2296,6 @@
                     "type": "number"
                 }
             ]
-        },
-        "3781185164": {
-            "title": "minecraft:shooter",
-            "description": "Shooter Item Component.",
-            "type": "object",
-            "properties": {
-                "ammunition": {
-                    "description": "Ammunition.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/2681068491"
-                    }
-                },
-                "charge_on_draw": {
-                    "description": "Charge on draw? Default is set to false.",
-                    "type": "boolean"
-                },
-                "max_draw_duration": {
-                    "description": "Draw Duration. Default is set to 0.",
-                    "type": "number"
-                },
-                "scale_power_by_draw_duration": {
-                    "description": "Scale power by draw duration? Default is set to false.",
-                    "type": "boolean"
-                }
-            }
-        },
-        "34598326": {
-            "title": "minecraft:storage_weight_limit",
-            "description": "Specifies the maximum weight limit that a storage item can hold",
-            "type": "object",
-            "properties": {
-                "max_weight_limit": {
-                    "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
-                    "type": "integer",
-                    "maximum": 64.0
-                }
-            }
         },
         "1873913113": {
             "title": "minecraft:storage_item",
