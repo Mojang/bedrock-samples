@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "3635230096",
     "x-format-version": "1.20.50",
-    "x-minecraft-version": "1.21.90-beta.3",
+    "x-minecraft-version": "1.21.100-beta.6",
     "definitions": {
         "2499855414": {
             "title": "minecraft:digger",
@@ -27,7 +27,7 @@
             "description": "Use_animation specifies which animation is played when the player uses the item.",
             "oneOf": [
                 {
-                    "title": "enum SharedTypes::Legacy::UseAnimation",
+                    "title": "Animation",
                     "type": "string",
                     "enum": [
                         "none",
@@ -46,7 +46,7 @@
                     "type": "object",
                     "properties": {
                         "value": {
-                            "title": "enum SharedTypes::Legacy::UseAnimation",
+                            "title": "Animation",
                             "description": "Specifies which animation to play when the the item is used.",
                             "type": "string",
                             "enum": [
@@ -67,7 +67,7 @@
             ]
         },
         "2794205495": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptor",
+            "title": "Block Descriptor",
             "oneOf": [
                 {
                     "$ref": "#/definitions/2770948419"
@@ -88,7 +88,7 @@
             "properties": {
                 "block": {
                     "description": "Defines the block that will be placed.",
-                    "$ref": "#/definitions/1493335182"
+                    "$ref": "#/definitions/1527331705"
                 },
                 "replace_block_item": {
                     "description": "If true, the item will be registered as the item for this block. This item will be returned by default when the block is broken/picked. Note: the identifier for this item must match the block's identifier for this field to be valid.",
@@ -147,8 +147,80 @@
                 "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$"
             }
         },
+        "3553782894": {
+            "title": "minecraft:wearable",
+            "description": "Wearable items can be worn by a player in a specified slot.",
+            "type": "object",
+            "properties": {
+                "hides_player_location": {
+                    "description": "Determines whether the Player's location is hidden on Locator Maps and the Locator Bar when the wearable item is worn. Default is false.",
+                    "type": "boolean"
+                },
+                "protection": {
+                    "description": "How much protection the wearable item provides. Default is set to 0.",
+                    "type": "integer",
+                    "minimum": 0.0
+                },
+                "slot": {
+                    "title": "EquipmentSlot",
+                    "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
+                    "type": "string",
+                    "enum": [
+                        "slot.weapon.offhand",
+                        "slot.armor.head",
+                        "slot.armor.chest",
+                        "slot.armor.legs",
+                        "slot.armor.feet"
+                    ]
+                }
+            },
+            "required": [
+                "slot"
+            ]
+        },
+        "2359991381": {
+            "title": "minecraft:liquid_clipped",
+            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Deterines whether the item interacts with liquid blocks on use.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1956551060": {
+            "title": "minecraft:durability_sensor",
+            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "durability_thresholds": {
+                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
+                    "type": "array",
+                    "items": {
+                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
+                        "$ref": "#/definitions/764203503"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "durability_thresholds"
+            ]
+        },
+        "1527331705": {
+            "title": "Reference",
+            "type": "string"
+        },
         "2770948419": {
-            "title": "struct SharedTypes::Legacy::BlockDescriptorSerializer::BlockDescriptorProxy",
+            "title": "BlockDescriptorProxy",
             "type": "object",
             "properties": {
                 "name": {
@@ -164,109 +236,6 @@
                     "type": "string"
                 }
             }
-        },
-        "842194090": {
-            "title": "minecraft:storage_weight_modifier",
-            "description": "Specifies the maximum weight limit that a storage item can hold",
-            "type": "object",
-            "properties": {
-                "weight_in_storage_item": {
-                    "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
-                    "type": "integer",
-                    "minimum": 0.0
-                }
-            }
-        },
-        "1889822164": {
-            "title": "minecraft:hand_equipped",
-            "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Determines whether the item is rendered like a tool while in the player's hand.",
-                            "type": "boolean"
-                        }
-                    }
-                }
-            ]
-        },
-        "3308324084": {
-            "title": "minecraft:fuel",
-            "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
-            "oneOf": [
-                {
-                    "type": "number",
-                    "minimum": 0.05000000074505806
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "duration": {
-                            "description": "Amount of time, in seconds, this fuel will cook items.",
-                            "type": "number",
-                            "minimum": 0.05000000074505806
-                        }
-                    }
-                }
-            ]
-        },
-        "2063418195": {
-            "title": "minecraft:damage_absorption",
-            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
-            "type": "object",
-            "properties": {
-                "absorbable_causes": {
-                    "description": "List of damage causes that can be absorbed by the item. By default, no damage cause is absorbed.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "minItems": 1
-                }
-            },
-            "required": [
-                "absorbable_causes"
-            ]
-        },
-        "268086052": {
-            "title": "minecraft:food",
-            "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
-            "type": "object",
-            "properties": {
-                "can_always_eat": {
-                    "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
-                    "type": "boolean"
-                },
-                "nutrition": {
-                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
-                    "type": "integer"
-                },
-                "saturation_modifier": {
-                    "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
-                    "type": "number",
-                    "minimum": 0.0
-                },
-                "using_converts_to": {
-                    "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
-                    "$ref": "#/definitions/1531870811"
-                }
-            }
-        },
-        "1493335182": {
-            "title": "struct SharedTypes::Reference<1>",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "string"
-                }
-            ]
         },
         "3178615832": {
             "title": "minecraft:stacked_by_data",
@@ -332,7 +301,7 @@
                     "type": "number"
                 },
                 "sound_event": {
-                    "title": "enum SharedTypes::Legacy::LevelSoundEvent",
+                    "title": "LevelSoundEvent",
                     "description": "Sound event type: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, pigstep, otherside, 5, relic.",
                     "type": "string",
                     "enum": [
@@ -485,6 +454,7 @@
                         "record.otherside",
                         "record.5",
                         "record.tears",
+                        "record.lava_chicken",
                         "flop",
                         "elderguardian.curse",
                         "teleport",
@@ -851,8 +821,101 @@
                         "lead.unleash",
                         "lead.break",
                         "unsaddle",
+                        "armor.equip_copper",
                         "undefined"
                     ]
+                }
+            }
+        },
+        "842194090": {
+            "title": "minecraft:storage_weight_modifier",
+            "description": "Specifies the maximum weight limit that a storage item can hold",
+            "type": "object",
+            "properties": {
+                "weight_in_storage_item": {
+                    "description": "The weight of this item when inside another Storage Item. Default is 4. 0 means item is not allowed in another Storage Item.",
+                    "type": "integer",
+                    "minimum": 0.0
+                }
+            }
+        },
+        "1889822164": {
+            "title": "minecraft:hand_equipped",
+            "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item is rendered like a tool while in the player's hand.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "3308324084": {
+            "title": "minecraft:fuel",
+            "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
+            "oneOf": [
+                {
+                    "type": "number",
+                    "minimum": 0.05000000074505806
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "duration": {
+                            "description": "Amount of time, in seconds, this fuel will cook items.",
+                            "type": "number",
+                            "minimum": 0.05000000074505806
+                        }
+                    }
+                }
+            ]
+        },
+        "2063418195": {
+            "title": "minecraft:damage_absorption",
+            "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
+            "type": "object",
+            "properties": {
+                "absorbable_causes": {
+                    "description": "List of damage causes that can be absorbed by the item. By default, no damage cause is absorbed.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "absorbable_causes"
+            ]
+        },
+        "268086052": {
+            "title": "minecraft:food",
+            "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
+            "type": "object",
+            "properties": {
+                "can_always_eat": {
+                    "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
+                    "type": "boolean"
+                },
+                "nutrition": {
+                    "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
+                    "type": "integer"
+                },
+                "saturation_modifier": {
+                    "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
+                    "type": "number",
+                    "minimum": 0.0
+                },
+                "using_converts_to": {
+                    "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
+                    "$ref": "#/definitions/1531870811"
                 }
             }
         },
@@ -888,7 +951,7 @@
                             "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes and bundle open textures can be specified here too. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
                             "type": "object",
                             "additionalProperties": {
-                                "$ref": "#/definitions/1492643634"
+                                "$ref": "#/definitions/3673189651"
                             }
                         }
                     }
@@ -896,7 +959,7 @@
             ]
         },
         "1531870811": {
-            "title": "struct SharedTypes::Legacy::ItemDescriptor",
+            "title": "Item Descriptor",
             "oneOf": [
                 {
                     "type": "string"
@@ -1006,17 +1069,6 @@
                 }
             ]
         },
-        "1493629372": {
-            "title": "struct SharedTypes::Reference<3>",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "string"
-                }
-            ]
-        },
         "886176099": {
             "title": "minecraft:cooldown",
             "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
@@ -1037,7 +1089,7 @@
             ]
         },
         "1899103179": {
-            "title": "struct SharedTypes::v1_20_50::DiggerItemComponent::BlockInfo",
+            "title": "BlockInfo",
             "type": "object",
             "properties": {
                 "block": {
@@ -1065,7 +1117,7 @@
                 },
                 "projectile_entity": {
                     "description": "Which entity is to be fired as a projectile.",
-                    "$ref": "#/definitions/1493629372",
+                    "$ref": "#/definitions/1492643634",
                     "minLength": 0,
                     "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
                 }
@@ -1073,6 +1125,51 @@
             "required": [
                 "projectile_entity"
             ]
+        },
+        "2267778531": {
+            "title": "Molang string",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "expression": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "expression",
+                        "version"
+                    ]
+                }
+            ]
+        },
+        "1206516236": {
+            "title": "minecraft:glint",
+            "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "description": "Determines whether the item has the glint effect.",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            ]
+        },
+        "1492643634": {
+            "title": "Reference",
+            "type": "string"
         },
         "2817495317": {
             "title": "minecraft:max_stack_size",
@@ -1097,7 +1194,7 @@
             ]
         },
         "1398826300": {
-            "title": "struct SharedTypes::IntRange",
+            "title": "IntRange",
             "type": "object",
             "properties": {
                 "max": {
@@ -1109,7 +1206,7 @@
             }
         },
         "3256164975": {
-            "title": "struct SharedTypes::v1_20_50::RepairableItemComponent::RepairItemEntry",
+            "title": "Repair",
             "oneOf": [
                 {
                     "type": "array",
@@ -1152,7 +1249,7 @@
                 },
                 "entity": {
                     "description": "The entity to be placed in the world.",
-                    "$ref": "#/definitions/1493629372",
+                    "$ref": "#/definitions/1492643634",
                     "minLength": 0,
                     "pattern": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
                 },
@@ -1165,74 +1262,6 @@
                 }
             }
         },
-        "3553782894": {
-            "title": "minecraft:wearable",
-            "description": "Wearable items can be worn by a player in a specified slot.",
-            "type": "object",
-            "properties": {
-                "hides_player_location": {
-                    "description": "Determines whether the Player's location is hidden on Locator Maps and the Locator Bar when the wearable item is worn. Default is false.",
-                    "type": "boolean"
-                },
-                "protection": {
-                    "description": "How much protection the wearable item provides. Default is set to 0.",
-                    "type": "integer",
-                    "minimum": 0.0
-                },
-                "slot": {
-                    "title": "enum SharedTypes::Legacy::EquipmentSlot",
-                    "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
-                    "type": "string",
-                    "enum": [
-                        "slot.weapon.offhand",
-                        "slot.armor.head",
-                        "slot.armor.chest",
-                        "slot.armor.legs",
-                        "slot.armor.feet"
-                    ]
-                }
-            },
-            "required": [
-                "slot"
-            ]
-        },
-        "2359991381": {
-            "title": "minecraft:liquid_clipped",
-            "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
-            "oneOf": [
-                {
-                    "type": "boolean"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Deterines whether the item interacts with liquid blocks on use.",
-                            "type": "boolean"
-                        }
-                    }
-                }
-            ]
-        },
-        "1956551060": {
-            "title": "minecraft:durability_sensor",
-            "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
-            "type": "object",
-            "properties": {
-                "durability_thresholds": {
-                    "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
-                    "type": "array",
-                    "items": {
-                        "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
-                        "$ref": "#/definitions/764203503"
-                    },
-                    "minItems": 1
-                }
-            },
-            "required": [
-                "durability_thresholds"
-            ]
-        },
         "764203503": {
             "title": "minecraft:durability_sensor durability_threshold",
             "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
@@ -1243,7 +1272,7 @@
                     "type": "integer"
                 },
                 "particle_type": {
-                    "title": "enum ParticleType",
+                    "title": "ParticleType",
                     "description": "Particle effect to emit when the threshold is met.",
                     "type": "string",
                     "enum": [
@@ -1339,7 +1368,7 @@
                     ]
                 },
                 "sound_event": {
-                    "title": "enum SharedTypes::Legacy::LevelSoundEvent",
+                    "title": "LevelSoundEvent",
                     "description": "Sound effect to emit when the threshold is met.",
                     "type": "string",
                     "enum": [
@@ -1492,6 +1521,7 @@
                         "record.otherside",
                         "record.5",
                         "record.tears",
+                        "record.lava_chicken",
                         "flop",
                         "elderguardian.curse",
                         "teleport",
@@ -1858,6 +1888,7 @@
                         "lead.unleash",
                         "lead.break",
                         "unsaddle",
+                        "armor.equip_copper",
                         "undefined"
                     ]
                 }
@@ -1930,57 +1961,40 @@
                 "value"
             ]
         },
-        "2267778531": {
-            "title": "Molang string",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "expression": {
-                            "type": "string"
-                        },
-                        "version": {
-                            "type": "integer"
-                        }
-                    },
-                    "required": [
-                        "expression",
-                        "version"
-                    ]
-                }
-            ]
-        },
-        "1492643634": {
-            "title": "struct SharedTypes::Reference<5>",
-            "oneOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "type": "string"
-                }
-            ]
-        },
-        "1206516236": {
-            "title": "minecraft:glint",
-            "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
-            "oneOf": [
-                {
+        "3715727616": {
+            "title": "minecraft:throwable",
+            "description": "Throwable items can be thrown by the player, such as a snowball.",
+            "type": "object",
+            "properties": {
+                "do_swing_animation": {
+                    "description": "Determines whether the item should use the swing animation when thrown. Default is set to false.",
                     "type": "boolean"
                 },
-                {
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "description": "Determines whether the item has the glint effect.",
-                            "type": "boolean"
-                        }
-                    }
+                "launch_power_scale": {
+                    "description": "The scale at which the power of the throw increases. Default is set to 1.0.",
+                    "type": "number"
+                },
+                "max_draw_duration": {
+                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
+                },
+                "max_launch_power": {
+                    "description": "The maximum power to launch the throwable item. Default is set to 1.0.",
+                    "type": "number"
+                },
+                "min_draw_duration": {
+                    "description": "The minimum duration to draw a throwable item. Default is set to 0.0.",
+                    "type": "number"
+                },
+                "scale_power_by_draw_duration": {
+                    "description": "Whether or not the power of the throw increases with duration charged. Default is set to false.",
+                    "type": "boolean"
                 }
-            ]
+            }
+        },
+        "3673189651": {
+            "title": "Reference",
+            "type": "string"
         },
         "1754804474": {
             "title": "minecraft:interact_button",
@@ -1995,7 +2009,7 @@
             ]
         },
         "2681068491": {
-            "title": "struct SharedTypes::v1_20_50::ShooterItemComponent::Ammunition",
+            "title": "Ammunition",
             "type": "object",
             "properties": {
                 "item": {
@@ -2127,37 +2141,6 @@
                     "items": {
                         "type": "string"
                     }
-                }
-            }
-        },
-        "3715727616": {
-            "title": "minecraft:throwable",
-            "description": "Throwable items can be thrown by the player, such as a snowball.",
-            "type": "object",
-            "properties": {
-                "do_swing_animation": {
-                    "description": "Determines whether the item should use the swing animation when thrown. Default is set to false.",
-                    "type": "boolean"
-                },
-                "launch_power_scale": {
-                    "description": "The scale at which the power of the throw increases. Default is set to 1.0.",
-                    "type": "number"
-                },
-                "max_draw_duration": {
-                    "description": "The maximum duration to draw a throwable item. Default is set to 0.0.",
-                    "type": "number"
-                },
-                "max_launch_power": {
-                    "description": "The maximum power to launch the throwable item. Default is set to 1.0.",
-                    "type": "number"
-                },
-                "min_draw_duration": {
-                    "description": "The minimum duration to draw a throwable item. Default is set to 0.0.",
-                    "type": "number"
-                },
-                "scale_power_by_draw_duration": {
-                    "description": "Whether or not the power of the throw increases with duration charged. Default is set to false.",
-                    "type": "boolean"
                 }
             }
         }

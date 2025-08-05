@@ -343,26 +343,26 @@
   "trial_info": {
     "type": "panel",
     "controls": [
-        {
-          "trial_label": {
-            "type": "label",
-            "size": [ "150%", 20 ],
-            "offset": [ 4, 0 ],
-            "text": "menu.trialLabel",
-            "color": "$body_text_color",
-            "text_alignment": "center",
-            "layer": 2
-          }
-        },
-        {
-          "label_background": {
-            "type": "image",
-            "texture": "textures/ui/Black",
-            "anchor_from": "center",
-            "anchor_to": "center",
-            "alpha": 0.6,
-            "size": [ "100%sm + 10px", "100%sm + 10px" ],
-            "layer": 1
+      {
+        "trial_label": {
+          "type": "label",
+          "size": [ "150%", 20 ],
+          "offset": [ 4, 0 ],
+          "text": "menu.trialLabel",
+          "color": "$body_text_color",
+          "text_alignment": "center",
+          "layer": 2
+        }
+      },
+      {
+        "label_background": {
+          "type": "image",
+          "texture": "textures/ui/Black",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "alpha": 0.6,
+          "size": [ "100%sm + 10px", "100%sm + 10px" ],
+          "layer": 1
         }
       }
     ]
@@ -1402,6 +1402,32 @@
     "size": [ "100% - 2px", "100% - 2px" ]
   },
 
+  "main_button_gif": {
+    "type": "custom",
+    "renderer": "animated_gif_renderer",
+    "size": [ "100% + 30px", "100% + 2px" ], // covers button safe area (180x34)
+    "$gif_path_binding_name|default": "",
+    "$gif_alpha_binding_name|default": "",
+    "bindings": [
+      {
+        "binding_name": "$gif_path_binding_name",
+        "binding_name_override": "#gif_path",
+        "binding_condition": "visible"
+      },
+      {
+        "ignored": "($gif_alpha_binding_name = '')",
+        "binding_name": "$gif_alpha_binding_name",
+        "binding_name_override": "#alpha",
+        "binding_condition": "visible"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "(#alpha = 0.0)",
+        "target_property_name": "#pause_gif"
+      }
+    ]
+  },
+
   "play_button@start.main_button": {
     "$pressed_button_name": "$play_button_target",
     "$button_text": "menu.play",
@@ -1482,6 +1508,22 @@
       {
         "binding_name": "(not #marketplace_disabled)",
         "binding_name_override": "#visible"
+      }
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "to_button_id": "store_button.is_hovered",
+        "mapping_type": "pressed"
       }
     ]
   },
@@ -1574,11 +1616,72 @@
     "layer": 2
   },
 
+  "store_button_art": {
+    "type": "panel",
+    "controls": [
+      {
+        "default_background@start.main_button_gif": {
+          "layer": 1,
+          "$gif_path_binding_name": "#store_button_art_default_bg_path",
+          "$gif_alpha_binding_name": "#store_button_art_default_alpha"
+        }
+      },
+      {
+        "hover_background@start.main_button_gif": {
+          "layer": 2,
+          "$gif_path_binding_name": "#store_button_art_hover_bg_path",
+          "$gif_alpha_binding_name": "#store_button_art_hover_alpha"
+        }
+      },
+      {
+        "label": {
+          "type": "label",
+          "layer": 3,
+          "font_type": "default",
+          "text": "menu.store",
+          "color": "$light_button_default_text_color",
+          "bindings": [
+            {
+              "binding_name": "#store_button_art_label_color",
+              "binding_name_override": "#color"
+            }
+          ]
+        }
+      },
+      {
+        "default_foreground@start.main_button_gif": {
+          "layer": 4,
+          "$gif_path_binding_name": "#store_button_art_default_fg_path",
+          "$gif_alpha_binding_name": "#store_button_art_default_alpha"
+        }
+      },
+      {
+        "hover_foreground@start.main_button_gif": {
+          "layer": 5,
+          "$gif_path_binding_name": "#store_button_art_hover_fg_path",
+          "$gif_alpha_binding_name": "#store_button_art_hover_alpha"
+        }
+      }
+    ]
+  },
+
   "store_button_stack@start.stacked_row": {
     "controls": [
       {
         "store_button@start.store_button": {
           "enabled": "(not $store_disabled and not ($is_ios and $pre_release)))"
+        }
+      },
+      {
+        "store_button_art@start.store_button_art": {
+          "ignored": "$store_disabled",
+          "layer": 12,
+          "bindings": [
+            {
+              "binding_name": "#store_button_art_visible",
+              "binding_name_override": "#visible"
+            }
+          ]
         }
       },
       {
@@ -1733,7 +1836,7 @@
           "controls": [
             {
               "test_label_row@start.stacked_row": {
-                "ignored": "(not $trial or not $is_new_trial_mode_enabled)",
+                "ignored": "(not $trial)",
                 "controls": [
                   {
                     "trial_info@start.trial_info": {}
@@ -1744,7 +1847,7 @@
             {
               "spacer": {
                 "type": "panel",
-                "ignored": "(not $trial or not $is_new_trial_mode_enabled)",
+                "ignored": "(not $trial)",
                 "size": [ 20, 20 ]
               }
             },
@@ -2355,10 +2458,6 @@
         "requires": "$education_edition",
         "$achievements_ignored": true,
         "$store_ignored|default": true
-      },
-      {
-        "requires": "$gear_vr",
-        "$feedback_ignored": true
       },
       {
         "requires": "$nx_os",

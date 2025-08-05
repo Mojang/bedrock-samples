@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "1007525655",
     "x-format-version": "1.21.20",
-    "x-minecraft-version": "1.21.90-beta.3",
+    "x-minecraft-version": "1.21.100-beta.6",
     "definitions": {
         "1088251937": {
             "title": "Filter Group",
@@ -55,6 +55,56 @@
                         }
                     }
                 }
+            ]
+        },
+        "2580189731": {
+            "title": "MaxDistanceFromCenter",
+            "description": "Max distances from the jigsaw pieces to the structure start",
+            "oneOf": [
+                {
+                    "type": "integer",
+                    "minimum": 1.0,
+                    "maximum": 128.0
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "horizontal": {
+                            "description": "The max distance on the horizontal plane (XZ): [1-128]",
+                            "type": "integer",
+                            "minimum": 1.0,
+                            "maximum": 128.0
+                        },
+                        "vertical": {
+                            "description": "The max distance on the vertical axis (Y). Defaults to no limit.",
+                            "type": "integer",
+                            "minimum": 1.0,
+                            "maximum": 2147483647.0
+                        }
+                    },
+                    "required": [
+                        "horizontal"
+                    ]
+                }
+            ]
+        },
+        "2318795732": {
+            "title": "WeightedRandomItem",
+            "description": "Weighted Random Item",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Item's data",
+                    "type": "string"
+                },
+                "weight": {
+                    "description": "Weight of item",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "data",
+                "weight"
             ]
         },
         "4150989894": {
@@ -138,8 +188,31 @@
                 "test"
             ]
         },
+        "169701669": {
+            "title": "RandomPoolAlias",
+            "description": "Pool alias for a Random list of targets",
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "description": "Alias of Random Pool",
+                    "type": "string"
+                },
+                "targets": {
+                    "description": "List of potential pools",
+                    "type": "array",
+                    "items": {
+                        "description": "Weighted Random Item",
+                        "$ref": "#/definitions/2318795732"
+                    }
+                }
+            },
+            "required": [
+                "alias",
+                "targets"
+            ]
+        },
         "2375908812": {
-            "title": "struct SharedTypes::v1_21_20::PoolAliases::RandomGroup",
+            "title": "RandomGroupPoolAlias",
             "description": "Pool alias for a RandomGroup of aliases",
             "type": "object",
             "properties": {
@@ -156,105 +229,8 @@
                 "groups"
             ]
         },
-        "3176878115": {
-            "title": "struct SharedTypes::v1_21_20::ConstantHeight",
-            "description": "Constant anchor point",
-            "type": "object",
-            "properties": {
-                "type": {
-                    "title": "enum SharedTypes::v1_21_20::HeightProviderHelper::HeightProviderType",
-                    "type": "string",
-                    "const": "constant",
-                    "enum": [
-                        "uniform",
-                        "constant"
-                    ]
-                },
-                "value": {
-                    "description": "Constant anchor point",
-                    "oneOf": [
-                        {
-                            "description": "Specifies the vertical anchor",
-                            "$ref": "#/definitions/4201740570"
-                        },
-                        {
-                            "description": "Specifies the vertical anchor",
-                            "$ref": "#/definitions/4235442903"
-                        },
-                        {
-                            "description": "Specifies the vertical anchor",
-                            "$ref": "#/definitions/4202034760"
-                        },
-                        {
-                            "description": "Specifies the vertical anchor",
-                            "$ref": "#/definitions/4235737093"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "type",
-                "value"
-            ]
-        },
-        "4202034760": {
-            "title": "struct SharedTypes::v1_21_20::VerticalAnchorValue<2>",
-            "description": "Specifies the vertical anchor",
-            "type": "object",
-            "properties": {
-                "below_top": {
-                    "description": "Offset from anchored vertical position",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "below_top"
-            ]
-        },
-        "4235442903": {
-            "title": "struct SharedTypes::v1_21_20::VerticalAnchorValue<1>",
-            "description": "Specifies the vertical anchor",
-            "type": "object",
-            "properties": {
-                "above_bottom": {
-                    "description": "Offset from anchored vertical position",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "above_bottom"
-            ]
-        },
-        "4201740570": {
-            "title": "struct SharedTypes::v1_21_20::VerticalAnchorValue<0>",
-            "description": "Specifies the vertical anchor",
-            "type": "object",
-            "properties": {
-                "absolute": {
-                    "description": "Offset from anchored vertical position",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "absolute"
-            ]
-        },
-        "4235737093": {
-            "title": "struct SharedTypes::v1_21_20::VerticalAnchorValue<3>",
-            "description": "Specifies the vertical anchor",
-            "type": "object",
-            "properties": {
-                "from_sea": {
-                    "description": "Offset from anchored vertical position",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "from_sea"
-            ]
-        },
         "2155635173": {
-            "title": "struct SharedTypes::v1_21_20::WeightedRandomItem<class std::vector<class std::variant<struct SharedTypes::v1_21_20::PoolAliases::Direct,struct SharedTypes::v1_21_20::PoolAliases::Random>,class std::allocator<class std::variant<struct SharedTypes::v1_21_20::PoolAliases::Direct,struct SharedTypes::v1_21_20::PoolAliases::Random> > > >",
+            "title": "WeightedRandomItem",
             "description": "Weighted Random Item",
             "type": "object",
             "properties": {
@@ -285,7 +261,7 @@
             ]
         },
         "3138104923": {
-            "title": "struct SharedTypes::v1_21_20::PoolAliases::Direct",
+            "title": "DirectPoolAlias",
             "description": "Pool alias for a Direct target.",
             "type": "object",
             "properties": {
@@ -303,50 +279,8 @@
                 "target"
             ]
         },
-        "169701669": {
-            "title": "struct SharedTypes::v1_21_20::PoolAliases::Random",
-            "description": "Pool alias for a Random list of targets",
-            "type": "object",
-            "properties": {
-                "alias": {
-                    "description": "Alias of Random Pool",
-                    "type": "string"
-                },
-                "targets": {
-                    "description": "List of potential pools",
-                    "type": "array",
-                    "items": {
-                        "description": "Weighted Random Item",
-                        "$ref": "#/definitions/2318795732"
-                    }
-                }
-            },
-            "required": [
-                "alias",
-                "targets"
-            ]
-        },
-        "2318795732": {
-            "title": "struct SharedTypes::v1_21_20::WeightedRandomItem<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >",
-            "description": "Weighted Random Item",
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "Item's data",
-                    "type": "string"
-                },
-                "weight": {
-                    "description": "Weight of item",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "data",
-                "weight"
-            ]
-        },
         "1292959213": {
-            "title": "struct SharedTypes::v1_21_20::JigsawStructureDefinition::Description",
+            "title": "JigsawDescriptionIdentifier",
             "description": "Identifier of the Jigsaw Structure.",
             "type": "object",
             "properties": {
@@ -359,7 +293,7 @@
             ]
         },
         "781829906": {
-            "title": "struct SharedTypes::v1_21_20::DimensionPaddingRange",
+            "title": "DimensionPaddingRange",
             "description": "Specifies the padding for the top and bottom of the world",
             "type": "object",
             "properties": {
@@ -374,7 +308,7 @@
             }
         },
         "2427056231": {
-            "title": "struct SharedTypes::v1_21_20::UniformHeight",
+            "title": "UniformHeightProviderType",
             "description": "Uniform distribution of possible anchor points",
             "type": "object",
             "properties": {
@@ -421,7 +355,7 @@
                     ]
                 },
                 "type": {
-                    "title": "enum SharedTypes::v1_21_20::HeightProviderHelper::HeightProviderType",
+                    "title": "HeightProviderType",
                     "type": "string",
                     "const": "uniform",
                     "enum": [
@@ -434,6 +368,103 @@
                 "max",
                 "min",
                 "type"
+            ]
+        },
+        "4235442903": {
+            "title": "VerticalAnchorType",
+            "description": "Specifies the vertical anchor",
+            "type": "object",
+            "properties": {
+                "above_bottom": {
+                    "description": "Offset from anchored vertical position",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "above_bottom"
+            ]
+        },
+        "4202034760": {
+            "title": "VerticalAnchorType",
+            "description": "Specifies the vertical anchor",
+            "type": "object",
+            "properties": {
+                "below_top": {
+                    "description": "Offset from anchored vertical position",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "below_top"
+            ]
+        },
+        "4201740570": {
+            "title": "VerticalAnchorType",
+            "description": "Specifies the vertical anchor",
+            "type": "object",
+            "properties": {
+                "absolute": {
+                    "description": "Offset from anchored vertical position",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "absolute"
+            ]
+        },
+        "4235737093": {
+            "title": "VerticalAnchorType",
+            "description": "Specifies the vertical anchor",
+            "type": "object",
+            "properties": {
+                "from_sea": {
+                    "description": "Offset from anchored vertical position",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "from_sea"
+            ]
+        },
+        "3176878115": {
+            "title": "ConstantHeightProviderType",
+            "description": "Constant anchor point",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "HeightProviderType",
+                    "type": "string",
+                    "const": "constant",
+                    "enum": [
+                        "uniform",
+                        "constant"
+                    ]
+                },
+                "value": {
+                    "description": "Constant anchor point",
+                    "oneOf": [
+                        {
+                            "description": "Specifies the vertical anchor",
+                            "$ref": "#/definitions/4201740570"
+                        },
+                        {
+                            "description": "Specifies the vertical anchor",
+                            "$ref": "#/definitions/4235442903"
+                        },
+                        {
+                            "description": "Specifies the vertical anchor",
+                            "$ref": "#/definitions/4202034760"
+                        },
+                        {
+                            "description": "Specifies the vertical anchor",
+                            "$ref": "#/definitions/4235737093"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "type",
+                "value"
             ]
         }
     },
@@ -462,16 +493,17 @@
             ]
         },
         "heightmap_projection": {
-            "title": "enum SharedTypes::v1_21_20::JigsawStructureDefinition::HeightmapProjection",
-            "description": "Heightmap used to calculate the relative start height. For example, a heightmap_projection of ocean_floor and a start_height of 10 means the Jigsaw Structure will begin generating 10 blocks above the ocean floor.",
+            "title": "HeightmapProjection",
+            "description": "Heightmap used to calculate the relative start height. For example, a heightmap_projection of ocean_floor and a start_height of 10 means the Jigsaw Structure will begin generating 10 blocks above the ocean floor. Defaults to 'none'",
             "type": "string",
             "enum": [
                 "world_surface",
-                "ocean_floor"
+                "ocean_floor",
+                "none"
             ]
         },
         "liquid_settings": {
-            "title": "enum SharedTypes::v1_21_20::JigsawStructureDefinition::LiquidSettings",
+            "title": "LiquidSettings",
             "description": "How to handle waterloggable blocks overlapping with existing liquid.",
             "type": "string",
             "enum": [
@@ -486,10 +518,8 @@
             "maximum": 20.0
         },
         "max_distance_from_center": {
-            "description": "This is the max distance from the jigsaw pieces to the structure start: [1-128]",
-            "type": "integer",
-            "minimum": 1.0,
-            "maximum": 128.0
+            "description": "The max distances on the horizontal plane and optionally the vertical axis from the jigsaw pieces to the structure start.",
+            "$ref": "#/definitions/2580189731"
         },
         "pool_aliases": {
             "description": "Pool Aliases are used to determine which template pool can be a substitute.",
@@ -551,7 +581,7 @@
             ]
         },
         "terrain_adaptation": {
-            "title": "enum SharedTypes::v1_21_20::JigsawStructureDefinition::TerrainAdaptation",
+            "title": "TerrainAdaptation",
             "description": "How the terrain should adapt relative to the generated Jigsaw Structure.",
             "type": "string",
             "enum": [

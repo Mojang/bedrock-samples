@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.90",
+  "format_version": "1.21.100",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:wolf",
@@ -22,6 +22,11 @@
           "values": [ "default", "big", "cute", "grumpy", "mad", "puglin", "sad" ],
           "default": "default",
           "client_sync": true
+        },
+        "minecraft:was_upgraded_to_1_21_100": {
+          "type": "bool",
+          "client_sync": false,
+          "default": false
         }
       }
     },
@@ -453,6 +458,19 @@
         }
       },
 
+      "minecraft:wolf_leashable": {
+        "minecraft:leashable": {
+          "on_leash": {
+            "event": "minecraft:on_leash",
+            "target": "self"
+          },
+          "on_unleash": {
+            "event": "minecraft:on_unleash",
+            "target": "self"
+          }
+        }
+      },
+
       "minecraft:wolf_pale": {
         "minecraft:variant": {
           "value": 0
@@ -509,16 +527,6 @@
     },
 
     "components": {
-      "minecraft:leashable": {
-        "on_leash": {
-          "event": "minecraft:on_leash",
-          "target": "self"
-        },
-        "on_unleash": {
-          "event": "minecraft:on_unleash",
-          "target": "self"
-        }
-      },
       "minecraft:balloonable": {
         "mass": 0.8
       },
@@ -690,6 +698,10 @@
               ]
             },
             "event": "minecraft:become_armorable"
+          },
+          {
+            "filters": { "test": "bool_property", "operator": "!=", "domain": "minecraft:was_upgraded_to_1_21_100" },
+            "event": "minecraft:upgrade_to_1_21_100"
           }
         ]
       },
@@ -1074,8 +1086,12 @@
         "add": {
           "component_groups": [
             "minecraft:wolf_baby",
-            "minecraft:wolf_wild"
+            "minecraft:wolf_wild",
+            "minecraft:wolf_leashable"
           ]
+        },
+        "set_property": {
+          "minecraft:was_upgraded_to_1_21_100": true
         },
         "trigger": "minecraft:randomize_sound_variant"
       },
@@ -1084,8 +1100,12 @@
         "add": {
           "component_groups": [
             "minecraft:wolf_adult",
-            "minecraft:wolf_wild"
+            "minecraft:wolf_wild",
+            "minecraft:wolf_leashable"
           ]
+        },
+        "set_property": {
+          "minecraft:was_upgraded_to_1_21_100": true
         },
         "trigger": "minecraft:randomize_sound_variant"
       },
@@ -1094,8 +1114,12 @@
         "add": {
           "component_groups": [
             "minecraft:wolf_baby",
-            "minecraft:wolf_tame"
+            "minecraft:wolf_tame",
+            "minecraft:wolf_leashable"
           ]
+        },
+        "set_property": {
+          "minecraft:was_upgraded_to_1_21_100": true
         },
         "trigger": "minecraft:randomize_sound_variant"
       },
@@ -1104,8 +1128,12 @@
         "add": {
           "component_groups": [
             "minecraft:wolf_adult",
-            "minecraft:wolf_tame"
+            "minecraft:wolf_tame",
+            "minecraft:wolf_leashable"
           ]
+        },
+        "set_property": {
+          "minecraft:was_upgraded_to_1_21_100": true
         },
         "trigger": "minecraft:randomize_sound_variant"
       },
@@ -1164,7 +1192,8 @@
       "minecraft:become_angry": {
         "remove": {
           "component_groups": [
-            "minecraft:wolf_wild"
+            "minecraft:wolf_wild",
+            "minecraft:wolf_leashable"
           ]
         },
         "add": {
@@ -1182,7 +1211,8 @@
         },
         "add": {
           "component_groups": [
-            "minecraft:wolf_wild"
+            "minecraft:wolf_wild",
+            "minecraft:wolf_leashable"
           ]
         }
       },
@@ -1196,6 +1226,24 @@
         "set_property": {
           "minecraft:is_armorable": true
         }
+      },
+
+      "minecraft:upgrade_to_1_21_100": {
+        "sequence": [
+          {
+            "filters": { "test": "has_component", "operator": "!=", "value": "minecraft:angry" },
+            "add": {
+              "component_groups": [
+                "minecraft:wolf_leashable"
+              ]
+            }
+          },
+          {
+            "set_property": {
+              "minecraft:was_upgraded_to_1_21_100": true
+            }
+          }
+        ]
       },
 
       "minecraft:randomize_sound_variant": {

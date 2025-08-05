@@ -2061,15 +2061,6 @@
     ]
   },
 
-  "bundles_upsell_factory_object": {
-    "type": "panel",
-    "size": [ "100%", "100%c" ],
-    "$control_id": "bundle_upsell",
-    "controls": [
-      { "bundle_upsell_factor_object_content@pdp.bundle_upsell_section_panel": {} }
-    ]
-  },
-
   "pdp_cycle_offer_row_content": {
     "type": "stack_panel",
     "orientation": "vertical",
@@ -2117,8 +2108,7 @@
         "ratings": "@pdp.ratings_factory_object",
         "recently_viewed": "@pdp.pdp_cycle_offer_row_section",
         "related_items": "@pdp.pdp_cycle_offer_row_section",
-        "bundles": "@pdp.bundle_factory_object",
-        "bundle_upsell": "@pdp.bundles_upsell_factory_object"
+        "bundles": "@pdp.bundle_factory_object"
       },
       "factory_variables": [
         "$store_factory_collection_details",
@@ -2885,7 +2875,14 @@
   "ratings_content_panel@pdp.content_section_boarder_bg": {
     "size": [ "100%", "100%c" ],
     "$content": "pdp.ratings_info_panel",
-    "clip_state_change_event": "$store_factory_clipping_event"
+    "clip_state_change_event": "$store_factory_clipping_event",
+    "bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      }
+    ]
   },
 
   //--------------------------------------------------------------------------------
@@ -3836,7 +3833,20 @@
     "$tooltip_button_binding_type": "global",
     "$tooltip_button_collection_name": "",
     "$tooltip_popup_visible_binding|default": "#glyph_hover_visible",
-    "$tooltip_hovered_to_button_id": "$glyph_button_hover_bind"
+    "$tooltip_hovered_to_button_id": "$glyph_button_hover_bind",
+    "$dynamic_tooltip_popup_with_image_and_text_bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_name": "$tooltip_popup_visible_binding",
+        "binding_name_override": "#visible",
+        "binding_collection_name": "$tooltip_button_collection_name",
+        "binding_type": "$tooltip_button_binding_type"
+      }
+    ]
   },
 
   "glyph_panel_mashup_hover_popup@common.dynamic_custom_tooltip_below": {
@@ -3847,7 +3857,20 @@
     "$tooltip_popup_visible_binding": "#glyph_hover_visible",
     "$tooltip_hovered_to_button_id": "glyph_button.is_hovered",
     "$pressed_button_name": "button.navigate_to_store_search_mashup",
-    "$tooltip_content": "pdp.mashup_glyph_tooltip_content"
+    "$tooltip_content": "pdp.mashup_glyph_tooltip_content",
+    "$dynamic_tooltip_popup_with_custom_content_bindings": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_name": "$tooltip_popup_visible_binding",
+        "binding_name_override": "#visible",
+        "binding_collection_name": "$tooltip_button_collection_name",
+        "binding_type": "$tooltip_button_binding_type"
+      }
+    ]
   },
 
   "mashup_glyph_tooltip_content@common.vertical_stack_panel": {
@@ -6225,345 +6248,6 @@
       }
     ]
   },
-
-  "bundle_upsell_offer_info": {
-    "type": "stack_panel",
-    "orientation": "vertical",
-    "size": [ "fill", "100%" ],
-    "$single_line_label_offset": [ 2, 0 ],
-    "controls": [
-      {
-        "bundle_title@pdp.offer_title_label": {
-          "size": [ "100%", "100%c" ]
-        }
-      },
-      {
-        "other_bundle_packs_label@common.single_line_label": {
-          "size": [ "100%", "100%c" ],
-          "$single_line_label_color": "$dark_button_secondary_default_text_color",
-          "$single_line_label_text": "#bundle_upsell_other_packs_description",
-          "$label_text_bindings": [
-            {
-              "binding_type": "$store_factory_collection_details",
-              "binding_collection_name": "$store_factory_collection_name",
-              "binding_collection_prefix": "$store_factory_collection_prefix"
-            },
-            {
-              "binding_type": "$mashup_collection_binding_type",
-              "binding_collection_name": "$mashup_collection_name",
-              "binding_name": "#bundle_upsell_other_packs_description"
-            }
-          ]
-        }
-      },
-      {
-        "mid_padding": {
-          "type": "panel",
-          "size": [ "100%", 1 ]
-        }
-      },
-      {
-        "pack_icon_and_coin_section@pdp.pack_icon_and_coin_section": {
-          "$offer_strikethrough_price_visible_binding": "#bundle_upsell_strikethrough_price_visible"
-        }
-      }
-    ]
-  },
-
-  "bundle_upsell_offer_content": {
-    "type": "image",
-    "size": [ "100%", "100%c" ],
-    "texture": "textures/ui/Banners",
-    "$section_bg_alpha|default": 1.0,
-    "alpha": "$section_bg_alpha",
-    "bindings": [
-      {
-        "binding_type": "$store_factory_collection_details",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_collection_prefix": "$store_factory_collection_prefix"
-      },
-      {
-        "binding_type": "$mashup_collection_binding_type",
-        "binding_collection_name": "$mashup_collection_name",
-        "binding_name": "#bundle_upsell_offer_alpha",
-        "binding_name_override": "#alpha"
-      }
-    ],
-    "controls": [
-      {
-        "bundle_offer_info": {
-          "type": "panel",
-          "size": [ "100%", 34 ], // if changing, be sure to update the size of bundle_upsell_section_panel->progress_loading as well
-          "controls": [
-            {
-              "focus_border@common_buttons.focus_border": {
-                "color": "$border_color",
-                "layer": "$border_layer",
-                "bindings": [
-                  {
-                    "binding_type": "view",
-                    "source_control_name": "bundle_offer_content_panel",
-                    "source_property_name": "#visible",
-                    "target_property_name": "#enabled",
-                    "resolve_sibling_scope": true
-                  }
-                ]
-              }
-            },
-            {
-              "bundle_offer_content_panel": {
-                "type": "stack_panel",
-                "orientation": "horizontal",
-                "size": [ "100%", "100%" ],
-                "layer": 2,
-                "controls": [
-                  {
-                    "thumbnail_art@pdp.bundle_offer_texture": {
-                      "$image_type": "thumbnail"
-                    }
-                  },
-                  {
-                    "info@pdp.bundle_upsell_offer_info": {}
-                  },
-                  {
-                    "right_padding@pdp.horizontal_padding_4px": {}
-                  }
-                ],
-                "bindings": [
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  },
-                  {
-                    "binding_type": "$mashup_collection_binding_type",
-                    "binding_collection_name": "$mashup_collection_name",
-                    "binding_name": "#is_valid_bundle_upsell",
-                    "binding_name_override": "#visible"
-                  }
-                ]
-              }
-            },
-            {
-              "progress_loading@common_store.progress_loading": {
-                "size": [ "100%", "100%" ],
-                "anchor_from": "top_middle",
-                "anchor_to": "top_middle",
-                "$hide_failure_text": true,
-                "bindings": [
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  },
-                  {
-                    "binding_type": "$mashup_collection_binding_type",
-                    "binding_collection_name": "$mashup_collection_name",
-                    "binding_name": "#is_bundle_upsell_loading",
-                    "binding_name_override": "#visible"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  "bundle_upsell_offer": {
-    "type": "panel",
-    "size": [ "50% - 1px", "100%c + 2px" ],
-    "controls": [
-      {
-        "bundle_upsell_grid_button@common_buttons.dark_content_button": {
-          "size": [ "100% - 2px", "100%c" ],
-          "$pressed_button_name": "button.select_offer",
-          "$button_state_panel": "pdp.bundle_upsell_offer_content",
-          "bindings": [
-            {
-              "binding_type": "$store_factory_collection_details",
-              "binding_collection_name": "$store_factory_collection_name",
-              "binding_collection_prefix": "$store_factory_collection_prefix"
-            },
-            {
-              "binding_type": "collection_details",
-              "binding_collection_name": "$mashup_collection_name"
-            },
-            {
-              "binding_type": "$mashup_collection_binding_type",
-              "binding_collection_name": "$mashup_collection_name",
-              "binding_name": "#is_valid_bundle_upsell",
-              "binding_name_override": "#enabled"
-            },
-            {
-              "binding_type": "collection",
-              "binding_collection_name": "$mashup_collection_name",
-              "binding_name": "#left_most_grid_item_focus_override_left",
-              "binding_name_override": "#focus_change_left"
-            },
-            {
-              "binding_type": "collection",
-              "binding_collection_name": "$mashup_collection_name",
-              "binding_name": "#right_most_grid_item_focus_override_right",
-              "binding_name_override": "#focus_change_right",
-              "binding_condition": "visible"
-            }
-          ]
-        }
-      }
-    ]
-  },
-
-  "bundle_upsell_offers_panel": {
-    "type": "panel",
-    "size": [ "100%", "100%c" ],
-    "controls": [
-      {
-        "single_bundle_upsell_offer@pdp.bundle_upsell_offer": {
-          "size": [ "100% - 2px", "100%c + 2px" ],
-          // using source control binding since we don't show 
-          // the parent panel if there are no offers to view 
-          "bindings": [
-            {
-              "binding_type": "view",
-              "source_control_name": "bundle_upsell_grid",
-              "source_property_name": "(not #visible)",
-              "target_property_name": "#visible",
-              "resolve_sibling_scope": true
-            }
-          ]
-        }
-      },
-      {
-        "bundle_upsell_grid": {
-          "type": "grid",
-          "size": [ "100%", "default" ],
-          "anchor_from": "top_left",
-          "anchor_to": "top_left",
-
-          "grid_item_template": "pdp.bundle_upsell_offer",
-          "grid_rescaling_type": "horizontal",
-
-          "collection_name": "$mashup_collection_name",
-
-          "property_bag": {
-            "#max_upsell_offers": 10
-          },
-
-          "bindings": [
-            {
-              "binding_collection_name": "$store_factory_collection_name",
-              "binding_type": "$store_factory_binding_type",
-              "binding_name": "#bundle_upsell_offer_count",
-              "binding_name_override": "#maximum_grid_items"
-            },
-            {
-              "binding_type": "$store_factory_binding_type",
-              "binding_collection_name": "$store_factory_collection_name",
-              "binding_name": "#bundle_upsell_grid_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      }
-    ],
-    "bindings": [
-      {
-        "binding_type": "$store_factory_binding_type",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_name": "#bundle_upsell_content_visible",
-        "binding_name_override": "#visible"
-      }
-    ]
-  },
-
-  "bundle_upsell_section_panel": {
-    "type": "panel",
-    "size": [ "100%", "100%c + 2px" ],
-    "clip_state_change_event": "$store_factory_clipping_event",
-    "controls": [
-      {
-        "bundle_upsell_section": {
-          "type": "panel",
-          "size": [ "100%", "100%c" ],
-
-          "controls": [
-            {
-              "bundle_upsell_section_content": {
-                "type": "stack_panel",
-                "orientation": "vertical",
-                "size": [ "100%", "100%c + 4px" ],
-                "anchor_from": "top_middle",
-                "anchor_to": "top_middle",
-
-                "$mashup_collection_binding_type": "collection",
-                "$mashup_collection_name": "bundle_upsell_collection",
-
-                "controls": [
-                  {
-                    "bundle_header@pdp.section_header": {}
-                  },
-                  {
-                    "bundle_upsell_offers_panel@pdp.bundle_upsell_offers_panel": {}
-                  },
-                  {
-                    "progress_loading_panel": {
-                      "type": "panel",
-                      "size": [ "100%", "100%c" ],
-                      "controls": [
-                        {
-                          "progress_loading@common_store.progress_loading": {
-                            "size": [ "100% - 4px", 34 ], // height of upsell bundle offer + 2px
-                            "anchor_from": "top_middle",
-                            "anchor_to": "top_middle",
-                            "layer": 4,
-                            "$hide_failure_text": true,
-                            "$use_sibling_scope": false,
-                            "$source_control_name": "bundle_upsell_offers_panel",
-                            "$source_property_name": "(not #visible)"
-                          }
-                        }
-                      ],
-                      "bindings": [
-                        {
-                          "binding_type": "$store_factory_binding_type",
-                          "binding_collection_name": "$store_factory_collection_name",
-                          "binding_name": "#bundle_upsell_progress_visible",
-                          "binding_name_override": "#visible"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      },
-      {
-        "divider_3@common.horizontal_divider": {
-          "anchor_from": "bottom_middle",
-          "anchor_to": "bottom_middle",
-          "$image_size": [ "100% - 6px", 1 ]
-        }
-      }
-    ],
-    "bindings": [
-      {
-        "binding_type": "$store_factory_collection_details",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_collection_prefix": "$store_factory_collection_prefix"
-      },
-      {
-        "binding_type": "$store_factory_binding_type",
-        "binding_collection_name": "$store_factory_collection_name",
-        "binding_name": "#bundle_upsell_row_visible",
-        "binding_name_override": "#visible"
-      }
-    ]
-  },
-
 
   //--------------------------------------------------------------------------------
   // Screen

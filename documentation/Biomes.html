@@ -1,4 +1,4 @@
-<h1>BIOMES DOCUMENTATION </br>Version: 1.21.90.3</h1>
+<h1>BIOMES DOCUMENTATION </br>Version: 1.21.100.6</h1>
 <h2><p id="Index">Index</p></h2>
 <table border="1">
 <tr> <th><a href="#Overview">Overview</a></th> </tr>
@@ -12,27 +12,32 @@
 <tr> <td> <a href="#Biome Replacement"> Biome Replacement</a> </tr> </td>
 <tr> <td> <a href="#Block Specifier"> Block Specifier</a> </tr> </td>
 <tr> <td> <a href="#Molang Expression"> Molang Expression</a> </tr> </td>
-<tr> <td> <a href="#minecraft:capped_surface"> minecraft:capped_surface</a> </tr> </td>
+<tr> <td> <a href="#grass"> grass</a> </tr> </td>
+<tr> <td> <a href="#minecraft:capped"> minecraft:capped</a> </tr> </td>
 <tr> <td> <a href="#minecraft:climate"> minecraft:climate</a> </tr> </td>
 <tr> <td> <a href="#minecraft:creature_spawn_probability"> minecraft:creature_spawn_probability</a> </tr> </td>
-<tr> <td> <a href="#minecraft:frozen_ocean_surface"> minecraft:frozen_ocean_surface</a> </tr> </td>
-<tr> <td> <a href="#minecraft:mesa_surface"> minecraft:mesa_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:frozen_ocean"> minecraft:frozen_ocean</a> </tr> </td>
+<tr> <td> <a href="#minecraft:humidity"> minecraft:humidity</a> </tr> </td>
+<tr> <td> <a href="#minecraft:map_tints"> minecraft:map_tints</a> </tr> </td>
+<tr> <td> <a href="#minecraft:mesa"> minecraft:mesa</a> </tr> </td>
 <tr> <td> <a href="#minecraft:mountain_parameters"> minecraft:mountain_parameters</a> </tr> </td>
 <tr> <td> <a href="#minecraft:mountain_parameters - steep_material_adjustment settings"> minecraft:mountain_parameters - steep_material_adjustment settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:mountain_parameters - top_slide settings"> minecraft:mountain_parameters - top_slide settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:multinoise_generation_rules"> minecraft:multinoise_generation_rules</a> </tr> </td>
+<tr> <td> <a href="#minecraft:overworld"> minecraft:overworld</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld_generation_rules"> minecraft:overworld_generation_rules</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld_generation_rules - Weighted biome names settings"> minecraft:overworld_generation_rules - Weighted biome names settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld_generation_rules - Weighted climate categories settings"> minecraft:overworld_generation_rules - Weighted climate categories settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld_height"> minecraft:overworld_height</a> </tr> </td>
+<tr> <td> <a href="#minecraft:partially_frozen"> minecraft:partially_frozen</a> </tr> </td>
 <tr> <td> <a href="#minecraft:replace_biomes"> minecraft:replace_biomes</a> </tr> </td>
+<tr> <td> <a href="#minecraft:surface_builder"> minecraft:surface_builder</a> </tr> </td>
 <tr> <td> <a href="#minecraft:surface_material_adjustments"> minecraft:surface_material_adjustments</a> </tr> </td>
 <tr> <td> <a href="#minecraft:surface_material_adjustments - surface adjustment materials settings"> minecraft:surface_material_adjustments - surface adjustment materials settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:surface_material_adjustments - surface adjustment settings"> minecraft:surface_material_adjustments - surface adjustment settings</a> </tr> </td>
-<tr> <td> <a href="#minecraft:surface_parameters"> minecraft:surface_parameters</a> </tr> </td>
-<tr> <td> <a href="#minecraft:swamp_surface"> minecraft:swamp_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:swamp"> minecraft:swamp</a> </tr> </td>
 <tr> <td> <a href="#minecraft:tags"> minecraft:tags</a> </tr> </td>
-<tr> <td> <a href="#minecraft:the_end_surface"> minecraft:the_end_surface</a> </tr> </td>
+<tr> <td> <a href="#minecraft:the_end"> minecraft:the_end</a> </tr> </td>
 </table>
 <a href="#Index">Back to top</a>
 <h1><p id="Overview">Overview</p></h1>
@@ -41,12 +46,14 @@ Minecraft biomes can have different terrain characteristics. By writing custom b
 
 <h1><p id="JSON Format">JSON Format</p></h1>
 
-All biomes should specify the version that they target via the "format_version" field. The remainder of the biome data is divided up into independent JSON sub-objects, or components. </br>In general, a component defines what game behaviors a biome participates in, and the component fields define how it participates. </br></br>There are basically two categories of components:</br>1) Namespaced components, such as those with a 'name:' prefix, that map to specific behaviors in-game. They may have member fields that parameterize that behavior. Only names that have a valid mapping are supported.</br>2) 'tags' which are defined under the "minecraft:tags" component. Tags consist of alphanumeric characters, along with '.' and '_'. A tag is attached to the biome so that either code or data may check for its existence. </br></br><h2></h2>
-Here is a sample biome schema with additional details and the full list of namespaced components.<br / ><textarea readonly="true" cols="51" rows="32">
+All biomes should specify the version that they target via the "format_version" field. Biomes should also specify a "description" sub-object with a namespaced "identifier" field that uniquely labels the biome. The remainder of the biome data is divided up into independent JSON sub-objects, or components. </br>In general, a component defines what game behaviors a biome participates in, and the component fields define how it participates. </br></br>There are basically two categories of components:</br>1) Namespaced components, such as those with a 'name:' prefix, that map to specific behaviors in-game. They may have member fields that parameterize that behavior. Only names that have a valid mapping are supported.</br>2) 'tags' which are defined under the "minecraft:tags" component. Tags consist of alphanumeric characters, along with '.' and '_'. A tag is attached to the biome so that either code or data may check for its existence. </br></br><h2></h2>
+Here is a sample biome schema with additional details and the full list of namespaced components.<br / ><textarea readonly="true" cols="61" rows="32">
 {
-  "plains": {
-    "format_version": "1.20.60",
-
+  "format_version": "1.20.60",
+  "minecraft:biome": {
+    "description": {
+      "identifier": "minecraft:plains"
+    },
     "minecraft:climate": {
       "downfall": 0.4,
       "snow_accumulation": [ 0.0, 0.125 ],
@@ -55,19 +62,22 @@ Here is a sample biome schema with additional details and the full list of names
     "minecraft:overworld_height": {
       "noise_type": "lowlands"
     },
-    "minecraft:surface_parameters": {
-      "sea_floor_depth": 7,
-      "sea_floor_material": "minecraft:gravel",
-      "foundation_material": "minecraft:stone",
-      "mid_material": "minecraft:dirt",
-      "top_material": "minecraft:grass_block"
+    "minecraft:surface_builder": {
+    "builder": {
+        "type": "minecraft:overworld",
+    "sea_floor_depth": 7,
+    "sea_floor_material": "minecraft:gravel",
+    "foundation_material": "minecraft:stone",
+    "mid_material": "minecraft:dirt",
+    "top_material": "minecraft:grass_block"
+    }
     },
     "minecraft:overworld_generation_rules": {
       "hills_transformation": [
-        [ "forest_hills", 1 ],
-        [ "forest", 2 ]
+        [ "minecraft:forest_hills", 1 ],
+        [ "minecraft:forest", 2 ]
       ],
-      "mutate_transformation": "sunflower_plains",
+      "mutate_transformation": "minecraft:sunflower_plains",
       "generate_for_climates": [
         [ "medium", 3 ],
         [ "warm", 1 ],
@@ -90,7 +100,7 @@ Here is a sample biome schema with additional details and the full list of names
 
 <h1><p id="Adding Biomes">Adding Biomes</p></h1>
 
-Biomes are read from JSON files in the biomes subfolders of behavior packs. Loading enforces one biome per file; and the file name and the actual biome name must match. Adding a file with a new name to the biome data location will make it available for the game to use, while existing biomes can be overridden using files that match their existing name. Note that if you add a new biome, you'll need to write component data that allows it to participate in world generation (as shown in the full schema below), or else it won't show up in your worlds!</br><a href="#Index">Back to top</a><br><br>
+Biomes are read from JSON files in the biomes subfolders of behavior packs. Loading enforces one biome per file. The biome's identifier acts as its name and must be namespaced. Adding a file with a new name to the biome data location will make it available for the game to use, while existing biomes can be overridden using another biome with the same identifier. Note that if you add a new biome, you'll need to write component data that allows it to participate in world generation (as shown in the full schema below), or else it won't show up in your worlds!</br><a href="#Index">Back to top</a><br><br>
 
 <h1><p id="Schema">Schema</p></h1>
 
@@ -100,12 +110,6 @@ Any components that this Biome uses</br><h2></h2>
 
 <table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:capped_surface</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object</td>
-<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Generates surface on blocks with non-solid blocks above or below.</br></td>
-</tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:climate</td>
 <td style="border-style:solid; border-width:3; padding:7px">Object</td>
@@ -119,16 +123,16 @@ Any components that this Biome uses</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Probability that creatures will spawn within the biome when a chunk is generated.</br></td>
 </tr>
 <tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:frozen_ocean_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:humidity</td>
 <td style="border-style:solid; border-width:3; padding:7px">Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Similar to overworld_surface. Adds icebergs.</br></td>
+<td style="border-style:solid; border-width:3; padding:7px">Forces a biome to ether always be humid or never humid. Humidity effects the spread chance, and spread rate of fire in the biome</br></td>
 </tr>
 <tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:mesa_surface</td>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:map_tints</td>
 <td style="border-style:solid; border-width:3; padding:7px">Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Similar to overworld_surface. Adds colored strata and optional pillars.</br></td>
+<td style="border-style:solid; border-width:3; padding:7px">Sets the color grass and foliage will be tinted by in this biome on the map.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:mountain_parameters</td>
@@ -155,10 +159,22 @@ Any components that this Biome uses</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Noise parameters used to drive terrain height in the Overworld.</br></td>
 </tr>
 <tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:partially_frozen</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Component will impact the temperature in a frozen biome, causing some areas to not be frozen. Ex: patchy ice, patchy snow</br></td>
+</tr>
+<tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:replace_biomes</td>
 <td style="border-style:solid; border-width:3; padding:7px">Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Optional</td>
 <td style="border-style:solid; border-width:3; padding:7px">Replaces a specified portion of one or more Minecraft biomes.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_builder</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the materials used for terrain generation.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_material_adjustments</td>
@@ -167,28 +183,10 @@ Any components that this Biome uses</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Specify fine-detail changes to blocks used in terrain generation (based on a noise function).</br></td>
 </tr>
 <tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_parameters</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object</td>
-<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the blocks used for the default Minecraft Overworld terrain generation.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:swamp_surface</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object</td>
-<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Similar to overworld_surface. Adds swamp surface details.</br></td>
-</tr>
-<tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:tags</td>
 <td style="border-style:solid; border-width:3; padding:7px">Object</td>
 <td style="border-style:solid; border-width:3; padding:7px">Optional</td>
 <td style="border-style:solid; border-width:3; padding:7px"></br>Attach arbitrary string tags to this biome.</br>Most biome tags are referenced by JSON settings, but some meanings of tags are directly implemented in the game's code. These tags are listed here:</br>birch: Biome uses wildflowers (mutually exclusive with other flower biome tags). Does nothing if biome is tagged "hills".</br>cold: Villagers will be dressed for snowy weather.</br>deep: Pre-Caves and Cliffs, prevents an ocean from having islands or connected rivers and makes the biome less likely to have hills.</br>desert: Allows partially-buried ruined portals to be placed in the biome. Sand blocks will play ambient sounds when the player is nearby.</br>extreme_hills: Ruined portals can be placed higher than normal. Biomes tagged "forest" or "forest_generation" will use normal Overworld flowers instead of forest flowers.</br>flower_forest: Biome uses forest flowers (mutually exclusive with other flower biome tags).</br>forest: Biome uses forest flowers (mutually exclusive with other flower biome tags). Does nothing if biome is tagged tagged "taiga" or "extreme_hills".</br>forest_generation: Equivalent to "forest".</br>frozen: Villagers will be dressed for snowy weather. Prevents the biome from containing lava springs if it is also tagged "ocean".</br>ice: Around ruined portals, lava is always replaced by Netherrack and Netherrack cannot be replaced by magma.</br>ice_plains: Prevents the biome from containing lava springs if it is also tagged "mutated".</br>jungle: Ruined portals will be very mossy.</br>hills: Biomes tagged "meadow" or "birch" will use normal Overworld flowers instead of wildflowers.</br>meadow: Biome uses wildflowers (mutually exclusive with other flower biome tags). Does nothing if biome is tagged "hills".</br>mesa: Sand blocks will play ambient sounds when the player is nearby.</br>mountain: Ruined portals can be placed higher than normal.</br>mutated: Pre-Caves and Cliffs, prevents switching to the specified "mutate_transformation" as the biome is already considered mutated. Prevents the biome from containing lava springs if it is also tagged "ice_plains".</br>no_legacy_worldgen: Prevents biome from using legacy world generation behavior unless the biome is being placed in the Overworld.</br>ocean: Prevents the biome from containing lava springs if it is also tagged "frozen". Allows ruined portals to be found underwater. Pre-Caves and Cliffs, determines if shorelines and rivers should be placed at the edges of the biome and identifies the biome as a shallow ocean for placing islands, unless the "deep" tag is present.</br>pale_garden: Biome uses closed-eye blossoms (mutually exclusive with other flower biome tags).</br>plains: Biome uses plains flowers (mutually exclusive with other flower biome tags).</br>rare: Pre-Caves and Cliffs, this tag flags the biome as a special biome. Oceans cannot be special.</br>swamp: Allows ruined portals to be found underwater. Biome uses swamp flowers (mutually exclusive with other flower biome tags).</br>taiga: Biomes tagged "forest" or "forest_generation" will use normal Overworld flowers instead of forest flowers.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">minecraft:the_end_surface</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object</td>
-<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Use default Minecraft End terrain generation.</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -222,7 +220,7 @@ Contains non-component settings for a Biome.</br><h2></h2>
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">identifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type struct SharedTypes::Identifier<0></td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Identifier</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">The name of the Biome, used by other features like the '/locate biome' command. Identifiers should only be lowercase.</br></td>
 </tr>
@@ -276,7 +274,7 @@ Represents the replacement information used to determine the placement of the ov
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">targets</td>
-<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type struct SharedTypes::Reference<0></td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type Reference</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Biomes that are going to be replaced by the overriding biome. Target biomes must not contain namespaces.</br></td>
 </tr>
@@ -291,7 +289,7 @@ Specifies a particular block. Can be a string block name or a JSON object</br><h
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">name</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type struct SharedTypes::Reference<1></td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Reference</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Name of the block</br></td>
 </tr>
@@ -308,7 +306,28 @@ Specifies a particular block. Can be a string block name or a JSON object</br><h
 
 A JSON field that specifies a Molang expression. Can be an integer, float, boolean, or string.</br><a href="#Index">Back to top</a><br><br>
 
-<h1><p id="minecraft:capped_surface">minecraft:capped_surface</p></h1>
+<h1><p id="grass">grass</p></h1>
+
+Makes grass use the noise based colors for tinting in this biome on the map.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">tint</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Color255RGB</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Tint color used in this biome on the map.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"tint", "noise"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the type of grass tint to use.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:capped">minecraft:capped</p></h1>
 
 Generates surface on blocks with non-solid blocks above or below.</br><h2></h2>
 
@@ -343,6 +362,12 @@ Generates surface on blocks with non-solid blocks above or below.</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Material used to replace air blocks below sea level.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -413,7 +438,7 @@ Probability that creatures will spawn within the biome when a chunk is generated
 </table>
 <a href="#Index">Back to top</a><br><br>
 
-<h1><p id="minecraft:frozen_ocean_surface">minecraft:frozen_ocean_surface</p></h1>
+<h1><p id="minecraft:frozen_ocean">minecraft:frozen_ocean</p></h1>
 
 Similar to overworld_surface. Adds icebergs.</br><h2></h2>
 
@@ -455,10 +480,52 @@ Similar to overworld_surface. Adds icebergs.</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome</br></td>
 </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use</br></td>
+</tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
 
-<h1><p id="minecraft:mesa_surface">minecraft:mesa_surface</p></h1>
+<h1><p id="minecraft:humidity">minecraft:humidity</p></h1>
+
+Forces a biome to ether always be humid or never humid. Humidity effects the spread chance, and spread rate of fire in the biome</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">is_humid</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px"></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:map_tints">minecraft:map_tints</p></h1>
+
+Sets the color grass and foliage will be tinted by in this biome on the map.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foliage</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Color255RGB</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Sets the color foliage will be tinted by in this biome on the map.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">grass</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type grass or Object of type grass</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls whether the grass will use a custom tint color or a noise based tint color.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:mesa">minecraft:mesa</p></h1>
 
 Similar to overworld_surface. Adds colored strata and optional pillars.</br><h2></h2>
 
@@ -523,6 +590,12 @@ Similar to overworld_surface. Adds colored strata and optional pillars.</br><h2>
 <td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -641,6 +714,57 @@ Controls how this biome is instantiated (and then potentially modified) during w
 </table>
 <a href="#Index">Back to top</a><br><br>
 
+<h1><p id="minecraft:overworld">minecraft:overworld</p></h1>
+
+Controls the blocks used for the default Minecraft Overworld terrain generation.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_depth</td>
+<td style="border-style:solid; border-width:3; padding:7px">Integer</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how deep below the world water level the floor should occur</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the bodies of water in this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
 <h1><p id="minecraft:overworld_generation_rules">minecraft:overworld_generation_rules</p></h1>
 
 Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.</br><h2></h2>
@@ -709,6 +833,10 @@ Noise parameters used to drive terrain height in the Overworld.</br><h2></h2>
 </table>
 <a href="#Index">Back to top</a><br><br>
 
+<h1><p id="minecraft:partially_frozen">minecraft:partially_frozen</p></h1>
+
+Component will impact the temperature in a frozen biome, causing some areas to not be frozen. Ex: patchy ice, patchy snow</br><a href="#Index">Back to top</a><br><br>
+
 <h1><p id="minecraft:replace_biomes">minecraft:replace_biomes</p></h1>
 
 Replaces a specified portion of one or more Minecraft biomes.</br><h2></h2>
@@ -720,6 +848,21 @@ Replaces a specified portion of one or more Minecraft biomes.</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Array of Object of type Biome Replacement</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">List of biome replacement configurations. Retroactively adding a new replacement to the front of this list will cause the world generation to change. Please add any new replacements to the end of the list.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:surface_builder">minecraft:surface_builder</p></h1>
+
+Controls the materials used for terrain generation.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">builder</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld or Object of type minecraft:frozen_ocean or Object of type minecraft:mesa or Object of type minecraft:swamp or Object of type minecraft:capped or Object of type minecraft:the_end</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the block types used for terrain generation.</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -811,54 +954,9 @@ An adjustment to generated terrain, replacing blocks based on the specified sett
 </table>
 <a href="#Index">Back to top</a><br><br>
 
-<h1><p id="minecraft:surface_parameters">minecraft:surface_parameters</p></h1>
+<h1><p id="minecraft:swamp">minecraft:swamp</p></h1>
 
-Controls the blocks used for the default Minecraft Overworld terrain generation.</br><h2></h2>
-
-<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
-<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">foundation_material</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used deep underground in this biome.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">mid_material</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used in a layer below the surface of this biome.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">sea_floor_depth</td>
-<td style="border-style:solid; border-width:3; padding:7px">Integer</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls how deep below the world water level the floor should occur.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">sea_floor_material</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used as a floor for bodies of water in this biome.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">sea_material</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the bodies of water in this biome.</br></td>
-</tr>
-<tr>
-<td style="border-style:solid; border-width:3; padding:7px">top_material</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
-<td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome.</br></td>
-</tr>
-</table>
-<a href="#Index">Back to top</a><br><br>
-
-<h1><p id="minecraft:swamp_surface">minecraft:swamp_surface</p></h1>
-
-Similar to overworld_surface. Adds swamp surface details.</br><h2></h2>
+Used to add decoration to the surface of swamp biomes such as water lilies.</br><h2></h2>
 
 <table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
@@ -897,6 +995,12 @@ Similar to overworld_surface. Adds swamp surface details.</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Object of type Block Specifier</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the block type used for the surface of this biome.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -916,9 +1020,20 @@ Similar to overworld_surface. Adds swamp surface details.</br><h2></h2>
 </table>
 <a href="#Index">Back to top</a><br><br>
 
-<h1><p id="minecraft:the_end_surface">minecraft:the_end_surface</p></h1>
+<h1><p id="minecraft:the_end">minecraft:the_end</p></h1>
 
-Use default Minecraft End terrain generation.</br><a href="#Index">Back to top</a><br><br>
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Use default Minecraft End terrain generation.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
 
 <br><br>
 

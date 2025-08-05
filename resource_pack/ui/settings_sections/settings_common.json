@@ -190,8 +190,9 @@
     "$option_enabled_binding_name|default": "",
     "$option_tooltip_binding_type|default": "none",
     "$option_tooltip_collection_name|default": "",
-    "$option_tooltip_text_binding_name|default": "#not_data_bound",
-    "$option_tooltip_visible|default": false,
+    "$option_tooltip_text_binding_name|default": "",
+    "$option_tooltip_visible_binding_name|default": "#default_visibility",
+    "$option_tooltip_icon|default": "textures/ui/infobulb",
     "controls": [
       { "option_generic_core@settings_common.option_generic_core": {} }
     ]
@@ -220,22 +221,17 @@
     "$option_tooltip_collection_name|default": "",
     "$option_tooltip_popup_visible_binding|default": false,
     "$option_tooltip_text_binding_name|default": "",
+    "$option_tooltip_visible_binding_name|default": "#default_visibility",
+    "$option_tooltip_icon|default": "textures/ui/infobulb",
     "$label_offset|default": [ 0, 0 ],
     "type": "stack_panel",
     "size": [ "100%", "100%c" ],
     "enabled": "$enabled",
-    "$option_tooltip_visible|default": false,
     "variables": [
       {
         "requires": "(not $enabled or not $option_enabled_binding_name)",
         "$option_enabled_binding_type": "none",
         "$option_enabled_binding_name": "#not_data_bound"
-      },
-      {
-        "requires": "(not $option_tooltip_visible or not $option_tooltip_text_binding_name)",
-        "$option_tooltip_binding_type": "none",
-        "$option_tooltip_text_binding_name": "#not_data_bound",
-        "$option_tooltip_visible": false
       }
     ],
     "bindings": [
@@ -262,7 +258,7 @@
                     "option_label_subpanel_01": {
                       "bindings": [
                         {
-                          "binding_name": "(not $option_tooltip_text_binding_name or $option_tooltip_text_binding_name = '#not_data_bound')",
+                          "binding_name": "($option_tooltip_text_binding_name = '')",
                           "binding_type": "$option_tooltip_binding_type",
                           "binding_collection_name": "$option_tooltip_collection_name",
                           "binding_name_override": "#visible"
@@ -281,10 +277,10 @@
                   },
                   {
                     "option_label_subpanel_02": {
-                      "ignored": "(not $option_tooltip_visible)",
+                      "ignored": "($option_tooltip_text_binding_name = '')",
                       "bindings": [
                         {
-                          "binding_name": "($option_tooltip_text_binding_name and (not ($option_tooltip_text_binding_name = '#not_data_bound')))",
+                          "binding_name": "(not ($option_tooltip_text_binding_name = ''))",
                           "binding_type": "$option_tooltip_binding_type",
                           "binding_collection_name": "$option_tooltip_collection_name",
                           "binding_name_override": "#visible"
@@ -305,11 +301,13 @@
                   },
                   {
                     "option_tooltip@settings_common.option_generic_tooltip": {
-                      "ignored": "(not $option_tooltip_visible)",
+                      "ignored": "($option_tooltip_text_binding_name = '')",
                       "$tooltip_button_binding_type": "$option_tooltip_binding_type",
                       "$tooltip_button_collection_name": "$option_tooltip_collection_name",
                       "$tooltip_text_binding_name": "$option_tooltip_text_binding_name",
-                      "$tooltip_area": "$option_tooltip_area"
+                      "$tooltip_area": "$option_tooltip_area",
+                      "$tooltip_visible_binding_name": "$option_tooltip_visible_binding_name",
+                      "$tooltip_icon": "$option_tooltip_icon"
                     }
                   }
                 ]
@@ -383,7 +381,7 @@
               "option_label_subpanel_01": {
                 "bindings": [
                   {
-                    "binding_name": "(not $option_tooltip_text_binding_name or $option_tooltip_text_binding_name = '#not_data_bound')",
+                    "binding_name": "($option_tooltip_text_binding_name = '')",
                     "binding_type": "$option_tooltip_binding_type",
                     "binding_collection_name": "$option_tooltip_collection_name",
                     "binding_name_override": "#visible"
@@ -412,10 +410,10 @@
             },
             {
               "option_label_subpanel_02": {
-                "ignored": "(not $option_tooltip_visible)",
+                "ignored": "($option_tooltip_text_binding_name = '')",
                 "bindings": [
                   {
-                    "binding_name": "($option_tooltip_text_binding_name and (not ($option_tooltip_text_binding_name = '#not_data_bound')))",
+                    "binding_name": "(not ($option_tooltip_text_binding_name = ''))",
                     "binding_type": "$option_tooltip_binding_type",
                     "binding_collection_name": "$option_tooltip_collection_name",
                     "binding_name_override": "#visible"
@@ -460,12 +458,14 @@
             },
             {
               "option_tooltip@settings_common.option_generic_tooltip": {
-                "ignored": "(not $option_tooltip_visible)",
+                "ignored": "($option_tooltip_text_binding_name = '')",
                 "$tooltip_button_binding_type": "$option_tooltip_binding_type",
                 "$tooltip_button_collection_name": "$option_tooltip_collection_name",
                 "$tooltip_text_binding_name": "$option_tooltip_text_binding_name",
                 "$tooltip_area": "$option_tooltip_area",
-                "$tooltip_two_line_layout": false
+                "$tooltip_two_line_layout": false,
+                "$tooltip_visible_binding_name": "$option_tooltip_visible_binding_name",
+                "$tooltip_icon": "$option_tooltip_icon"
               }
             }
           ]
@@ -500,8 +500,7 @@
 
   "option_generic_tooltip_image": {
     "type": "image",
-    "size": [ 7, 11 ],
-    "texture": "textures/ui/infobulb"
+    "size": [ 7, 11 ]
   },
 
   "option_generic_tooltip_top_popup@common.static_tooltip_popup_with_image_and_text": {
@@ -546,13 +545,19 @@
     "$tooltip_button_binding_type|default": "",
     "$tooltip_button_collection_name|default": "",
     "$tooltip_popup_visible_binding|default": false,
-    "$tooltip_text_binding_name|default": "#not_data_bound",
+    "$tooltip_text_binding_name|default": "",
+    "$tooltip_visible_binding_name|default": "#default_visibility",
     "$tooltip_two_line_layout|default": true,
+    "$tooltip_icon|default": "textures/ui/infobulb",
+    "property_bag": {
+      "#default_visibility": true
+    },
     "bindings": [
       {
-        "binding_name": "($tooltip_text_binding_name and (not ($tooltip_text_binding_name = '#not_data_bound')))",
+        "binding_name": "((not ($tooltip_text_binding_name = '')) and ($tooltip_visible_binding_name))",
         "binding_type": "$tooltip_button_binding_type",
         "binding_collection_name": "$tooltip_button_collection_name",
+        "binding_condition": "always",
         "binding_name_override": "#visible"
       }
     ],
@@ -569,11 +574,24 @@
           "layer": 3,
           "anchor_from": "top_middle",
           "anchor_to": "top_middle",
-          "focus_enabled": "$tooltip_two_line_layout",
+          "focus_change_right": "FOCUS_OVERRIDE_STOP",
+          "focus_enabled": true,
           "focus_wrap_enabled": false,
           "enabled": "$tooltip_two_line_layout",
           "focus_magnet_enabled": true,
-          "consume_hover_events": false
+          "consume_hover_events": false,
+          "tts_skip_message": false,
+          "tts_ignore_count": true,
+          "tooltip_tts_value": "$tooltip_text_binding_name",
+          "bindings": [
+            {
+              "binding_name": "$tooltip_text_binding_name",
+              "binding_collection_name": "$tooltip_button_collection_name",
+              "binding_type": "$tooltip_button_binding_type",
+              "binding_condition": "visibility_changed",
+              "binding_name_override": "$tooltip_text_binding_name"
+            }
+          ]
         }
       },
       {
@@ -584,11 +602,11 @@
           "anchor_from": "top_right",
           "anchor_to": "top_right",
           "layer": 3,
-          "$tooltip_image_icon_focus_enabled|default": true,
+          "$tooltip_focus_change_left|default": "",
           "variables": [
             {
               "requires": "$tooltip_two_line_layout",
-              "$tooltip_image_icon_focus_enabled": false
+              "$tooltip_focus_change_left": "FOCUS_OVERRIDE_STOP"
             }
           ],
           "tooltip_name": "tooltip_control_icon",
@@ -596,11 +614,25 @@
           "tooltip_bottom_content_control": "option_generic_tooltip_bottom_popup",
           "tooltip_area": "$tooltip_area",
           "consume_hover_events": true,
-          "focus_enabled": "$tooltip_image_icon_focus_enabled",
-          "tts_skip_message": true,
+          "focus_change_left": "$tooltip_focus_change_left",
+          "focus_enabled": true,
+          "tts_skip_message": false,
+          "tts_ignore_count": true,
+          "tooltip_tts_value": "$tooltip_text_binding_name",
+          "bindings": [
+            {
+              "binding_name": "$tooltip_text_binding_name",
+              "binding_collection_name": "$tooltip_button_collection_name",
+              "binding_type": "$tooltip_button_binding_type",
+              "binding_condition": "visibility_changed",
+              "binding_name_override": "$tooltip_text_binding_name"
+            }
+          ],
           "controls": [
             {
-              "option_generic_tooltip_image@settings_common.option_generic_tooltip_image": {}
+              "option_generic_tooltip_image@settings_common.option_generic_tooltip_image": {
+                "texture": "$tooltip_icon"
+              }
             }
           ]
         }
