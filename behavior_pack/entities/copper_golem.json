@@ -6,6 +6,10 @@
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
+        "minecraft:is_becoming_statue": {
+          "type": "bool",
+          "default": false
+        },
         "minecraft:is_waxed": {
           "type": "bool",
           "default": false
@@ -32,6 +36,11 @@
           ],
           "default": "none",
           "client_sync": true
+        },
+        "minecraft:has_flower": {
+          "type": "bool",
+          "default": false,
+          "client_sync": true
         }
       }
     },
@@ -45,7 +54,7 @@
       },
       "minecraft:nameable": {},
       "minecraft:collision_box": {
-        "width": 0.875,
+        "width": 0.6,
         "height": 1
       },
       "minecraft:loot": {
@@ -72,6 +81,7 @@
         "can_pass_doors": true,
         "can_open_doors": true
       },
+      "minecraft:annotation.open_door": {},
       "minecraft:movement.basic": {},
       "minecraft:jump.static": {},
       "minecraft:can_climb": {},
@@ -93,13 +103,8 @@
         ]
       },
       "minecraft:leashable": {
-        "presets": [
-          {
-            "soft_distance": 4.0,
-            "hard_distance": 6.0,
-            "max_distance": 10.0
-          }
-        ]
+      },
+      "minecraft:leashable_to": {
       },
       "minecraft:balloonable": {},
       "minecraft:behavior.panic": {
@@ -123,23 +128,42 @@
         "interaction_time": 3.0,
         "allow_simultaneous_interaction": false,
         "search_strategy": "nearest",
-        "search_distance": [32, 8],
+        "search_distance": [ 32, 8 ],
         "max_visited_containers": 10,
         "initial_cooldown": 3,
         "idle_cooldown": 7,
         "place_strategy": "with_matching_or_empty"
       },
-      "minecraft:behavior.random_stroll": {
+      "minecraft:behavior.take_flower": {
         "priority": 4,
+        "filters": {
+          "all_of": [
+            {
+              "test": "is_daytime",
+              "value": true
+            },
+            {
+              "test": "bool_property",
+              "domain": "minecraft:has_flower",
+              "value": false
+            }
+          ]
+        },
+        "on_take_flower": {
+          "event": "minecraft:on_take_flower"
+        }
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 5,
         "xz_dist": 3
       },
       "minecraft:behavior.look_at_player": {
-        "priority": 5,
+        "priority": 6,
         "look_distance": 6.0,
         "probability": 0.02
       },
       "minecraft:behavior.random_look_around": {
-        "priority": 6
+        "priority": 7
       },
       "minecraft:persistent": {},
       "minecraft:physics": {},
@@ -307,6 +331,39 @@
             "drop_item_slot": "slot.weapon.mainhand",
             "swing": true,
             "interact_text": "action.interact.drop_item"
+          },
+          // Shear flower
+          {
+            "cooldown": 2.5,
+            "use_item": false,
+            "hurt_item": 1,
+            "play_sounds": "shear",
+            "interact_text": "action.interact.shear",
+            "vibration": "shear",
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:has_flower",
+                    "value": true
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "has_equipment",
+                    "subject": "other",
+                    "domain": "hand",
+                    "value": "shears"
+                  }
+                ]
+              },
+              "event": "minecraft:on_sheared",
+              "target": "self"
+            }
           }
         ]
       }
@@ -335,6 +392,11 @@
           "xz_range": 0,
           "y_range": 0,
           "chance": 0.0058,
+          "can_place": {
+            "test": "bool_property",
+            "domain": "minecraft:is_becoming_statue",
+            "value": false
+          },
           "randomly_placeable_blocks": [
             {
               // North
@@ -409,8 +471,8 @@
           ],
           "affected_by_griefing_rule": false,
           "on_place": {
-            "event": "minecraft:serialize_entity",
-            "target": "block"
+            "event": "minecraft:become_statue",
+            "target": "self"
           }
         }
       },
@@ -457,7 +519,8 @@
       "minecraft:from_serialized_entity": {
         "trigger": "minecraft:restart_oxidation_timer",
         "set_property": {
-          "minecraft:oxidation_level": "unoxidized"
+          "minecraft:oxidation_level": "unoxidized",
+          "minecraft:is_becoming_statue": false
         }
       },
       "minecraft:wax_on": {
@@ -655,6 +718,18 @@
           "minecraft:chest_interaction": "none"
         }
       },
+      "minecraft:become_statue": {
+        "drop_item": {
+          "slot": "slot.weapon.mainhand"
+        },
+        "set_property": {
+          "minecraft:is_becoming_statue": true
+        },
+        "trigger": {
+          "event": "minecraft:serialize_entity",
+          "target": "block"
+        }
+      },
       "minecraft:serialize_entity_succeeded": {
         "add": {
           "component_groups": [
@@ -664,12 +739,19 @@
         "play_sound": {
           "sound": "deactivate"
         },
-        "drop_item": {
-          "slot": "slot.weapon.mainhand"
-        },
         "trigger": {
           "event": "minecraft:randomize_pose",
           "target": "block"
+        }
+      },
+      "minecraft:on_take_flower": {
+        "set_property": {
+          "minecraft:has_flower": true
+        }
+      },
+      "minecraft:on_sheared": {
+        "set_property": {
+          "minecraft:has_flower": false
         }
       }
     }
