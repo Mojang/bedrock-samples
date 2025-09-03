@@ -15,6 +15,32 @@
     ]
   },
 
+  "stack_panel_align_left_panel": {
+    "type": "panel",
+    "$control_name|default": "common.empty_panel",
+    "controls": [
+      {
+        "child@$control_name": {
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle"
+        }
+      }
+    ]
+  },
+
+  "stack_panel_align_right_panel": {
+    "type": "panel",
+    "$control_name|default": "common.empty_panel",
+    "controls": [
+      {
+        "child@$control_name": {
+          "anchor_from": "right_middle",
+          "anchor_to": "right_middle"
+        }
+      }
+    ]
+  },
+
   "image_panel": {
     "type": "stack_panel",
     "orientation": "vertical",
@@ -22,20 +48,9 @@
     "$image_label|default": "",
     "controls": [
       {
-        "centering_panel": {
+        "padding": {
           "type": "panel",
-          "size": [ "100%", 30 ],
-          "controls": [
-            {
-              "image_label": {
-                "type": "label",
-                "size": [ "default", "default" ],
-                "max_size": [ "100%", "100%" ],
-                "text": "$image_label",
-                "color": "$body_text_color"
-              }
-            }
-          ]
+          "size": [ "100%", 10 ]
         }
       },
       {
@@ -61,7 +76,6 @@
     "controls": [
       {
         "not_visible_image@gamma_calibration.image_panel": {
-          "$image_label": "options.brightness.notVisible",
           "$texture_name": "textures/ui/not_visible_creeper"
         }
       },
@@ -70,7 +84,6 @@
       },
       {
         "barely_visible_image@gamma_calibration.image_panel": {
-          "$image_label": "options.brightness.barelyVisible",
           "$texture_name": "textures/ui/barely_visible_creeper"
         }
       },
@@ -79,8 +92,33 @@
       },
       {
         "easily_visible_image@gamma_calibration.image_panel": {
-          "$image_label": "options.brightness.easilyVisible",
           "$texture_name": "textures/ui/easily_visible_creeper"
+        }
+      }
+    ]
+  },
+
+  "button_stack": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": "$image_panel_size",
+    "controls": [
+      {
+        "continue_button_panel@gamma_calibration.stack_panel_align_left_panel": {
+          "$control_name": "gamma_calibration.continue_button",
+          "size": [ "37%", "100%c" ]
+        }
+      },
+      {
+        "padding": {
+          "type": "panel",
+          "size": [ "3%", 10 ]
+        }
+      },
+      {
+        "reset_button_panel@gamma_calibration.stack_panel_align_right_panel": {
+          "$control_name": "gamma_calibration.reset_button",
+            "size": [ "60%", "100%c" ]
         }
       }
     ]
@@ -95,53 +133,30 @@
           "max_size": [ "100%", "100%" ],
           "type": "label",
           "color": "$body_text_color",
-          "text": "options.adjustBrightness"
+          "text": "options.adjustGamma"
         }
       }
     ]
   },
 
   "calibration_slider": {
-    "type": "stack_panel",
-    "size": [ "50%", "100%c" ],
-    "$slider_header": "options.gamma",
+    "type": "panel",
+    "size": [ "100% - 2px", 30 ],
+    "$default_focus_precedence": 1,
     "controls": [
       {
-        "centering_panel": {
-          "type": "panel",
-          "size": [ "100%", 14 ],
-          "controls": [
-            {
-              "slider_label": {
-                "type": "label",
-                "size": [ "default", "default" ],
-                "text": "$slider_header",
-                "color": "$body_text_color"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "slider_control": {
-          "type": "panel",
-          "size": [ "100% - 2px", 16 ],
+        "slider@settings_common.option_slider": {
+          "size": "$slider_size",
+          "$option_label_alignment": "center",
+          "$slider_select_on_hover": true,
+          "$option_label": "#gamma_calibration_slider_label",
           "$slider_name": "gamma_calibration",
-          "$option_label": "#hdr_strength_slider_label",
-          "$option_enabled_binding_name": "#hdr_strength_enabled",
           "$slider_value_binding_name": "#gamma_calibration",
-          "$default_focus_precedence": 1,
-          "controls": [
+          "$slider_tts_text_value": "#gamma_calibration_text_value",
+          "$option_enabled_binding_name": "#gamma_calibration_enabled",
+          "$label_bindings": [
             {
-              "slider@common.slider": {
-                "size": "$slider_size",
-                "$slider_box_size": [ 10, 16 ],
-                "offset": [ 1, 0 ],
-                "$slider_select_on_hover": true,
-                "$slider_tts_header": "$slider_header",
-                "$slider_tts_name": "",
-                "$slider_tts_text_value": "#gamma_calibration_text_value"
-              }
+              "binding_name": "$option_label"
             }
           ]
         }
@@ -149,12 +164,16 @@
     ]
   },
 
-
-
   "continue_button@common_buttons.light_text_button": {
-    "size": [ "20%", 30 ],
+    "size": [ "100%", 30 ],
     "$pressed_button_name": "button.continue",
     "$button_text": "gui.continue"
+  },
+
+  "reset_button@common_buttons.light_text_button": {
+    "size": [ "100%", 30 ],
+    "$pressed_button_name": "button.reset_settings",
+    "$button_text": "options.resetSettings"
   },
 
   "main_panel": {
@@ -165,11 +184,13 @@
     "variables": [
       {
         "requires": "($pocket_screen)",
-        "$padding_between_button_size": [ "100%", 2 ]
+        "$padding_between_button_size": [ "100%", 6 ],
+        "$image_panel_size": [ 192, "33.3333%c" ]
       },
       {
         "requires": "$desktop_screen",
-        "$padding_between_button_size": [ "100%", 16 ]
+        "$padding_between_button_size": [ "100%", 12 ],
+        "$image_panel_size": [ 248, "33.3333%c" ]
       }
     ],
     "controls": [
@@ -182,17 +203,7 @@
       {
         "image_stack_panel@gamma_calibration.stack_panel_centering_panel": {
           "$control_name": "gamma_calibration.image_stack",
-          "size": [ "100%", "100%c" ],
-          "variables": [
-            {
-              "requires": "($pocket_screen)",
-              "$image_panel_size": [ 192, "33.3333%c" ]
-            },
-            {
-              "requires": "$desktop_screen",
-              "$image_panel_size": [ 248, "33.3333%c" ]
-            }
-          ]
+          "size": [ "100%", "100%c" ]
         }
       },
       {
@@ -224,9 +235,9 @@
         }
       },
       {
-        "continue_button_panel@gamma_calibration.stack_panel_centering_panel": {
-          "$control_name": "gamma_calibration.continue_button",
-          "size": [ "100%", 30 ]
+        "button_stack_panel@gamma_calibration.stack_panel_centering_panel": {
+            "$control_name": "gamma_calibration.button_stack",
+            "size": [ "100%", "100%c" ]
         }
       }
     ]
