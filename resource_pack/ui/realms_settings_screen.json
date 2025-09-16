@@ -729,6 +729,7 @@
                             "save_active_world_button@settings_common.action_button": {
                                 "$button_text": "realmsSettingsScreen.saveActiveWorld",
                                 "$pressed_button_name": "button.save_active_world_button",
+                                "$button_focus_precedence": 10,
                                 "$focus_id": "save_active_world_button",
                                 "size": [ "100%", 30 ],
                                 "tts_override_control_value": "#save_active_world_button_tts",
@@ -828,6 +829,15 @@
                             "padding_loaded_view_bottom@common.empty_panel": {
                                 "size": [ "100%", 4 ]
                             }
+                        },
+                        {
+                            "restore_info@settings_common.option_info_label": {
+                                "$container_text_binding_name": "#restore_world",
+                                "$show_option_label": false
+                            }
+                        },
+                        {
+                            "saves_help_panel@realms_settings.saves_help_panel": {}
                         }
                     ],
                     "bindings": [
@@ -839,16 +849,16 @@
                 }
             },
             {
-                "restore_info@settings_common.option_info_label": {
-                    "$container_text_binding_name": "#restore_world",
-                    "$show_option_label": false
-                }
-            },
-            {
                 "loading_indicator": {
                     "type": "stack_panel",
                     "size": [ "100%", "100%c" ],
                     "controls": [
+                        {
+                            "restore_info@settings_common.option_info_label": {
+                                "$container_text_binding_name": "#restore_world",
+                                "$show_option_label": false
+                            }
+                        },
                         {
                             "loading_text_panel": {
                                 "type": "panel",
@@ -904,6 +914,42 @@
                 }
             },
             {
+                "loading_failed_panel": {
+                    "type": "stack_panel",
+                    "size": [ "100%", "100%c" ],
+                    "controls": [
+                        {
+                            "restore_info@settings_common.option_info_label": {
+                                "$container_text_binding_name": "#restore_world",
+                                "$show_option_label": false
+                            }
+                        },
+                        {
+                            "saves_help_panel@realms_settings.saves_help_panel": {}
+                        },
+                        {
+                            "loading_failed_message@settings_common.option_info_label": {
+                                "$container_text_binding_name": "#saves_loading_failed_message",
+                                "$show_option_label": false
+                            }
+                        }
+                    ],
+                    "bindings": [
+                        {
+                            "binding_name": "#saves_loading_failed_visible",
+                            "binding_name_override": "#visible"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+
+    "saves_help_panel": {
+        "type": "stack_panel",
+        "size": [ "100%", "100%c" ],
+        "controls": [
+            {
                 "padding_help_button_top@common.empty_panel": {
                     "size": [ "100%", 4 ]
                 }
@@ -919,22 +965,9 @@
                 "padding_help_button_bottom@common.empty_panel": {
                     "size": [ "100%", 8 ]
                 }
-            },
-            {
-                "loading_failed_message@settings_common.option_info_label": {
-                    "$container_text_binding_name": "#saves_loading_failed_message",
-                    "$show_option_label": false,
-                    "bindings": [
-                        {
-                            "binding_name": "#saves_loading_failed_visible",
-                            "binding_name_override": "#visible"
-                        }
-                    ]
-                }
             }
         ]
     },
-
 
   "saves_help_button_content": {
     "type": "stack_panel",
@@ -1545,13 +1578,13 @@
           "orientation": "vertical",
           "size": [ "100%", "100%c" ],
           "$ignore_checkbox|default": true,
-          "$checkbox_toggle_name": "manual_save_checkbox_toggle",
+          "$checkbox_pressed_button_name": "button.manual_save_checkbox",
           "factory": {
             "name": "manual_saves_factory",
             "control_name": "realms_settings.saves_info_accordian",
             "factory_variables": [
               "$ignore_checkbox",
-              "$checkbox_toggle_name",
+              "$checkbox_pressed_button_name",
               "$ignore_options_button"
             ]
           },
@@ -1663,7 +1696,7 @@
     "size": [ "100%-4px", "100%c" ],
     "$ignore_checkbox|default": true,
     "$ignore_options_button|default": false,
-    "$checkbox_toggle_name|default": "",
+    "$checkbox_pressed_button_name|default": "",
     "controls": [
       {
         "main_content_panel": {
@@ -1672,12 +1705,18 @@
           "size": [ "100%", 30 ],
           "controls": [
             {
-              "checkbox_panel@common_buttons.dark_content_button": {
+              "checkbox_button@common_buttons.dark_content_button": {
                 "ignored": "$ignore_checkbox",
-                "$pressed_button_name": "",
-                "size": [ 29, "100%" ],
+                "$pressed_button_name": "$checkbox_pressed_button_name",
+                "size": [29, "100%"],
                 "$button_content": "realms_settings.saves_info_accordion_checkbox",
-                "consume_hover_events": false
+                "consume_hover_events": false,
+                "bindings": [
+                  {
+                    "binding_type": "collection_details",
+                    "binding_collection_name": "$collection_binding_name"
+                  }
+                ]
               }
             },
             {
@@ -1755,29 +1794,72 @@
     ]
   },
 
-  "saves_info_accordion_checkbox@common.checkbox": {
-    "size": [ "100% + 4px", "100% + 4px" ],
+    "saves_info_accordion_checkbox": {
+        "type": "panel",
+        "size": [ "100%", "100%" ],
 
-    "$unchecked_control": "realms_settings.checkbox_unchecked_state",
-    "$checked_control": "realms_settings.checkbox_checked_state",
-    "$unchecked_hover_control": "realms_settings.checkbox_unchecked_hover_state",
-    "$checked_hover_control": "realms_settings.checkbox_checked_hover_state",
-    "$unchecked_locked_control": "realms_settings.checkbox_unchecked_locked_state",
-    "$unchecked_locked_hover_control": "realms_settings.checkbox_unchecked_locked_state",
-    "$checked_locked_control": "realms_settings.checkbox_checked_locked_state",
-    "$checked_locked_hover_control": "realms_settings.checkbox_checked_locked_state",
+        "$unchecked_control": "realms_settings.checkbox_unchecked_state",
+        "$checked_control": "realms_settings.checkbox_checked_state",
+        "$unchecked_hover_control": "realms_settings.checkbox_unchecked_hover_state",
+        "$checked_hover_control": "realms_settings.checkbox_checked_hover_state",
 
-    "$toggle_grid_collection_name": "$collection_binding_name",
-    "$toggle_name": "$checkbox_toggle_name",
-    "$toggle_state_binding_name": "#save_accordion_checkbox_toggle_state",
-    "$toggle_binding_type": "collection",
+        "$save_accordion_checkbox_toggle_state": "#save_accordion_checkbox_toggle_state",
 
-    "$toggle_focus_id_collection_name": "$collection_binding_name",
-    "$toggle_focus_id_binding_name": "#save_accordion_checkbox_focus_id",
-    "$toggle_focus_id_binding_type": "collection",
-
-    "consume_hover_events": false
-  },
+        "controls": [
+            {
+                "unchecked_control@$unchecked_control": {
+                    "ignored": "$hover_state",
+                    "bindings": [
+                        {
+                            "binding_type": "collection",
+                            "binding_collection_name": "$collection_binding_name",
+                            "binding_name": "(not $save_accordion_checkbox_toggle_state)",
+                            "binding_name_override": "#visible"
+                        }
+                    ]
+                }
+            },
+            {
+                "checked_control@$checked_control": {
+                    "ignored": "$hover_state",
+                    "bindings": [
+                        {
+                            "binding_type": "collection",
+                            "binding_collection_name": "$collection_binding_name",
+                            "binding_name": "$save_accordion_checkbox_toggle_state",
+                            "binding_name_override": "#visible"
+                        }
+                    ]
+                }
+            },
+            {
+                "unchecked_hover_control@$unchecked_hover_control": {
+                    "ignored": "(not $hover_state)",
+                    "bindings": [
+                        {
+                            "binding_type": "collection",
+                            "binding_collection_name": "$collection_binding_name",
+                            "binding_name": "(not $save_accordion_checkbox_toggle_state)",
+                            "binding_name_override": "#visible"
+                        }
+                    ]
+                }
+            },
+            {
+                "checked__hover_control@$checked_hover_control": {
+                    "ignored": "(not $hover_state)",
+                    "bindings": [
+                        {
+                            "binding_type": "collection",
+                            "binding_collection_name": "$collection_binding_name",
+                            "binding_name": "$save_accordion_checkbox_toggle_state",
+                            "binding_name_override": "#visible"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
 
     "main_item_content": {
         "type": "stack_panel",
