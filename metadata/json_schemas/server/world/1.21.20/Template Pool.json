@@ -1,0 +1,140 @@
+{
+  "$id": "1382973118",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "1323337012": {
+      "title": "Reference",
+      "type": "string"
+    },
+    "1356053607": {
+      "title": "Reference",
+      "type": "string"
+    },
+    "1428261416": {
+      "title": "File Reference",
+      "type": "string"
+    },
+    "1755372388": {
+      "properties": {
+        "element": {
+          "description": "A grouping of a Structure Template, the Processor List to use when placing the structure, and its weight that determines the likelihood of the element being chosen.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/2360259677"
+            },
+            {
+              "$ref": "#/definitions/2726507774"
+            }
+          ]
+        },
+        "weight": {
+          "description": "The weighted probability of choosing the element from the pool. For example, a template pool containing 2 structures with weights of 1 and 3 will have a 25% and 75% chance of being chosen respectively.",
+          "maximum": 200,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "element"
+      ],
+      "title": "TemplatePoolElement",
+      "type": "object"
+    },
+    "1872243302": {
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/3714778797",
+          "description": "Identifier of the template pool. Used by Jigsaw Structures to assign processors to Structure Templates."
+        }
+      },
+      "required": [
+        "identifier"
+      ],
+      "title": "Description",
+      "type": "object"
+    },
+    "2360259677": {
+      "properties": {
+        "element_type": {
+          "const": "minecraft:empty_pool_element",
+          "description": "The type of element",
+          "enum": [
+            "minecraft:empty_pool_element",
+            "minecraft:single_pool_element"
+          ],
+          "title": "ElementType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "element_type"
+      ],
+      "title": "EmptyPoolElement",
+      "type": "object"
+    },
+    "2726507774": {
+      "properties": {
+        "element_type": {
+          "const": "minecraft:single_pool_element",
+          "description": "The type of element.",
+          "enum": [
+            "minecraft:empty_pool_element",
+            "minecraft:single_pool_element"
+          ],
+          "title": "ElementType",
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/1428261416",
+          "description": "The path of the structure file. This path is relative to the behavior pack's structures folder."
+        },
+        "processors": {
+          "$ref": "#/definitions/1323337012",
+          "description": "The identifier of the processor list to use when placing the structure."
+        },
+        "projection": {
+          "description": "Specifies how structures should be placed relative to the terrain.",
+          "enum": [
+            "rigid",
+            "terrain_matching"
+          ],
+          "title": "Projection",
+          "type": "string"
+        }
+      },
+      "required": [
+        "element_type",
+        "location"
+      ],
+      "title": "SinglePoolElement",
+      "type": "object"
+    },
+    "3714778797": {
+      "title": "Identifier",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "description": {
+      "$ref": "#/definitions/1872243302"
+    },
+    "elements": {
+      "description": "List of Structure Template and processor list pairs.",
+      "items": {
+        "$ref": "#/definitions/1755372388"
+      },
+      "type": "array"
+    },
+    "fallback": {
+      "$ref": "#/definitions/1356053607",
+      "description": "Fallback template pool to use if no element in the pool can be placed successfully."
+    }
+  },
+  "required": [
+    "description",
+    "elements"
+  ],
+  "title": "Used to pair block rules with Structure Templates and to randomly place Structure Templates using a weighted list.",
+  "type": "object",
+  "x-format-version": "1.21.20"
+}

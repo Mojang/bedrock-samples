@@ -1,0 +1,682 @@
+{
+  "$id": "1391327946",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "1134690608": {
+      "description": "Modifier will attempt to add loot to a block entity.",
+      "properties": {
+        "loot_table": {
+          "$ref": "#/definitions/1135547207",
+          "description": "The loot table to append"
+        },
+        "type": {
+          "const": "minecraft:append_loot",
+          "enum": [
+            "minecraft:passthrough",
+            "minecraft:append_loot"
+          ],
+          "title": "BlockEntityModifierType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "loot_table",
+        "type"
+      ],
+      "title": "AppendLoot",
+      "type": "object"
+    },
+    "1135547207": {
+      "title": "File Reference",
+      "type": "string"
+    },
+    "1218029234": {
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/3681370654",
+          "description": "Identifier of the Processor List. This is referenced by Template Pools when pairing processors with Structure Templates."
+        }
+      },
+      "required": [
+        "identifier"
+      ],
+      "title": "Processor List Description",
+      "type": "object"
+    },
+    "1354340864": {
+      "description": "Specifies a constant integer",
+      "properties": {
+        "type": {
+          "const": "constant",
+          "enum": [
+            "constant",
+            "uniform"
+          ],
+          "title": "IntProviderType",
+          "type": "string"
+        },
+        "value": {
+          "description": "Constant value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "title": "ConstantIntProvider",
+      "type": "object"
+    },
+    "1527037515": {
+      "title": "Reference",
+      "type": "string"
+    },
+    "1556792771": {
+      "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+      "properties": {
+        "predicate_type": {
+          "const": "minecraft:always_true",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:axis_aligned_linear_pos"
+          ],
+          "title": "PosType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "predicate_type"
+      ],
+      "title": "AlwaysTruePos",
+      "type": "object"
+    },
+    "1740413124": {
+      "description": "Specifies a uniformly distributed integer",
+      "properties": {
+        "max_inclusive": {
+          "description": "Maximum value (inclusive)",
+          "type": "integer"
+        },
+        "min_inclusive": {
+          "description": "Minimum value (inclusive)",
+          "type": "integer"
+        },
+        "type": {
+          "const": "uniform",
+          "enum": [
+            "constant",
+            "uniform"
+          ],
+          "title": "IntProviderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "max_inclusive",
+        "min_inclusive",
+        "type"
+      ],
+      "title": "UniformIntProvider",
+      "type": "object"
+    },
+    "1766729433": {
+      "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
+      "properties": {
+        "block_state": {
+          "$ref": "#/definitions/3076687790",
+          "description": "The block state to match against."
+        },
+        "predicate_type": {
+          "const": "minecraft:blockstate_match",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:block_match",
+            "minecraft:random_block_match",
+            "minecraft:tag_match",
+            "minecraft:blockstate_match",
+            "minecraft:random_blockstate_match"
+          ],
+          "title": "BlockType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "block_state",
+        "predicate_type"
+      ],
+      "title": "BlockStateMatch",
+      "type": "object"
+    },
+    "1810898542": {
+      "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world",
+      "properties": {
+        "processor_type": {
+          "const": "minecraft:protected_blocks",
+          "enum": [
+            "minecraft:block_ignore",
+            "minecraft:rule",
+            "minecraft:capped",
+            "minecraft:protected_blocks"
+          ],
+          "title": "Jigsaw Processro Type",
+          "type": "string"
+        },
+        "value": {
+          "description": "Block tag for the blocks that will be protected",
+          "type": "string"
+        }
+      },
+      "required": [
+        "processor_type",
+        "value"
+      ],
+      "title": "Protected Block",
+      "type": "object"
+    },
+    "2198589344": {
+      "description": "Predicate that evaluates to true if the block at the specified location matches the specified block.",
+      "properties": {
+        "block": {
+          "$ref": "#/definitions/1527037515",
+          "description": "The block to match against."
+        },
+        "predicate_type": {
+          "const": "minecraft:block_match",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:block_match",
+            "minecraft:random_block_match",
+            "minecraft:tag_match",
+            "minecraft:blockstate_match",
+            "minecraft:random_blockstate_match"
+          ],
+          "title": "BlockType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "block",
+        "predicate_type"
+      ],
+      "title": "BlockMatch",
+      "type": "object"
+    },
+    "2581260060": {
+      "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied.",
+      "properties": {
+        "delegate": {
+          "description": "The processor that will be executed.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/3016468321",
+              "description": "Replaces and modifies blocks based on a series of rules"
+            },
+            {
+              "$ref": "#/definitions/3518228880",
+              "description": "Specifies block types in the template that should be ignored by other processors."
+            },
+            {
+              "$ref": "#/definitions/1810898542",
+              "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world"
+            }
+          ]
+        },
+        "limit": {
+          "description": "The maximum number of times that this delegate can be applied.",
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "#/definitions/1354340864",
+              "description": "Specifies a constant integer"
+            },
+            {
+              "$ref": "#/definitions/1740413124",
+              "description": "Specifies a uniformly distributed integer"
+            }
+          ]
+        },
+        "processor_type": {
+          "const": "minecraft:capped",
+          "enum": [
+            "minecraft:block_ignore",
+            "minecraft:rule",
+            "minecraft:capped",
+            "minecraft:protected_blocks"
+          ],
+          "title": "Jigsaw Processro Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "delegate",
+        "limit",
+        "processor_type"
+      ],
+      "title": "Capped",
+      "type": "object"
+    },
+    "3016468321": {
+      "description": "Replaces and modifies blocks based on a series of rules",
+      "properties": {
+        "processor_type": {
+          "const": "minecraft:rule",
+          "enum": [
+            "minecraft:block_ignore",
+            "minecraft:rule",
+            "minecraft:capped",
+            "minecraft:protected_blocks"
+          ],
+          "title": "Jigsaw Processro Type",
+          "type": "string"
+        },
+        "rules": {
+          "description": "List of block rules evaluated on all blocks of a Structure Template. Block rules are evaluated in order. If a block rule succeeds and the output_state is set, the output_state block will be used as the input_predicate block for subsequent rules.",
+          "items": {
+            "$ref": "#/definitions/3035388266",
+            "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state."
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "processor_type",
+        "rules"
+      ],
+      "title": "BlockRules",
+      "type": "object"
+    },
+    "3034820683": {
+      "description": "Predicate that evaluates to true if the block at the specified location constains the tag.",
+      "properties": {
+        "predicate_type": {
+          "const": "minecraft:tag_match",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:block_match",
+            "minecraft:random_block_match",
+            "minecraft:tag_match",
+            "minecraft:blockstate_match",
+            "minecraft:random_blockstate_match"
+          ],
+          "title": "BlockType",
+          "type": "string"
+        },
+        "tag": {
+          "description": "The tag to be matched",
+          "type": "string"
+        }
+      },
+      "required": [
+        "predicate_type",
+        "tag"
+      ],
+      "title": "TagMatch",
+      "type": "object"
+    },
+    "3035388266": {
+      "description": "A block rule that is evaluated on all blocks of a Structure Template. All predicates must evaluate to true in order for a block to be replaced by the output_state.",
+      "properties": {
+        "block_entity_modifier": {
+          "description": "A block state modifier for block entities when all predicate match.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/45584192",
+              "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified."
+            },
+            {
+              "$ref": "#/definitions/1134690608",
+              "description": "Modifier will attempt to add loot to a block entity."
+            }
+          ]
+        },
+        "input_predicate": {
+          "description": "A predicate evaluated on the Structure Template block.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/4275912652",
+              "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified."
+            },
+            {
+              "$ref": "#/definitions/2198589344",
+              "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+            },
+            {
+              "$ref": "#/definitions/3523914459",
+              "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+            },
+            {
+              "$ref": "#/definitions/3034820683",
+              "description": "Predicate that evaluates to true if the block at the specified location constains the tag."
+            },
+            {
+              "$ref": "#/definitions/1766729433",
+              "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+            },
+            {
+              "$ref": "#/definitions/3589682888",
+              "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+            }
+          ]
+        },
+        "location_predicate": {
+          "description": "A predicate evaluated on the world block.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/4275912652",
+              "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified."
+            },
+            {
+              "$ref": "#/definitions/2198589344",
+              "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+            },
+            {
+              "$ref": "#/definitions/3523914459",
+              "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+            },
+            {
+              "$ref": "#/definitions/3034820683",
+              "description": "Predicate that evaluates to true if the block at the specified location constains the tag."
+            },
+            {
+              "$ref": "#/definitions/1766729433",
+              "description": "Predicate that evaluates to true if the block at the specified location matches the specified block."
+            },
+            {
+              "$ref": "#/definitions/3589682888",
+              "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block."
+            }
+          ]
+        },
+        "output_state": {
+          "$ref": "#/definitions/3076687790",
+          "description": "Block to replace the world block with if all predicates evaluate to true."
+        },
+        "position_predicate": {
+          "description": "A predicate evaluated on the distance between the structure's world origin and the world block.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/1556792771",
+              "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified."
+            },
+            {
+              "$ref": "#/definitions/3839910888",
+              "description": "Predicate that evalutes to true if the block is within the distance range along the provided axis and and random number is generated between chance range"
+            }
+          ]
+        }
+      },
+      "required": [
+        "output_state"
+      ],
+      "title": "Processor Rule",
+      "type": "object"
+    },
+    "3076687790": {
+      "description": "Specifies a particular block. Can be a string block name or a JSON object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/1527037515"
+        },
+        {
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/1527037515",
+              "description": "Name of the block"
+            },
+            "states": {
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "description": "Contains members named after each state, with boolean, integer, or string values.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object"
+        }
+      ],
+      "title": "Block Specifier"
+    },
+    "3518228880": {
+      "description": "Specifies block types in the template that should be ignored by other processors.",
+      "properties": {
+        "blocks": {
+          "description": "List of blocks evaluated on all blocks of a Structure Template. If a block is matched in the provided list the block will be ignored for processing.",
+          "items": {
+            "$ref": "#/definitions/1527037515"
+          },
+          "type": "array"
+        },
+        "processor_type": {
+          "const": "minecraft:block_ignore",
+          "enum": [
+            "minecraft:block_ignore",
+            "minecraft:rule",
+            "minecraft:capped",
+            "minecraft:protected_blocks"
+          ],
+          "title": "Jigsaw Processro Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "blocks",
+        "processor_type"
+      ],
+      "title": "BlockIgnore",
+      "type": "object"
+    },
+    "3523914459": {
+      "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+      "properties": {
+        "block": {
+          "$ref": "#/definitions/1527037515",
+          "description": "The block to match against."
+        },
+        "predicate_type": {
+          "const": "minecraft:random_block_match",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:block_match",
+            "minecraft:random_block_match",
+            "minecraft:tag_match",
+            "minecraft:blockstate_match",
+            "minecraft:random_blockstate_match"
+          ],
+          "title": "BlockType",
+          "type": "string"
+        },
+        "probability": {
+          "description": "Probability of the evaluating to true when the block matches.",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "block",
+        "predicate_type",
+        "probability"
+      ],
+      "title": "RandomBlockMatch",
+      "type": "object"
+    },
+    "3589682888": {
+      "description": "Predicate that evaluates to true with a given probability if the block at the specified location matches the specified block.",
+      "properties": {
+        "block_state": {
+          "$ref": "#/definitions/3076687790",
+          "description": "The block state to match against."
+        },
+        "predicate_type": {
+          "const": "minecraft:random_blockstate_match",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:block_match",
+            "minecraft:random_block_match",
+            "minecraft:tag_match",
+            "minecraft:blockstate_match",
+            "minecraft:random_blockstate_match"
+          ],
+          "title": "BlockType",
+          "type": "string"
+        },
+        "probability": {
+          "description": "Probability of the evaluating to true when the block matches.",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "block_state",
+        "predicate_type",
+        "probability"
+      ],
+      "title": "RandomBlockStateMatch",
+      "type": "object"
+    },
+    "3681370654": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "3839910888": {
+      "description": "Predicate that evalutes to true if the block is within the distance range along the provided axis and and random number is generated between chance range",
+      "properties": {
+        "axis": {
+          "enum": [
+            "x",
+            "y",
+            "z"
+          ],
+          "title": "PositionalBlockRuleAxis",
+          "type": "string"
+        },
+        "max_chance": {
+          "exclusiveMaximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "max_dist": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "min_chance": {
+          "exclusiveMaximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "min_dist": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "predicate_type": {
+          "const": "minecraft:axis_aligned_linear_pos",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:axis_aligned_linear_pos"
+          ],
+          "title": "PosType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "predicate_type"
+      ],
+      "title": "AxisAlignedLinear",
+      "type": "object"
+    },
+    "4275912652": {
+      "description": "Predicate that always evaluates to true. This is the default predicate if no other predicate is specified.",
+      "properties": {
+        "predicate_type": {
+          "const": "minecraft:always_true",
+          "enum": [
+            "minecraft:always_true",
+            "minecraft:block_match",
+            "minecraft:random_block_match",
+            "minecraft:tag_match",
+            "minecraft:blockstate_match",
+            "minecraft:random_blockstate_match"
+          ],
+          "title": "BlockType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "predicate_type"
+      ],
+      "title": "AlwaysTrueBlock",
+      "type": "object"
+    },
+    "45584192": {
+      "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+      "properties": {
+        "type": {
+          "const": "minecraft:passthrough",
+          "enum": [
+            "minecraft:passthrough",
+            "minecraft:append_loot"
+          ],
+          "title": "BlockEntityModifierType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "Passthrough",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "description": {
+      "$ref": "#/definitions/1218029234"
+    },
+    "processors": {
+      "description": "List of processors to run on the Structure Template.",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/3016468321",
+            "description": "Replaces and modifies blocks based on a series of rules"
+          },
+          {
+            "$ref": "#/definitions/1810898542",
+            "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world"
+          },
+          {
+            "$ref": "#/definitions/3518228880",
+            "description": "Specifies block types in the template that should be ignored by other processors."
+          },
+          {
+            "$ref": "#/definitions/2581260060",
+            "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied."
+          }
+        ]
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "description",
+    "processors"
+  ],
+  "title": "Rules used by Jigsaw Structures to determine which blocks to modify or replace when placing a Structure Template in the world.",
+  "type": "object",
+  "x-format-version": "1.21.20"
+}

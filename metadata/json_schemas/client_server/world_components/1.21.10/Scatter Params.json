@@ -1,0 +1,163 @@
+{
+  "$id": "2195141389",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "2176758423": {
+      "description": "Scatter probability represented by an expression or an object with a numerator and denominator.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/3178719147"
+        },
+        {
+          "properties": {
+            "denominator": {
+              "description": "Denominator for scatter probability.",
+              "minimum": 1,
+              "type": "integer"
+            },
+            "numerator": {
+              "description": "Numerator for scatter probability.",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "denominator",
+            "numerator"
+          ],
+          "type": "object"
+        }
+      ],
+      "title": "Scatter Chance"
+    },
+    "2267778531": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "properties": {
+            "expression": {
+              "type": "string"
+            },
+            "version": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "expression",
+            "version"
+          ],
+          "type": "object"
+        }
+      ],
+      "title": "Molang string"
+    },
+    "3178719147": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/2267778531"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Molang expression"
+    },
+    "4150871210": {
+      "description": "Represents the scatter distrubution over a coordinate (x/y/z), can also be built by an expression.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/3178719147"
+        },
+        {
+          "properties": {
+            "distribution": {
+              "description": "Type of distribution. Supported distributions are defined by \"Random Distribution Type\".",
+              "enum": [
+                "uniform",
+                "gaussian",
+                "inverse_gaussian",
+                "triangle",
+                "fixed_grid",
+                "jittered_grid"
+              ],
+              "title": "Random Distribution Type",
+              "type": "string"
+            },
+            "extent": {
+              "description": "Lower and upper bound (inclusive) of the scatter range, as an offset from the input point to scatter around.",
+              "items": {
+                "$ref": "#/definitions/3178719147"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            "grid_offset": {
+              "description": "When the distribution type is grid, defines the offset along this axis.",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "step_size": {
+              "description": "When the distribution type is grid, defines the distance between steps along this axis.",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "distribution",
+            "extent"
+          ],
+          "type": "object"
+        }
+      ],
+      "title": "Coordinate Range"
+    }
+  },
+  "description": "Controls the scatter distribution of a particular object.",
+  "properties": {
+    "coordinate_eval_order": {
+      "description": "The order in which coordinates will be evaluated. Should be used when a coordinate depends on another. If omitted, defaults to \"xzy\". Supported orders are defined by \"Coordinate Evaluation Order\".",
+      "enum": [
+        "xyz",
+        "xzy",
+        "yxz",
+        "yzx",
+        "zxy",
+        "zyx"
+      ],
+      "title": "Coordinate Evaluation Order",
+      "type": "string"
+    },
+    "iterations": {
+      "$ref": "#/definitions/3178719147",
+      "description": "Number of scattered positions to generate."
+    },
+    "scatter_chance": {
+      "$ref": "#/definitions/2176758423",
+      "description": "Probability that this scatter will occur. Not evaluated each iteration; either no iterations will run, or all will."
+    },
+    "x": {
+      "$ref": "#/definitions/4150871210",
+      "description": "Distribution for the coordinate (evaluated each iteration)."
+    },
+    "y": {
+      "$ref": "#/definitions/4150871210",
+      "description": "Distribution for the coordinate (evaluated each iteration)."
+    },
+    "z": {
+      "$ref": "#/definitions/4150871210",
+      "description": "Distribution for the coordinate (evaluated each iteration)."
+    }
+  },
+  "required": [
+    "iterations",
+    "x",
+    "y",
+    "z"
+  ],
+  "title": "Scatter Params",
+  "type": "object",
+  "x-format-version": "1.21.10"
+}

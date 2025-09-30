@@ -1,0 +1,740 @@
+{
+  "format_version": "1.21.100",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:copper_golem",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "minecraft:is_becoming_statue": {
+          "type": "bool",
+          "default": false
+        },
+        "minecraft:is_waxed": {
+          "type": "bool",
+          "default": false
+        },
+        "minecraft:oxidation_level": {
+          "type": "enum",
+          "values": [
+            "unoxidized",
+            "exposed",
+            "weathered",
+            "oxidized"
+          ],
+          "default": "unoxidized",
+          "client_sync": true
+        },
+        "minecraft:chest_interaction": {
+          "type": "enum",
+          "values": [
+            "none",
+            "take",
+            "take_fail",
+            "put",
+            "put_fail"
+          ],
+          "default": "none",
+          "client_sync": true
+        },
+        "minecraft:has_flower": {
+          "type": "bool",
+          "default": false,
+          "client_sync": true
+        }
+      }
+    },
+    "components": {
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:type_family": {
+        "family": [
+          "copper_golem",
+          "mob"
+        ]
+      },
+      "minecraft:nameable": {},
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 0.98
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/copper_golem.json"
+      },
+      "minecraft:equipment": {
+        "slot_drop_chance": [
+          {
+            "slot": "slot.weapon.mainhand",
+            "drop_chance": 1.0
+          }
+        ]
+      },
+      "minecraft:health": {
+        "value": 12,
+        "max": 12
+      },
+      "minecraft:movement": {
+        "value": 0.2
+      },
+      "minecraft:navigation.walk": {
+        "avoid_water": true,
+        "avoid_damage_blocks": true,
+        "can_pass_doors": true,
+        "can_open_doors": true
+      },
+      "minecraft:annotation.open_door": {},
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:can_climb": {},
+      "minecraft:attack": {
+        "damage": 2
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:leashable": {
+      },
+      "minecraft:leashable_to": {
+      },
+      "minecraft:balloonable": {},
+      "minecraft:behavior.panic": {
+        "priority": 2,
+        "speed_multiplier": 1.5
+      },
+      "minecraft:behavior.transport_items": {
+        "priority": 3,
+        "source_container_types": [
+          "minecraft:copper_chest",
+          "minecraft:exposed_copper_chest",
+          "minecraft:oxidized_copper_chest",
+          "minecraft:waxed_copper_chest",
+          "minecraft:waxed_exposed_copper_chest",
+          "minecraft:waxed_oxidized_copper_chest",
+          "minecraft:waxed_weathered_copper_chest",
+          "minecraft:weathered_copper_chest"
+        ],
+        "destination_container_types": [ "minecraft:chest", "minecraft:trapped_chest" ],
+        "max_stack_size": 16,
+        "interaction_time": 3.0,
+        "allow_simultaneous_interaction": false,
+        "search_strategy": "nearest",
+        "search_distance": [ 32, 8 ],
+        "max_visited_containers": 10,
+        "initial_cooldown": 3,
+        "idle_cooldown": 7,
+        "place_strategy": "with_matching_or_empty"
+      },
+      "minecraft:behavior.take_flower": {
+        "priority": 4,
+        "filters": {
+          "all_of": [
+            {
+              "test": "is_daytime",
+              "value": true
+            },
+            {
+              "test": "bool_property",
+              "domain": "minecraft:has_flower",
+              "value": false
+            }
+          ]
+        },
+        "on_take_flower": {
+          "event": "minecraft:on_take_flower"
+        }
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 5,
+        "xz_dist": 3
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 6,
+        "look_distance": 6.0,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 7
+      },
+      "minecraft:persistent": {},
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "fall",
+            "deals_damage": "no"
+          },
+          {
+            "on_damage": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "lightning"
+                  },
+                  {
+                    "test": "is_variant",
+                    "subject": "self",
+                    "operator": "==",
+                    "value": 0
+                  }
+                ]
+              },
+              "event": "minecraft:remove_oxidation_layer"
+            },
+            "deals_damage": "no"
+          }
+        ]
+      },
+      "minecraft:interact": {
+        "interactions": [
+          // Wax on
+          {
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:is_waxed",
+                    "value": false
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "has_equipment",
+                    "domain": "hand",
+                    "subject": "other",
+                    "value": "honeycomb"
+                  }
+                ]
+              },
+              "event": "minecraft:wax_on"
+            },
+            "use_item": true,
+            "swing": true,
+            "interact_text": "action.interact.wax_on",
+            "particle_on_start": {
+              "copper_event": "wax_on"
+            }
+          },
+          // Scrape
+          {
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:is_waxed",
+                    "value": false
+                  },
+                  {
+                    "test": "enum_property",
+                    "domain": "minecraft:oxidation_level",
+                    "operator": "not",
+                    "value": "unoxidized"
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "has_equipment_tag",
+                    "domain": "hand",
+                    "subject": "other",
+                    "value": "minecraft:is_axe"
+                  }
+                ]
+              },
+              "event": "minecraft:remove_oxidation_layer"
+            },
+            "swing": true,
+            "hurt_item": 1,
+            "interact_text": "action.interact.scrape",
+            "particle_on_start": {
+              "copper_event": "scrape"
+            }
+          },
+          // Wax off
+          {
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:is_waxed",
+                    "value": true
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "has_equipment_tag",
+                    "domain": "hand",
+                    "subject": "other",
+                    "value": "minecraft:is_axe"
+                  }
+                ]
+              },
+              "event": "minecraft:wax_off"
+            },
+            "swing": true,
+            "hurt_item": 1,
+            "interact_text": "action.interact.wax_off",
+            "particle_on_start": {
+              "copper_event": "wax_off"
+            }
+          },
+          // Drop item
+          {
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "all_slots_empty",
+                    "domain": "hand",
+                    "operator": "not"
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "all_slots_empty",
+                    "domain": "hand",
+                    "subject": "other"
+                  }
+                ]
+              }
+            },
+            "drop_item_slot": "slot.weapon.mainhand",
+            "swing": true,
+            "interact_text": "action.interact.drop_item"
+          },
+          // Shear flower
+          {
+            "cooldown": 2.5,
+            "use_item": false,
+            "hurt_item": 1,
+            "play_sounds": "shear",
+            "interact_text": "action.interact.shear",
+            "vibration": "shear",
+            "spawn_items": { "table": "loot_tables/entities/copper_golem_shear.json" },
+            "on_interact": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "bool_property",
+                    "domain": "minecraft:has_flower",
+                    "value": true
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "has_equipment",
+                    "subject": "other",
+                    "domain": "hand",
+                    "value": "shears"
+                  }
+                ]
+              },
+              "event": "minecraft:on_sheared",
+              "target": "self"
+            }
+          }
+        ]
+      }
+    },
+    "component_groups": {
+      "minecraft:copper_oxidizing": {
+        "minecraft:timer": {
+          // 420-460 minutes, 440 average
+          "time": [
+            25200,
+            27600
+          ],
+          "looping": true,
+          "time_down_event": {
+            "event": "minecraft:oxidize_copper"
+          }
+        }
+      },
+      "minecraft:becoming_statue": {
+        "minecraft:behavior.place_block": {
+          "priority": 1,
+          "xz_range": 0,
+          "y_range": 0,
+          "chance": 0.0058,
+          "can_place": {
+            "test": "bool_property",
+            "domain": "minecraft:is_becoming_statue",
+            "value": false
+          },
+          "randomly_placeable_blocks": [
+            {
+              // North
+              "block": {
+                "name": "minecraft:oxidized_copper_golem_statue",
+                "states": {
+                  "minecraft:cardinal_direction": "north"
+                }
+              },
+              "filter": {
+                "any_of": [
+                  {
+                    "all_of": [
+                      { "test": "y_rotation", "operator": ">=", "value": 135 },
+                      { "test": "y_rotation", "operator": "<", "value": 180 }
+                    ]
+                  },
+                  {
+                    "all_of": [
+                      { "test": "y_rotation", "operator": ">=", "value": -180 },
+                      { "test": "y_rotation", "operator": "<", "value": -135 }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              // East
+              "block": {
+                "name": "minecraft:oxidized_copper_golem_statue",
+                "states": {
+                  "minecraft:cardinal_direction": "east"
+                }
+              },
+              "filter": {
+                "all_of": [
+                  { "test": "y_rotation", "operator": ">=", "value": -135 },
+                  { "test": "y_rotation", "operator": "<", "value": -45 }
+                ]
+              }
+            },
+            {
+              // South
+              "block": {
+                "name": "minecraft:oxidized_copper_golem_statue",
+                "states": {
+                  "minecraft:cardinal_direction": "south"
+                }
+              },
+              "filter": {
+                "all_of": [
+                  { "test": "y_rotation", "operator": ">=", "value": -45 },
+                  { "test": "y_rotation", "operator": "<", "value": 45 }
+                ]
+              }
+            },
+            {
+              // West
+              "block": {
+                "name": "minecraft:oxidized_copper_golem_statue",
+                "states": {
+                  "minecraft:cardinal_direction": "west"
+                }
+              },
+              "filter": {
+                "all_of": [
+                  { "test": "y_rotation", "operator": ">=", "value": 45 },
+                  { "test": "y_rotation", "operator": "<", "value": 135 }
+                ]
+              }
+            }
+          ],
+          "affected_by_griefing_rule": false,
+          "on_place": {
+            "event": "minecraft:become_statue",
+            "target": "self"
+          }
+        }
+      },
+      "minecraft:became_statue": {
+        "minecraft:instant_despawn": {
+        }
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "trigger": "minecraft:begin_oxidizing"
+      },
+      "minecraft:begin_oxidizing": {
+        "add": {
+          "component_groups": [
+            "minecraft:copper_oxidizing"
+          ]
+        }
+      },
+      "minecraft:from_player_spawned": {
+        "trigger": "minecraft:begin_oxidizing",
+        "play_sound": {
+          "sound": "spawn"
+        }
+      },
+      "minecraft:from_player_default": {
+        "trigger": "minecraft:from_player_spawned",
+        "set_property": {
+          "minecraft:oxidation_level": "unoxidized"
+        }
+      },
+      "minecraft:from_player_exposed": {
+        "trigger": "minecraft:from_player_spawned",
+        "set_property": {
+          "minecraft:oxidation_level": "exposed"
+        }
+      },
+      "minecraft:from_player_weathered": {
+        "trigger": "minecraft:from_player_spawned",
+        "set_property": {
+          "minecraft:oxidation_level": "weathered"
+        }
+      },
+      "minecraft:from_player_oxidized": {
+        "trigger": "minecraft:maximum_oxidation",
+        "set_property": {
+          "minecraft:oxidation_level": "oxidized"
+        },
+        "play_sound": {
+          "sound": "spawn"
+        }
+      },
+      "minecraft:from_serialized_entity": {
+        "trigger": "minecraft:restart_oxidation_timer",
+        "set_property": {
+          "minecraft:oxidation_level": "unoxidized",
+          "minecraft:is_becoming_statue": false
+        }
+      },
+      "minecraft:wax_on": {
+        "remove": {
+          "component_groups": [
+            "minecraft:copper_oxidizing",
+            "minecraft:becoming_statue"
+          ]
+        },
+        "set_property": {
+          "minecraft:is_waxed": true
+        }
+      },
+      "minecraft:wax_off": {
+        "sequence": [
+          {
+            "first_valid": [
+              {
+                "filters": {
+                  "test": "enum_property",
+                  "domain": "minecraft:oxidation_level",
+                  "value": "oxidized"
+                },
+                "add": {
+                  "component_groups": [
+                    "minecraft:becoming_statue"
+                  ]
+                }
+              },
+              {
+                "add": {
+                  "component_groups": [
+                    "minecraft:copper_oxidizing"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "set_property": {
+              "minecraft:is_waxed": false
+            }
+          }
+        ]
+      },
+      "minecraft:restart_oxidation_timer": {
+        "remove": {
+          "component_groups": [
+            "minecraft:copper_oxidizing",
+            "minecraft:becoming_statue"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:copper_oxidizing"
+          ]
+        }
+      },
+      "minecraft:maximum_oxidation": {
+        "remove": {
+          "component_groups": [
+            "minecraft:copper_oxidizing"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:becoming_statue"
+          ]
+        }
+      },
+      "minecraft:oxidize_copper": {
+        "first_valid": [
+          {
+            "filters": {
+              "test": "enum_property",
+              "domain": "minecraft:oxidation_level",
+              "value": "unoxidized"
+            },
+            "set_property": {
+              "minecraft:oxidation_level": "exposed"
+            }
+          },
+          {
+            "filters": {
+              "test": "enum_property",
+              "domain": "minecraft:oxidation_level",
+              "value": "exposed"
+            },
+            "set_property": {
+              "minecraft:oxidation_level": "weathered"
+            }
+          },
+          {
+            "filters": {
+              "test": "enum_property",
+              "domain": "minecraft:oxidation_level",
+              "value": "weathered"
+            },
+            "set_property": {
+              "minecraft:oxidation_level": "oxidized"
+            },
+            "trigger": "minecraft:maximum_oxidation"
+          }
+        ]
+      },
+      "minecraft:remove_oxidation_layer": {
+        "sequence": [
+          {
+            // We restart the timer since it could be half way through oxidizing and that is annoying
+            "trigger": "minecraft:restart_oxidation_timer"
+          },
+          {
+            "first_valid": [
+              {
+                "filters": {
+                  "test": "enum_property",
+                  "domain": "minecraft:oxidation_level",
+                  "value": "exposed"
+                },
+                "set_property": {
+                  "minecraft:oxidation_level": "unoxidized"
+                }
+              },
+              {
+                "filters": {
+                  "test": "enum_property",
+                  "domain": "minecraft:oxidation_level",
+                  "value": "weathered"
+                },
+                "set_property": {
+                  "minecraft:oxidation_level": "exposed"
+                }
+              },
+              {
+                "filters": {
+                  "test": "enum_property",
+                  "domain": "minecraft:oxidation_level",
+                  "value": "oxidized"
+                },
+                "set_property": {
+                  "minecraft:oxidation_level": "weathered"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "minecraft:transport_items.start_take_succeed": {
+        "set_property": {
+          "minecraft:chest_interaction": "take"
+        }
+      },
+      "minecraft:transport_items.start_take_fail": {
+        "set_property": {
+          "minecraft:chest_interaction": "take_fail"
+        }
+      },
+      "minecraft:transport_items.start_place_succeed": {
+        "set_property": {
+          "minecraft:chest_interaction": "put"
+        }
+      },
+      "minecraft:transport_items.start_place_fail": {
+        "set_property": {
+          "minecraft:chest_interaction": "put_fail"
+        }
+      },
+      "minecraft:transport_items.stop_interaction": {
+        "set_property": {
+          "minecraft:chest_interaction": "none"
+        }
+      },
+      "minecraft:become_statue": {
+        "drop_item": {
+          "slot": "slot.weapon.mainhand"
+        },
+        "set_property": {
+          "minecraft:is_becoming_statue": true
+        },
+        "trigger": {
+          "event": "minecraft:serialize_entity",
+          "target": "block"
+        }
+      },
+      "minecraft:serialize_entity_succeeded": {
+        "add": {
+          "component_groups": [
+            "minecraft:became_statue"
+          ]
+        },
+        "play_sound": {
+          "sound": "deactivate"
+        },
+        "trigger": {
+          "event": "minecraft:randomize_pose",
+          "target": "block"
+        }
+      },
+      "minecraft:on_take_flower": {
+        "set_property": {
+          "minecraft:has_flower": true
+        }
+      },
+      "minecraft:on_sheared": {
+        "set_property": {
+          "minecraft:has_flower": false
+        }
+      }
+    }
+  }
+}
