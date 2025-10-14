@@ -641,6 +641,14 @@
             "place_item",
             "single_swap",
             "multi_swap",
+            "item.enchant.lunge1",
+            "item.enchant.lunge2",
+            "item.enchant.lunge3",
+            "attack.critical",
+            "item.spear.attack_hit",
+            "item.spear.attack_miss",
+            "item.wooden_spear.attack_hit",
+            "item.wooden_spear.attack_miss",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -763,6 +771,9 @@
     },
     "1729146119": {
       "title": "IsTamedDefinition"
+    },
+    "1743972227": {
+      "title": "BodyRotationLockedToVehicleDefinition"
     },
     "1820403110": {
       "title": "IsIllagerCaptainDefinition"
@@ -1293,14 +1304,16 @@
     "2794205495": {
       "oneOf": [
         {
-          "$ref": "#/definitions/2770948419"
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
         },
         {
           "minLength": 1,
           "type": "string"
         },
         {
-          "$ref": "#/definitions/2770948419"
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
         }
       ],
       "title": "Block Descriptor"
@@ -1925,6 +1938,14 @@
             "place_item",
             "single_swap",
             "multi_swap",
+            "item.enchant.lunge1",
+            "item.enchant.lunge2",
+            "item.enchant.lunge3",
+            "attack.critical",
+            "item.spear.attack_hit",
+            "item.spear.attack_miss",
+            "item.wooden_spear.attack_hit",
+            "item.wooden_spear.attack_miss",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -2520,6 +2541,14 @@
             "place_item",
             "single_swap",
             "multi_swap",
+            "item.enchant.lunge1",
+            "item.enchant.lunge2",
+            "item.enchant.lunge3",
+            "attack.critical",
+            "item.spear.attack_hit",
+            "item.spear.attack_miss",
+            "item.wooden_spear.attack_hit",
+            "item.wooden_spear.attack_miss",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -2546,11 +2575,8 @@
           "type": "array"
         },
         "entity_types": {
-          "description": "The list of conditions another entity must meet to be a valid target to avoid.",
-          "items": {
-            "$ref": "#/definitions/792012262"
-          },
-          "type": "array"
+          "$ref": "#/definitions/4227886613",
+          "description": "The list of conditions another entity must meet to be a valid target to avoid."
         },
         "ignore_visibility": {
           "description": "Whether or not to ignore direct line of sight while this entity is running away from other specified entities. Default value: false.",
@@ -2807,6 +2833,20 @@
       "title": "Filter Test",
       "type": "object"
     },
+    "4227886613": {
+      "oneOf": [
+        {
+          "items": {
+            "$ref": "#/definitions/792012262"
+          },
+          "type": "array"
+        },
+        {
+          "$ref": "#/definitions/792012262"
+        }
+      ],
+      "title": "EntityTypes"
+    },
     "4231633335": {
       "description": "Causes an entity to circle around an anchor point placed near a point or target.",
       "properties": {
@@ -2832,7 +2872,8 @@
         },
         "height_above_target_range": {
           "$ref": "#/definitions/1057349585",
-          "description": "The number of blocks above the target that the next anchor point can be set. This value is used only when the entity is tracking a target. Default value: [0.0, 0.0]."
+          "description": "The number of blocks above the target that the next anchor point can be set. This value is used only when the entity is tracking a target. Default value: [0.0, 0.0].",
+          "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
         },
         "height_adjustment_chance": {
           "description": "Percent chance to determine how often to increase or decrease the current height around the anchor point. 1 = 100%. \"height_change_chance\" is deprecated and has been replaced with \"height_adjustment_chance\". Default value: 0.003.",
@@ -2856,7 +2897,8 @@
         },
         "radius_range": {
           "$ref": "#/definitions/1057349585",
-          "description": "Horizontal distance from the anchor point this entity must stay within upon a successful radius adjustment. Default value: [5.0, 5.0]."
+          "description": "Horizontal distance from the anchor point this entity must stay within upon a successful radius adjustment. Default value: [5.0, 5.0].",
+          "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
         },
         "speed_multiplier": {
           "description": "Multiplies the speed at which this entity travels to its next desired position. Default value: 1.0.",
@@ -2879,6 +2921,59 @@
         }
       ],
       "title": "compound_proxy"
+    },
+    "541278563": {
+      "description": "Enables an aquatic mob to dash at its target with knockback; includes overshoot and cooldown settings.",
+      "properties": {
+        "attack_reach": {
+          "description": "Horizontal reach grown around the mob's AABB to register a hit. Default value: 0.05.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "charge_cooldown_time": {
+          "$ref": "#/definitions/1057349585",
+          "description": "Range of time in seconds to wait before starting another charge. Default value: [2.0, 6.0].",
+          "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+        },
+        "charge_overshoot_distance": {
+          "description": "Distance beyond the target the mob aims during a charge. Default value: 1.5.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "charge_speed_multiplier": {
+          "description": "Speed multiplier applied during the charge. Default value: 10.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "control_flags": {
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "knockback_force": {
+          "description": "Knockback force applied to the target on hit. Default value: 2.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "max_charge_distance": {
+          "description": "Maximum distance at which the mob attempts a charge. Default value: 16.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "priority": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.aquatic_charge_attack",
+      "type": "object"
     },
     "597030358": {
       "description": "Causes the entity to grow tired every once in a while, while attacking.",
@@ -3152,6 +3247,10 @@
     },
     "minecraft:behavior.admire_item": {
       "description": "Dynamic value"
+    },
+    "minecraft:behavior.aquatic_charge_attack": {
+      "$ref": "#/definitions/541278563",
+      "description": "Enables an aquatic mob to dash at its target with knockback; includes overshoot and cooldown settings."
     },
     "minecraft:behavior.avoid_block": {
       "$ref": "#/definitions/3326653763",
@@ -3719,6 +3818,9 @@
     "minecraft:body_rotation_blocked": {
       "$ref": "#/definitions/387887038"
     },
+    "minecraft:body_rotation_locked_to_vehicle": {
+      "$ref": "#/definitions/1743972227"
+    },
     "minecraft:boostable": {
       "description": "Dynamic value"
     },
@@ -4240,6 +4342,9 @@
       "description": "Dynamic value"
     },
     "minecraft:type_family": {
+      "description": "Dynamic value"
+    },
+    "minecraft:underwater_mount_breathing": {
       "description": "Dynamic value"
     },
     "minecraft:underwater_movement": {

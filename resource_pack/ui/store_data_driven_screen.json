@@ -71,7 +71,11 @@
           "size": [ "100%", 1 ]
         }
       },
-      { "side_selection@persona_sdl.side_selection_row": {} },
+      {
+        "top_static_sdl_section@common_store.store_static_section_factory": {
+            "$store_static_factory_collection_bind": "#sdl_top_static_section_content"
+        }
+      },
       {
         "padding1": {
           "type": "panel",
@@ -79,7 +83,7 @@
         }
       },
       {
-        "sdl_scrolling_section@store_layout.sdl_scrolling_section": { "size": [ "100%", "100% - 4px" ] }
+        "sdl_scrolling_section@store_layout.sdl_scrolling_section": { "size": [ "100%", "fill" ] }
       }
     ]
   },
@@ -164,14 +168,17 @@
       "@persona_sdl.enter_screen_appearance_size_animation"
     ],
 
-
-    "$character_creator_right_side_content|default": "persona_sdl.default_right_side_stack",
+    "$character_creator_right_side_content|default": "#sdl_right_section_content",
 
     "controls": [
       { "left_main_panel_padding@persona_sdl.horizontal_2_padding": {} },
       { "character_creator_sdl_portion@store_layout.character_creator_sdl_section": {} },
       { "middle_main_panel_padding@persona_sdl.horizontal_1_padding": {} },
-      { "right_main_panel@$character_creator_right_side_content": {} },
+      { "right_main_panel@common_store.store_static_section_factory": {
+            "size": [ "fill", "100%" ],
+            "$store_static_factory_collection_bind": "$character_creator_right_side_content"
+        }
+      },
       { "right_main_panel_padding@persona_sdl.horizontal_2_padding": {} }
     ]
   },
@@ -727,6 +734,13 @@
     "propagate_alpha": true,
     "disable_anim_fast_forward": true,
     "$ignore_inventory_button": "$is_sidebar_navigation_enabled",
+
+    "$is_inventory_screen|default": false,
+    "$ignore_home_button|default": false,
+    "$ignore_inventory_button|default": false,
+    "$ignore_search|default": false,
+    "$store_header_size|default": [ "100%", 23 ],
+
     "controls": [
       {
         // This control serves as a focus panel for TTS when entering any SDL page(input mouse only)
@@ -746,11 +760,26 @@
         }
       },
       {
-        "main_panel@common_store.store_header_with_coins": {
-          "$child_control": "store_layout.store_screen_main_panel",
-          "$button_text": "store.title",
-          "$top_status_and_coins_visible_binding_type": "global",
-          "$top_status_and_coins_visible_binding": "#header_coins_visible"
+        "screen_content": {
+          "type": "stack_panel",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            { 
+              "top_bar_section@common_store.store_static_section_factory": {
+                "$store_static_factory_collection_bind": "#sdl_top_minecoin_content"
+              }
+            },
+            { 
+              "main_panel": {
+                "type": "panel",
+                "size": [ "100%", "fill" ],
+                "layer": 2,
+                "controls": [
+                    { "main_panel_content@store_layout.store_screen_main_panel": {} }
+                ]
+              }
+            }
+          ]
         }
       },
       {
@@ -803,7 +832,6 @@
 
   "character_creator_base_screen@store_layout.sdl_base_screen": {
     "$sdl_screen_content": "store_layout.character_creator_screen_layout",
-    "$extra_arrow_panel_content": "persona_sdl.open_color_picker_button",
     "$allows_sdl_section_focus_container": false,
     "bindings": [
       {
@@ -832,7 +860,7 @@
 
   "dressing_room_color_picker_screen@store_layout.character_creator_screen": {
     "$persona_dialog_content": "persona_sdl.color_picker_content_panel",
-    "$character_creator_right_side_content": "persona_sdl.color_picker_right_side_stack",
+    "$character_creator_right_side_content": "#sdl_color_picker_right_section_content",
     "$requires_restore_button": false
   },
 

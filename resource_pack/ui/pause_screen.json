@@ -133,10 +133,14 @@
     "size": [ "100%c", "100%c" ],
     "$button_content_size_override": [ "100%c - 2px", "100%c - 6px" ],
     "$pressed_button_name": "button.to_profile_or_skins_screen",
+    "focus_change_up": "friendsdrawer_button",
+    "focus_change_down": "friendsdrawer_button",
+    "focus_change_right": "$focus_id",
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
     "$button_offset": [ -3, 1 ],
 	"offset": [ 0, -5 ],
+    "$focus_id": "profile_button",
     "$new_ui_label_offset": [ 0, -1 ],
     "$text_alignment": "left",
     "$button_content": "pause.dressing_room_controller_button_content",
@@ -154,6 +158,9 @@
   "dressing_room_button@common_buttons.light_text_form_fitting_button": {
     "$pressed_button_name": "button.to_profile_or_skins_screen",
     "$form_fitting_min_size": [ "100%c + 2px", 22 ],
+    "focus_change_up": "friendsdrawer_button",
+    "focus_change_down": "friendsdrawer_button",
+    "focus_change_right": "$focus_id",
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
     "$button_text": "profileScreen.header",
@@ -504,7 +511,10 @@
     "anchor_to": "top_middle",
     "anchor_from": "top_middle",
     "$button_focus_precedence": 1,
+    "focus_identifier": "return_to_game",
     "$focus_override_up": "icon_panel_main_focus",
+    "focus_change_right": "friendsdrawer_button",
+    "focus_change_left": "FOCUS_OVERRIDE_STOP",
     "variables": [
       {
         "requires": "$is_editor_playtest_roundtrip",
@@ -784,6 +794,7 @@
   "achievements_button_small@common_buttons.light_content_button": {
     "$pressed_button_name": "button.menu_achievements",
     "$focus_id": "icon_panel_main_focus",
+    "focus_change_down": "return_to_game",
     "$button_tts_header": "menu.achievements",
     "size": [ 24, 24 ],
     "$button_content": "pause.achievements_icon",
@@ -800,6 +811,7 @@
   "settings_button_small@common_buttons.light_content_button": {
     "$pressed_button_name": "button.menu_settings",
     "$focus_id": "icon_panel_main_focus",
+    "focus_change_down": "return_to_game",
     "$button_tts_header": "menu.settings",
     "size": [ 24, 24 ],
     "$button_content": "pause.settings_icon",
@@ -890,6 +902,10 @@
       {
         "requires": "$trial",
         "$achievements_ignored": true
+      },
+      {
+        "requires": "(not $supports_xbl_achievements)",
+        "$achievements_ignored": true
       }
     ],
     "controls": [
@@ -935,6 +951,9 @@
             {
               "friendsdrawer_button@friendsbutton.button": {
                 "$pressed_button_name": "button.friends_drawer",
+                "focus_change_up": "profile_button",
+                "focus_change_down": "profile_button",
+                "focus_change_right": "FOCUS_OVERRIDE_STOP",
                 "anchor_from": "top_right",
                 "anchor_to": "top_right",
                 "$context": "ingame"
@@ -944,7 +963,8 @@
               "friends_drawer_ftue_popup@friendsbutton.friends_drawer_popup": {
                 "anchor_from": "top_right",
                 "anchor_to": "top_right",
-                "offset": [ 0, 35 ]
+                "offset": [ 0, 35 ],
+                "focus_enabled": false
               }   
             }
           ]
@@ -1046,7 +1066,11 @@
                 "type": "input_panel",
                 "size": [ "100%c + 4px", 32 ],
                 "controls": [
-                  { "small_settings_btn@pause.settings_button_small": {} }
+                  {
+                    "small_settings_btn@pause.settings_button_small": {
+                      "focus_change_left": "$focus_id"
+                    }
+                  }
                 ],
                 "button_mappings": [
                   {
@@ -1067,6 +1091,7 @@
             {
               "small_achievements_button": {
                 "type": "input_panel",
+                "ignored": "$achievements_ignored",
                 "size": [ "100%c + 4px", 32 ],
                 "controls": [
                   { "small_achievements_btn@pause.achievements_button_small": {} }
