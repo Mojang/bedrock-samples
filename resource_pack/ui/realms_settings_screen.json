@@ -372,7 +372,8 @@
 
     "invite_links_section": {
         "type": "panel",
-        "size": [ "100%", "100%c" ],
+        "$panel_size|default": [ "100%", "100%c" ],
+        "size": "$panel_size",
         "controls": [
             {
                 "loading_view": {
@@ -1291,6 +1292,11 @@
                 "from_button_id": "button.menu_ok",
                 "to_button_id": "$pressed_button_name",
                 "mapping_type": "focused"
+            },
+            {
+                "from_button_id": "button.menu_cancel",
+                "to_button_id": "$modal_escape_button_name",
+                "mapping_type": "global"
             }
         ],
         "bindings": [
@@ -1314,6 +1320,11 @@
                 "from_button_id": "button.menu_ok",
                 "to_button_id": "$pressed_button_name",
                 "mapping_type": "focused"
+            },
+            {
+                "from_button_id": "button.menu_cancel",
+                "to_button_id": "$modal_escape_button_name",
+                "mapping_type": "global"
             }
         ],
         "$button_text": "gui.cancel"
@@ -1450,7 +1461,7 @@
     "popup_dialog__free_up_space@popup_dialog.popup_dialog": {
         "size": [ 282, 200 ],
         "ttsSectionContainer": true,
-        "$modal_escape_button_name": "saves_modal_escape",
+        "$modal_escape_button_name": "free_up_space_modal_escape",
         "controls": [
             {
                 "free_up_space_popup_background@realms_settings.popup_dialog_background": {
@@ -3368,5 +3379,120 @@
                 }
             }
         ]
+    },
+
+    //---------------------------------------------------------------------------
+    // Standalone Settings Screens (No Selector Area)
+    //---------------------------------------------------------------------------
+
+    "standalone_dialog_title": {
+        "type": "stack_panel",
+        "orientation": "horizontal",
+        "anchor_from": "top_left",
+        "anchor_to": "top_left",
+        "size": [ "100%", 15 ],
+        "offset": [ 0, 3.5 ],
+        "controls": [
+            {
+                "left_padding": {
+                    "type": "panel",
+                    "size": [ 18, "100%" ]
+                }
+            },
+            {
+                "dialog_title_label": {
+                    "type": "label",
+                    "size": [ "40% - 3px", "100%" ],
+                    "anchor_from": "top_left",
+                    "anchor_to": "top_left",
+                    "layer": 2,
+                    "color": "$title_text_color",
+                    "$dialog_text|default": "dialog title label text",
+                    "text": "$dialog_text"
+                }
+            },
+            {
+                "right_padding": {
+                    "type": "panel",
+                    "size": [ "fill", "100%" ]
+                }
+            }
+        ]
+    },
+
+    "standalone_dialog_content": {
+        "type": "panel",
+        "anchor_from": "top_middle",
+        "anchor_to": "top_middle",
+        "controls": [
+            { "dialog_title@realms_settings.standalone_dialog_title": {} },
+            { "content_area@realms_settings.standalone_content_area": {} }
+        ]
+    },
+
+    "standalone_content_area": {
+        "type": "panel",
+        "offset": [ "-1px", "21px" ],
+        "size": [ "100% - 8px", "100% - 19px" ],
+        "anchor_from": "top_right",
+        "anchor_to": "top_right",
+        "layer": 1,
+
+        "focus_container": true,
+        "use_last_focus": false,
+        "$focus_navigation_mode_override_down|default": "contained",
+        "$focus_navigation_mode_override_up|default": "contained",
+        "$focus_navigation_mode_override_left|default": "",
+        "$focus_navigation_mode_override_right|default": "",
+        "focus_navigation_mode_down": "$focus_navigation_mode_override_down",
+        "focus_navigation_mode_up": "$focus_navigation_mode_override_up",
+        "focus_navigation_mode_left": "$focus_navigation_mode_override_left",
+        "focus_navigation_mode_right": "$focus_navigation_mode_override_right",
+        "ttsSectionContainer": true,
+
+        "controls": [
+            {
+                "control": {
+                    "type": "stack_panel",
+                    "size": [ "100%", "100%" ],
+                    "anchor_from": "top_right",
+                    "anchor_to": "top_right",
+                    "controls": [
+                        {
+                            "scrolling_panel@common.scrolling_panel": {
+                                "size": [ "100%", "fill" ],
+                                "$scrolling_content": "$section_content_panels",
+                                "$show_background": false,
+                                "$scroll_size": [ "5px", "100% - 4px" ],
+                                "$scroll_bar_left_padding_size": [ 1, 0 ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+
+    "realms_settings_screen_base_no_selector_area@settings_common.dynamic_dialog_screen": {
+        "$section_content_panels|default": "common.empty_panel",
+        "$section_header_panels|default": "common.empty_panel",
+        "$section_footer_panels|default": "common.empty_panel",
+        "$dialog_content": "realms_settings.standalone_dialog_content",
+        "$realm_no_world_edit|default": true,
+        "$is_realm_slot|default": false
+    },
+
+    "screen_realm_hub_manage_members@realms_settings.realms_settings_screen_base_no_selector_area": {
+        "$section_content_panels": "realms_allowlist.friends_containing_panel",
+        "$friends_containing_panel_size": [ "100% - 4px", "100%c" ],
+        "$friend_panel_size": [ "100%", "100%c" ],
+        "$dialog_text": "realmsSettingsScreen.manageMembers.title",
+        "$show_invite_links_button": true
+    },
+
+    "screen_realm_hub_invite_links@realms_settings.realms_settings_screen_base_no_selector_area": {
+        "$section_content_panels": "realms_settings.invite_links_section",
+        "$panel_size": [ "100% - 4px", "100%c" ],
+        "$dialog_text": "realmsSettingsScreen.inviteLinksSectionTitle"
     }
 }
