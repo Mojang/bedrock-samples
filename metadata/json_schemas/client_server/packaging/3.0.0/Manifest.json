@@ -46,7 +46,8 @@
         },
         "name": {
           "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$",
-          "type": "string"
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
         },
         "step": {
           "exclusiveMinimum": 0,
@@ -99,6 +100,34 @@
     "1616419299": {
       "title": "UUID",
       "type": "string"
+    },
+    "1627012538": {
+      "properties": {
+        "module_name": {
+          "type": "string"
+        },
+        "version": {
+          "oneOf": [
+            {
+              "enum": [
+                "alpha",
+                "beta"
+              ],
+              "title": "VersionSelectType",
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/4243943436"
+            }
+          ]
+        }
+      },
+      "required": [
+        "module_name",
+        "version"
+      ],
+      "title": "NativeModuleDependency",
+      "type": "object"
     },
     "1774886605": {
       "properties": {
@@ -153,25 +182,6 @@
       "title": "LabelSetting",
       "type": "object"
     },
-    "2482122185": {
-      "properties": {
-        "module_name": {
-          "type": "string"
-        },
-        "uuid": {
-          "$ref": "#/definitions/1616419299",
-          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-        },
-        "version": {
-          "$ref": "#/definitions/4243943436"
-        }
-      },
-      "required": [
-        "version"
-      ],
-      "title": "Dependency",
-      "type": "object"
-    },
     "292634909": {
       "properties": {
         "allow_random_seed": {
@@ -192,6 +202,9 @@
         "name": {
           "minLength": 1,
           "type": "string"
+        },
+        "pack_optimization_version": {
+          "$ref": "#/definitions/4243943436"
         },
         "pack_scope": {
           "type": "string"
@@ -216,6 +229,24 @@
       "title": "Header",
       "type": "object"
     },
+    "3861161488": {
+      "properties": {
+        "uuid": {
+          "$ref": "#/definitions/1616419299",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "version": {
+          "$ref": "#/definitions/4243943436",
+          "pattern": "^([1-9]+)\\.([0-9]+)\\.([0-9]+)$"
+        }
+      },
+      "required": [
+        "uuid",
+        "version"
+      ],
+      "title": "PackDependency",
+      "type": "object"
+    },
     "3968873291": {
       "properties": {
         "default": {
@@ -224,7 +255,8 @@
         },
         "name": {
           "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$",
-          "type": "string"
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
         },
         "options": {
           "items": {
@@ -264,7 +296,8 @@
         },
         "name": {
           "pattern": "^(?:(?!^(minecraft):).)+:(?:.)+$",
-          "type": "string"
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
         },
         "text": {
           "type": "string"
@@ -353,7 +386,14 @@
     },
     "dependencies": {
       "items": {
-        "$ref": "#/definitions/2482122185"
+        "oneOf": [
+          {
+            "$ref": "#/definitions/3861161488"
+          },
+          {
+            "$ref": "#/definitions/1627012538"
+          }
+        ]
       },
       "type": "array"
     },

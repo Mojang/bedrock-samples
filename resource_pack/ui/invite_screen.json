@@ -145,7 +145,24 @@
           "layer": 1,
           "size": [ "100%-2px", "100%-2px" ]
         }
-      }
+      },
+      {
+        "online_indication_positioner": {
+          "type": "panel",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            {
+              "indicator_images@invite.online_indicator": {
+                "layer": 2,
+                "anchor_to": "top_right",
+                "anchor_from": "top_right",
+                 // Use to Adjust the offset for Online Icon
+                "$indicator_offset": [ 0, 0 ]
+              }
+            }
+          ]
+        }
+      }             
     ]
   },
 
@@ -221,13 +238,10 @@
     "anchor_from": "right_middle",
     "offset": "$indicator_offset",
     "$indicator_offset|default": [ -6, 0 ],
-    "size": [ 9, 9 ],
+    "size": [ 6, 6 ],
     "controls": [
       {
         "online_image@invite.online_image": {}
-      },
-      {
-        "offline_image@invite.offline_image": {}
       }
     ]
   },
@@ -472,22 +486,6 @@
             {
               "friend_grid_current_game_label@invite.friend_grid_current_game_label": {
                 "layer": 1
-              }
-            }
-          ]
-        }
-      },
-      {
-        "online_indication_positioner": {
-          "type": "panel",
-          "size": [ 10, "100%" ],
-          "controls": [
-            {
-              "indicator_images@invite.online_indicator": {
-                "layer": 1,
-                "anchor_to": "top_left",
-                "anchor_from": "top_left",
-                "$indicator_offset": [ -8, 6 ]
               }
             }
           ]
@@ -782,7 +780,8 @@
 
   "msa_friend_button@common.checkbox": {
     "$pressed_button_name": "button.menu_friend_select",
-    "size": [ "100%", "100%" ],
+    "$checkbox_size|default" : [ "100%", "100%" ],
+    "size": "$checkbox_size",
     "tts_control_type_order_priority": 100,
     "tts_value_order_priority": 101,
 
@@ -1010,11 +1009,35 @@
 
 
   "msa_friend_grid_item_template": {
-    "type": "panel",
+    "type": "stack_panel",
+    "orientation": "horizontal",
     "size": [ "100% - 7px", 30 ],
     "controls": [
       {
-        "friend_button@invite.msa_friend_button": {}
+        "friend_button@invite.msa_friend_button": {
+          "$checkbox_size" : [ "fill", "100%" ]
+        }
+      },
+      {
+        "profile_button_pannel": {
+          "type": "panel",
+          "size": [ 50, "100%"],
+          "ignored": "(not $xbox_one)",
+          "controls": [
+            {
+              "view_profile_button@invite.profile_button": {
+              "offset": [ 2, 0 ],
+              "$button_size": [ "100%", "100%-4px" ]
+              }
+            }
+          ]
+        }
+      }, 
+      {
+        "spacer_03": {
+          "type": "panel", 
+          "size": [ 3, "100%" ]
+        }
       }
     ]
   },
@@ -1040,7 +1063,6 @@
   },
 
   "online_xbox_live_friend_grid_item@invite.msa_friend_grid_item_template": {
-    "type": "panel",
     "bindings": [
       {
         "binding_name": "#cross_platform_enabled",
@@ -1050,7 +1072,6 @@
   },
 
   "offline_xbox_live_friend_grid_item@invite.msa_friend_grid_item_template": {
-    "type": "panel",
     "bindings": [
       {
         "binding_name": "#cross_platform_enabled",
@@ -1798,6 +1819,41 @@
     ]
   },
 
+ "profile_button_content": {
+    "type": "panel",
+    "size": [ "100%", "100%" ],
+    "layer": 2,
+    "$label_color|default": "$light_button_default_text_color",
+    "controls": [
+      {
+        "button_label": {
+          "type": "label",
+          "text": "$button_text",
+          "layer": 3,
+          "color": "$label_color",
+          "text_alignment": "center",
+          "$invite_label_binding_type|default": "none",
+          "bindings": [
+            {
+              "binding_name": "$button_text",
+              "binding_type": "$invite_label_binding_type"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "profile_button_content_hover@invite.profile_button_content": {
+    "$label_color|default": "$light_button_hover_text_color"
+  },
+  "profile_button_content_pressed@invite.profile_button_content": {
+    "$label_color|default": "$light_button_pressed_text_color"
+  },
+  "profile_button_content_locked@invite.profile_button_content": {
+    "$label_color|default": "$light_button_locked_text_color"
+  },
+
   "add_member_button@common_buttons.light_content_button_control_content": {
     "ignored": "(not $is_realm_owner)",
     "$pressed_button_name": "button.add_member",
@@ -1841,6 +1897,39 @@
         "from_button_id": "button.menu_ok",
         "to_button_id": "$pressed_button_name",
         "mapping_type": "focused"
+      }
+    ]
+  },
+
+  "profile_button@common_buttons.light_content_button_control_content": {
+    "$pressed_button_name": "button.view_profile",
+    "$button_content": "invite.profile_button_content",
+    "$button_content_hover": "invite.profile_button_content_hover",
+    "$button_content_pressed": "invite.profile_button_content_pressed",
+    "$button_content_locked": "invite.profile_button_content_locked",
+    "$button_text|default": "menu.profile",
+    "$icon_description_bind_type": "none",
+    "size": "$button_size",
+    "ignored": "(not $xbox_one)",
+    "layer": 2,
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "$pressed_button_name",
+        "mapping_type": "focused"
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_name": "#profile_button_identifier",
+        "binding_name_override": "#focus_identifier",
+        "binding_collection_name": "$collection_name"
       }
     ]
   },
