@@ -101,8 +101,17 @@
       },
       "minecraft:zombie_husk_jockey": {
         "minecraft:behavior.find_mount": {
-          "priority": 1,
+          "priority": 0,
           "within_radius": 16
+        }
+      },
+      "minecraft:zombie_husk_rider": {
+        "minecraft:behavior.find_mount": {
+          "priority": 0,
+          "within_radius": 16
+        },
+        "minecraft:equipment": {
+          "table": "loot_tables/entities/zombie_rider_equipment.json"
         }
       },
       "minecraft:can_break_doors": {
@@ -113,6 +122,8 @@
 
     "components": {
       "minecraft:is_hidden_when_invisible": {
+      },
+      "minecraft:rotation_locked_to_vehicle": {
       },
       "minecraft:breathable": {
         "total_supply": 15,
@@ -153,6 +164,29 @@
             },
             "cause": "lava",
             "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "on_damage": {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "parched"
+                  },
+                  {
+                    "test": "is_in_same_vehicle",
+                    "subject": "other",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            "deals_damage": "no"
           }
         ]
       },
@@ -646,7 +680,6 @@
                     "minecraft:zombie_husk_baby",
                     "minecraft:zombie_husk_jockey"
                   ]
-
                 }
               }
             ]
@@ -665,6 +698,14 @@
             ]
           }
         ]
+      },
+      "minecraft:spawn_as_rider": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_husk_adult",
+            "minecraft:zombie_husk_rider"
+          ]
+        }
       },
       "minecraft:start_transforming": {
         "add": {

@@ -2,6 +2,70 @@
   "$id": "471923105",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "1088021931": {
+      "properties": {
+        "bone_visibility": {
+          "additionalProperties": {
+            "$ref": "#/definitions/3178719147"
+          },
+          "description": "A JSON object that contains a list of key/value pairs that map from bone name in the specified geometry file (key) to a Molang expression that tells whether the bone should be visible or not (value). The expression is limited to using the \"query.block_state()\" query. When using \"bone_visibility\" in geometry components in the \"permutations\" section, you must also have a default version of the geometry component with \"bone_visibility\" in the \"components\" section.",
+          "maxProperties": 64,
+          "type": "object"
+        },
+        "culling": {
+          "description": "Which block_culling .json file to use when rendering this block.",
+          "maxLength": 256,
+          "type": "string"
+        },
+        "culling_layer": {
+          "description": "A string that allows culling rule to group multiple blocks together when comparing them. When using the minecraft namespace, the only allowed culling layer identifiers are : \"minecraft:culling_layer.undefined\" or \"minecraft:culling_layer.leaves\". When using no namespaces or a custom one, the names must start and end with an alpha-numeric character.",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^(?:minecraft:culling_layer.undefined|minecraft:culling_layer.leaves|(?!minecraft:)[a-z0-9].*[a-z0-9])$",
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
+        },
+        "identifier": {
+          "description": "The description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
+          "maxLength": 256,
+          "type": "string"
+        },
+        "uv_lock": {
+          "description": "A field that is either a Boolean or an array of strings, max size 64 strings. This field locks UV orientation for all/some bones in the geometry, regardless of how the block is rotated using \"minecraft:transformation\" component. For performance reasons it's recommended to use the Boolean.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 64,
+              "type": "array"
+            }
+          ]
+        }
+      },
+      "required": [
+        "identifier"
+      ],
+      "title": "Detailed Geometry",
+      "type": "object"
+    },
+    "1483802163": {
+      "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
+      "oneOf": [
+        {
+          "maxLength": 256,
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/1088021931",
+          "x-runtime-constraint-description": "Cannot use bone visibility feature with Vanilla geometries"
+        }
+      ],
+      "title": "Geometry"
+    },
     "1567399336": {
       "description": "Sets the color and optional tint of the block when rendered to a map.",
       "properties": {
@@ -37,6 +101,48 @@
       "title": "Light Dampening",
       "type": "integer"
     },
+    "2267778531": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "properties": {
+            "expression": {
+              "type": "string"
+            },
+            "version": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "expression",
+            "version"
+          ],
+          "type": "object"
+        }
+      ],
+      "title": "Molang string"
+    },
+    "2279409622": {
+      "description": "Defines the support shape of the block. Currently only allows for blocks to have the same shape as a Vanilla fence and Vanilla stair. To work with custom stairs, requires the use of \"minecraft:vertical_half\" and \"minecraft:cardinal_direction\" or \"minecraft:facing_direction\" which can be set through the \"minecraft:placement_direction\" block trait. Custom blocks without this component will default to unit cube support. The type of support shape for this block. Currently, the options are: \"fence\" and \"stair\".",
+      "properties": {
+        "shape": {
+          "description": "Required field. The type of support shape for this block.",
+          "enum": [
+            "fence",
+            "stair"
+          ],
+          "title": "Support Shape",
+          "type": "string"
+        }
+      },
+      "required": [
+        "shape"
+      ],
+      "title": "Support",
+      "type": "object"
+    },
     "2735968029": {
       "description": "Use this component to define tags, vanilla or custom. Valid tags are of the format \"namespace:tag_name\". The array of tags must be non-empty.",
       "items": {
@@ -52,6 +158,17 @@
       "maxLength": 256,
       "title": "Display Name",
       "type": "string"
+    },
+    "3178719147": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/2267778531"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Molang expression"
     },
     "3527967830": {
       "description": "Sets the particles that will be used when block is destroyed. This component can be omitted.",
@@ -208,6 +325,10 @@
       "$ref": "#/definitions/2879220220",
       "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name."
     },
+    "minecraft:geometry": {
+      "$ref": "#/definitions/1483802163",
+      "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\"."
+    },
     "minecraft:light_dampening": {
       "$ref": "#/definitions/2155690250",
       "description": "The amount that light will be dampened when it passes through the block. Higher value means the light will be dampened more."
@@ -223,6 +344,10 @@
     "minecraft:material_instances": {
       "$ref": "#/definitions/800260518",
       "description": "The material instances for a block.\nMaps face or material_instance names in a geometry file to an actual material instance. Material instance can either be a full material instance or a name to another already defined instance.\nLimited to 64 instances."
+    },
+    "minecraft:support": {
+      "$ref": "#/definitions/2279409622",
+      "description": "Defines the support shape of the block. Currently only allows for blocks to have the same shape as a Vanilla fence and Vanilla stair. To work with custom stairs, requires the use of \"minecraft:vertical_half\" and \"minecraft:cardinal_direction\" or \"minecraft:facing_direction\" which can be set through the \"minecraft:placement_direction\" block trait. Custom blocks without this component will default to unit cube support. The type of support shape for this block. Currently, the options are: \"fence\" and \"stair\"."
     },
     "minecraft:tags": {
       "$ref": "#/definitions/2735968029",

@@ -18,6 +18,7 @@
         "height": 0.95
       },
       "minecraft:burns_in_daylight": {
+        "protection_slot": "slot.armor.body"
       },
       "minecraft:experience_reward": {
         "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
@@ -33,10 +34,7 @@
         "damage_conditions": [
           {
             "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
+              "test": "in_lava"
             },
             "cause": "lava",
             "damage_per_tick": 4
@@ -45,15 +43,12 @@
       },
       "minecraft:is_hidden_when_invisible": {},
       "minecraft:nameable": {},
-      "minecraft:home": {},
+      "minecraft:home": {}, // This component needs to exist to allow 'set_home_position' in events
       "minecraft:physics": {
       },
       "minecraft:pushable": {
         "is_pushable": true,
         "is_pushable_by_piston": true
-      },
-      "minecraft:scale": {
-        "value": 1.0
       },
       "minecraft:type_family": {
         "family":[ "aquatic", "zombienautilus", "undead", "mob" ]
@@ -63,32 +58,6 @@
       },
       "minecraft:mob_effect_immunity": {
         "mob_effects": [ "poison" ]
-      },
-      "minecraft:equippable": {
-        "slots": [
-          {
-            "slot": 0,
-            "item": "saddle",
-            "accepted_items": [ "saddle" ],
-            "on_equip": {
-              "event": "minecraft:on_saddled"
-            },
-            "on_unequip": {
-              "event": "minecraft:on_unsaddled"
-            }
-          },
-          {
-            "slot": 1,
-            "item": "nautilusarmor",
-            "accepted_items": [
-              "minecraft:copper_nautilus_armor",
-              "minecraft:iron_nautilus_armor",
-              "minecraft:golden_nautilus_armor",
-              "minecraft:diamond_nautilus_armor",
-              "minecraft:netherite_nautilus_armor"
-            ]
-          }
-        ]
       },
       "minecraft:navigation.generic": {
         "is_amphibious": false,
@@ -130,12 +99,15 @@
     "component_groups": {
       "minecraft:nautilus_adult": {
         "minecraft:attack": {
-          "damage": [ 5, 10 ]
+          "damage": 3
+        },
+        "minecraft:behavior.hurt_by_target": {
+          "priority": 1
         },
         "minecraft:leashable_to": {
         }
       },
-      "minecraft:nautilus_wild": {
+      "minecraft:nautilus_tameable": {
         "minecraft:behavior.tempt": {
           "priority": 2,
           "speed_multiplier": 2,
@@ -159,6 +131,88 @@
           "tame_event": {
             "event": "minecraft:on_tame",
             "target": "self"
+          }
+        }
+      },
+      "minecraft:nautilus_wild": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "pull_in_entities": true,
+          "on_rider_enter_event": "minecraft:on_drowned_mount",
+          "on_rider_exit_event": "minecraft:on_drowned_dismount",
+          "family_types": [
+            "drowned"
+          ],
+          "seats": {
+            "position": [ 0.0, 1.0, -0.2 ]
+          }
+        }
+      },
+      "minecraft:nautilus_wild_unmounted": {
+        "minecraft:behavior.nearest_attackable_target": {
+          "priority": 5,
+          "must_see": true,
+          "reselect_targets": true,
+          "within_radius": 25.0,
+          "must_see_forget_duration": 17.0,
+          "entity_types": [
+            {
+              "filters": {
+                "any_of": [
+                  { "test": "is_family", "subject": "other", "value": "pufferfish" }
+                ]
+              },
+              "max_dist": 35
+            }
+          ]
+        }
+      },
+      "minecraft:nautilus_wild_mounted": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            "event": "minecraft:on_drowned_dismount"
+          }
+        },
+        "minecraft:movement": {
+          "value": 0.15
+        },
+        "minecraft:underwater_movement": {
+          "value": 0.15
+        }
+      },
+      "minecraft:nautilus_wild_calm": {
+        "minecraft:on_target_acquired": {
+          "event": "minecraft:become_angry",
+          "target": "self"
+        }
+      },
+      "minecraft:nautilus_wild_angry": {
+        "minecraft:angry": {
+          "duration": 20,
+          "broadcast_anger": false,
+          "broadcast_range": 16,
+          "broadcast_anger_when_dying": false,
+          "calm_event": {
+            "event": "minecraft:on_calm",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.aquatic_charge_attack": {
+          "priority": 2,
+          "max_charge_distance": 16,
+          "charge_speed_multiplier": 10.0,
+          "attack_reach": 0.05,
+          "knockback_force": 2.0,
+          "charge_overshoot_distance": 1.5,
+          "charge_cooldown_time": {
+            "min": 4.0,
+            "max": 4.0
           }
         }
       },
@@ -187,15 +241,29 @@
         "minecraft:inventory": {
           "container_type": "horse"
         },
-        "minecraft:leashable": {
-          "on_unleash": {
-            "event": "minecraft:on_unleashed",
-            "target": "self"
-          },
-          "presets": [
+        "minecraft:equippable": {
+          "slots": [
             {
-              "hard_distance": 10,
-              "max_distance": 14
+              "slot": 0,
+              "item": "saddle",
+              "accepted_items": [ "saddle" ],
+              "on_equip": {
+                "event": "minecraft:on_saddled"
+              },
+              "on_unequip": {
+                "event": "minecraft:on_unsaddled"
+              }
+            },
+            {
+              "slot": 1,
+              "item": "nautilusarmor",
+              "accepted_items": [
+                "minecraft:copper_nautilus_armor",
+                "minecraft:iron_nautilus_armor",
+                "minecraft:golden_nautilus_armor",
+                "minecraft:diamond_nautilus_armor",
+                "minecraft:netherite_nautilus_armor"
+              ]
             }
           ]
         },
@@ -318,67 +386,18 @@
           ]
         }
       },
-      "minecraft:nautilus_hostile": {
-        "minecraft:rideable": {
-          "seat_count": 1,
-          "pull_in_entities": true,
-          "on_rider_enter_event": "minecraft:on_drowned_mount",
-          "on_rider_exit_event": "minecraft:on_drowned_dismount",
-          "family_types": [
-            "drowned"
-          ],
-          "seats": {
-            "position": [ 0.0, 1.0, -0.2 ]
-          }
-        },
-        "minecraft:behavior.hurt_by_target": {
-          "priority": 1
-        },
-        "minecraft:behavior.nearest_attackable_target": {
-          "priority": 3,
-          "entity_types": [
-            {
-              "filters": {
-                "test": "is_family",
-                "subject": "other",
-                "value": "player"
-              },
-              "max_dist": 16
-            }
-          ],
-          "must_see": true
-        },
-        "minecraft:on_target_acquired": {
-          "event": "minecraft:become_angry",
-          "target": "self"
-        }
-      },
-      "minecraft:nautilus_angry": {
-        "minecraft:angry": {
-          "duration": 20,
-          "broadcast_anger": false,
-          "broadcast_range": 16,
-          "broadcast_anger_when_dying": false,
-          "calm_event": {
-            "event": "minecraft:on_calm",
+      "minecraft:nautilus_leashable": {
+        "minecraft:leashable": {
+          "on_unleash": {
+            "event": "minecraft:on_unleashed",
             "target": "self"
-          }
-        },
-        "minecraft:on_target_acquired": {
-          "event": "minecraft:become_angry",
-          "target": "self"
-        },
-        "minecraft:behavior.aquatic_charge_attack": {
-          "priority": 2,
-          "max_charge_distance": 16,
-          "charge_speed_multiplier": 10.0,
-          "attack_reach": 0.05,
-          "knockback_force": 2.0,
-          "charge_overshoot_distance": 1.5,
-          "charge_cooldown_time": {
-            "min": 2.0,
-            "max": 2.0
-          }
+          },
+          "presets": [
+            {
+              "hard_distance": 10,
+              "max_distance": 14
+            }
+          ]
         }
       },
       "minecraft:nautilus_tame_saddled_in_water": {
@@ -400,7 +419,7 @@
         },
         "minecraft:dash_action": {
           "cooldown_time": 2,
-          "horizontal_momentum": 110.0,
+          "horizontal_momentum": 154.0,
           "vertical_momentum": 0.1,
           "can_dash_underwater": true,
           "direction": "passenger"
@@ -412,7 +431,6 @@
             {
               "filters": {
                 "test": "in_water",
-                "operator": "==",
                 "value": false
               },
               "event": "minecraft:on_saddled_out_of_water"
@@ -434,9 +452,7 @@
           "triggers": [
             {
               "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
+                "test": "in_water"
               },
               "event": "minecraft:on_saddled_in_water"
             }
@@ -474,25 +490,6 @@
           "restriction_type": "random_movement"
         }
       },
-      "minecraft:nautilus_with_drowned_rider": {
-        "minecraft:environment_sensor": {
-          "triggers": {
-            "filters": {
-              "test": "rider_count",
-              "subject": "self",
-              "operator": "equals",
-              "value": 0
-            },
-            "event": "minecraft:on_drowned_dismount"
-          }
-        },
-        "minecraft:movement": {
-          "value": 0.15
-        },
-        "minecraft:underwater_movement": {
-          "value": 0.15
-        }
-      },
       "minecraft:nautilus_tame_mounted": {
         "minecraft:movement": { //Hack to allow same speed as unmounted
           "value": 0.015
@@ -517,14 +514,17 @@
     },
     "events": {
       "minecraft:entity_spawned": {
-        "trigger": "minecraft:spawn_adult"
+        "trigger": "minecraft:spawn_wild_adult"
       },
-      "minecraft:spawn_adult": {
+      "minecraft:spawn_wild_adult": {
         "add": {
           "component_groups": [
             "minecraft:nautilus_adult",
             "minecraft:nautilus_wild",
-            "minecraft:nautilus_hostile"
+            "minecraft:nautilus_wild_unmounted",
+            "minecraft:nautilus_wild_calm",
+            "minecraft:nautilus_leashable",
+            "minecraft:nautilus_tameable"
           ]
         }
       },
@@ -544,22 +544,21 @@
           },
           {
             "filters": {
-              "test": "in_water",
-              "operator": "==",
-              "value": true
+              "test": "in_water"
             },
             "trigger": "minecraft:on_saddled_in_water"
           },
           {
             "filters": {
               "test": "in_water",
-              "operator": "==",
               "value": false
             },
             "trigger": "minecraft:on_saddled_out_of_water"
+          },
+          {
+            "set_home_position": {}
           }
-        ],
-        "set_home_position": {}
+        ]
       },
       "minecraft:on_saddled_in_water": {
         "remove": {
@@ -615,7 +614,9 @@
         "remove": {
           "component_groups": [
             "minecraft:nautilus_wild",
-            "minecraft:nautilus_hostile"
+            "minecraft:nautilus_wild_unmounted",
+            "minecraft:nautilus_wild_calm",
+            "minecraft:nautilus_tameable"
           ]
         },
         "add": {
@@ -635,24 +636,28 @@
       "minecraft:on_drowned_mount": {
         "remove": {
           "component_groups": [
-            "minecraft:nautilus_wild"
+            "minecraft:nautilus_wild_unmounted",
+            "minecraft:nautilus_leashable",
+            "minecraft:nautilus_tameable"
           ]
         },
         "add": {
           "component_groups": [
-            "minecraft:nautilus_with_drowned_rider"
+            "minecraft:nautilus_wild_mounted"
           ]
         }
       },
       "minecraft:on_drowned_dismount": {
         "remove": {
           "component_groups": [
-            "minecraft:nautilus_with_drowned_rider"
+            "minecraft:nautilus_wild_mounted"
           ]
         },
         "add": {
           "component_groups": [
-            "minecraft:nautilus_wild"
+            "minecraft:nautilus_wild_unmounted",
+            "minecraft:nautilus_leashable",
+            "minecraft:nautilus_tameable"
           ]
         }
       },
@@ -684,24 +689,28 @@
       "minecraft:become_angry": {
         "remove": {
           "component_groups": [
-            "minecraft:nautilus_wild"
+            "minecraft:nautilus_wild_calm",
+            "minecraft:nautilus_leashable",
+            "minecraft:nautilus_tameable"
           ]
         },
         "add": {
           "component_groups": [
-            "minecraft:nautilus_angry"
+            "minecraft:nautilus_wild_angry"
           ]
         }
       },
       "minecraft:on_calm": {
         "remove": {
           "component_groups": [
-            "minecraft:nautilus_angry"
+            "minecraft:nautilus_wild_angry"
           ]
         },
         "add": {
           "component_groups": [
-            "minecraft:nautilus_wild"
+            "minecraft:nautilus_wild_calm",
+            "minecraft:nautilus_leashable",
+            "minecraft:nautilus_tameable"
           ]
         }
       },
