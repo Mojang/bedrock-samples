@@ -5,7 +5,14 @@
       "identifier": "minecraft:zombie_horse",
       "spawn_category": "monster",
       "is_spawnable": true,
-      "is_summonable": true
+      "is_summonable": true,
+      "properties": {
+        "minecraft:was_upgraded_to_1_21_130": {
+          "type": "bool",
+          "client_sync": false,
+          "default": false
+        }
+      }
     },
     "component_groups": {
       "minecraft:horse_baby": {
@@ -52,7 +59,9 @@
           "seat_count": 1,
           "family_types": [
             "player",
-            "zombie"
+            "zombie_rider",
+            "baby_zombie",
+            "baby_husk"
           ],
           "interact_text": "action.interact.mount",
           "seats": {
@@ -91,6 +100,9 @@
             },
             {
               "item": "minecraft:copper_horse_armor"
+            },
+            {
+              "item": "minecraft:netherite_horse_armor"
             },
             {
               "item": "saddle"
@@ -189,24 +201,6 @@
         "minecraft:inventory": {
           "inventory_size": 2,
           "container_type": "horse"
-        },
-        "minecraft:leashable": {
-          "on_unleash": {
-            "event": "minecraft:on_unleashed",
-            "target": "self"
-          },
-          "presets": [
-            {
-              "filter": {
-                "test": "is_family", "subject": "other", "value": "happy_ghast"
-              },
-              "spring_type": "quad_dampened"
-            },
-            {
-              "hard_distance": 10,
-              "max_distance": 14
-            }
-          ]
         }
       },
       "minecraft:horse_saddled": {
@@ -225,6 +219,42 @@
             {
               "entity_type": "minecraft:zombie",
               "spawn_event": "minecraft:spawn_as_rider"
+            }
+          ]
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": { "test": "rider_count", "subject": "self", "value": 0 },
+              "event": "minecraft:hostile_dismounted"
+            }
+          ]
+        }
+      },
+      "minecraft:horse_can_be_leashed" : {
+        "minecraft:leashable": {
+          "on_unleash": {
+            "event": "minecraft:on_unleashed",
+            "target": "self"
+          },
+          "presets": [
+            {
+              "filter": {
+                "test": "is_family", "subject": "other", "value": "happy_ghast"
+              },
+              "spring_type": "quad_dampened"
+            },
+            {
+              "hard_distance": 10,
+              "max_distance": 14
+            }
+          ]
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": { "test": "is_controlling_passenger_family", "subject": "self", "value": "zombie" },
+              "event": "minecraft:hostile_mounted"
             }
           ]
         }
@@ -316,7 +346,8 @@
               "horsearmoriron",
               "horsearmorgold",
               "horsearmordiamond",
-              "minecraft:copper_horse_armor"
+              "minecraft:copper_horse_armor",
+              "minecraft:netherite_horse_armor"
             ]
           }
         ]
@@ -372,6 +403,14 @@
         "is_pushable_by_piston": true
       },
       "minecraft:conditional_bandwidth_optimization": {
+      },
+      "minecraft:environment_sensor": {
+        "triggers": [
+          {
+            "filters": { "test": "bool_property", "operator": "!=", "domain": "minecraft:was_upgraded_to_1_21_130" },
+            "event": "minecraft:upgrade_to_1_21_130"
+          }
+        ]
       }
     },
 
@@ -392,7 +431,8 @@
         "add": {
           "component_groups": [
             "minecraft:horse_adult",
-            "minecraft:horse_wild"
+            "minecraft:horse_wild",
+            "minecraft:horse_can_be_leashed"
           ]
         }
       },
@@ -400,7 +440,8 @@
         "add": {
           "component_groups": [
             "minecraft:horse_adult",
-            "minecraft:horse_tamed"
+            "minecraft:horse_tamed",
+            "minecraft:horse_can_be_leashed"
           ]
         }
       },
@@ -450,6 +491,63 @@
             "minecraft:horse_saddled"
           ]
         }
+      },
+      "minecraft:hostile_dismounted": {
+        "add": {
+          "component_groups": [
+            "minecraft:horse_can_be_leashed"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:horse_wild_with_rider"
+          ]
+        }
+      },
+      "minecraft:hostile_mounted": {
+        "add": {
+          "component_groups": [
+            "minecraft:horse_wild_with_rider"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:horse_can_be_leashed"
+          ]
+        }
+      },
+      "minecraft:upgrade_to_1_21_130": {
+        "sequence":  [
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "!=",
+              "value": "minecraft:rideable"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:horse_tamed"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "!=",
+              "value": "minecraft:leashable"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:horse_can_be_leashed"
+              ]
+            }
+          },
+          {
+            "set_property": {
+              "minecraft:was_upgraded_to_1_21_130": true
+            }
+          }
+        ]
       }
     }
   }

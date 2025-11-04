@@ -8,11 +8,14 @@
           "additionalProperties": {
             "$ref": "#/definitions/3178719147"
           },
+          "default": {
+          },
           "description": "A JSON object that contains a list of key/value pairs that map from bone name in the specified geometry file (key) to a Molang expression that tells whether the bone should be visible or not (value). The expression is limited to using the \"query.block_state()\" query. When using \"bone_visibility\" in geometry components in the \"permutations\" section, you must also have a default version of the geometry component with \"bone_visibility\" in the \"components\" section.",
           "maxProperties": 64,
           "type": "object"
         },
         "culling": {
+          "default": "",
           "description": "Which block_culling .json file to use when rendering this block.",
           "maxLength": 256,
           "type": "string"
@@ -31,6 +34,7 @@
           "type": "string"
         },
         "uv_lock": {
+          "default": false,
           "description": "A field that is either a Boolean or an array of strings, max size 64 strings. This field locks UV orientation for all/some bones in the geometry, regardless of how the block is rotated using \"minecraft:transformation\" component. For performance reasons it's recommended to use the Boolean.",
           "oneOf": [
             {
@@ -66,6 +70,37 @@
       ],
       "title": "Geometry"
     },
+    "1522107605": {
+      "description": "Describes the flammable properties for this block. If this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited.",
+      "properties": {
+        "catch_chance_modifier": {
+          "default": 5,
+          "description": "A modifier affecting the chance that this block will catch flame when next to a fire. Values are greater than or equal to 0, with a higher number meaning more likely to catch on fire. For a catch_chance_modifier greater than 0, the fire will continue to burn until the block is destroyed (or it will burn forever if the destroy_chance_modifier is 0). If the catch_chance_modifier is 0, and the block is directly ignited, the fire will eventually burn out without destroying the block (or it will have a chance to be destroyed if destroy_chance_modifier is greater than 0). The default value of 5 is the same as that of Planks.",
+          "type": "integer"
+        },
+        "destroy_chance_modifier": {
+          "default": 20,
+          "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a destroy_chance_modifier of 0, the block will never be destroyed by fire, and the fire will burn forever if the catch_chance_modifier is greater than 0. The default value of 20 is the same as that of Planks.",
+          "type": "integer"
+        }
+      },
+      "title": "Detailed Flammable",
+      "type": "object"
+    },
+    "1531870811": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      ],
+      "title": "Item Descriptor"
+    },
     "1567399336": {
       "description": "Sets the color and optional tint of the block when rendered to a map.",
       "properties": {
@@ -74,6 +109,7 @@
           "description": "Sets the color of the block when rendered to a map. The color is represented as a hex value in the format \"#RRGGBB\". May also be expressed as an array of [R, G, B] from 0 to 255."
         },
         "tint_method": {
+          "default": "none",
           "description": "Sets the tint method of the block when rendered to a map. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
           "enum": [
             "none",
@@ -93,6 +129,43 @@
       ],
       "title": "Map Color",
       "type": "object"
+    },
+    "1778015353": {
+      "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/691321428"
+        }
+      ],
+      "title": "Destructible By Explosion"
+    },
+    "2123787678": {
+      "description": "Describes the flammable properties for this block. If set to true, default values are used. If set to false, or if this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/1522107605",
+          "description": "Describes the flammable properties for this block. If this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited."
+        }
+      ],
+      "title": "Detailed Flammable"
+    },
+    "2144332438": {
+      "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to mine.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/3591050949"
+        }
+      ],
+      "title": "Destructible By Mining"
     },
     "2155690250": {
       "description": "The amount that light will be dampened when it passes through the block. Higher value means the light will be dampened more.",
@@ -170,20 +243,40 @@
       ],
       "title": "Molang expression"
     },
+    "3212487924": {
+      "description": "The basic redstone properties of a block. If the component is not provided the default values are used.",
+      "properties": {
+        "allows_wire_to_step_down": {
+          "default": true,
+          "description": "Specifies if redstone wire can stair-step downward on the block.",
+          "type": "boolean"
+        },
+        "redstone_conductor": {
+          "default": false,
+          "description": "Specifies if the block can be powered by redstone.",
+          "type": "boolean"
+        }
+      },
+      "title": "Redstone Conductivity",
+      "type": "object"
+    },
     "3527967830": {
       "description": "Sets the particles that will be used when block is destroyed. This component can be omitted.",
       "properties": {
         "particle_count": {
+          "default": 100,
           "description": "Sets number of particles to spawn on block destruction. Default is 100.",
           "maximum": 255,
           "minimum": 0,
           "type": "integer"
         },
         "texture": {
+          "default": "",
           "description": "The texture name used for the particle.",
           "type": "string"
         },
         "tint_method": {
+          "default": "none",
           "description": "Sets the tint method of the particle. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
           "enum": [
             "none",
@@ -199,6 +292,29 @@
         }
       },
       "title": "Destruction Particles",
+      "type": "object"
+    },
+    "3591050949": {
+      "properties": {
+        "item_specific_speeds": {
+          "default": [
+          ],
+          "description": "Optional array with item specific mining speeds.",
+          "items": {
+            "$ref": "#/definitions/4005170816"
+          },
+          "type": "array"
+        },
+        "seconds_to_destroy": {
+          "description": "Sets the number of seconds it takes to mine the block with base equipment. Greater numbers result in greater mining times. A negative number means the block can't be mined",
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "seconds_to_destroy"
+      ],
+      "title": "Detailed Mining Speed",
       "type": "object"
     },
     "3655705218": {
@@ -232,6 +348,95 @@
       ],
       "title": "Color255RGB"
     },
+    "4005170816": {
+      "properties": {
+        "destroy_speed": {
+          "description": "Mining speed for that specific item. A negative number means the block can't be mined with that item.",
+          "type": "number"
+        },
+        "item": {
+          "$ref": "#/definitions/1531870811",
+          "description": "The item with a specific mining speed."
+        }
+      },
+      "required": [
+        "destroy_speed",
+        "item"
+      ],
+      "title": "Item Specific Speed",
+      "type": "object"
+    },
+    "4203318441": {
+      "description": "The definitions for how a block can produce a redstone signal.",
+      "properties": {
+        "connected_faces": {
+          "default": [
+            "down",
+            "up",
+            "north",
+            "south",
+            "west",
+            "east"
+          ],
+          "description": "The list of faces that are considered connected to the circuit. If a face is not connected, it will not provide power to the block touching that face.\nBy default, all faces are connected.",
+          "items": {
+            "enum": [
+              "down",
+              "up",
+              "north",
+              "south",
+              "west",
+              "east"
+            ],
+            "title": "Facing",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "power": {
+          "description": "The strength of the redstone signal produced by this block. 0 means no signal and higher numbers mean stronger signal.",
+          "maximum": 15,
+          "type": "integer"
+        },
+        "strongly_powered_face": {
+          "description": "The block touching this face will become strongly powered with the signal level strength of \"power\".\nStrongly powered blocks will power adjacent blocks.\nBy default, the block will not strongly power any face.",
+          "enum": [
+            "down",
+            "up",
+            "north",
+            "south",
+            "west",
+            "east"
+          ],
+          "title": "Facing",
+          "type": "string"
+        },
+        "transform_relative": {
+          "default": true,
+          "description": "If true, the \"strongly_powered_face\" and \"connected_faces\" properties will be rotated according to the \"minecraft:transformation\" component.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "power"
+      ],
+      "title": "Redstone Producer",
+      "type": "object"
+    },
+    "691321428": {
+      "properties": {
+        "explosion_resistance": {
+          "description": "Sets the explosion resistance for the block. Greater values result in greater resistance to explosions. The scale will be different for different explosion power levels. A negative value or 0 means it will easily explode; larger numbers increase level of resistance.",
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "explosion_resistance"
+      ],
+      "title": "Detailed Resistance",
+      "type": "object"
+    },
     "800260518": {
       "additionalProperties": {
         "oneOf": [
@@ -257,28 +462,34 @@
       "description": "A material instance definition to map to a material instance in a geometry file. The material instance \"*\" will be used for any materials that don't have a match.",
       "properties": {
         "alpha_masked_tint": {
+          "default": false,
           "description": "Is the tint multiplied by the alpha channel of the texture (similar to grass_block's sides). Requires a \"tint_method\" other than \"none\" and a \"render_method\" set to \"opaque\"",
           "type": "boolean"
         },
         "ambient_occlusion": {
+          "default": 1,
           "description": "Should this material have ambient occlusion applied when lighting? If true, shadows will be created around and underneath the block. Optionally can be constructed with float to control exponent applied to ao value after lighting.",
           "maximum": 10,
           "minimum": 0,
           "type": "number"
         },
         "emissive": {
+          "default": true,
           "description": "Should this material be rendered as emissive",
           "type": "boolean"
         },
         "face_dimming": {
+          "default": true,
           "description": "Is this material dimmed by the direction it's facing",
           "type": "boolean"
         },
         "isotropic": {
+          "default": false,
           "description": "Is the faces that this material is applied to randomize their UVs",
           "type": "boolean"
         },
         "render_method": {
+          "default": "opaque",
           "description": "The render method to use. Each material of the block must use the same. The render method can be one of these options:\n\"opaque\" - Used for a regular block texture without an alpha layer. Does not allow for transparency or translucency.\n\"double_sided\" - Used for completely disabling backface culling.\n\"blend\" - Used for a block like stained glass. Allows for transparency and translucency (slightly transparent textures).\n\"alpha_test\" - Used for a block like the vanilla (unstained) glass. Does not allow for translucency, only fully opaque or fully transparent textures. Also disables backface culling.\n\"alpha_test_single_side\" - Same as \"alpha_test\" but with backface culling.\n\"blend_to_opaque\" - Same as \"blend\" but turn opaque in the distance.\n\"alpha_test_to_opaque\" - Same as \"alpha_test\" but turn opaque in the distance instead of disappearing.\n\"alpha_test_single_side_to_opaque\" - Same as \"alpha_test_single_side\" but turn opaque in the distance instead of disappearing.",
           "enum": [
             "double_sided",
@@ -295,9 +506,11 @@
         },
         "texture": {
           "$ref": "#/definitions/3673881199",
+          "default": "",
           "description": "Texture name for the material."
         },
         "tint_method": {
+          "default": "none",
           "description": "Tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
           "enum": [
             "none",
@@ -317,6 +530,14 @@
     }
   },
   "properties": {
+    "minecraft:destructible_by_explosion": {
+      "$ref": "#/definitions/1778015353",
+      "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance."
+    },
+    "minecraft:destructible_by_mining": {
+      "$ref": "#/definitions/2144332438",
+      "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to mine."
+    },
     "minecraft:destruction_particles": {
       "$ref": "#/definitions/3527967830",
       "description": "Sets the particles that will be used when block is destroyed. This component can be omitted."
@@ -324,6 +545,10 @@
     "minecraft:display_name": {
       "$ref": "#/definitions/2879220220",
       "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name."
+    },
+    "minecraft:flammable": {
+      "$ref": "#/definitions/2123787678",
+      "description": "Describes the flammable properties for this block. If set to true, default values are used. If set to false, or if this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited."
     },
     "minecraft:geometry": {
       "$ref": "#/definitions/1483802163",
@@ -344,6 +569,14 @@
     "minecraft:material_instances": {
       "$ref": "#/definitions/800260518",
       "description": "The material instances for a block.\nMaps face or material_instance names in a geometry file to an actual material instance. Material instance can either be a full material instance or a name to another already defined instance.\nLimited to 64 instances."
+    },
+    "minecraft:redstone_conductivity": {
+      "$ref": "#/definitions/3212487924",
+      "description": "The basic redstone properties of a block. If the component is not provided the default values are used."
+    },
+    "minecraft:redstone_producer": {
+      "$ref": "#/definitions/4203318441",
+      "description": "The definitions for how a block can produce a redstone signal."
     },
     "minecraft:support": {
       "$ref": "#/definitions/2279409622",
