@@ -56,6 +56,23 @@
       "title": "Detailed Geometry",
       "type": "object"
     },
+    "1135547207": {
+      "maxLength": 256,
+      "title": "File Reference",
+      "type": "string"
+    },
+    "1140545173": {
+      "description": "Describes the friction for this block in a range of (0.0-0.9). Friction affects an entity's movement speed when it travels on the block. Greater value results in more friction.",
+      "maximum": 0.8999999761581421,
+      "minimum": 0,
+      "title": "Friction",
+      "type": "number"
+    },
+    "1273803565": {
+      "$ref": "#/definitions/1135547207",
+      "description": "The path to the loot table, relative to the behavior pack. Path string is limited to 256 characters.",
+      "title": "Loot"
+    },
     "1483802163": {
       "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
       "oneOf": [
@@ -76,11 +93,15 @@
         "catch_chance_modifier": {
           "default": 5,
           "description": "A modifier affecting the chance that this block will catch flame when next to a fire. Values are greater than or equal to 0, with a higher number meaning more likely to catch on fire. For a catch_chance_modifier greater than 0, the fire will continue to burn until the block is destroyed (or it will burn forever if the destroy_chance_modifier is 0). If the catch_chance_modifier is 0, and the block is directly ignited, the fire will eventually burn out without destroying the block (or it will have a chance to be destroyed if destroy_chance_modifier is greater than 0). The default value of 5 is the same as that of Planks.",
+          "maximum": 65535,
+          "minimum": 0,
           "type": "integer"
         },
         "destroy_chance_modifier": {
           "default": 20,
           "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a destroy_chance_modifier of 0, the block will never be destroyed by fire, and the fire will burn forever if the catch_chance_modifier is greater than 0. The default value of 20 is the same as that of Planks.",
+          "maximum": 65535,
+          "minimum": 0,
           "type": "integer"
         }
       },
@@ -185,6 +206,8 @@
               "type": "string"
             },
             "version": {
+              "maximum": 32767,
+              "minimum": -32768,
               "type": "integer"
             }
           },
@@ -216,6 +239,41 @@
       "title": "Support",
       "type": "object"
     },
+    "2344109265": {
+      "description": "This defines how a block reacts to being moved by another block like a piston.",
+      "properties": {
+        "movement_type": {
+          "description": "How the block reacts to being pushed by another block like a piston. The options are: \"push_pull\" - The default value for this field. The block will be pushed and pulled by a piston. \"push\" - The block will only be pulled by a piston and will ignore a sticky piston. \"popped\" - The block is destroyed when moved by a piston. \"immovable\" - The block is unaffected by a piston.",
+          "enum": [
+            "push_pull",
+            "push",
+            "popped",
+            "immovable"
+          ],
+          "title": "Movement Type",
+          "type": "string"
+        },
+        "sticky": {
+          "default": "none",
+          "description": "How the block should handle adjacent blocks around it when being pushed by another block like a piston. The options are: \"same\" - Adjacent blocks to this block will be moved when moved. This excludes other blocks with the \"same\" property. This will only work with the movement_type: \"push_pull\". \"none\" - The default and will not move adjacent blocks.",
+          "enum": [
+            "none",
+            "same"
+          ],
+          "title": "Sticky Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "movement_type"
+      ],
+      "title": "Movable",
+      "type": "object"
+    },
+    "2511745037": {
+      "description": "This component allows the held item version of this block to be interacted with an empty flowerpot to place the block in it.",
+      "title": "Flower Pottable"
+    },
     "2735968029": {
       "description": "Use this component to define tags, vanilla or custom. Valid tags are of the format \"namespace:tag_name\". The array of tags must be non-empty.",
       "items": {
@@ -238,10 +296,37 @@
           "$ref": "#/definitions/2267778531"
         },
         {
+          "maximum": 3.4028234663852886e+38,
+          "minimum": 1.1754943508222875e-38,
           "type": "number"
         }
       ],
       "title": "Molang expression"
+    },
+    "3210633909": {
+      "description": "Makes your block into a custom crafting table which enables the crafting table UI and the ability to craft recipes.",
+      "properties": {
+        "crafting_tags": {
+          "description": "Defines the tags recipes should define to be crafted on this table. Limited to 64 tags. Each tag is limited to 64 characters.",
+          "items": {
+            "maxLength": 64,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "type": "array"
+        },
+        "table_name": {
+          "default": "",
+          "description": "Specifies the language file key that maps to what text will be displayed in the UI of this table. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this field is omitted, the name displayed will default to the name specified in the \"display_name\" component. If this block has no \"display_name\" component, the name displayed will default to the name of the block.",
+          "maxLength": 256,
+          "type": "string"
+        }
+      },
+      "required": [
+        "crafting_tags"
+      ],
+      "title": "Crafting Table",
+      "type": "object"
     },
     "3212487924": {
       "description": "The basic redstone properties of a block. If the component is not provided the default values are used.",
@@ -307,6 +392,7 @@
         },
         "seconds_to_destroy": {
           "description": "Sets the number of seconds it takes to mine the block with base equipment. Greater numbers result in greater mining times. A negative number means the block can't be mined",
+          "maximum": 3.4028234663852886e+38,
           "minimum": 0,
           "type": "number"
         }
@@ -339,6 +425,8 @@
         },
         {
           "items": {
+            "maximum": 2147483647,
+            "minimum": -2147483648,
             "type": "integer"
           },
           "maxItems": 3,
@@ -352,6 +440,8 @@
       "properties": {
         "destroy_speed": {
           "description": "Mining speed for that specific item. A negative number means the block can't be mined with that item.",
+          "maximum": 3.4028234663852886e+38,
+          "minimum": 1.1754943508222875e-38,
           "type": "number"
         },
         "item": {
@@ -396,6 +486,7 @@
         "power": {
           "description": "The strength of the redstone signal produced by this block. 0 means no signal and higher numbers mean stronger signal.",
           "maximum": 15,
+          "minimum": 0,
           "type": "integer"
         },
         "strongly_powered_face": {
@@ -423,8 +514,26 @@
       "title": "Redstone Producer",
       "type": "object"
     },
+    "4291018146": {
+      "description": "Configures the behavior of an entity falling on this block. The minimum distance in blocks that an actor needs to fall before events are triggered.",
+      "properties": {
+        "min_fall_distance": {
+          "default": 0,
+          "description": "The minimum distance in blocks that an actor needs to fall before events are triggered.",
+          "maximum": 3.4028234663852886e+38,
+          "minimum": 1.1754943508222875e-38,
+          "type": "number"
+        }
+      },
+      "title": "Entity Fall On",
+      "type": "object"
+    },
     "471923105": {
       "properties": {
+        "minecraft:crafting_table": {
+          "$ref": "#/definitions/3210633909",
+          "description": "Makes your block into a custom crafting table which enables the crafting table UI and the ability to craft recipes."
+        },
         "minecraft:destructible_by_explosion": {
           "$ref": "#/definitions/1778015353",
           "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance."
@@ -441,9 +550,21 @@
           "$ref": "#/definitions/2879220220",
           "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name."
         },
+        "minecraft:entity_fall_on": {
+          "$ref": "#/definitions/4291018146",
+          "description": "Configures the behavior of an entity falling on this block. The minimum distance in blocks that an actor needs to fall before events are triggered."
+        },
         "minecraft:flammable": {
           "$ref": "#/definitions/2123787678",
           "description": "Describes the flammable properties for this block. If set to true, default values are used. If set to false, or if this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited."
+        },
+        "minecraft:flower_pottable": {
+          "$ref": "#/definitions/2511745037",
+          "description": "This component allows the held item version of this block to be interacted with an empty flowerpot to place the block in it."
+        },
+        "minecraft:friction": {
+          "$ref": "#/definitions/1140545173",
+          "description": "Describes the friction for this block in a range of (0.0-0.9). Friction affects an entity's movement speed when it travels on the block. Greater value results in more friction."
         },
         "minecraft:geometry": {
           "$ref": "#/definitions/1483802163",
@@ -457,6 +578,10 @@
           "$ref": "#/definitions/3655705218",
           "description": "The amount of light this block will emit. Higher value means more light will be emitted."
         },
+        "minecraft:loot": {
+          "$ref": "#/definitions/1273803565",
+          "description": "The path to the loot table, relative to the behavior pack. Path string is limited to 256 characters."
+        },
         "minecraft:map_color": {
           "$ref": "#/definitions/1567399336",
           "description": "Sets the color and optional tint of the block when rendered to a map."
@@ -464,6 +589,10 @@
         "minecraft:material_instances": {
           "$ref": "#/definitions/800260518",
           "description": "The material instances for a block.\nMaps face or material_instance names in a geometry file to an actual material instance. Material instance can either be a full material instance or a name to another already defined instance.\nLimited to 64 instances."
+        },
+        "minecraft:movable": {
+          "$ref": "#/definitions/2344109265",
+          "description": "This defines how a block reacts to being moved by another block like a piston."
         },
         "minecraft:redstone_conductivity": {
           "$ref": "#/definitions/3212487924",
@@ -489,6 +618,7 @@
       "properties": {
         "explosion_resistance": {
           "description": "Sets the explosion resistance for the block. Greater values result in greater resistance to explosions. The scale will be different for different explosion power levels. A negative value or 0 means it will easily explode; larger numbers increase level of resistance.",
+          "maximum": 3.4028234663852886e+38,
           "minimum": 0,
           "type": "number"
         }
@@ -534,11 +664,6 @@
           "maximum": 10,
           "minimum": 0,
           "type": "number"
-        },
-        "emissive": {
-          "default": true,
-          "description": "Should this material be rendered as emissive",
-          "type": "boolean"
         },
         "face_dimming": {
           "default": true,
@@ -595,7 +720,7 @@
     "components": {
       "$ref": "#/definitions/471923105",
       "propertyNames": {
-        "pattern": "^(?!(minecraft:support)$)",
+        "pattern": "^(?!(minecraft:support|minecraft:flower_pottable)$)",
         "type": "string"
       },
       "x-runtime-constraint-description": "Block needs both a geometry and material instances component."

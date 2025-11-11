@@ -3,9 +3,16 @@
     "minecraft:entity": {
         "description": {
             "identifier": "minecraft:camel_husk",
-            "spawn_category": "creature",
+            "spawn_category": "monster",
             "is_spawnable": true,
-            "is_summonable": true
+            "is_summonable": true,
+            "properties": {
+                "minecraft:has_rider_mounted": {
+                    "type": "bool",
+                    "default": false,
+                    "client_sync": false
+                }
+            }
         },
 
         "component_groups": {
@@ -23,7 +30,7 @@
                     "vertical_momentum": 0.6
                 }
             },
-            "minecraft:camel_husk_with_rider": {
+            "minecraft:camel_husk_with_hostile_rider": {
                 "minecraft:addrider": {
                     "riders": [
                         {
@@ -35,6 +42,169 @@
                             "spawn_event": "minecraft:ranged_mode"
                         }
                     ]
+                }
+            },
+            "minecraft:camel_husk_with_no_hostile_rider": {
+                "minecraft:leashable": {
+                    "presets": [
+                        {
+                            "filter": {
+                                "test": "is_family",
+                                "subject": "other",
+                                "value": "happy_ghast"
+                            },
+                            "spring_type": "quad_dampened"
+                        }
+                    ]
+                },
+                "minecraft:leashable_to": {
+                },
+                "minecraft:behavior.tempt": {
+                    "priority": 4,
+                    "speed_multiplier": 2.5,
+                    "can_tempt_vertically": true,
+                    "items": [ "rabbit_foot" ]
+                },
+                "minecraft:equippable": {
+                    "slots": [
+                        {
+                            "slot": 0,
+                            "item": "saddle",
+                            "accepted_items": [ "saddle" ],
+                            "on_equip": {
+                                "event": "minecraft:camel_husk_saddled"
+                            },
+                            "on_unequip": {
+                                "event": "minecraft:camel_husk_unsaddled"
+                            }
+                        }
+                    ]
+                },
+                "minecraft:interact": {
+                    "interactions": [
+                        {
+                            "play_sounds": "saddle",
+                            "on_interact": {
+                                "filters": {
+                                    "all_of": [
+                                        {
+                                            "test": "has_equipment",
+                                            "subject": "self",
+                                            "domain": "inventory",
+                                            "operator": "not",
+                                            "value": "saddle"
+                                        },
+                                        {
+                                            "test": "has_equipment",
+                                            "subject": "other",
+                                            "domain": "hand",
+                                            "value": "saddle"
+                                        },
+                                        {
+                                            "test": "is_sneak_held",
+                                            "subject": "other",
+                                            "value": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "equip_item_slot": "0",
+                            "interact_text": "action.interact.saddle"
+                        },
+                        // Removing the Saddle while the Camel is standing. Keep consistent with the next interaction.
+                        {
+                            "on_interact": {
+                                "filters": {
+                                    "all_of": [
+                                        {
+                                            "test": "is_sitting",
+                                            "subject": "self",
+                                            "value": false
+                                        },
+                                        {
+                                            "test": "rider_count",
+                                            "subject": "self",
+                                            "operator": "equals",
+                                            "value": 0
+                                        },
+                                        {
+                                            "test": "has_equipment",
+                                            "subject": "self",
+                                            "domain": "inventory",
+                                            "value": "saddle"
+                                        },
+                                        {
+                                            "test": "has_equipment",
+                                            "subject": "other",
+                                            "domain": "hand",
+                                            "value": "shears"
+                                        },
+                                        {
+                                            "test": "is_sneak_held",
+                                            "subject": "other",
+                                            "value": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "hurt_item": 1,
+                            "drop_item_slot": "0",
+                            // Bigger offset when the Camel is standing.
+                            "drop_item_y_offset": 2,
+                            "interact_text": "action.interact.removesaddle",
+                            "play_sounds": "unsaddle",
+                            "vibration": "shear"
+                        },
+                        // Removing the Saddle while the Camel is sitting. Keep consistent with the previous interaction.
+                        {
+                            "on_interact": {
+                                "filters": {
+                                    "all_of": [
+                                        {
+                                            "test": "is_sitting",
+                                            "subject": "self"
+                                        },
+                                        {
+                                            "test": "rider_count",
+                                            "subject": "self",
+                                            "operator": "equals",
+                                            "value": 0
+                                        },
+                                        {
+                                            "test": "has_equipment",
+                                            "subject": "self",
+                                            "domain": "inventory",
+                                            "value": "saddle"
+                                        },
+                                        {
+                                            "test": "has_equipment",
+                                            "subject": "other",
+                                            "domain": "hand",
+                                            "value": "shears"
+                                        },
+                                        {
+                                            "test": "is_sneak_held",
+                                            "subject": "other",
+                                            "value": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "hurt_item": 1,
+                            "drop_item_slot": "0",
+                            // Smaller offset when the Camel is sitting.
+                            "drop_item_y_offset": 1,
+                            "interact_text": "action.interact.removesaddle",
+                            "play_sounds": "unsaddle",
+                            "vibration": "shear"
+                        }
+                    ]
+                }
+            },
+            "minecraft:camel_husk_with_no_rider": {
+                "minecraft:behavior.panic": {
+                    "priority": 2,
+                    "speed_multiplier": 4
                 }
             },
             "minecraft:camel_husk_standing": {
@@ -138,16 +308,6 @@
                 "chance_per_tick_to_float": 1.0,
                 "time_under_water_to_dismount_passengers": 2.0
             },
-            "minecraft:behavior.panic": {
-                "priority": 2,
-                "speed_multiplier": 4
-            },
-            "minecraft:behavior.tempt": {
-                "priority": 4,
-                "speed_multiplier": 2.5,
-                "can_tempt_vertically": true,
-                "items": [ "rabbit_foot" ]
-            },
             "minecraft:behavior.random_look_around_and_sit": {
                 "priority": 5,
                 "continue_if_leashed": true,
@@ -181,8 +341,6 @@
             "minecraft:inventory": {
                 "container_type": "horse"
             },
-            "minecraft:leashable_to": {
-            },
             "minecraft:experience_reward": {
                 "on_bred": "Math.Random(1,7)",
                 "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
@@ -192,7 +350,6 @@
             "minecraft:rideable": {
                 "seat_count": 2,
                 "crouching_skip_interact": true,
-                "pull_in_entities": true,
                 "family_types": [
                     "player",
                     "parched",
@@ -212,156 +369,47 @@
                     }
                 ]
             },
-            "minecraft:leashable": {
-                "presets": [
-                    {
-                        "filter": {
-                            "test": "is_family",
-                            "subject": "other",
-                            "value": "happy_ghast"
-                        },
-                        "spring_type": "quad_dampened"
-                    }
-                ]
-            },
             "minecraft:behavior.mount_pathing": {
                 "priority": 3,
                 "speed_multiplier": 4,
                 "target_dist": 0.0,
                 "track_target": true
             },
-            "minecraft:equippable": {
-                "slots": [
+            "minecraft:environment_sensor": {
+                "triggers": [
                     {
-                        "slot": 0,
-                        "item": "saddle",
-                        "accepted_items": [ "saddle" ],
-                        "on_equip": {
-                            "event": "minecraft:camel_husk_saddled"
+                        "filters": {
+                            "all_of": [
+                                {
+                                    "test": "bool_property",
+                                    "domain": "minecraft:has_rider_mounted"
+                                },
+                                {
+                                    "test": "rider_count",
+                                    "subject": "self",
+                                    "value": 0
+                                }
+                            ]
                         },
-                        "on_unequip": {
-                            "event": "minecraft:camel_husk_unsaddled"
-                        }
-                    }
-                ]
-            },
-            "minecraft:interact": {
-                "interactions": [
-                    {
-                        "play_sounds": "saddle",
-                        "on_interact": {
-                            "filters": {
-                                "all_of": [
-                                    {
-                                        "test": "has_equipment",
-                                        "subject": "self",
-                                        "domain": "inventory",
-                                        "operator": "not",
-                                        "value": "saddle"
-                                    },
-                                    {
-                                        "test": "has_equipment",
-                                        "subject": "other",
-                                        "domain": "hand",
-                                        "value": "saddle"
-                                    },
-                                    {
-                                        "test": "is_sneak_held",
-                                        "subject": "other",
-                                        "value": false
-                                    }
-                                ]
-                            }
-                        },
-                        "equip_item_slot": "0",
-                        "interact_text": "action.interact.saddle"
+                        "event": "minecraft:all_riders_dismounted"
                     },
-                    // Removing the Saddle while the Camel is standing. Keep consistent with the next interaction.
                     {
-                        "on_interact": {
-                            "filters": {
-                                "all_of": [
-                                    {
-                                        "test": "is_sitting",
-                                        "subject": "self",
-                                        "value": false
-                                    },
-                                    {
-                                        "test": "rider_count",
-                                        "subject": "self",
-                                        "operator": "equals",
-                                        "value": 0
-                                    },
-                                    {
-                                        "test": "has_equipment",
-                                        "subject": "self",
-                                        "domain": "inventory",
-                                        "value": "saddle"
-                                    },
-                                    {
-                                        "test": "has_equipment",
-                                        "subject": "other",
-                                        "domain": "hand",
-                                        "value": "shears"
-                                    },
-                                    {
-                                        "test": "is_sneak_held",
-                                        "subject": "other",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                        "filters": {
+                            "all_of": [
+                                {
+                                    "test": "bool_property",
+                                    "domain": "minecraft:has_rider_mounted",
+                                    "value": false
+                                },
+                                {
+                                    "test": "rider_count",
+                                    "subject": "self",
+                                    "operator": ">",
+                                    "value": 0
+                                }
+                            ]
                         },
-                        "hurt_item": 1,
-                        "drop_item_slot": "0",
-                        // Bigger offset when the Camel is standing.
-                        "drop_item_y_offset": 2,
-                        "interact_text": "action.interact.removesaddle",
-                        "play_sounds": "unsaddle",
-                        "vibration": "shear"
-                    },
-                    // Removing the Saddle while the Camel is sitting. Keep consistent with the previous interaction.
-                    {
-                        "on_interact": {
-                            "filters": {
-                                "all_of": [
-                                    {
-                                        "test": "is_sitting",
-                                        "subject": "self"
-                                    },
-                                    {
-                                        "test": "rider_count",
-                                        "subject": "self",
-                                        "operator": "equals",
-                                        "value": 0
-                                    },
-                                    {
-                                        "test": "has_equipment",
-                                        "subject": "self",
-                                        "domain": "inventory",
-                                        "value": "saddle"
-                                    },
-                                    {
-                                        "test": "has_equipment",
-                                        "subject": "other",
-                                        "domain": "hand",
-                                        "value": "shears"
-                                    },
-                                    {
-                                        "test": "is_sneak_held",
-                                        "subject": "other",
-                                        "value": false
-                                    }
-                                ]
-                            }
-                        },
-                        "hurt_item": 1,
-                        "drop_item_slot": "0",
-                        // Smaller offset when the Camel is sitting.
-                        "drop_item_y_offset": 1,
-                        "interact_text": "action.interact.removesaddle",
-                        "play_sounds": "unsaddle",
-                        "vibration": "shear"
+                        "event": "minecraft:rider_mounted"
                     }
                 ]
             }
@@ -371,7 +419,9 @@
             "minecraft:entity_spawned": {
                 "add": {
                     "component_groups": [
-                        "minecraft:camel_husk_standing"
+                        "minecraft:camel_husk_standing",
+                        "minecraft:camel_husk_with_no_rider",
+                        "minecraft:camel_husk_with_no_hostile_rider"
                     ]
                 }
             },
@@ -379,8 +429,11 @@
                 "add": {
                     "component_groups": [
                         "minecraft:camel_husk_standing",
-                        "minecraft:camel_husk_with_rider"
+                        "minecraft:camel_husk_with_hostile_rider"
                     ]
+                },
+                "set_property": {
+                    "minecraft:has_rider_mounted": true
                 }
             },
             "minecraft:camel_husk_saddled": {
@@ -393,8 +446,7 @@
             "minecraft:camel_husk_unsaddled": {
                 "remove": {
                     "component_groups": [
-                        "minecraft:camel_husk_saddled",
-                        "minecraft:camel_husk_with_rider"
+                        "minecraft:camel_husk_saddled"
                     ]
                 }
             },
@@ -420,6 +472,32 @@
                     "component_groups": [
                         "minecraft:camel_husk_sitting"
                     ]
+                }
+            },
+            "minecraft:all_riders_dismounted": {
+                "add": {
+                    "component_groups": [
+                        "minecraft:camel_husk_with_no_rider",
+                        "minecraft:camel_husk_with_no_hostile_rider"
+                    ]
+                },
+                "remove": {
+                    "component_groups": [
+                        "minecraft:camel_husk_with_hostile_rider"
+                    ]
+                },
+                "set_property": {
+                    "minecraft:has_rider_mounted": false
+                }
+            },
+            "minecraft:rider_mounted": {
+                "remove": {
+                    "component_groups": [
+                        "minecraft:camel_husk_with_no_rider"
+                    ]
+                },
+                "set_property": {
+                    "minecraft:has_rider_mounted": true
                 }
             }
         }
