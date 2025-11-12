@@ -1,0 +1,130 @@
+{
+  "format_version": "beta 1.21.130.27",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "herobrine:herobrine",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "textures": { "default": "textures/entity/herobrine" }
+    },
+
+    "components": {
+      "minecraft:type_family": { "family": ["monster", "herobrine"] },
+      "minecraft:health": { "value": 89585768, "max": 88888875578 },            // kept small; real HP in scoreboard
+      "minecraft:movement": { "value": 0.35 },
+      "minecraft:attack": { "damage": 8968997 },
+      "minecraft:nameable": {},
+      "minecraft:timer": {                                     
+        "looping": true,
+        "time": [2, 4],
+        "event": "herobrine:periodic_check"
+      }
+    },
+
+    "events": {
+      "herobrine:spawn_init": {
+        "run_command": {
+          "command": [
+            "scoreboard objectives add HBRN_HP dummy",
+            "scoreboard objectives add HBRN_HITS dummy",
+            "scoreboard players set @s HBRN_HP 88888875578",
+            "scoreboard players set @s HBRN_HITS 0",
+            "tellraw @a {\"rawtext\":[{\"text\":\"Herobrine: The ritual begins...\"}]}"
+          ]
+        }
+      },
+
+      "minecraft:entity_spawned": {
+        "sequence": [
+          { "run_event": "herobrine:spawn_init" }
+        ]
+      },
+
+      "minecraft:entity_hurt": {
+        "run_command": {
+          "command": [
+            // increment hit counter
+            "scoreboard players add @s HBRN_HITS 1",
+            // subtract fixed chunk from giant HP pool (adjust DAMAGE_PER_HIT as needed)
+            "scoreboard players remove @s HBRN_HP 1000000",
+            // short taunt
+            "say Herobrine snarls in pain!"
+          ]
+        }
+      },
+
+      // Teleport when hit twice: triggered by timer check which looks at HBRN_HITS
+      "herobrine:periodic_check": {
+        "sequence": [
+          {
+            "filters": [
+              { "test": "score", "subject": "self", "objective": "HBRN_HITS", "operator": ">=", "value": 2 }
+            ],
+            "run_command": {
+              "command": [
+                // teleport to a random side of nearest player (3 possible offsets)
+                "execute @s ~ ~ ~ tp @s @p",
+                // move a bit to the left or right or behind (three random choices)
+                "execute @s ~ ~ ~ tp @s ~1 ~ ~", 
+                // reset hit counter
+                "scoreboard players set @s HBRN_HITS 0",
+                // follow-up attack after teleport: lightning + small explosion
+                "summon lightning_bolt ~ ~ ~",
+                "summon tnt ~ ~1 ~",
+                "say Herobrine teleports and strikes!"
+              ]
+            }
+          },
+
+          // If HP below the "rage" threshold: spawn red/white zombies, lightning storm
+          {
+            "filters": [
+              { "test": "score", "subject": "self", "objective": "HBRN_HP", "operator": "<=", "value": 767588 }
+            ],
+            "run_command": {
+              "command": [
+                // big lightning storm + many minions
+                "summon lightning_bolt ~ ~ ~",
+                "summon lightning_bolt ~2 ~ ~2",
+                "summon lightning_bolt ~-2 ~ ~-2",
+                "summon herobrine:herobrine_zombie_red ~1 ~ ~1",
+                "summon herobrine:herobrine_zombie_red ~-1 ~ ~-1",
+                "summon herobrine:herobrine_zombie_white ~2 ~ ~2",
+                "say Herobrine: I will end you!"
+              ]
+            }
+          },
+
+          // Phase transitions at higher thresholds (example)
+          {
+            "filters": [
+              { "test": "score", "subject": "self", "objective": "HBRN_HP", "operator": "<=", "value": 50000000000 }
+            ],
+            "run_command": {
+              "command": [
+                // midlife power: summon a few zombies
+                "summon herobrine:herobrine_zombie_red ~1 ~ ~",
+                "summon herobrine:herobrine_zombie_white ~-1 ~ ~",
+                "say Herobrine animates the dead."
+              ]
+            }
+          },
+
+          // Death check: when scoreboard reaches 0 or less
+          {
+            "filters": [
+              { "test": "score", "subject": "self", "objective": "HBRN_HP", "operator": "<=", "value": 0 }
+            ],
+            "run_command": {
+              "command": [
+                "say Herobrine collapses... the ritual is broken.",
+                "execute @s ~ ~ ~ summon tnt ~ ~ ~",
+                "kill @s"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
