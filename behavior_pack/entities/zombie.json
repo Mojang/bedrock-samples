@@ -206,6 +206,24 @@
           "cooldown_speed_multiplier": 1.4,
           "hijack_mount_navigation": true
         }
+      },
+      "minecraft:not_on_zombie_horse": {
+        "minecraft:behavior.use_kinetic_weapon": {
+          "priority": 3,
+          "track_target": true,
+          "approach_distance": 10.0,
+          "reposition_distance": {
+            "min": 6.0,
+            "max": 7.0
+          },
+          "cooldown_distance": {
+            "min": 9.0,
+            "max": 11.0
+          },
+          "weapon_reach_multiplier": 0.5,
+          "weapon_min_speed_multiplier": 0.2,
+          "hijack_mount_navigation": true
+        }
       }
     },
 
@@ -584,22 +602,6 @@
       "minecraft:behavior.equip_item": {
         "priority": 2
       },
-      "minecraft:behavior.use_kinetic_weapon": {
-        "priority": 3,
-        "track_target": true,
-        "approach_distance": 10.0,
-        "reposition_distance": {
-          "min": 6.0,
-          "max": 7.0
-        },
-        "cooldown_distance": {
-          "min": 9.0,
-          "max": 11.0
-        },
-        "weapon_reach_multiplier": 0.5,
-        "weapon_min_speed_multiplier": 0.2,
-        "hijack_mount_navigation": true
-      },
       "minecraft:behavior.melee_box_attack": {
         "can_spread_on_fire": true,
         "priority": 4
@@ -764,6 +766,7 @@
             "minecraft:zombie_default",
             "minecraft:zombie_adult",
             "minecraft:on_foot",
+            "minecraft:not_on_zombie_horse",
             "minecraft:can_have_equipment"
           ]
         }
@@ -774,6 +777,7 @@
             "minecraft:zombie_default",
             "minecraft:zombie_baby",
             "minecraft:on_foot",
+            "minecraft:not_on_zombie_horse",
             "minecraft:can_have_equipment"
           ]
         }
@@ -783,6 +787,7 @@
           "component_groups": [
             "minecraft:zombie_baby",
             "minecraft:zombie_jockey",
+            "minecraft:not_on_zombie_horse",
             "minecraft:can_have_equipment"
           ]
         }
@@ -842,19 +847,31 @@
         "add": {
           "component_groups": [
             "minecraft:zombie_adult",
-            "minecraft:zombie_rider"
+            "minecraft:zombie_rider",
+            // On Vanilla riders always spawn on Zombie Horses, but if
+            // it is not the case this will fix itself next tick.
+            "minecraft:on_zombie_horse"
           ]
+        },
+        "set_property": {
+          "minecraft:is_riding_zombie_horse": true
         }
       },
       "minecraft:on_start_riding_zombie_horse": {
         "add": {
           "component_groups": [ "minecraft:on_zombie_horse" ]
         },
+        "remove": {
+          "component_groups": [ "minecraft:not_on_zombie_horse" ]
+        },
         "set_property": {
           "minecraft:is_riding_zombie_horse": true
         }
       },
       "minecraft:on_stop_riding_zombie_horse": {
+        "add": {
+          "component_groups": [ "minecraft:not_on_zombie_horse" ]
+        },
         "remove": {
           "component_groups": [ "minecraft:on_zombie_horse" ]
         },

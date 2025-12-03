@@ -1,8 +1,9 @@
 {
-  "format_version": "1.21.130",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:zombie_nautilus",
+      "spawn_category": "monster",
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
@@ -14,6 +15,7 @@
         }
       }
     },
+
     "components": {
       "minecraft:breathable": {
         "total_supply": 15,
@@ -59,7 +61,7 @@
         "is_pushable_by_piston": true
       },
       "minecraft:type_family": {
-        "family":[ "aquatic", "zombie_nautilus", "undead", "mob" ]
+        "family":[ "aquatic", "zombie_nautilus", "undead", "monster", "mob" ]
       },
       "minecraft:knockback_resistance": {
         "value": 0.3
@@ -112,11 +114,12 @@
         "success_rate": 0.1
       }
     },
+
     "component_groups": {
       "minecraft:zombie_nautilus_tameable": {
         "minecraft:behavior.tempt": {
           "priority": 2,
-          "speed_multiplier": 2,
+          "speed_multiplier": 1.3,
           "items": [
             "pufferfish",
             "pufferfish_bucket"
@@ -150,7 +153,7 @@
             "drowned"
           ],
           "seats": {
-            "position": [ 0.0, 1.0, -0.2 ]
+            "position": [ 0.0, 0.925, -0.2 ]
           }
         }
       },
@@ -162,8 +165,8 @@
           "within_radius": 25.0,
           "must_see_forget_duration": 17.0,
           "attack_interval": {
-            "range_min": 120.0,
-            "range_max": 180.0
+            "min": 120.0,
+            "max": 180.0
           },
           "target_acquisition_probability": 0.5,
           "entity_types": [
@@ -230,7 +233,7 @@
       "minecraft:zombie_nautilus_tame": {
         "minecraft:behavior.tempt": {
           "priority": 2,
-          "speed_multiplier": 2,
+          "speed_multiplier": 1.3,
           "items": [
             "pufferfish_bucket",
             "cod_bucket",
@@ -248,6 +251,20 @@
           }
         },
         "minecraft:is_tamed": {
+        },
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "on_rider_enter_event": "minecraft:on_player_mount",
+          "on_rider_exit_event": "minecraft:on_player_dismount",
+          "seats": {
+            "position": [ 0.0, 0.925, 0.0 ],
+            "third_person_camera_radius": 7.0
+          }
         },
         "minecraft:inventory": {
           "container_type": "horse"
@@ -425,7 +442,7 @@
           }
         },
         "minecraft:free_camera_controlled": {
-          "strafe_speed_modifier": 0.35,
+          "strafe_speed_modifier": 0.7,
           "backwards_movement_modifier": 0.5
         },
         "minecraft:dash_action": {
@@ -473,20 +490,6 @@
       "minecraft:zombie_nautilus_tame_saddled": {
         "minecraft:is_saddled": {
         },
-        "minecraft:rideable": {
-          "seat_count": 1,
-          "crouching_skip_interact": true,
-          "interact_text": "action.interact.ride.horse",
-          "family_types": [
-            "player"
-          ],
-          "on_rider_enter_event": "minecraft:on_player_mount",
-          "on_rider_exit_event": "minecraft:on_player_dismount",
-          "seats": {
-            "position": [ 0.0, 1.0, 0.0 ],
-            "third_person_camera_radius": 7.0
-          }
-        },
         "minecraft:home": {
           "restriction_radius": 16,
           "restriction_type": "random_movement"
@@ -501,15 +504,15 @@
           "restriction_type": "random_movement"
         }
       },
-      "minecraft:zombie_nautilus_tame_mounted": {
-        "minecraft:movement": { //Hack to allow same speed as unmounted
+      "minecraft:zombie_nautilus_player_controlled": {
+        "minecraft:movement": { //Hack to allow same speed as ai-controlled
           "value": 0.015
         },
         "minecraft:underwater_movement": {
           "value": 0.055
         }
       },
-      "minecraft:zombie_nautilus_tame_unmounted": {
+      "minecraft:zombie_nautilus_ai_controlled": {
         "minecraft:movement": {
           "value": 0.15
         },
@@ -523,6 +526,7 @@
         }
       }
     },
+
     "events": {
       "minecraft:entity_spawned": {
         "sequence": [
@@ -533,7 +537,8 @@
                 "minecraft:zombie_nautilus_wild_unmounted",
                 "minecraft:zombie_nautilus_wild_calm",
                 "minecraft:zombie_nautilus_leashable",
-                "minecraft:zombie_nautilus_tameable"
+                "minecraft:zombie_nautilus_tameable",
+                "minecraft:zombie_nautilus_ai_controlled"
               ]
             }
           },
@@ -558,6 +563,12 @@
       "minecraft:on_saddled": {
         "sequence": [
           {
+            "filters": { // Make sure Zombie Nautilus switches to player-controlled if saddle is added while player is riding
+              "test": "rider_count", "subject": "self", "operator": ">", "value": 0
+            },
+            "trigger": "minecraft:switch_to_player_controlled"
+          },
+          {
             "remove": {
               "component_groups": [
                 "minecraft:zombie_nautilus_tame_unsaddled"
@@ -567,7 +578,8 @@
               "component_groups": [
                 "minecraft:zombie_nautilus_tame_saddled"
               ]
-            }
+            },
+            "set_home_position": {}
           },
           {
             "filters": {
@@ -581,9 +593,6 @@
               "value": false
             },
             "trigger": "minecraft:on_saddled_out_of_water"
-          },
-          {
-            "set_home_position": {}
           }
         ]
       },
@@ -597,8 +606,7 @@
           "component_groups": [
             "minecraft:zombie_nautilus_tame_saddled_in_water"
           ]
-        },
-        "set_home_position": {}
+        }
       },
       "minecraft:on_saddled_out_of_water": {
         "remove": {
@@ -643,7 +651,8 @@
             "minecraft:zombie_nautilus_wild",
             "minecraft:zombie_nautilus_wild_unmounted",
             "minecraft:zombie_nautilus_wild_calm",
-            "minecraft:zombie_nautilus_tameable"
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
           ]
         },
         "add": {
@@ -665,7 +674,8 @@
           "component_groups": [
             "minecraft:zombie_nautilus_wild_unmounted",
             "minecraft:zombie_nautilus_leashable",
-            "minecraft:zombie_nautilus_tameable"
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
           ]
         },
         "add": {
@@ -684,33 +694,20 @@
           "component_groups": [
             "minecraft:zombie_nautilus_wild_unmounted",
             "minecraft:zombie_nautilus_leashable",
-            "minecraft:zombie_nautilus_tameable"
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
           ]
         }
       },
       "minecraft:on_player_mount": {
-        "remove": {
-          "component_groups": [
-            "minecraft:zombie_nautilus_tame_unmounted"
-          ]
+        "filters": {
+          "test": "has_component",
+          "value": "minecraft:is_saddled"
         },
-        "add": {
-          "component_groups": [
-            "minecraft:zombie_nautilus_tame_mounted"
-          ]
-        }
+        "trigger": "minecraft:switch_to_player_controlled"
       },
       "minecraft:on_player_dismount": {
-        "remove": {
-          "component_groups": [
-            "minecraft:zombie_nautilus_tame_mounted"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "minecraft:zombie_nautilus_tame_unmounted"
-          ]
-        },
+        "trigger": "minecraft:switch_to_ai_controlled",
         "set_home_position": {}
       },
       "minecraft:become_angry": {
@@ -752,6 +749,30 @@
         "remove": {
           "component_groups": [
             "minecraft:zombie_nautilus_charging"
+          ]
+        }
+      },
+      "minecraft:switch_to_player_controlled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_player_controlled"
+          ]
+        }
+      },
+      "minecraft:switch_to_ai_controlled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_player_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_ai_controlled"
           ]
         }
       }

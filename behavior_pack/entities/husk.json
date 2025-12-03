@@ -190,6 +190,24 @@
           "cooldown_speed_multiplier": 4.0,
           "hijack_mount_navigation": true
         }
+      },
+      "minecraft:not_on_camel_husk": {
+        "minecraft:behavior.use_kinetic_weapon": {
+          "priority": 3,
+          "track_target": true,
+          "approach_distance": 10.0,
+          "reposition_distance": {
+            "min": 6.0,
+            "max": 7.0
+          },
+          "cooldown_distance": {
+            "min": 9.0,
+            "max": 11.0
+          },
+          "weapon_reach_multiplier": 0.5,
+          "weapon_min_speed_multiplier": 0.2,
+          "hijack_mount_navigation": true
+        }
       }
     },
 
@@ -578,22 +596,6 @@
       "minecraft:behavior.equip_item": {
         "priority": 2
       },
-      "minecraft:behavior.use_kinetic_weapon": {
-        "priority": 3,
-        "track_target": true,
-        "approach_distance": 10.0,
-        "reposition_distance": {
-          "min": 6.0,
-          "max": 7.0
-        },
-        "cooldown_distance": {
-          "min": 9.0,
-          "max": 11.0
-        },
-        "weapon_reach_multiplier": 0.5,
-        "weapon_min_speed_multiplier": 0.2,
-        "hijack_mount_navigation": true
-      },
       "minecraft:behavior.melee_box_attack": {
         "can_spread_on_fire": true,
         "priority": 4
@@ -722,35 +724,15 @@
             "randomize": [
               {
                 "weight": 9500,
-                "remove": {
-                },
-                "add": {
-                  "component_groups": [
-                    "minecraft:zombie_husk_adult"
-                  ]
-                }
+                "trigger": "minecraft:as_adult"
               },
               {
                 "weight": 425,
-                "remove": {
-                },
-                "add": {
-                  "component_groups": [
-                    "minecraft:zombie_husk_baby"
-                  ]
-
-                }
+                "trigger": "minecraft:as_baby"
               },
               {
                 "weight": 75,
-                "remove": {
-                },
-                "add": {
-                  "component_groups": [
-                    "minecraft:zombie_husk_baby",
-                    "minecraft:zombie_husk_jockey"
-                  ]
-                }
+                "trigger": "minecraft:as_baby_jockey"
               }
             ]
           },
@@ -769,12 +751,43 @@
           }
         ]
       },
+      "minecraft:as_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_husk_adult",
+            "minecraft:not_on_camel_husk"
+          ]
+        }
+      },
+      "minecraft:as_baby": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_husk_baby",
+            "minecraft:not_on_camel_husk"
+          ]
+        }
+      },
+      "minecraft:as_baby_jockey": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_husk_baby",
+            "minecraft:zombie_husk_jockey",
+            "minecraft:not_on_camel_husk"
+          ]
+        }
+      },
       "minecraft:spawn_as_rider": {
         "add": {
           "component_groups": [
             "minecraft:zombie_husk_adult",
-            "minecraft:zombie_husk_rider"
+            "minecraft:zombie_husk_rider",
+            // On Vanilla riders always spawn on Camel Husks, but if
+            // it is not the case this will fix itself next tick.
+            "minecraft:on_camel_husk"
           ]
+        },
+        "set_property": {
+          "minecraft:is_riding_camel_husk": true
         }
       },
       "minecraft:start_transforming": {
@@ -829,11 +842,17 @@
         "add": {
           "component_groups": [ "minecraft:on_camel_husk" ]
         },
+        "remove": {
+          "component_groups": [ "minecraft:not_on_camel_husk" ]
+        },
         "set_property": {
           "minecraft:is_riding_camel_husk": true
         }
       },
       "minecraft:on_stop_riding_camel_husk": {
+        "add": {
+          "component_groups": [ "minecraft:not_on_camel_husk" ]
+        },
         "remove": {
           "component_groups": [ "minecraft:on_camel_husk" ]
         },

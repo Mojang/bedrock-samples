@@ -2,6 +2,20 @@
   "$id": "471923105",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "1057349585": {
+      "properties": {
+        "max": {
+          "default": 0,
+          "type": "number"
+        },
+        "min": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "title": "FloatRange",
+      "type": "object"
+    },
     "1088021931": {
       "properties": {
         "bone_visibility": {
@@ -93,14 +107,12 @@
         "catch_chance_modifier": {
           "default": 5,
           "description": "A modifier affecting the chance that this block will catch flame when next to a fire. Values are greater than or equal to 0, with a higher number meaning more likely to catch on fire. For a catch_chance_modifier greater than 0, the fire will continue to burn until the block is destroyed (or it will burn forever if the destroy_chance_modifier is 0). If the catch_chance_modifier is 0, and the block is directly ignited, the fire will eventually burn out without destroying the block (or it will have a chance to be destroyed if destroy_chance_modifier is greater than 0). The default value of 5 is the same as that of Planks.",
-          "maximum": 65535,
           "minimum": 0,
           "type": "integer"
         },
         "destroy_chance_modifier": {
           "default": 20,
           "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a destroy_chance_modifier of 0, the block will never be destroyed by fire, and the fire will burn forever if the catch_chance_modifier is greater than 0. The default value of 20 is the same as that of Planks.",
-          "maximum": 65535,
           "minimum": 0,
           "type": "integer"
         }
@@ -176,6 +188,26 @@
       ],
       "title": "Detailed Flammable"
     },
+    "2128101180": {
+      "properties": {
+        "range": {
+          "$ref": "#/definitions/1057349585",
+          "description": "The range of the random offset.",
+          "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+        },
+        "steps": {
+          "default": 0,
+          "description": "The number of steps between the range. Specify 0 for all possible values between the range.",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "range"
+      ],
+      "title": "Range And Steps",
+      "type": "object"
+    },
     "2144332438": {
       "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to mine.",
       "oneOf": [
@@ -206,8 +238,6 @@
               "type": "string"
             },
             "version": {
-              "maximum": 32767,
-              "minimum": -32768,
               "type": "integer"
             }
           },
@@ -290,14 +320,45 @@
       "title": "Display Name",
       "type": "string"
     },
+    "2908099874": {
+      "description": "The \"minecraft:geometry\" component and \"minecraft:material_instances\" component of an item. Can be used instead of having separated component for each.",
+      "properties": {
+        "geometry": {
+          "$ref": "#/definitions/1483802163",
+          "description": "The \"minecraft:geometry\" component of the item."
+        },
+        "material_instances": {
+          "$ref": "#/definitions/800260518",
+          "description": "The \"minecraft:material_instances\" component of the item."
+        }
+      },
+      "required": [
+        "geometry",
+        "material_instances"
+      ],
+      "title": "Item Visual",
+      "type": "object"
+    },
+    "2986395074": {
+      "description": "Defines the area of the block that is selected by the player's cursor. If set to true, default values are used. If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/3903423213",
+          "description": "Information for the collision box.",
+          "x-runtime-constraint-description": "\"origin\" + \"size\", must be inside the following limit: Vec3(-8,0,-8) and Vec3(8,24,8)"
+        }
+      ],
+      "title": "Selection Box"
+    },
     "3178719147": {
       "oneOf": [
         {
           "$ref": "#/definitions/2267778531"
         },
         {
-          "maximum": 3.4028234663852886e+38,
-          "minimum": 1.1754943508222875e-38,
           "type": "number"
         }
       ],
@@ -344,6 +405,29 @@
       },
       "title": "Redstone Conductivity",
       "type": "object"
+    },
+    "338268096": {
+      "description": "Defines the area of the block that collides with entities. If set to true, default values are used. If set to false, the block's collision with entities is disabled. If this component is omitted, default values are used.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/3903423213",
+          "description": "Information for the collision box.",
+          "x-runtime-constraint-description": "\"origin\" + \"size\", must be inside the following limit: Vec3(-8,0,-8) and Vec3(8,24,8)"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/3903423213",
+            "description": "Information for the collision box."
+          },
+          "maxItems": 16,
+          "type": "array",
+          "x-runtime-constraint-description": "\"origin\" + \"size\", must be inside the following limit: Vec3(-8,0,-8) and Vec3(8,24,8)"
+        }
+      ],
+      "title": "Collision Box"
     },
     "3527967830": {
       "description": "Sets the particles that will be used when block is destroyed. This component can be omitted.",
@@ -392,7 +476,6 @@
         },
         "seconds_to_destroy": {
           "description": "Sets the number of seconds it takes to mine the block with base equipment. Greater numbers result in greater mining times. A negative number means the block can't be mined",
-          "maximum": 3.4028234663852886e+38,
           "minimum": 0,
           "type": "number"
         }
@@ -402,6 +485,10 @@
       ],
       "title": "Detailed Mining Speed",
       "type": "object"
+    },
+    "3623939283": {
+      "description": "A block with this component can be replaced when another block is placed in the same block position.",
+      "title": "Replaceable"
     },
     "3655705218": {
       "description": "The amount of light this block will emit. Higher value means more light will be emitted.",
@@ -414,6 +501,33 @@
       "title": "Reference",
       "type": "string"
     },
+    "3903423213": {
+      "description": "Information for the collision box.",
+      "properties": {
+        "origin": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            -8,
+            0,
+            -8
+          ],
+          "description": "Minimal position of the bounds of the collision box.",
+          "x-runtime-constraint-description": "There are different constraints for different indexes, please refer to member help for more details"
+        },
+        "size": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            16,
+            16,
+            16
+          ],
+          "description": "Size of each side of the collision box.",
+          "x-runtime-constraint-description": "There are different constraints for different indexes, please refer to member help for more details"
+        }
+      },
+      "title": "Bounding Box Data",
+      "type": "object"
+    },
     "3915697282": {
       "$metaProperties": {
         "CEREAL_EDITOR_SCHEMA_TAG": "type:color"
@@ -425,8 +539,6 @@
         },
         {
           "items": {
-            "maximum": 2147483647,
-            "minimum": -2147483648,
             "type": "integer"
           },
           "maxItems": 3,
@@ -436,12 +548,40 @@
       ],
       "title": "Color255RGB"
     },
+    "4004946602": {
+      "oneOf": [
+        {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "type": "array"
+        },
+        {
+          "properties": {
+            "x": {
+              "default": 0,
+              "type": "number"
+            },
+            "y": {
+              "default": 0,
+              "type": "number"
+            },
+            "z": {
+              "default": 0,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        }
+      ],
+      "title": "vec3"
+    },
     "4005170816": {
       "properties": {
         "destroy_speed": {
           "description": "Mining speed for that specific item. A negative number means the block can't be mined with that item.",
-          "maximum": 3.4028234663852886e+38,
-          "minimum": 1.1754943508222875e-38,
           "type": "number"
         },
         "item": {
@@ -454,6 +594,43 @@
         "item"
       ],
       "title": "Item Specific Speed",
+      "type": "object"
+    },
+    "4006409319": {
+      "description": "This component defines a random offset for the block, seeded based on the block's position and the specified range and steps. It affects the block's rendered position, outline, and collision.\nIf the random offset causes the collision box to extend beyond the bounds of a cube, the offset range will automatically adjust to keep the collision box within the cube.\nCulling for this block is performed without considering the random offset.",
+      "properties": {
+        "x": {
+          "$ref": "#/definitions/2128101180",
+          "default": {
+            "range": {
+              "max": 0,
+              "min": 0
+            },
+            "steps": 0
+          }
+        },
+        "y": {
+          "$ref": "#/definitions/2128101180",
+          "default": {
+            "range": {
+              "max": 0,
+              "min": 0
+            },
+            "steps": 0
+          }
+        },
+        "z": {
+          "$ref": "#/definitions/2128101180",
+          "default": {
+            "range": {
+              "max": 0,
+              "min": 0
+            },
+            "steps": 0
+          }
+        }
+      },
+      "title": "Random Offset",
       "type": "object"
     },
     "4203318441": {
@@ -520,8 +697,6 @@
         "min_fall_distance": {
           "default": 0,
           "description": "The minimum distance in blocks that an actor needs to fall before events are triggered.",
-          "maximum": 3.4028234663852886e+38,
-          "minimum": 1.1754943508222875e-38,
           "type": "number"
         }
       },
@@ -532,7 +707,6 @@
       "properties": {
         "explosion_resistance": {
           "description": "Sets the explosion resistance for the block. Greater values result in greater resistance to explosions. The scale will be different for different explosion power levels. A negative value or 0 means it will easily explode; larger numbers increase level of resistance.",
-          "maximum": 3.4028234663852886e+38,
           "minimum": 0,
           "type": "number"
         }
@@ -628,9 +802,90 @@
       },
       "title": "Material Instance",
       "type": "object"
+    },
+    "861574760": {
+      "properties": {
+        "rotation": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's rotation in increments of 90 degrees",
+          "multipleOf": 90
+        },
+        "rotation_pivot": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's rotation pivot"
+        },
+        "scale": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            1,
+            1,
+            1
+          ],
+          "description": "The block's scale"
+        },
+        "scale_pivot": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's scale pivot"
+        },
+        "translation": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's translation"
+        }
+      },
+      "title": "Transformation",
+      "type": "object"
+    },
+    "939187588": {
+      "properties": {
+        "interval_range": {
+          "description": "A range of values, specified in ticks, that will be used to decide the interval between times this block will tick. Each interval will be chosen randomly from the range, so the times between this block ticking will differ given an interval_range of two different values. If the values in the interval_range are the same, the block will always be ticked after that number of ticks.",
+          "items": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array",
+          "x-runtime-constraint-description": "The first value must be equal or lower than the second value"
+        },
+        "looping": {
+          "default": true,
+          "description": "Does the block tick continuously? If false, the block will only be ticked once, after a delay equal to a number of ticks randomly chosen from the interval_range. If true, the block will loop, and each interval between ticks will be equal to a number of ticks randomly chosen from the interval_range.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "interval_range"
+      ],
+      "title": "Tick",
+      "type": "object"
     }
   },
   "properties": {
+    "minecraft:collision_box": {
+      "$ref": "#/definitions/338268096",
+      "description": "Defines the area of the block that collides with entities. If set to true, default values are used. If set to false, the block's collision with entities is disabled. If this component is omitted, default values are used."
+    },
     "minecraft:crafting_table": {
       "$ref": "#/definitions/3210633909",
       "description": "Makes your block into a custom crafting table which enables the crafting table UI and the ability to craft recipes."
@@ -671,6 +926,10 @@
       "$ref": "#/definitions/1483802163",
       "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\"."
     },
+    "minecraft:item_visual": {
+      "$ref": "#/definitions/2908099874",
+      "description": "The \"minecraft:geometry\" component and \"minecraft:material_instances\" component of an item. Can be used instead of having separated component for each."
+    },
     "minecraft:light_dampening": {
       "$ref": "#/definitions/2155690250",
       "description": "The amount that light will be dampened when it passes through the block. Higher value means the light will be dampened more."
@@ -695,6 +954,10 @@
       "$ref": "#/definitions/2344109265",
       "description": "This defines how a block reacts to being moved by another block like a piston."
     },
+    "minecraft:random_offset": {
+      "$ref": "#/definitions/4006409319",
+      "description": "This component defines a random offset for the block, seeded based on the block's position and the specified range and steps. It affects the block's rendered position, outline, and collision.\nIf the random offset causes the collision box to extend beyond the bounds of a cube, the offset range will automatically adjust to keep the collision box within the cube.\nCulling for this block is performed without considering the random offset."
+    },
     "minecraft:redstone_conductivity": {
       "$ref": "#/definitions/3212487924",
       "description": "The basic redstone properties of a block. If the component is not provided the default values are used."
@@ -703,6 +966,14 @@
       "$ref": "#/definitions/4203318441",
       "description": "The definitions for how a block can produce a redstone signal."
     },
+    "minecraft:replaceable": {
+      "$ref": "#/definitions/3623939283",
+      "description": "A block with this component can be replaced when another block is placed in the same block position."
+    },
+    "minecraft:selection_box": {
+      "$ref": "#/definitions/2986395074",
+      "description": "Defines the area of the block that is selected by the player's cursor. If set to true, default values are used. If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used."
+    },
     "minecraft:support": {
       "$ref": "#/definitions/2279409622",
       "description": "Defines the support shape of the block. Currently only allows for blocks to have the same shape as a Vanilla fence and Vanilla stair. To work with custom stairs, requires the use of \"minecraft:vertical_half\" and \"minecraft:cardinal_direction\" or \"minecraft:facing_direction\" which can be set through the \"minecraft:placement_direction\" block trait. Custom blocks without this component will default to unit cube support. The type of support shape for this block. Currently, the options are: \"fence\" and \"stair\"."
@@ -710,6 +981,12 @@
     "minecraft:tags": {
       "$ref": "#/definitions/2735968029",
       "description": "Use this component to define tags, vanilla or custom. Valid tags are of the format \"namespace:tag_name\". The array of tags must be non-empty."
+    },
+    "minecraft:tick": {
+      "$ref": "#/definitions/939187588"
+    },
+    "minecraft:transformation": {
+      "$ref": "#/definitions/861574760"
     }
   },
   "title": "Components",

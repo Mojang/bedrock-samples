@@ -1,11 +1,13 @@
 {
-  "format_version": "1.21.130",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:nautilus",
+      "spawn_category": "water_creature",
       "is_spawnable": true,
       "is_summonable": true
     },
+
     "components": {
       "minecraft:breathable": {
         "total_supply": 15,
@@ -97,6 +99,7 @@
         "success_rate": 0.1
       }
     },
+
     "component_groups": {
       "minecraft:nautilus_baby": {
         "minecraft:collision_box": {
@@ -220,8 +223,8 @@
           "within_radius": 25.0,
           "must_see_forget_duration": 17.0,
           "attack_interval": {
-            "range_min": 120.0,
-            "range_max": 180.0
+            "min": 120.0,
+            "max": 180.0
           },
           "target_acquisition_probability": 0.5,
           "entity_types": [
@@ -341,6 +344,20 @@
         }
       },
       "minecraft:nautilus_tame_adult": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "on_rider_enter_event": "minecraft:on_mount",
+          "on_rider_exit_event": "minecraft:on_dismount",
+          "seats": {
+            "position": [ 0.0, 0.925, 0.0 ],
+            "third_person_camera_radius": 7.0
+          }
+        },
         "minecraft:inventory": {
           "container_type": "horse"
         },
@@ -469,7 +486,7 @@
           }
         },
         "minecraft:free_camera_controlled": {
-          "strafe_speed_modifier": 0.35,
+          "strafe_speed_modifier": 0.7,
           "backwards_movement_modifier": 0.5
         },
         "minecraft:dash_action": {
@@ -486,7 +503,6 @@
             {
               "filters": {
                 "test": "in_water",
-                "operator": "==",
                 "value": false
               },
               "event": "minecraft:on_saddled_out_of_water"
@@ -508,9 +524,7 @@
           "triggers": [
             {
               "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
+                "test": "in_water"
               },
               "event": "minecraft:on_saddled_in_water"
             }
@@ -520,46 +534,12 @@
       "minecraft:nautilus_tame_saddled": {
         "minecraft:is_saddled": {
         },
-        "minecraft:rideable": {
-          "seat_count": 1,
-          "crouching_skip_interact": true,
-          "interact_text": "action.interact.ride.horse",
-          "family_types": [
-            "player"
-          ],
-          "on_rider_enter_event": "minecraft:on_mount",
-          "on_rider_exit_event": "minecraft:on_dismount",
-          "seats": {
-            "position": [ 0.0, 1.0, 0.0 ],
-            "third_person_camera_radius": 7.0
-          }
-        },
         "minecraft:home": {
           "restriction_radius": 16,
           "restriction_type": "random_movement"
         },
         "minecraft:behavior.player_ride_tamed": {
           "priority": 0
-        },
-        "minecraft:environment_sensor": {
-          "triggers": [
-            {
-              "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
-              },
-              "event": "minecraft:on_saddled_in_water"
-            },
-            {
-              "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": false
-              },
-              "event": "minecraft:on_saddled_out_of_water"
-            }
-          ]
         }
       },
       "minecraft:nautilus_tame_unsaddled": {
@@ -568,15 +548,15 @@
           "restriction_type": "random_movement"
         }
       },
-      "minecraft:nautilus_mounted": {
-        "minecraft:movement": { //Hack to allow same speed as unmounted
+      "minecraft:nautilus_player_controlled": {
+        "minecraft:movement": { // Hack to allow same speed as ai-controlled
           "value": 0.015
         },
         "minecraft:underwater_movement": {
           "value": 0.055
         }
       },
-      "minecraft:nautilus_unmounted": {
+      "minecraft:nautilus_ai_controlled": {
         "minecraft:movement": {
           "value": 0.15
         },
@@ -614,6 +594,7 @@
         }
       }
     },
+
     "events": {
       "minecraft:entity_spawned": {
         "randomize": [
@@ -635,7 +616,19 @@
           "component_groups": [
             "minecraft:nautilus_adult",
             "minecraft:nautilus_wild_adult_calm",
-            "minecraft:nautilus_unmounted",
+            "minecraft:nautilus_ai_controlled",
+            "minecraft:nautilus_leashable"
+          ]
+        }
+      },
+      "minecraft:spawn_tame_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:nautilus_adult",
+            "minecraft:nautilus_tame",
+            "minecraft:nautilus_tame_adult",
+            "minecraft:nautilus_tame_unsaddled",
+            "minecraft:nautilus_ai_controlled",
             "minecraft:nautilus_leashable"
           ]
         }
@@ -669,7 +662,7 @@
             "add": {
               "component_groups": [
                 "minecraft:nautilus_adult",
-                "minecraft:nautilus_unmounted"
+                "minecraft:nautilus_ai_controlled"
               ]
             }
           },
@@ -701,6 +694,12 @@
       "minecraft:on_saddled": {
         "sequence": [
           {
+            "filters": { // Make sure Nautilus switches to player-controlled if saddle is added while player is riding
+              "test": "rider_count", "subject": "self", "operator": ">", "value": 0
+            },
+            "trigger": "minecraft:switch_to_player_controlled"
+          },
+          {
             "remove": {
               "component_groups": [
                 "minecraft:nautilus_tame_unsaddled"
@@ -710,26 +709,21 @@
               "component_groups": [
                 "minecraft:nautilus_tame_saddled"
               ]
-            }
+            },
+            "set_home_position": {}
           },
           {
             "filters": {
-              "test": "in_water",
-              "operator": "==",
-              "value": true
+              "test": "in_water"
             },
             "trigger": "minecraft:on_saddled_in_water"
           },
           {
             "filters": {
               "test": "in_water",
-              "operator": "==",
               "value": false
             },
             "trigger": "minecraft:on_saddled_out_of_water"
-          },
-          {
-            "set_home_position": {}
           }
         ]
       },
@@ -743,8 +737,7 @@
           "component_groups": [
             "minecraft:nautilus_tame_saddled_in_water"
           ]
-        },
-        "set_home_position": {}
+        }
       },
       "minecraft:on_saddled_out_of_water": {
         "remove": {
@@ -822,28 +815,14 @@
         "set_home_position": {}
       },
       "minecraft:on_mount": {
-        "remove": {
-          "component_groups": [
-            "minecraft:nautilus_unmounted"
-          ]
+        "filters": {
+          "test": "has_component",
+          "value": "minecraft:is_saddled"
         },
-        "add": {
-          "component_groups": [
-            "minecraft:nautilus_mounted"
-          ]
-        }
+        "trigger": "minecraft:switch_to_player_controlled"
       },
       "minecraft:on_dismount": {
-        "remove": {
-          "component_groups": [
-            "minecraft:nautilus_mounted"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "minecraft:nautilus_unmounted"
-          ]
-        },
+        "trigger": "minecraft:switch_to_ai_controlled",
         "set_home_position": {}
       },
       "minecraft:start_charge": {
@@ -883,6 +862,30 @@
           "component_groups": [
             "minecraft:nautilus_wild_adult_calm",
             "minecraft:nautilus_leashable"
+          ]
+        }
+      },
+      "minecraft:switch_to_player_controlled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:nautilus_ai_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:nautilus_player_controlled"
+          ]
+        }
+      },
+      "minecraft:switch_to_ai_controlled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:nautilus_player_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:nautilus_ai_controlled"
           ]
         }
       }
