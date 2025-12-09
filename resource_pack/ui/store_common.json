@@ -2292,19 +2292,22 @@
     ],
     "bindings": "$search_header_bindings"
   },
-
-  "store_header_with_coins": {
-    "type": "stack_panel",
-    "size": [ "100%", "100%" ],
-    "$store_header_size|default": [ "100%", 23 ],
-    "$is_inventory_screen|default": false,
-    "$ignore_home_button|default": false,
-    "$ignore_inventory_button|default": false,
-    "$ignore_search|default": false,
+  
+  "sdl_store_header_with_coins": {
+    "type": "panel",
+    "size": [ "100%", "100%c" ],
     "controls": [
+        { "sdl_store_header_with_coins_content@common_store.sdl_store_header_with_coins_content": {} }
+    ]
+  },
+
+  "top_bar_with_coins_panel": {
+      "type": "panel",
+      "size": "$store_header_size",
+      "controls":[
       {
         "top_bar@common_store.store_top_bar": {
-          "size": "$store_header_size",
+          "size": [ "100%", "100%" ],
           "focus_container": true,
           "use_last_focus": false,
           "focus_wrap_enabled": false,
@@ -2373,7 +2376,31 @@
             }
           ]
         }
-      },
+      }
+      ]
+  },
+  
+  "sdl_store_header_with_coins_content": {
+    "type": "panel",
+    "$button_text": "store.title",
+    "$top_status_and_coins_visible_binding": "#header_coins_visible",
+    "$store_header_size|default": [ "100%", 23 ],
+    "size": "$store_header_size",
+    "controls": [
+      { "top_bar_coins@common_store.top_bar_with_coins_panel": {} }
+    ]
+  },
+
+  "store_header_with_coins": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%" ],
+    "$store_header_size|default": [ "100%", 23 ],
+    "$is_inventory_screen|default": false,
+    "$ignore_home_button|default": false,
+    "$ignore_inventory_button|default": false,
+    "$ignore_search|default": false,
+    "controls": [
+      { "top_bar_coins@common_store.top_bar_with_coins_panel": {} },
       {
         "child_control@$child_control": {
           "size": [ "100%", "fill" ],
@@ -3960,6 +3987,71 @@
     ]
   },
 
+  "store_static_section_factory": {
+      "type": "stack_panel",
+      "anchor_from": "top_middle",
+      "anchor_to": "top_middle",
+      "orientation": "vertical",
+
+      "$is_non_scrollable_sdl_screen|default": false,
+      "$store_sdl_static_factory_size": [ "100%", "100%c" ],
+      "size": "$store_sdl_static_factory_size",
+
+      "$store_factory_collection_details": "collection_details",
+      "$store_factory_binding_type": "collection",
+      "$store_factory_collection_prefix": "factory",
+      "$store_factory_collection_name": "factory_collection",
+
+      "$is_subscription_screen|default": false,
+      "$content_offer_panel_size|default": [ "100% - 48px", "100%" ],
+      "$ignore_search_offer_content": true,
+      "$always_show_layer": 200,
+      "$always_show_paper_doll": 190,
+
+      "$main_content_focus_container_left|default": "none",
+      "$main_content_focus_container_left_custom|default": {},
+      "$allows_sdl_section_focus_container|default": true,
+
+      "factory": {
+        "name": "store_static_section_factory",
+        "control_ids": {
+          "Layout": "@common.empty_panel_size_y_0",
+          "PersonaSideSelection": "@persona_sdl.side_selection_row",
+          "TopBar": "@common_store.sdl_store_header_with_coins",
+          "PersonaRightSection": "@persona_sdl.sdl_default_right_side_stack_panel",
+          "ColorPickerRightSection": "@persona_sdl.color_picker_right_side_stack",
+          "ExpandedAppearance": "@persona_sdl.expanded_appearance_panel"
+        },
+        "factory_variables": [
+          "$ignore_search_offer_content",
+          "$store_factory_clipping_event",
+          "$store_factory_collection_details",
+          "$store_factory_collection_prefix",
+          "$store_factory_collection_name",
+          "$store_factory_binding_type",
+          "$is_subscription_screen",
+          "$is_mashup",
+          "$main_content_focus_container_left",
+          "$main_content_focus_container_left_custom",
+          "$allows_sdl_section_focus_container",
+          "$always_show_layer",
+          "$always_show_paper_doll",
+          "$is_non_scrollable_sdl_screen",
+          "$is_inventory_screen",
+          "$ignore_home_button",
+          "$ignore_inventory_button",
+          "$ignore_search"
+        ]
+      },
+      "collection_name": "$store_factory_collection_name",
+      "bindings": [
+        {
+          "binding_name": "$store_static_factory_collection_bind",
+          "binding_name_override": "#collection_length"
+        }
+      ]
+   },
+
   "rtx_label": {
     "type": "panel",
     "size": [ "100%", "20%" ],
@@ -5082,15 +5174,21 @@
                 "size": [ "100%c", 12 ],
                 "anchor_from": "left_middle",
                 "anchor_to": "left_middle",
-                "$timer_visible": true,
+                "$discount_label_label_panel_size": [ 20, "default" ],
+                "$offer_binding_type": "$blade_offer_binding_type",
+                "$offer_collection_name": "$blade_offer_collection_name",
+                "$timer_visible": false,
                 "controls": [
                   {
                     "blade_markdown_background@common_store.markdown_background": {
                       "layer": 9, // Needs to be a higher layer than the strikethru text
-                      "$markdown_label": "common_store.blade_offer_sale_markdown",
-                      "offset": [ -2, 1 ],
-                      "$icon_stack_visibility_collection": "$blade_offer_collection_name",
-                      "$icon_stack_visibility_type": "$blade_offer_binding_type",
+                      "$markdown_label": "common_store.discount_label",
+                      "$banner_size": [ "100%c", "100%" ],
+                      "$triangle_texture": "textures/ui/saleflagtrianglebeveldefault",
+                      "$banner_texture": "textures/ui/sale_button_borderless_lighthoverflag",
+                      "offset": [ -0.5, 2 ],
+                      "$icon_stack_visibility_collection": "$offer_collection_name",
+                      "$icon_stack_visibility_type": "$offer_binding_type",
                       "bindings": [
                         {
                           "binding_type": "$store_factory_collection_details",
@@ -5098,12 +5196,13 @@
                           "binding_collection_prefix": "$store_factory_collection_prefix"
                         },
                         {
-                          "binding_type": "$blade_offer_binding_type",
-                          "binding_collection_name": "$blade_offer_collection_name",
+                          "binding_type": "$offer_binding_type",
+                          "binding_collection_name": "$offer_collection_name",
                           "binding_name": "#offer_markdown_visible",
                           "binding_name_override": "#visible"
                         }
                       ],
+
                       "$timer_bindings": [
                         {
                           "binding_type": "$store_factory_collection_details",
@@ -5122,6 +5221,7 @@
                 ]
               }
             },
+
             {
               "ratings_panel": {
                 "type": "panel",
@@ -5694,19 +5794,23 @@
                   {
                     "sales_markdown_percentage_panel": {
                       "type": "panel",
-                      "size": [ "100%c", 12 ],
-                      "anchor_from": "left_middle",
-                      "anchor_to": "left_middle",
-                      "$timer_visible": true,
-                      "priority": 2,
+                      "size": [ "100%c", "100%" ],
+                      "$discount_label_label_panel_size": [ 20, "default" ],
+                      "$offer_binding_type": "$hero_offer_binding_type",
+                      "$offer_collection_name": "$hero_offer_collection_name",
                       "controls": [
                         {
-                          "markdown_background@common_store.markdown_background": {
+                          "markdown_banner@common_store.markdown_background": {
+                            "$markdown_label": "common_store.discount_label",
+                            "size": [ "100%c", 12 ],
+                            "offset": [ -2, -0.2 ],
+                            "$banner_size": [ "100%c", "100%" ],
+                            "$triangle_offset": [ 0, 0 ],
                             "layer": 9, // Needs to be a higher layer than the strikethru text
-                            "$markdown_label": "common_store.hero_offer_sale_markdown",
-                            "offset": [ -2, 1 ],
-                            "$icon_stack_visibility_collection": "$hero_offer_collection_name",
-                            "$icon_stack_visibility_type": "$hero_offer_binding_type",
+                            "$triangle_texture": "textures/ui/saleflagtrianglebeveldefault",
+                            "$banner_texture": "textures/ui/sale_button_borderless_lighthoverflag",
+                            "$icon_stack_visibility_collection": "$offer_collection_name",
+                            "$icon_stack_visibility_type": "$offer_binding_type",
                             "bindings": [
                               {
                                 "binding_type": "$store_factory_collection_details",
@@ -5714,23 +5818,10 @@
                                 "binding_collection_prefix": "$store_factory_collection_prefix"
                               },
                               {
-                                "binding_type": "$hero_offer_binding_type",
-                                "binding_collection_name": "$hero_offer_collection_name",
+                                "binding_type": "$offer_binding_type",
+                                "binding_collection_name": "$offer_collection_name",
                                 "binding_name": "#offer_markdown_visible",
                                 "binding_name_override": "#visible"
-                              }
-                            ],
-                            "$timer_bindings": [
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              },
-                              {
-                                "binding_type": "$hero_offer_binding_type",
-                                "binding_collection_name": "$hero_offer_collection_name",
-                                "binding_name": "$time_text_binding_name",
-                                "binding_condition": "always_when_visible"
                               }
                             ]
                           }
@@ -6762,11 +6853,12 @@
     "orientation": "horizontal",
     "size": [ "default", "default" ],
     "offset": [ 0, 0 ],
+    "$discount_label_label_panel_size|default": [ 16, "default" ],
     "controls": [
       {
         "label_panel": {
           "type": "panel",
-          "size": [ 18, "default" ],
+          "size": "$discount_label_label_panel_size",
           "controls": [
             {
               "label@common.minecraftTenLabel": {

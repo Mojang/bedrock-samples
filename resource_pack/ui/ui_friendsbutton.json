@@ -5,8 +5,7 @@
     "type": "image",
     "layer": 2,
     "size": [ 18, 18 ],
-    "$friends_icon|default":"",
-    "texture": "$friends_icon"
+    "$friendsdrawer_animated_icon_offset|default": [ 0, 0 ]
   },
 
    "profilepicture": {
@@ -39,7 +38,7 @@
     "$show_icon|default":"#none",
     "controls": [
       {
-        "friendsdrawer_animated_icon@friendsbutton.profilepicture": {
+        "profile_icon@friendsbutton.profilepicture": {
 		  "offset": "$icon_offset",
           "layer": 2,
           "$gamerpic|default": "#none",
@@ -72,23 +71,38 @@
   },
 
   "social_button_stackpanel@friendsbutton.friendsdrawer_persona_icons":{
+    "$social_icon_image|default": "#social_icon",
     "controls":[
       {
-        "social_icon@friendsbutton.friendsdrawer_animated_icon": {
-          "offset": [ -2, 0 ],
+        "image_panel":{
+          "type": "panel",
           "anchor_from": "top_left",
           "anchor_to": "top_left",
-          "$friends_icon": "/textures/ui/icons/icon_spring",
-          "bindings": [
+          "size": [ 18, 18 ],
+          "controls":[
             {
-              "binding_name": "#social_icon",
-              "binding_name_override": "#texture",
-              "binding_condition": "visible"
+              "social_icon@friendsbutton.friendsdrawer_animated_icon":{
+                "size": [ 12, 12 ],
+                "$friendsdrawer_animated_icon_offset": [ 0, 0 ],
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "bindings":[
+                  {
+                    "binding_name": "$social_icon_image",
+                    "binding_name_override": "#texture",
+                    "binding_condition": "visible"
+                  }
+                ]
+              }
             }
           ]
         }
       }
     ]
+  },
+
+  "social_button_hover_stackpanel@friendsbutton.social_button_stackpanel": {
+    "$social_icon_image": "#social_icon_hovered"
   },
 
   "self_persona_stackpanel@friendsbutton.friendsdrawer_persona_icons":{
@@ -128,13 +142,13 @@
       {
           "extra_friends_text_panel": {
           "type": "panel",
-          "size": [18, 18],
+          "size": [ 18, 18 ],
           "controls": [
             {
               "background": {
                 "layer": 1, 
                 "offset": [ -1, 0 ],				
-                "size": [18, 18],
+                "size": [ 18, 18 ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left",
                 "type": "image",
@@ -165,7 +179,7 @@
               "border_black@common.focus_border_black": {
                 "layer": 3,  
 				        "offset": [ -1, 0 ],
-                "size": [18, 18],
+                "size": [ 18, 18 ],
                 "anchor_from": "top_left",
                 "anchor_to": "top_left"
               }
@@ -182,46 +196,142 @@
     "anchor_from": "top_right",
     "$button_content_size_override": [ "100%c", "100%c - 4px" ],
     "$button_content": "friendsbutton.friendsdrawer_button_content",
+    "$button_content_hover": "friendsbutton.friendsdrawer_hover_button_content",
+    "$button_content_pressed": "friendsbutton.friendsdrawer_hover_button_content",
+    "$button_content_locked": "friendsbutton.friendsdrawer_button_content",
     "$pressed_button_name": "button.friends_drawer",
     "$context|default": "",
+    "controls": [
+      {
+        "default@$button_state_panel": {
+          "$new_ui_button_texture": "$default_button_texture",
+          "$button_content": "$button_content",
+          "$text_color": "$default_text_color",
+          "$content_alpha": "$default_content_alpha", 
+          "$secondary_text_color": "$light_button_secondary_default_text_color",
+          "$glyph_color": "$light_glyph_default_color",
+          "$border_color": "$light_border_default_color",
+          "$button_alpha": "$default_button_alpha",
+          "$border_visible": "$default_state_border_visible",
+          "$border_layer": "$border_default_layer",
+          "$default_state": true,
+          "$border_alpha": "$border_default_alpha",
+           "layer": 1
+          }
+        },
+        {
+          "hover@$button_state_panel": {
+            "$new_ui_button_texture": "$hover_button_texture",
+            "$button_content": "$button_content_hover",
+            "$text_color": "$light_button_hover_text_color",
+            "$secondary_text_color": "$light_button_secondary_hover_text_color",
+            "$glyph_color": "$light_glyph_hover_color",
+            "$content_alpha": "$hover_content_alpha",
+            "$border_color": "$light_border_hover_color",
+            "$border_visible": "$hover_state_border_visible",
+            "$border_layer": "$border_hover_layer",
+            "$hover_state": true,
+            "$button_alpha": "$default_hover_alpha",
+            "layer": 2
+          }
+        },
+        {
+          "pressed@$button_state_panel": {
+            "$new_ui_button_texture": "$pressed_button_texture",
+            "$button_content": "$button_content_pressed",
+            "$text_color": "$light_button_pressed_text_color",
+            "$secondary_text_color": "$light_button_secondary_pressed_text_color",
+            "$glyph_color": "$light_glyph_pressed_color",
+            "$content_alpha": "$pressed_alpha",
+            "$button_offset": "$button_pressed_offset",
+            "$border_color": "$light_border_pressed_color",
+            "$border_visible": "$pressed_state_border_visible",
+            "$border_layer": "$border_pressed_layer",
+            "$button_alpha": "$default_pressed_alpha",
+            "$pressed_state": true,
+            "layer": 3
+          }
+        },
+        {
+          "locked@$button_state_panel": {
+            "$new_ui_button_texture": "$locked_button_texture",
+            "$button_content": "$button_content_locked",
+            "$text_color": "$light_button_locked_text_color",
+            "$secondary_text_color": "$light_button_secondary_locked_text_color",
+            "$glyph_color": "$light_glyph_locked_color",
+            "$content_alpha": "$locked_alpha",
+            "$border_color": "$light_border_locked_color",
+            "$button_image": "common_buttons.locked_button_image",
+            "$border_visible": "$locked_state_border_visible",
+            "$border_layer": "$border_locked_layer",
+            "$locked_state": true,
+            "layer": 1
+          }
+        }
+       ],
     "property_bag": {
       "#context": "$context"
     }
+  },
+
+  "social_factory_stackpanel_default": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "factory": {
+       "name": "social_icons_factory",
+      "control_ids": {
+        "social_button_control": "@friendsbutton.social_button_stackpanel",
+        "self_persona_control": "@friendsbutton.self_persona_stackpanel",
+        "single_friend_persona_control": "@friendsbutton.single_friend_persona_stackpanel",
+        "many_friend_persona_control": "@friendsbutton.many_friend_persona_stackpanel"
+      }
+    },
+    "bindings": [
+      {
+        "binding_name": "#social_icon_content",
+        "binding_name_override": "#collection_length",
+        "binding_type": "global",
+        "binding_condition": "visible"
+      }
+    ]
+  },
+
+  "social_factory_stackpanel_hovered": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "factory": {
+      "name": "social_icons_factory",
+      "control_ids": {
+        "social_button_control": "@friendsbutton.social_button_hover_stackpanel",
+        "self_persona_control": "@friendsbutton.self_persona_stackpanel",
+        "single_friend_persona_control": "@friendsbutton.single_friend_persona_stackpanel",
+        "many_friend_persona_control": "@friendsbutton.many_friend_persona_stackpanel"
+      }
+    },
+    "bindings": [
+      {
+        "binding_name": "#social_icon_content",
+        "binding_name_override": "#collection_length",
+        "binding_type": "global",
+        "binding_condition": "visible"
+      }
+    ]
   },
 
   "friendsdrawer_button_content": {
     "type": "stack_panel",
     "orientation": "horizontal",
     "size": [ "100%c", 24 ],
+    "$social_factory_stackpanel_control|default": "friendsbutton.social_factory_stackpanel_default",
     "controls": [
-      {
-        "social_factory_stackpanel":{
-          "type":"stack_panel",
-          "orientation":"horizontal",
-          "anchor_from":"top_left",
-          "anchor_to":"top_left",
-          "factory": {
-            "name": "social_icons_factory",
-            "control_ids": {
-              "social_button_control": "social_button_control@friendsbutton.social_button_stackpanel",
-              "self_persona_control": "self_persona_control@friendsbutton.self_persona_stackpanel",
-              "single_friend_persona_control": "single_friend_persona_control@friendsbutton.single_friend_persona_stackpanel",
-              "many_friend_persona_control": "many_friend_persona_control@friendsbutton.many_friend_persona_stackpanel"
-            }
-          },
-          "bindings": [
-            {
-              "binding_name": "#social_icon_content",
-              "binding_name_override": "#collection_length",
-              "binding_type": "global",
-              "binding_condition": "visible"
-            }
-          ]
-        }
-      },
+      { "social_factory_stackpanel@$social_factory_stackpanel_control": {} },
       {
         "padding_middle@common.empty_panel": {
-          "size": [ 6, "100%" ]
+          "size": [ 3, "100%" ]
         }
       },
       {
@@ -238,24 +348,27 @@
             },
             {
               "profile_button_label@common_buttons.new_ui_binding_button_label": {
-                "layer": 1,
-                "$button_text_binding_type": "global",
-                "$button_text_size": [ "default", "default" ],
-                "$button_text_max_size": [ "default", 20 ],
-                "$button_binding_condition": "none",
-                "$button_text_grid_collection_name": "",
-                "$button_text": "#social_button_text"
-              }
+              "layer": 1,
+              "$button_text_binding_type": "global",
+              "$button_text_size": [ "default", "default" ],
+              "$button_text_max_size": [ "default", 20 ],
+              "$button_binding_condition": "none",
+              "$button_text_grid_collection_name": "",
+              "$button_text": "#social_button_text"
             }
-          ]
-        }
-      },
-      {
-        "padding_right@common.empty_panel": {
-          "size": [ 6, "100%" ]
-        }
+          }
+        ]
       }
+    },
+    {
+      "padding_right@common.empty_panel": {
+        "size": [ 6, "100%" ]
+      }
+    }
     ]
+  },
+  "friendsdrawer_hover_button_content@friendsbutton.friendsdrawer_button_content": {
+    "$social_factory_stackpanel_control|default": "friendsbutton.social_factory_stackpanel_hovered"
   },
 
   "friends_drawer_popup@common_buttons.static_tooltip_notification_panel": {
@@ -298,4 +411,3 @@
     ]
   }
 }
-

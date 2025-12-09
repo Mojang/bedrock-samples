@@ -1,0 +1,779 @@
+{
+  "format_version": "1.21.130",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "minecraft:zombie_nautilus",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "minecraft:variant": {
+          "type": "enum",
+          "values": [ "default", "coral" ],
+          "default": "default",
+          "client_sync": true
+        }
+      }
+    },
+    "components": {
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0,
+        "breathes_air": true,
+        "breathes_water": true
+      },
+      "minecraft:collision_box": {
+        "width": 0.875,
+        "height": 0.95
+      },
+      "minecraft:burns_in_daylight": {
+        "protection_slot": "slot.armor.body"
+      },
+      "minecraft:experience_reward": {
+        "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/zombie_nautilus.json"
+      },
+      "minecraft:health": {
+        "value": 15,
+        "max": 15
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava"
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:nameable": {},
+      "minecraft:home": {}, // This component needs to exist to allow 'set_home_position' in events
+      "minecraft:physics": {
+      },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:type_family": {
+        "family":[ "aquatic", "zombie_nautilus", "undead", "mob" ]
+      },
+      "minecraft:knockback_resistance": {
+        "value": 0.3
+      },
+      "minecraft:mob_effect_immunity": {
+        "mob_effects": [ "poison" ]
+      },
+      "minecraft:navigation.generic": {
+        "is_amphibious": false,
+        "can_path_over_water": false,
+        "can_swim": true,
+        "can_walk": false,
+        "can_breach": false,
+        "can_sink": false
+      },
+      "minecraft:movement.sway": {
+        "sway_amplitude": 0.0
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": {
+          "min_distance": 32,
+          "max_distance": 40
+        }
+      },
+      "minecraft:attack": {
+        "damage": 3
+      },
+      "minecraft:leashable_to": {
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 1
+      },
+      "minecraft:behavior.random_swim": {
+        "priority": 4,
+        "speed_multiplier": 1.5,
+        "xz_dist": 16,
+        "y_dist": 4,
+        "interval": 0
+      },
+      "minecraft:behavior.swim_wander": {
+        "priority": 5,
+        "interval": 10,
+        "look_ahead": 2.0,
+        "speed_multiplier": 1.5,
+        "wander_time": 5.0
+      },
+      "minecraft:behavior.swim_idle": {
+        "priority": 6,
+        "idle_time": 5,
+        "success_rate": 0.1
+      }
+    },
+    "component_groups": {
+      "minecraft:zombie_nautilus_tameable": {
+        "minecraft:behavior.tempt": {
+          "priority": 2,
+          "speed_multiplier": 1.3,
+          "items": [
+            "pufferfish",
+            "pufferfish_bucket"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
+        },
+        "minecraft:tameable": {
+          "probability": 0.33,
+          "tame_items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0"
+            },
+            "pufferfish"
+          ],
+          "tame_event": {
+            "event": "minecraft:on_tame",
+            "target": "self"
+          }
+        }
+      },
+      "minecraft:zombie_nautilus_wild": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "pull_in_entities": true,
+          "on_rider_enter_event": "minecraft:on_drowned_mount",
+          "on_rider_exit_event": "minecraft:on_drowned_dismount",
+          "family_types": [
+            "drowned"
+          ],
+          "seats": {
+            "position": [ 0.0, 1.0, -0.2 ]
+          }
+        }
+      },
+      "minecraft:zombie_nautilus_wild_unmounted": {
+        "minecraft:behavior.nearest_attackable_target": {
+          "priority": 5,
+          "must_see": true,
+          "reselect_targets": true,
+          "within_radius": 25.0,
+          "must_see_forget_duration": 17.0,
+          "attack_interval": {
+            "range_min": 120.0,
+            "range_max": 180.0
+          },
+          "target_acquisition_probability": 0.5,
+          "entity_types": [
+            {
+              "filters": {
+                "any_of": [
+                  { "test": "is_family", "subject": "other", "value": "pufferfish" }
+                ]
+              },
+              "max_dist": 35
+            }
+          ]
+        }
+      },
+      "minecraft:zombie_nautilus_wild_mounted": {
+        "minecraft:environment_sensor": {
+          "triggers": {
+            "filters": {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            "event": "minecraft:on_drowned_dismount"
+          }
+        },
+        "minecraft:movement": {
+          "value": 0.15
+        },
+        "minecraft:underwater_movement": {
+          "value": 0.15
+        }
+      },
+      "minecraft:zombie_nautilus_wild_calm": {
+        "minecraft:on_target_acquired": {
+          "event": "minecraft:become_angry",
+          "target": "self"
+        }
+      },
+      "minecraft:zombie_nautilus_wild_angry": {
+        "minecraft:angry": {
+          "duration": 20,
+          "broadcast_anger": false,
+          "broadcast_range": 16,
+          "broadcast_anger_when_dying": false,
+          "calm_event": {
+            "event": "minecraft:on_calm",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.aquatic_charge_attack": {
+          "priority": 2,
+          "max_charge_distance": 16,
+          "charge_speed_multiplier": 10.0,
+          "attack_reach": 0.05,
+          "knockback_force": 2.0,
+          "charge_overshoot_distance": 1.5,
+          "charge_cooldown_time": {
+            "min": 4.0,
+            "max": 4.0
+          }
+        }
+      },
+      "minecraft:zombie_nautilus_tame": {
+        "minecraft:behavior.tempt": {
+          "priority": 2,
+          "speed_multiplier": 1.3,
+          "items": [
+            "pufferfish_bucket",
+            "cod_bucket",
+            "salmon_bucket",
+            "tropical_fish_bucket",
+            "pufferfish",
+            "fish",
+            "salmon",
+            "clownfish",
+            "cooked_fish",
+            "cooked_salmon"
+          ],
+          "on_tempt_end": {
+            "event": "minecraft:on_stop_tempting"
+          }
+        },
+        "minecraft:is_tamed": {
+        },
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "crouching_skip_interact": true,
+          "interact_text": "action.interact.ride.horse",
+          "family_types": [
+            "player"
+          ],
+          "on_rider_enter_event": "minecraft:on_player_mount",
+          "on_rider_exit_event": "minecraft:on_player_dismount",
+          "seats": {
+            "position": [ 0.0, 0.925, 0.0 ],
+            "third_person_camera_radius": 7.0
+          }
+        },
+        "minecraft:inventory": {
+          "container_type": "horse"
+        },
+        "minecraft:equippable": {
+          "slots": [
+            {
+              "slot": 0,
+              "item": "saddle",
+              "accepted_items": [ "saddle" ],
+              "on_equip": {
+                "event": "minecraft:on_saddled"
+              },
+              "on_unequip": {
+                "event": "minecraft:on_unsaddled"
+              }
+            },
+            {
+              "slot": 1,
+              "item": "nautilusarmor",
+              "accepted_items": [
+                "minecraft:copper_nautilus_armor",
+                "minecraft:iron_nautilus_armor",
+                "minecraft:golden_nautilus_armor",
+                "minecraft:diamond_nautilus_armor",
+                "minecraft:netherite_nautilus_armor"
+              ]
+            }
+          ]
+        },
+        "minecraft:interact": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "play_sounds": "saddle",
+              "equip_item_slot": "0",
+              "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "unsaddle",
+              "vibration": "shear"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_equipment_tag", "subject": "self", "domain": "inventory", "operator": "not", "value": "minecraft:nautilus_armor" },
+                    { "test": "has_equipment_tag", "subject": "player", "domain": "hand", "value": "minecraft:nautilus_armor" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                },
+                "target": "self"
+              },
+              "equip_item_slot": "1",
+              "interact_text": "action.interact.equipnautilusarmor",
+              "play_sounds": "armor.equip_generic"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
+                    { "test": "has_equipment_tag", "subject": "self", "domain": "inventory", "value": "minecraft:nautilus_armor" },
+                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
+                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "1",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removenautilusarmor",
+              "play_sounds": "armor.unequip_generic",
+              "vibration": "shear"
+            }
+          ]
+        },
+        "minecraft:healable": {
+          "items": [
+            {
+              "item": "pufferfish_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 2
+            },
+            {
+              "item": "cod_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 4
+            },
+            {
+              "item": "salmon_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 4
+            },
+            {
+              "item": "tropical_fish_bucket",
+              "result_item": "water_bucket:0",
+              "heal_amount": 2
+            },
+            {
+              "item": "fish",
+              "heal_amount": 4
+            },
+            {
+              "item": "salmon",
+              "heal_amount": 4
+            },
+            {
+              "item": "clownfish",
+              "heal_amount": 2
+            },
+            {
+              "item": "pufferfish",
+              "heal_amount": 2
+            },
+            {
+              "item": "cooked_fish",
+              "heal_amount": 10
+            },
+            {
+              "item": "cooked_salmon",
+              "heal_amount": 12
+            }
+          ]
+        }
+      },
+      "minecraft:zombie_nautilus_leashable": {
+        "minecraft:leashable": {
+          "on_unleash": {
+            "event": "minecraft:on_unleashed",
+            "target": "self"
+          },
+          "presets": [
+            {
+              "hard_distance": 10,
+              "max_distance": 14
+            }
+          ]
+        }
+      },
+      "minecraft:zombie_nautilus_tame_saddled_in_water": {
+        "minecraft:mob_effect": {
+          "mob_effect": "breath_of_the_nautilus",
+          "ambient": true,
+          "effect_range": 1.6,
+          "effect_time": 2,
+          "entity_filter": {
+            "all_of": [
+              { "test": "is_family", "subject": "other", "value": "player" },
+              { "test": "is_riding_self", "subject": "other" }
+            ]
+          }
+        },
+        "minecraft:free_camera_controlled": {
+          "strafe_speed_modifier": 0.7,
+          "backwards_movement_modifier": 0.5
+        },
+        "minecraft:dash_action": {
+          "cooldown_time": 2,
+          "horizontal_momentum": 154.0,
+          "vertical_momentum": 0.1,
+          "can_dash_underwater": true,
+          "direction": "passenger"
+        },
+        "minecraft:underwater_mount_breathing": {
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water",
+                "value": false
+              },
+              "event": "minecraft:on_saddled_out_of_water"
+            }
+          ]
+        }
+      },
+      "minecraft:zombie_nautilus_tame_saddled_on_ground": {
+        "minecraft:input_ground_controlled": {
+        },
+        "minecraft:dash_action": {
+          "cooldown_time": 2,
+          "horizontal_momentum": 42.0,
+          "vertical_momentum": 0.1,
+          "can_dash_underwater": false,
+          "direction": "passenger"
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_water"
+              },
+              "event": "minecraft:on_saddled_in_water"
+            }
+          ]
+        }
+      },
+      "minecraft:zombie_nautilus_tame_saddled": {
+        "minecraft:is_saddled": {
+        },
+        "minecraft:home": {
+          "restriction_radius": 16,
+          "restriction_type": "random_movement"
+        },
+        "minecraft:behavior.player_ride_tamed": {
+          "priority": 0
+        }
+      },
+      "minecraft:zombie_nautilus_tame_unsaddled": {
+        "minecraft:home": {
+          "restriction_radius": 32,
+          "restriction_type": "random_movement"
+        }
+      },
+      "minecraft:zombie_nautilus_player_controlled": {
+        "minecraft:movement": { //Hack to allow same speed as ai-controlled
+          "value": 0.015
+        },
+        "minecraft:underwater_movement": {
+          "value": 0.055
+        }
+      },
+      "minecraft:zombie_nautilus_ai_controlled": {
+        "minecraft:movement": {
+          "value": 0.15
+        },
+        "minecraft:underwater_movement": {
+          "value": 0.1
+        }
+      },
+      "minecraft:zombie_nautilus_charging": {
+        "minecraft:underwater_movement": {
+          "value": 0.06
+        }
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "add": {
+              "component_groups": [
+                "minecraft:zombie_nautilus_wild",
+                "minecraft:zombie_nautilus_wild_unmounted",
+                "minecraft:zombie_nautilus_wild_calm",
+                "minecraft:zombie_nautilus_leashable",
+                "minecraft:zombie_nautilus_tameable",
+                "minecraft:zombie_nautilus_ai_controlled"
+              ]
+            }
+          },
+          {
+            "first_valid": [
+              {
+                "filters": {
+                  "all_of": [
+                    { "test": "has_biome_tag", "value": "ocean" },
+                    { "test": "has_biome_tag", "value": "warm" },
+                    { "test": "has_biome_tag", "operator": "not", "value": "deep" }
+                  ]
+                },
+                "set_property": {
+                  "minecraft:variant": "coral"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "minecraft:on_saddled": {
+        "sequence": [
+          {
+            "filters": { // Make sure Zombie Nautilus switches to player-controlled if saddle is added while player is riding
+              "test": "rider_count", "subject": "self", "operator": ">", "value": 0
+            },
+            "trigger": "minecraft:switch_to_player_controlled"
+          },
+          {
+            "remove": {
+              "component_groups": [
+                "minecraft:zombie_nautilus_tame_unsaddled"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:zombie_nautilus_tame_saddled"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "in_water"
+            },
+            "trigger": "minecraft:on_saddled_in_water"
+          },
+          {
+            "filters": {
+              "test": "in_water",
+              "value": false
+            },
+            "trigger": "minecraft:on_saddled_out_of_water"
+          },
+          {
+            "set_home_position": {}
+          }
+        ]
+      },
+      "minecraft:on_saddled_in_water": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_tame_saddled_on_ground"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_tame_saddled_in_water"
+          ]
+        },
+        "set_home_position": {}
+      },
+      "minecraft:on_saddled_out_of_water": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_tame_saddled_in_water"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_tame_saddled_on_ground"
+          ]
+        }
+      },
+      "minecraft:on_unsaddled": {
+        "sequence": [
+          {
+            "filters": { // Make sure dismount event is played if saddle is removed while player is riding
+              "test": "rider_count", "subject": "self", "operator": ">", "value": 0
+            },
+            "trigger": "minecraft:on_player_dismount"
+          },
+          {
+            "remove": {
+              "component_groups": [
+                "minecraft:zombie_nautilus_tame_saddled",
+                "minecraft:zombie_nautilus_tame_saddled_in_water",
+                "minecraft:zombie_nautilus_tame_saddled_on_ground"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:zombie_nautilus_tame_unsaddled"
+              ]
+            },
+            "set_home_position": {}
+          }
+        ]
+      },
+      "minecraft:on_tame": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild",
+            "minecraft:zombie_nautilus_wild_unmounted",
+            "minecraft:zombie_nautilus_wild_calm",
+            "minecraft:zombie_nautilus_tameable"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_tame",
+            "minecraft:zombie_nautilus_tame_unsaddled"
+          ]
+        },
+        "set_home_position": {}
+      },
+      "minecraft:on_unleashed": {
+        "set_home_position": {}
+      },
+      "minecraft:on_stop_tempting": {
+        "set_home_position": {}
+      },
+      "minecraft:on_drowned_mount": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_unmounted",
+            "minecraft:zombie_nautilus_leashable",
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_mounted"
+          ]
+        }
+      },
+      "minecraft:on_drowned_dismount": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_mounted"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_unmounted",
+            "minecraft:zombie_nautilus_leashable",
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        }
+      },
+      "minecraft:on_player_mount": {
+        "filters": {
+          "test": "has_component",
+          "value": "minecraft:is_saddled"
+        },
+        "trigger": "minecraft:switch_to_player_controlled"
+      },
+      "minecraft:on_player_dismount": {
+        "trigger": "minecraft:switch_to_ai_controlled",
+        "set_home_position": {}
+      },
+      "minecraft:become_angry": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_calm",
+            "minecraft:zombie_nautilus_leashable",
+            "minecraft:zombie_nautilus_tameable"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_angry"
+          ]
+        }
+      },
+      "minecraft:on_calm": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_angry"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild_calm",
+            "minecraft:zombie_nautilus_leashable",
+            "minecraft:zombie_nautilus_tameable"
+          ]
+        }
+      },
+      "minecraft:start_charge": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_charging"
+          ]
+        }
+      },
+      "minecraft:stop_charge": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_charging"
+          ]
+        }
+      },
+      "minecraft:switch_to_player_controlled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_player_controlled"
+          ]
+        }
+      },
+      "minecraft:switch_to_ai_controlled": {
+        "remove": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_player_controlled"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        }
+      }
+    }
+  }
+}

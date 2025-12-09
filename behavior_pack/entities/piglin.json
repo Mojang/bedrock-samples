@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.90",
+  "format_version": "1.21.130",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:piglin",
@@ -14,24 +14,18 @@
           "triggers": {
             "filters": {
               "test": "in_nether",
-              "subject": "self",
-              "operator": "==",
               "value": false
             },
             "event": "start_zombification_event"
           }
         }
       },
-
       "start_zombification": {
         "minecraft:is_shaking": {},
         "minecraft:environment_sensor": {
           "triggers": {
             "filters": {
-              "test": "in_nether",
-              "subject": "self",
-              "operator": "==",
-              "value": true
+              "test": "in_nether"
             },
             "event": "stop_zombification_event"
           }
@@ -44,17 +38,15 @@
           }
         }
       },
-
       "become_zombie": {
         "minecraft:transformation": {
           "into": "minecraft:zombie_pigman",
-          "transformation_sound" : "converted_to_zombified",
+          "transformation_sound": "converted_to_zombified",
           "keep_level": true,
           "drop_inventory": true,
           "preserve_equipment": true
         }
       },
-
       "ranged_unit": {
         "minecraft:behavior.ranged_attack": {
           "priority": 8,
@@ -81,10 +73,25 @@
           "value": 0
         }
       },
-
       "melee_unit": {
-        "minecraft:behavior.melee_box_attack": {
+        "minecraft:behavior.use_kinetic_weapon": {
           "priority": 8,
+          "track_target": true,
+          "approach_distance": 10.0,
+          "reposition_distance": {
+            "min": 6.0,
+            "max": 7.0
+          },
+          "cooldown_distance": {
+            "min": 9.0,
+            "max": 11.0
+          },
+          "weapon_reach_multiplier": 0.5,
+          "weapon_min_speed_multiplier": 0.2,
+          "hijack_mount_navigation": true
+        },
+        "minecraft:behavior.melee_box_attack": {
+          "priority": 9,
           "speed_multiplier": 1.0,
           "track_target": true
         },
@@ -98,7 +105,6 @@
           "value": 1
         }
       },
-
       "angry": {
         "minecraft:angry": {
           "duration": 30,
@@ -118,13 +124,13 @@
               {
                 "test": "is_family",
                 "subject": "other",
-                "operator": "!=",
+                "operator": "not",
                 "value": "piglin"
               },
               {
                 "test": "has_component",
                 "subject": "self",
-                "operator": "!=",
+                "operator": "not",
                 "value": "minecraft:attack_cooldown"
               }
             ]
@@ -136,7 +142,6 @@
           }
         }
       },
-
       "attack_cooldown": {
         "minecraft:attack_cooldown": {
           "attack_cooldown_time": [ 30.0, 120.0 ],
@@ -146,7 +151,6 @@
           }
         }
       },
-
       "piglin_baby": {
         "minecraft:is_baby": {},
         "minecraft:scale": {
@@ -163,7 +167,6 @@
           "speed_multiplier": 1.1
         }
       },
-
       "piglin_adult": {
         "minecraft:group_size": {
           "radius": 32,
@@ -171,7 +174,7 @@
             "all_of": [
               {
                 "test": "has_component",
-                "operator": "!=",
+                "operator": "not",
                 "value": "minecraft:is_baby"
               },
               {
@@ -255,7 +258,6 @@
           ]
         }
       },
-
       "interactable_piglin": {
         "minecraft:interact": {
           "interactions": [
@@ -292,7 +294,6 @@
           ]
         }
       },
-
       "hunter": {
         "minecraft:type_family": {
           "family": [
@@ -302,7 +303,6 @@
           ]
         }
       },
-
       "not_hunter": {
         "minecraft:type_family": {
           "family": [
@@ -311,7 +311,6 @@
           ]
         }
       },
-
       "alert_for_attack_targets": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 7,
@@ -346,13 +345,13 @@
                   {
                     "test": "has_component",
                     "subject": "other",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "minecraft:is_baby"
                   },
                   {
                     "test": "has_component",
                     "subject": "self",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "minecraft:attack_cooldown"
                   }
                 ]
@@ -371,28 +370,28 @@
                     "test": "has_equipment",
                     "subject": "other",
                     "domain": "head",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "golden_helmet"
                   },
                   {
                     "test": "has_equipment",
                     "subject": "other",
                     "domain": "torso",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "golden_chestplate"
                   },
                   {
                     "test": "has_equipment",
                     "subject": "other",
                     "domain": "leg",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "golden_leggings"
                   },
                   {
                     "test": "has_equipment",
                     "subject": "other",
                     "domain": "feet",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "golden_boots"
                   }
                 ]
@@ -405,9 +404,7 @@
                 "any_of": [
                   {
                     "test": "has_container_open",
-                    "subject": "other",
-                    "operator": "==",
-                    "value": true
+                    "subject": "other"
                   }
                 ]
               },
@@ -417,7 +414,6 @@
           "must_see": true
         }
       },
-
       "take_target_as_response_to_block_break": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 7,
@@ -433,7 +429,6 @@
           ]
         }
       },
-
       "piglin_jockey": {
         "minecraft:behavior.find_mount": {
           "priority": 1,
@@ -478,10 +473,7 @@
         "damage_conditions": [
           {
             "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
+              "test": "in_lava"
             },
             "cause": "lava",
             "damage_per_tick": 4
@@ -513,8 +505,8 @@
         "priority": 2,
         "admire_item_sound": "admire",
         "sound_interval": {
-          "range_min": 2.0,
-          "range_max": 5.0
+          "range_min": 8.0,
+          "range_max": 8.0
         },
         "on_admire_item_start": {
           "event": "admire_item_started_event",
@@ -563,8 +555,7 @@
               "all_of": [
                 {
                   "test": "has_target",
-                  "subject": "other",
-                  "value": true
+                  "subject": "other"
                 },
                 {
                   "test": "is_family",
@@ -583,8 +574,8 @@
         },
         "avoid_mob_sound": "retreat",
         "sound_interval": {
-          "range_min": 2.0,
-          "range_max": 5.0
+          "min": 2.0,
+          "max": 5.0
         }
       },
       "minecraft:behavior.equip_item": {
@@ -614,8 +605,8 @@
         ],
         "avoid_block_sound": "retreat",
         "sound_interval": {
-          "range_min": 2.0,
-          "range_max": 5.0
+          "min": 2.0,
+          "max": 5.0
         }
       },
       "minecraft:behavior.random_stroll": {
@@ -642,6 +633,13 @@
         "items": [
           {
             "item": "minecraft:golden_sword",
+            "priority": 2,
+            "admire": true,
+            "pickup_limit": 1,
+            "stored_in_inventory": true
+          },
+          {
+            "item": "minecraft:golden_spear",
             "priority": 2,
             "admire": true,
             "pickup_limit": 1,
@@ -780,6 +778,13 @@
           },
           {
             "item": "minecraft:horsearmorgold",
+            "priority": 2,
+            "admire": true,
+            "pickup_limit": 1,
+            "stored_in_inventory": true
+          },
+          {
+            "item": "minecraft:golden_nautilus_armor",
             "priority": 2,
             "admire": true,
             "pickup_limit": 1,
@@ -999,6 +1004,30 @@
           },
           {
             "item": "minecraft:wooden_sword",
+            "priority": 8
+          },
+          {
+            "item": "minecraft:netherite_spear",
+            "priority": 3
+          },
+          {
+            "item": "minecraft:diamond_spear",
+            "priority": 4
+          },
+          {
+            "item": "minecraft:iron_spear",
+            "priority": 5
+          },
+          {
+            "item": "minecraft:copper_spear",
+            "priority": 6
+          },
+          {
+            "item": "minecraft:stone_spear",
+            "priority": 7
+          },
+          {
+            "item": "minecraft:wooden_spear",
             "priority": 8
           },
           {

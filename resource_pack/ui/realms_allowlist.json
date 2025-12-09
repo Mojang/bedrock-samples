@@ -15,15 +15,16 @@
     "size": [ "100%", 5 ]
   },
 
-  "friends_containing_panel": {
-    "type": "panel",
-    "size": [ "100%", "100%c" ],
-    "controls": [
-      {
-        "friends_panel@realms_allowlist.friends_panel": {}
-      }
-    ]
-  },
+    "friends_containing_panel": {
+        "type": "panel",
+        "$friends_containing_panel_size|default": [ "100%", "100%c" ],
+        "size": "$friends_containing_panel_size",
+        "controls": [
+            {
+                "friends_panel@realms_allowlist.friends_panel": {}
+            }
+        ]
+    },
 
   "friends_panel": {
     "type": "stack_panel",
@@ -213,68 +214,130 @@
     "anchor_from": "top_left",
     "anchor_to": "top_left",
     "size": [ "100%", 40 ],
+    "$show_invite_links_button|default": false,
+    "variables": [
+        {
+            "requires": "$show_invite_links_button",
+            "$button_size": [ "33%", 32 ]
+        },
+        {
+            "requires": "(not $show_invite_links_button)",
+            "$button_size": [ "50%", 32 ]
+        }
+    ],
     "controls": [
       {
         "allowlist_stack_panel": {
           "type": "stack_panel",
           "size": [ "100%", "100%" ],
           "orientation": "horizontal",
-          "controls": [
-            {
-              "find_friends_button_panel@realms_allowlist.find_friends_button_panel": {
-                "ignored": "(not $supports_add_friend)"
-              }
-            },
-            {
-              "spacing": {
-                "type": "panel",
-                "size": [ 2, "100%" ]
-              }
-            },
-            {
-              "options_panel": {
-                "type": "panel",
-                "size": [ "50%", 32 ],
-                "controls": [
-                  {
-                    "clear_members_button@common_buttons.light_text_button": {
-                      "anchor_from": "left_middle",
-                      "anchor_to": "left_middle",
-                      "size": [ "default", 30 ],
-                      "layer": 2,
-                      "$button_text": "realmsClearMembers.clear",
-                      "button_mappings": [
-                        {
-                          "from_button_id": "button.menu_select",
-                          "to_button_id": "button.clear_members",
-                          "mapping_type": "pressed"
-                        },
-                        {
-                          "from_button_id": "button.menu_ok",
-                          "to_button_id": "button.clear_members",
-                          "mapping_type": "focused"
-                        }
-                      ],
-                      "bindings": [
-                        {
-                          "binding_name": "#members_list_enabled", // a hack: you cannot set "enabled":false directly on a ui control
-                          "binding_name_override": "#enabled"
-                        }
-                      ]
+            "controls": [
+                {
+                    "find_friends_button_panel@realms_allowlist.find_friends_button_panel": {
+                        "ignored": "(not $supports_add_friend)"
                     }
+                },
+                {
+                    "spacing_1": {
+                        "type": "panel",
+                        "size": [ 2, "100%" ]
+                    }
+                },
+                {
+                    "invite_links_panel": {
+                        "ignored": "(not $show_invite_links_button)",
+                        "type": "panel",
+                        "size": "$button_size",
+                        "controls": [
+                            {
+                                "invite_links_button@common_buttons.light_text_button": {
+                                    "anchor_from": "left_middle",
+                                    "anchor_to": "left_middle",
+                                    "size": [ "default", 30 ],
+                                    "layer": 2,
+                                    "$button_text": "realmsSettingsScreen.inviteLinksSectionTitle",
+                                    "button_mappings": [
+                                        {
+                                            "from_button_id": "button.menu_select",
+                                            "to_button_id": "button.invite_links",
+                                            "mapping_type": "pressed"
+                                        },
+                                        {
+                                            "from_button_id": "button.menu_ok",
+                                            "to_button_id": "button.invite_links",
+                                            "mapping_type": "focused"
+                                        }
+                                    ],
+                                    "bindings": [
+                                        {
+                                            "binding_name": "#members_list_enabled", // a hack: you cannot set "enabled":false directly on a ui control
+                                            "binding_name_override": "#enabled"
+                                        }
+                                    ]
+                                }
 
-                  }
-                ],
-                "bindings": [
-                  {
-                    "binding_name": "#options_visible",
-                    "binding_name_override": "#visible",
-                    "binding_type": "global"
-                  }
-                ]
-              }
-            }
-          ]
+                            }
+                        ],
+                        "bindings": [
+                            {
+                                "binding_name": "#options_visible",
+                                "binding_name_override": "#visible",
+                                "binding_type": "global"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "spacing_2": {
+                        "ignored": "(not $show_invite_links_button)",
+                        "type": "panel",
+                        "size": [ 2, "100%" ]
+                    }
+                },
+                {
+                    "options_panel": {
+                        "type": "panel",
+                        "size": "$button_size",
+                        "controls": [
+                            {
+                                "clear_members_button@common_buttons.light_text_button": {
+                                    "anchor_from": "left_middle",
+                                    "anchor_to": "left_middle",
+                                    "size": [ "default", 30 ],
+                                    "layer": 2,
+                                    "$button_text": "realmsClearMembers.clear",
+                                    "button_mappings": [
+                                        {
+                                            "from_button_id": "button.menu_select",
+                                            "to_button_id": "button.clear_members",
+                                            "mapping_type": "pressed"
+                                        },
+                                        {
+                                            "from_button_id": "button.menu_ok",
+                                            "to_button_id": "button.clear_members",
+                                            "mapping_type": "focused"
+                                        }
+                                    ],
+                                    "bindings": [
+                                        {
+                                            "binding_name": "#members_list_enabled", // a hack: you cannot set "enabled":false directly on a ui control
+                                            "binding_name_override": "#enabled"
+                                        }
+                                    ]
+                                }
+
+                            }
+                        ],
+                        "bindings": [
+                            {
+                                "binding_name": "#options_visible",
+                                "binding_name_override": "#visible",
+                                "binding_type": "global"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
       }
     ]

@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.12",
+  "format_version": "1.21.130",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:drowned",
@@ -30,6 +30,30 @@
         },
         "minecraft:loot": {
           "table": "loot_tables/entities/drowned.json"
+        }
+      },
+
+      "minecraft:drowned_rider": {
+        "minecraft:navigation.generic": {
+          "is_amphibious": true,
+          "can_path_over_water": false,
+          "can_break_doors": false,
+          "can_swim": false,
+          "can_walk": false,
+          "avoid_sun": false
+        },
+        "minecraft:spawn_entity": {
+          "entities": {
+            "min_wait_time": 0,
+            "max_wait_time": 0,
+            "num_to_spawn": 1,
+            "single_use": true,
+            "spawn_entity": "minecraft:zombie_nautilus",
+            "spawn_event": "minecraft:entity_spawned"
+          }
+        },
+        "minecraft:equipment": {
+          "table": "loot_tables/entities/drowned_rider_equipment.json"
         }
       },
 
@@ -130,8 +154,8 @@
     "components": {
       "minecraft:nameable": {
       },
-
-      // Zombie Components
+      "minecraft:rotation_locked_to_vehicle": {
+      },
       "minecraft:type_family": {
         "family": [ "drowned", "zombie", "undead", "monster", "mob" ]
       },
@@ -567,43 +591,18 @@
             "randomize": [
               {
                 "weight": 15,
-                "remove": {
-                },
-                "add": {
-                  "component_groups": [
-                    "minecraft:mode_switcher",
-                    "minecraft:ranged_equipment",
-                    "minecraft:ranged_mode",
-                    "minecraft:adult_drowned"
-                  ]
-                }
+                "trigger": "minecraft:as_ranged_adult"
               },
               {
                 "weight": 85,
                 "randomize": [
                   {
                     "weight": 95,
-                    "remove": {
-                    },
-                    "add": {
-                      "component_groups": [
-                        "minecraft:melee_equipment",
-                        "minecraft:melee_mode",
-                        "minecraft:adult_drowned"
-                      ]
-                    }
+                    "trigger": "minecraft:as_adult"
                   },
                   {
                     "weight": 5,
-                    "remove": {
-                    },
-                    "add": {
-                      "component_groups": [
-                        "minecraft:melee_equipment",
-                        "minecraft:melee_mode",
-                        "minecraft:baby_drowned"
-                      ]
-                    }
+                    "trigger": "minecraft:as_baby"
                   }
                 ]
               }
@@ -629,7 +628,8 @@
           "component_groups": [
             "minecraft:melee_equipment",
             "minecraft:melee_mode",
-            "minecraft:baby_drowned"
+            "minecraft:baby_drowned",
+            "minecraft:wander_mode"
           ]
         }
       },
@@ -638,10 +638,22 @@
           "component_groups": [
             "minecraft:melee_equipment",
             "minecraft:melee_mode",
-            "minecraft:adult_drowned"
+            "minecraft:adult_drowned",
+            "minecraft:wander_mode"
           ]
         }
-      }, 
+      },
+      "minecraft:as_ranged_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:mode_switcher",
+            "minecraft:ranged_equipment",
+            "minecraft:ranged_mode",
+            "minecraft:adult_drowned",
+            "minecraft:wander_mode"
+          ]
+        }
+      },
       "minecraft:switch_to_melee": {
         "remove": {
           "component_groups": [
@@ -667,6 +679,10 @@
         }
       },
       "minecraft:has_target": {
+        "filters": {
+          "test": "is_riding",
+          "value": false
+        },
         "remove": {
           "component_groups": [
             "minecraft:wander_mode"
@@ -679,6 +695,10 @@
         }
       },
       "minecraft:lost_target": {
+        "filters": {
+          "test": "is_riding",
+          "value": false
+        },
         "remove": {
           "component_groups": [
             "minecraft:hunter_mode"
@@ -687,6 +707,25 @@
         "add": {
           "component_groups": [
             "minecraft:wander_mode"
+          ]
+        }
+      },
+      "minecraft:as_rider": {
+        "remove": {
+          "component_groups": [
+            "minecraft:melee_equipment",
+            "minecraft:ranged_equipment",
+            "minecraft:melee_mode",
+            "minecraft:baby_drowned",
+            "minecraft:wander_mode",
+            "minecraft:mode_switcher"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "minecraft:adult_drowned",
+            "minecraft:ranged_mode",
+            "minecraft:drowned_rider"
           ]
         }
       }

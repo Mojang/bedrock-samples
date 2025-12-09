@@ -19,15 +19,19 @@
     "2770948419": {
       "properties": {
         "name": {
+          "default": "",
           "type": "string"
         },
         "states": {
           "additionalProperties": {
             "$ref": "#/definitions/517105782"
           },
+          "default": {
+          },
           "type": "object"
         },
         "tags": {
+          "default": "",
           "type": "string"
         }
       },
@@ -37,14 +41,16 @@
     "2794205495": {
       "oneOf": [
         {
-          "$ref": "#/definitions/2770948419"
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
         },
         {
           "minLength": 1,
           "type": "string"
         },
         {
-          "$ref": "#/definitions/2770948419"
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
         }
       ],
       "title": "Block Descriptor"
@@ -53,6 +59,8 @@
       "oneOf": [
         {
           "items": {
+            "maximum": 3.4028234663852886e+38,
+            "minimum": 1.1754943508222875e-38,
             "type": "number"
           },
           "maxItems": 2,
@@ -62,9 +70,15 @@
         {
           "properties": {
             "x": {
+              "default": 0,
+              "maximum": 3.4028234663852886e+38,
+              "minimum": 1.1754943508222875e-38,
               "type": "number"
             },
             "y": {
+              "default": 0,
+              "maximum": 3.4028234663852886e+38,
+              "minimum": 1.1754943508222875e-38,
               "type": "number"
             }
           },
@@ -76,6 +90,8 @@
     "517105782": {
       "oneOf": [
         {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
           "type": "integer"
         },
         {
@@ -91,17 +107,22 @@
   "description": "A behavior that enables a mob to transport items from and to containers.",
   "properties": {
     "allow_simultaneous_interaction": {
-      "description": "When true the mob will wait until a container is not used by other entities before starting to interact with it. Default value: false.",
+      "default": false,
+      "description": "When true the mob will wait until a container is not used by other entities before starting to interact with it.",
       "type": "boolean"
     },
     "allowed_items": {
-      "description": "A list of item descriptors that are the only items the mob is allowed to transport. If this and \"disallowed_items\" are both empty, then all items are allowed. If non-empty \"disallowed_items\" must be empty. Default value: empty.",
+      "default": [
+      ],
+      "description": "A list of item descriptors that are the only items the mob is allowed to transport. If this and \"disallowed_items\" are both empty, then all items are allowed. If non-empty \"disallowed_items\" must be empty.",
       "items": {
         "$ref": "#/definitions/1531870811"
       },
       "type": "array"
     },
     "control_flags": {
+      "default": [
+      ],
       "items": {
         "enum": [
           "move",
@@ -114,44 +135,61 @@
       "type": "array"
     },
     "destination_container_types": {
-      "description": "A list of block descriptors that should be a container type to put items in. Default value: empty.",
+      "default": [
+      ],
+      "description": "A list of block descriptors that should be a container type to put items in.",
       "items": {
         "$ref": "#/definitions/2794205495"
       },
       "type": "array"
     },
     "disallowed_items": {
-      "description": "A list of item descriptors that are the mob is not allowed to transport. If non-empty \"allowed_items\" must be empty. Default value: emtpy.",
+      "default": [
+      ],
+      "description": "A list of item descriptors that are the mob is not allowed to transport. If non-empty \"allowed_items\" must be empty.",
       "items": {
         "$ref": "#/definitions/1531870811"
       },
       "type": "array"
     },
     "idle_cooldown": {
-      "description": "When the mob cannot find a container in which to get or put items, the goal will stop being active for this amount of time in seconds. Default value: 20.",
+      "default": 20,
+      "description": "When the mob cannot find a container in which to get or put items, the goal will stop being active for this amount of time in seconds.",
+      "maximum": 4294967295,
+      "minimum": 0,
       "type": "integer"
     },
     "initial_cooldown": {
-      "description": "How long the mob will wait after spawning or getting the goal added before the goal can start. Default value: 0.",
+      "default": 0,
+      "description": "How long the mob will wait after spawning or getting the goal added before the goal can start.",
+      "maximum": 4294967295,
+      "minimum": 0,
       "type": "integer"
     },
     "interaction_time": {
-      "description": "The amount of time in seconds spent interacting with the containers. Default value: 3.",
+      "default": 3,
+      "description": "The amount of time in seconds spent interacting with the containers.",
+      "maximum": 3.4028234663852886e+38,
       "minimum": 0,
       "type": "number"
     },
     "max_stack_size": {
-      "description": "The maximum stack size that the mob will try to take from a container. Default value: 64.",
+      "default": 64,
+      "description": "The maximum stack size that the mob will try to take from a container.",
       "maximum": 64,
       "minimum": 1,
       "type": "integer"
     },
     "max_visited_containers": {
-      "description": "The maximum number of containers that the mob will try to take/place items from before going on cooldown and starting over. Default value: 16.",
+      "default": 16,
+      "description": "The maximum number of containers that the mob will try to take/place items from before going on cooldown and starting over.",
+      "maximum": 4294967295,
+      "minimum": 0,
       "type": "integer"
     },
     "place_strategy": {
-      "description": "The strategy to use for placing the transported item. Any - always place if there is room, With matching - place if there is a matching item in the container, With matching or empty - like With matching but will also place in empty containers Default value: any.",
+      "default": "any",
+      "description": "The strategy to use for placing the transported item. Any - always place if there is room, With matching - place if there is a matching item in the container, With matching or empty - like With matching but will also place in empty containers",
       "enum": [
         "any",
         "with_matching",
@@ -161,15 +199,22 @@
       "type": "string"
     },
     "priority": {
+      "default": 0,
+      "maximum": 2147483647,
       "minimum": 0,
       "type": "integer"
     },
     "search_distance": {
       "$ref": "#/definitions/4021724221",
-      "description": "The maximum search distance horizontally and vertically at which to find containers for taking or placing items. Default value: Vec2(64,32)."
+      "default": [
+        64,
+        32
+      ],
+      "description": "The maximum search distance horizontally and vertically at which to find containers for taking or placing items."
     },
     "search_strategy": {
-      "description": "The strategy to use for finding source or destination containers. The nearest valid container or a random valid container in range. Default value: random.",
+      "default": "random",
+      "description": "The strategy to use for finding source or destination containers. The nearest valid container or a random valid container in range.",
       "enum": [
         "nearest",
         "random"
@@ -178,7 +223,9 @@
       "type": "string"
     },
     "source_container_types": {
-      "description": "A list of block descriptors that should be a container type to get items from. Default value: empty.",
+      "default": [
+      ],
+      "description": "A list of block descriptors that should be a container type to get items from.",
       "items": {
         "$ref": "#/definitions/2794205495"
       },
