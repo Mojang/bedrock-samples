@@ -670,6 +670,7 @@
   "settings_button@pause.pause_button_template": {
     "$pressed_button_name": "button.menu_settings",
     "$button_text": "menu.settings",
+    "focus_change_right": "friendsdrawer_button",
     "anchor_to": "top_middle",
     "anchor_from": "top_middle"
   },
@@ -923,14 +924,7 @@
           "anchor_to": "bottom_right"
         }
       },
-      {
-        "friendsdrawer_button_panel@pause.friendsdrawer_button_panel": {
-          "$focus_id": "friendsdrawer_button",
-          "$button_tts_header": "menu.onlinefriends.tts.msg",
-          "anchor_from": "top_right",
-          "anchor_to":  "top_right"
-        }
-      },
+      { "top_right_panel@pause.top_right_panel": {} },
       { "gamepad_helpers@pause.gamepad_helpers": {} },
       { "keyboard_helpers@pause.keyboard_helpers": {} },
       {
@@ -945,6 +939,28 @@
   },
 
   //--------------------------------------------------------------------------
+  // Top right panel (contains pause announcement and friends drawer)
+  //--------------------------------------------------------------------------
+
+  "top_right_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "offset": [ -5, 5 ],
+    "size": [ "100%c", "100%c" ],
+    "layer": 10,
+    "controls": [
+      {
+        "pause_panel@pause.pause_announcement_panel_type": {}
+      },
+      {
+        "friendsdrawer_button_panel@pause.friendsdrawer_button_panel": {}
+      }
+    ]
+  },
+
+  //--------------------------------------------------------------------------
   // Friends drawer button panel
   //--------------------------------------------------------------------------
 
@@ -952,37 +968,35 @@
     "type": "panel",
     "anchor_from": "top_right",
     "anchor_to": "top_right",
-    "offset": [ -5, 5 ],
-    "size": [ 210, "10%" ],
+    "size": [ "100%c", "100%c" ],
     "controls": [
       {
-        "friendsdrawer_container_stack_panel":{
-          "type": "panel",
+        "friendsdrawer_button@friendsbutton.button": {
+          "$pressed_button_name": "button.friends_drawer",
+          "focus_change_up": "profile_button",
+          "focus_change_right": "FOCUS_OVERRIDE_STOP",
           "anchor_from": "top_right",
           "anchor_to": "top_right",
-          "size": [ "100%", "100%" ],
+          "$context": "ingame",
+          "bindings": [
+            {
+              "binding_name": "#friends_drawer_button_focus_override",
+              "binding_name_override": "#focus_change_down"
+            }
+          ]
+        }
+      },
+      {
+        "friends_drawer_ftue_popup_wrapper": {
+          "type": "panel",
+          "size": [ 0, 0 ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "allow_clipping": false,
           "controls": [
             {
-              "friendsdrawer_button@friendsbutton.button": {
-                "$pressed_button_name": "button.friends_drawer",
-                "focus_change_up": "profile_button",
-                "focus_change_right": "FOCUS_OVERRIDE_STOP",
-                "anchor_from": "top_right",
-                "anchor_to": "top_right",
-                "$context": "ingame",
-                "bindings": [
-                  {
-                    "binding_name": "#friends_drawer_button_focus_override",
-                    "binding_name_override": "#focus_change_down"
-                  }
-                ]
-              }
-            },
-            {
               "friends_drawer_ftue_popup@friendsbutton.friends_drawer_popup": {
-                "anchor_from": "top_right",
-                "anchor_to": "top_right",
-                "offset": [ 0, 35 ],
+                "offset": [ -100, 28 ], // Adjusted by ~half of popup width in order to position correctly
                 "focus_enabled": false
               }
             }
@@ -996,9 +1010,10 @@
         "binding_name_override": "#visible",
         "binding_type": "global"
       }
-    ]
+    ],
+    "$focus_id": "friendsdrawer_button",
+    "$button_tts_header": "menu.onlinefriends.tts.msg"
   },
-
 
   "pause_screen_main_panels": {
     "type": "stack_panel",
@@ -1080,33 +1095,7 @@
                 "size": [ 5, 0 ]
               }
             },
-            {
-              "small_settings_button": {
-                "type": "input_panel",
-                "size": [ "100%c + 4px", 32 ],
-                "controls": [
-                  {
-                    "small_settings_btn@pause.settings_button_small": {
-                      "focus_change_left": "$focus_id"
-                    }
-                  }
-                ],
-                "button_mappings": [
-                  {
-                    "from_button_id": "button.controller_secondary_select",
-                    "to_button_id": "button.menu_settings",
-                    "mapping_type": "global",
-                    "scope": "controller"
-                  }
-                ]
-              }
-            },
-            {
-              "small_settings_padding": {
-                "type": "panel",
-                "size": [ "2%", 0 ]
-              }
-            },
+
             {
               "small_achievements_button": {
                 "type": "input_panel",
@@ -1304,44 +1293,10 @@
 
   "paused_text_panel@common.screen_background": {
     "size": [ "100%c + 16px", 24 ],
-    "$screen_background_alpha": 0.5,
+    "$screen_background_alpha": 0.8,
     "controls": [
       {
         "pause@paused_text": {}
-      }
-    ]
-  },
-
-  "paused_text_panel@pause.green_tag": {
-    "size": [ "120%c", 16 ],
-    "anchor_from": "center",
-    "anchor_to": "center",
-    "controls": [
-      {
-        "horizontal_stack": {
-          "type": "stack_panel",
-          "orientation": "horizontal",
-          "anchor_from": "center",
-          "anchor_to": "center",
-          "offset": [ 0, 4 ],
-          "controls": [
-            {
-              "pause_icon@pause.pause_icon": {
-                "offset": [ 0, 3 ],
-                "size": [ 8, 8 ]
-              }
-            },
-            {
-              "fill_1": {
-                "type": "panel",
-                "size": [ 3, 0 ]
-              }
-            },
-            {
-              "pause@paused_text": {}
-            }
-          ]
-        }
       }
     ]
   },
@@ -1390,7 +1345,7 @@
 
   "pause_announcement_panel_type": {
     "type": "stack_panel",
-    "size": [ "100%", "100%c" ],
+    "size": [ "100%c", "100%c" ],
     "orientation": "vertical",
     "layer": 1,
     "bindings": [
@@ -1404,14 +1359,14 @@
       {
         "horizontal_stack": {
           "type": "stack_panel",
-          "size": [ "100%", 32 ],
+          "size": [ "100%c", 32 ],
           "orientation": "horizontal",
           "controls": [
             {
               "fill_1": {
                 "type": "panel",
                 "layer": 1,
-                "size": [ "fill", "100%" ]
+                "size": [ 8, "100%" ]
               }
             },
             { "pause_text@pause.paused_text_panel": {} },
@@ -1419,7 +1374,7 @@
               "fill_2": {
                 "type": "panel",
                 "layer": 1,
-                "size": [ "fill", "100%" ]
+                "size": [ 8, "100%" ]
               }
             }
           ]
@@ -1467,6 +1422,8 @@
             },
             { "return_to_game_button@pause.return_to_game_button": {} },
             { "return@pause.vertical_padding": { "size": [ 0, 3 ] } },
+            { "settings_button@pause.settings_button": {} },
+            { "settings@pause.vertical_padding": { "size": [ 0, 3 ] } },
             { "realms_stories_button_panel@pause.realms_stories_button_panel": {} },
             {
               "realms_stories@pause.vertical_padding": {
@@ -1501,9 +1458,7 @@
               }
             },
             { "quit_button@pause.quit_button": {} },
-            { "smaller_buttons@pause.smaller_buttons_panel": {} },
-
-            { "pause_panel@pause.pause_announcement_panel_type": {} }
+            { "smaller_buttons@pause.smaller_buttons_panel": {} }
           ]
         }
       }
