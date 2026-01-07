@@ -18,6 +18,9 @@
         },
         "minecraft:movement": {
           "value": 0.35
+        },
+        "minecraft:type_family": {
+          "family": [ "baby_undead", "zombie", "zombie_villager", "undead", "monster", "mob" ]
         }
       },
       "adult": {
@@ -30,8 +33,7 @@
         "minecraft:rideable": {
           "seat_count": 1,
           "family_types": [
-            "baby_zombie",
-            "baby_husk"
+            "baby_undead"
           ],
           "seats": {
             "position": [ 0.0, 1.175, -0.35 ]
@@ -339,6 +341,12 @@
       },
       "minecraft:nameable": {
       },
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:zombie_villager_v2": "minecraft:zombie_villager_v2"
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:shareables": {
         "singular_pickup": true,
         "items": [
@@ -781,7 +789,12 @@
             ]
           },
           {
-            "filters": { "test": "has_component", "operator": "!=", "value": "minecraft:variant" },
+            "filters": {
+              "all_of": [
+                { "test": "has_component", "operator": "!=", "value": "minecraft:variant" },
+                { "test": "has_component",  "operator": "!=", "value": "minecraft:is_baby" }
+              ]
+            },
             "randomize": [
               {
                 "weight": 1,
@@ -863,6 +876,26 @@
           }
         ]
       },
+      "minecraft:entity_born": {
+        "trigger": "minecraft:as_baby"
+      },
+      "minecraft:as_baby": {
+        "sequence": [
+          {
+            "add": {
+              "component_groups": [
+                "baby"
+              ]
+            }
+          },
+          {
+            "trigger": "minecraft:randomize_job"
+          },
+          {
+            "trigger": "minecraft:add_biome_and_skin"
+          }
+        ]
+      },
       "minecraft:spawn_skilled_adult": {
         "sequence": [
           {
@@ -934,13 +967,18 @@
       "minecraft:entity_transformed": {
         "sequence": [
           {
-            "filters": { "test": "has_component", "operator": "!=", "value": "minecraft:variant" },
+            "filters": { "test": "has_component", "subject": "other", "value": "minecraft:is_baby" },
+            // Transform baby villager to baby zombie
+            "add": { "component_groups": [ "baby" ] }
+          },
+          {
+            "filters": {
+              "all_of": [
+                { "test": "has_component", "operator": "!=", "value": "minecraft:variant" },
+                { "test": "has_component",  "subject": "other", "operator": "!=", "value": "minecraft:is_baby" }
+              ]
+            },
             "sequence": [
-              // Transform baby villager to baby zombie
-              {
-                "filters": { "test": "has_component", "subject": "other", "value": "minecraft:is_baby" },
-                "add": { "component_groups": [ "baby" ] }
-              },
               // Transform adult villager to adult zombie
               {
                 "filters": {  "test": "has_component",  "subject": "other", "operator": "!=", "value": "minecraft:is_baby" },

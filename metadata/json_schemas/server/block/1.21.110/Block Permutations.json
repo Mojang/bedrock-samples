@@ -82,10 +82,77 @@
       "title": "Friction",
       "type": "number"
     },
+    "1159520788": {
+      "properties": {
+        "allowed_faces": {
+          "$ref": "#/definitions/2683144891",
+          "default": [
+            "down",
+            "up",
+            "north",
+            "south",
+            "west",
+            "east"
+          ],
+          "description": "List of any of the following strings describing which face(s) this block can be placed on"
+        },
+        "block_filter": {
+          "default": [
+          ],
+          "description": "List of blocks that this block can be placed against in the \"allowed_faces\" direction. Each block in this list can either be specified as a String (block name) or as a BlockDescriptor.",
+          "items": {
+            "$ref": "#/definitions/2794205495"
+          },
+          "maxItems": 64,
+          "type": "array"
+        }
+      },
+      "title": "Placement Condition",
+      "type": "object"
+    },
     "1273803565": {
       "$ref": "#/definitions/1135547207",
       "description": "The path to the loot table, relative to the behavior pack. Path string is limited to 256 characters.",
       "title": "Loot"
+    },
+    "1469009689": {
+      "description": "Defines whether other blocks such as fences, walls, bars, and glass panes are allowed to connect to this block.",
+      "properties": {
+        "accepts_connections_from": {
+          "default": "all",
+          "description": "The type of block allowed to connect to this block. Note that the \"only_fences\" option allows connections from all Vanilla fences excluding NetherBrick.",
+          "enum": [
+            "none",
+            "only_fences",
+            "all"
+          ],
+          "title": "Connection Type",
+          "type": "string"
+        },
+        "enabled_directions": {
+          "default": [
+            "south",
+            "north",
+            "east",
+            "west"
+          ],
+          "description": "The cardinal directions that connection is enabled for. Note that if \"none\" is specified for \"accepts_connections_from\", this field will not be used.",
+          "items": {
+            "enum": [
+              "south",
+              "west",
+              "north",
+              "east"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "type": "array",
+          "x-unique-values": true
+        }
+      },
+      "title": "Connection Rule",
+      "type": "object"
     },
     "1483802163": {
       "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
@@ -304,6 +371,22 @@
       "description": "This component allows the held item version of this block to be interacted with an empty flowerpot to place the block in it.",
       "title": "Flower Pottable"
     },
+    "2683144891": {
+      "items": {
+        "enum": [
+          "down",
+          "up",
+          "north",
+          "south",
+          "west",
+          "east"
+        ],
+        "title": "Facing",
+        "type": "string"
+      },
+      "title": "Blocked Directions",
+      "type": "array"
+    },
     "2735968029": {
       "description": "Use this component to define tags, vanilla or custom. Valid tags are of the format \"namespace:tag_name\". The array of tags must be non-empty.",
       "items": {
@@ -313,6 +396,45 @@
       },
       "title": "Tags",
       "type": "array"
+    },
+    "2770948419": {
+      "properties": {
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "states": {
+          "additionalProperties": {
+            "$ref": "#/definitions/517105782"
+          },
+          "default": {
+          },
+          "type": "object"
+        },
+        "tags": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "title": "BlockDescriptorProxy",
+      "type": "object"
+    },
+    "2794205495": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
+        },
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
+        }
+      ],
+      "title": "Block Descriptor"
     },
     "2879220220": {
       "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name.",
@@ -404,6 +526,22 @@
         }
       },
       "title": "Redstone Conductivity",
+      "type": "object"
+    },
+    "3264477714": {
+      "description": "The definitions for how a block behaves when detecting liquid. Only one rule definition is allowed per liquid type - if multiple are specified, the first will be used and the rest will be ignored.",
+      "properties": {
+        "detection_rules": {
+          "items": {
+            "$ref": "#/definitions/538564332"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "detection_rules"
+      ],
+      "title": "Liquid Detection",
       "type": "object"
     },
     "338268096": {
@@ -691,6 +829,22 @@
       "title": "Redstone Producer",
       "type": "object"
     },
+    "4254798072": {
+      "properties": {
+        "conditions": {
+          "default": [
+          ],
+          "description": "List of conditions where the block can be placed/survive",
+          "items": {
+            "$ref": "#/definitions/1159520788"
+          },
+          "maxItems": 64,
+          "type": "array"
+        }
+      },
+      "title": "Placement Filter",
+      "type": "object"
+    },
     "4291018146": {
       "description": "Configures the behavior of an entity falling on this block. The minimum distance in blocks that an actor needs to fall before events are triggered.",
       "properties": {
@@ -708,6 +862,10 @@
         "minecraft:collision_box": {
           "$ref": "#/definitions/338268096",
           "description": "Defines the area of the block that collides with entities. If set to true, default values are used. If set to false, the block's collision with entities is disabled. If this component is omitted, default values are used."
+        },
+        "minecraft:connection_rule": {
+          "$ref": "#/definitions/1469009689",
+          "description": "Defines whether other blocks such as fences, walls, bars, and glass panes are allowed to connect to this block."
         },
         "minecraft:crafting_table": {
           "$ref": "#/definitions/3210633909",
@@ -761,6 +919,10 @@
           "$ref": "#/definitions/3655705218",
           "description": "The amount of light this block will emit. Higher value means more light will be emitted."
         },
+        "minecraft:liquid_detection": {
+          "$ref": "#/definitions/3264477714",
+          "description": "The definitions for how a block behaves when detecting liquid. Only one rule definition is allowed per liquid type - if multiple are specified, the first will be used and the rest will be ignored."
+        },
         "minecraft:loot": {
           "$ref": "#/definitions/1273803565",
           "description": "The path to the loot table, relative to the behavior pack. Path string is limited to 256 characters."
@@ -776,6 +938,9 @@
         "minecraft:movable": {
           "$ref": "#/definitions/2344109265",
           "description": "This defines how a block reacts to being moved by another block like a piston."
+        },
+        "minecraft:placement_filter": {
+          "$ref": "#/definitions/4254798072"
         },
         "minecraft:random_offset": {
           "$ref": "#/definitions/4006409319",
@@ -813,6 +978,63 @@
         }
       },
       "title": "Components",
+      "type": "object"
+    },
+    "517105782": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "title": "compound_proxy"
+    },
+    "538564332": {
+      "properties": {
+        "can_contain_liquid": {
+          "default": false,
+          "description": "Whether this block can contain the liquid. For example, if the liquid type is `water`, this means the block can be waterlogged.",
+          "type": "boolean"
+        },
+        "liquid_type": {
+          "default": "water",
+          "description": "The type of liquid this detection rule is for. Currently, `water` is the only supported liquid type. If this field is omitted, `water` will be the liquid type by default.",
+          "enum": [
+            "water"
+          ],
+          "title": "Liquid Type",
+          "type": "string"
+        },
+        "on_liquid_touches": {
+          "default": "blocking",
+          "description": "How the block reacts to flowing water. Must be one of the following options:\n\"blocking\" - The default value for this field. The block stops the liquid from flowing.\n\"broken\" - The block is destroyed completely.\n\"popped\" - The block is destroyed and its item is spawned.\n\"no_reaction\" - The block is unaffected; visually, the liquid will flow through the block.",
+          "enum": [
+            "broken",
+            "popped",
+            "blocking",
+            "no_reaction"
+          ],
+          "title": "Liquid Reaction",
+          "type": "string"
+        },
+        "stops_liquid_flowing_from_direction": {
+          "$ref": "#/definitions/2683144891",
+          "default": [
+          ],
+          "description": "When a block contains a liquid, controls the directions in which the liquid can't flow out from the block. Also controls the directions in which a block can stop liquid flowing into it if `no_reaction` is set for the `on_liquid_touches` field. Can be a list of the following directions: \"up\", \"down\", \"north\", \"south\", \"east\", \"west\". The default is an empty list; this means that liquid can flow out of all directions by default."
+        },
+        "use_liquid_clipping": {
+          "default": false,
+          "description": "Whether this block uses the encompassing collider to visually clip the liquid. The encompassing collider is the smallest single AABB that contains all of the block's colliders.",
+          "type": "boolean"
+        }
+      },
+      "title": "Detection Rule",
       "type": "object"
     },
     "691321428": {

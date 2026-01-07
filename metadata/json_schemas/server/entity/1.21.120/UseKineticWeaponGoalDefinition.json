@@ -15,6 +15,181 @@
       },
       "title": "FloatRange",
       "type": "object"
+    },
+    "1088251937": {
+      "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/4150989894"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/1088251937",
+            "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+          },
+          "type": "array"
+        },
+        {
+          "properties": {
+            "AND": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+            },
+            "NOT": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+            },
+            "OR": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+            },
+            "all": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+            },
+            "all_of": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+            },
+            "any": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+            },
+            "any_of": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+            },
+            "none_of": {
+              "$ref": "#/definitions/1088251937",
+              "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+            }
+          },
+          "type": "object"
+        }
+      ],
+      "title": "Filter Group"
+    },
+    "121353999": {
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/1088251937",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "ActorDefinitionTrigger",
+      "type": "object"
+    },
+    "4150989894": {
+      "properties": {
+        "domain": {
+          "description": "The domain the test should be performed in.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "operator": {
+          "description": "The comparison to apply with 'value'.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "subject": {
+          "description": "The subject of this filter test.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "test": {
+          "description": "The name of the test to apply.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value being compared with the test.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "test"
+      ],
+      "title": "Filter Test",
+      "type": "object"
     }
   },
   "description": "Enables a mob to use kinetic weaponry by intermittently charging at its target and repositioning afterward.",
@@ -29,6 +204,11 @@
       "default": false,
       "description": "Allows the mob to perform this melee attack behavior only once during its lifetime.",
       "type": "boolean"
+    },
+    "attack_types": {
+      "default": "",
+      "description": "Defines the entity types this entity will attack.",
+      "type": "string"
     },
     "can_spread_on_fire": {
       "default": false,
@@ -97,6 +277,42 @@
       "description": "Minimum base time, in seconds, before recalculating a new attack path to the target (before increases are applied).",
       "minimum": 0,
       "type": "number"
+    },
+    "on_attack": {
+      "$ref": "#/definitions/121353999",
+      "default": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "description": "Defines the event to trigger when this entity successfully attacks."
+    },
+    "on_kill": {
+      "$ref": "#/definitions/121353999",
+      "default": {
+        "event": "",
+        "filters": {
+          "AND": null,
+          "NOT": null,
+          "OR": null,
+          "all": null,
+          "all_of": null,
+          "any": null,
+          "any_of": null,
+          "none_of": null
+        },
+        "target": "self"
+      },
+      "description": "Defines the event to trigger when this entity kills the target."
     },
     "outer_boundary_time_increase": {
       "default": 0.5,

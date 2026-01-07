@@ -9,6 +9,12 @@
     },
 
     "components": {
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:nautilus": "minecraft:nautilus"
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:breathable": {
         "total_supply": 15,
         "suffocate_time": 0,
@@ -198,12 +204,7 @@
             "cooked_salmon"
           ],
           "breeds_with": {
-            "mate_type": "minecraft:nautilus",
-            "baby_type": "minecraft:nautilus",
-            "breed_event": {
-              "event": "minecraft:entity_born",
-              "target": "baby"
-            }
+            "minecraft:nautilus": {}
           },
           "require_tame": true
         },
@@ -382,7 +383,10 @@
                 "minecraft:golden_nautilus_armor",
                 "minecraft:diamond_nautilus_armor",
                 "minecraft:netherite_nautilus_armor"
-              ]
+              ],
+              "on_equip": {
+                "event": "minecraft:on_armor_equip"
+              }
             }
           ]
         },
@@ -399,7 +403,6 @@
                 },
                 "target": "self"
               },
-              "play_sounds": "saddle",
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
             },
@@ -415,8 +418,7 @@
                 "target": "self"
               },
               "equip_item_slot": "1",
-              "interact_text": "action.interact.equipnautilusarmor",
-              "play_sounds": "armor.equip_generic"
+              "interact_text": "action.interact.equipnautilusarmor"
             },
             {
               "on_interact": {
@@ -563,11 +565,6 @@
           "value": 0.07
         }
       },
-      "minecraft:nautilus_charging": {
-        "minecraft:underwater_movement": {
-          "value": 0.12
-        }
-      },
       "minecraft:nautilus_wild_adult_angry": {
         "minecraft:angry": {  
           "duration": 20,
@@ -582,7 +579,7 @@
         "minecraft:behavior.aquatic_charge_attack": {
           "priority": 3,
           "max_charge_distance": 16,
-          "charge_speed_multiplier": 10.0,
+          "charge_speed": 1.2,
           "attack_reach": 0.0,
           "knockback_force": 2.0,
           "charge_overshoot_distance": 1.5,
@@ -723,6 +720,11 @@
               "value": false
             },
             "trigger": "minecraft:on_saddled_out_of_water"
+          },
+          {
+            "play_sound": {
+              "sound": "saddle"
+            }
           }
         ]
       },
@@ -775,6 +777,11 @@
           }
         ]
       },
+      "minecraft:on_armor_equip": {
+        "play_sound": {
+          "sound": "armor.equip_generic"
+        }
+      },
       "minecraft:on_tame": {
         "sequence": [
           {
@@ -823,20 +830,6 @@
       "minecraft:on_dismount": {
         "trigger": "minecraft:switch_to_ai_controlled",
         "set_home_position": {}
-      },
-      "minecraft:start_charge": {
-        "add": {
-          "component_groups": [
-            "minecraft:nautilus_charging"
-          ]
-        }
-      },
-      "minecraft:stop_charge": {
-        "remove": {
-          "component_groups": [
-            "minecraft:nautilus_charging"
-          ]
-        }
       },
       "minecraft:become_angry": {
         "remove": {

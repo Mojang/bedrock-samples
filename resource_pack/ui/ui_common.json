@@ -1388,6 +1388,10 @@
     "$font_size|default": "normal",
     "$text_alignment|default": "left",
 
+    "$text_edit_box_collection_details_binding_type|default": "none",
+    "$text_edit_box_collection_details_binding_name|default": "",
+    "$text_edit_box_collection_details_binding_prefix|default": "",
+
     "$text_edit_box_content_binding_type|default": "global",
     "$text_edit_box_content_binding_name|default": "#text_box_item_name",
     "$text_edit_box_binding_condition|default": "visible",
@@ -1407,6 +1411,11 @@
       "#property_field": "#item_name"
     },
     "bindings": [
+      {
+        "binding_type": "$text_edit_box_collection_details_binding_type",
+        "binding_collection_name": "$text_edit_box_collection_details_binding_name",
+        "binding_collection_prefix": "$text_edit_box_collection_details_binding_prefix"
+      },
       {
         "binding_type": "$text_edit_box_content_binding_type",
         "binding_condition": "$text_edit_box_binding_condition",
@@ -1556,6 +1565,11 @@
     "$text_edit_box_collection_details_binding_name|default": "",
     "$text_edit_box_collection_details_binding_prefix|default": "",
 
+    "$store_factory_collection_details|default": "collection_details",
+    "$store_factory_binding_type|default": "collection",
+    "$store_factory_collection_prefix|default": "factory",
+    "$store_factory_collection_name|default": "factory_collection",
+
     "bindings": [
       {
         "binding_type": "$text_edit_box_collection_details_binding_type",
@@ -1583,6 +1597,11 @@
         "binding_name_override": "#visible",
         "binding_type": "$text_edit_visible_binding_type",
         "binding_collection_name": "$text_edit_visible_binding_collection_name"
+      },
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
       }
     ],
 
@@ -2531,6 +2550,34 @@
     ]
   },
 
+  "gamepad_helper_bumpers": {
+    "type": "panel",
+    "anchor_from": "top_middle",
+    "anchor_to": "bottom_middle",
+    "size": [ "100%", 16 ],
+    "$left_bumper_anchor_from|default": "top_left",
+    "$left_bumper_anchor_to|default": "top_right",
+    "$right_bumper_anchor_from|default": "top_right",
+    "$right_bumper_anchor_to|default": "top_left",
+    "controls": [
+      {
+        "gamepad_helper_left_bumper@common.gamepad_helper_left_bumper": {
+          "offset": [ -1, 0 ],
+          "anchor_from": "$left_bumper_anchor_from",
+          "anchor_to": "$left_bumper_anchor_to",
+          "$hide_description": true
+        }
+      },
+      {
+        "gamepad_helper_right_bumper@common.gamepad_helper_right_bumper": {
+          "anchor_from": "$right_bumper_anchor_from",
+          "anchor_to": "$right_bumper_anchor_to",
+          "$hide_description": true
+        }
+      }
+    ]
+  },
+
   /////////////////////////////////////////////////////////////////////////////
   // Gamepad Pocket Trigger and Bumper Helpers
   /////////////////////////////////////////////////////////////////////////////
@@ -2885,7 +2932,7 @@
   },
 
   //---------------------------------------------------------------------------
-  // Common inventory
+  // #region common inventory
   //---------------------------------------------------------------------------
 
   "dialog_background_common": {
@@ -2992,6 +3039,19 @@
     "color": "$title_text_color"
   },
 
+  "center_fold@common.root_panel": {
+    "size": [ 4, 166 ],
+    "controls": [
+      {
+        "center_bg": {
+          "type": "image",
+          "texture": "textures/ui/recipe_back_panel",
+          "size": [ "100% + 8px", "100% - 6px" ]
+        }
+      }
+    ]
+  },
+
   "section_divider": {
     "type": "stack_panel",
     "orientation": "vertical",
@@ -3094,17 +3154,29 @@
     "$button_tts_header|default": "accessibility.button.close",
     "$tts_section_header|default": "",
 
+    "$close_button_visible_collection_details|default": "none",
+    "$close_button_visible_collection_prefix|default": "",
+    "$close_button_visible_collection_name|default": "",
+
     "tts_name": "$button_tts_name",
     "tts_control_header": "$button_tts_header",
     "tts_section_header": "$tts_section_header",
 
     "bindings": [
       {
+        "binding_type": "$close_button_visible_collection_details",
+        "binding_collection_name": "$close_button_visible_collection_name",
+        "binding_collection_prefix": "$close_button_visible_collection_prefix"
+      },
+      {
         "binding_type": "$close_button_visible_binding_type",
+        "binding_collection_name": "$close_button_visible_collection_name",
         "binding_name": "$close_button_visible_binding_name",
         "binding_name_override": "#visible"
       },
       {
+        "binding_type": "$close_button_visible_binding_type",
+        "binding_collection_name": "$close_button_visible_collection_name",
         "binding_name": "#tts_enabled",
         "binding_name_override": "#focus_enabled"
       }
@@ -4005,6 +4077,141 @@
     "type": "factory",
     "control_name": "@common.item_lock_notification"
   },
+
+  // #endregion
+
+  //---------------------------------------------------------------------------
+  // #region toolbars
+  //---------------------------------------------------------------------------
+
+  "layout_toggle_content": {
+    "type": "panel",
+    "controls": [
+      { "image@$toggle_image": {} },
+      {
+        "icon@$icon_control": {
+          "offset": [ 0, -1 ],
+          "anchor_to": "top_middle",
+          "anchor_from": "top_middle",
+
+          "layer": 1
+        }
+      }
+    ]
+  },
+
+  "layout_template_toggle@common_toggles.light_template_toggle": {
+    "$focus_override_up": "FOCUS_OVERRIDE_STOP",
+
+    "$default_texture": "textures/ui/recipe_book_button_borderless_light",
+    "$hover_texture": "textures/ui/recipe_book_button_borderless_lightpressednohover",
+    "$pressed_texture": "textures/ui/recipe_book_button_borderless_lighthover",
+    "$pressed_no_hover_texture": "textures/ui/recipe_book_button_borderless_lightpressed"
+  },
+
+  "layout_toggle@common_toggles.light_image_toggle": {
+    "size": [ 25, 18 ],
+    "$button_content": "common.layout_toggle_content",
+    "$toggle_name": "layout_toggle",
+
+    "$template_toggle": "common.layout_template_toggle",
+    "$allow_controller_back_button_mapping": "$is_ps4"
+  },
+
+  "creative_layout_toggle@common.layout_toggle": {
+    "$icon_control": "common.creative_icon",
+    "$toggle_group_forced_index": "$creative_layout_index",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_creative_layout",
+
+    "$focus_id": "creative_layout_toggle",
+    "$toggle_tts_header": "accessibility.button.creative.layout"
+  },
+
+  "recipe_book_layout_toggle@common.layout_toggle": {
+    "$icon_control": "common.recipe_book_icon",
+    "$toggle_group_forced_index": "$recipe_book_layout_index",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_recipe_book_layout",
+
+    "$focus_id": "recipe_book_layout_toggle",
+    "$toggle_tts_header": "accessibility.button.recipebook.layout"
+  },
+
+  "survival_layout_toggle@common.layout_toggle": {
+    "$icon_control": "common.inventory_icon",
+    "$toggle_group_forced_index": "$survival_layout_index",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_survival_layout",
+    "$toggle_tts_header": "accessibility.button.survival.layout"
+  },
+
+  "furnace_recipe_book_layout_toggle@common.layout_toggle": {
+    "$icon_control": "common.recipe_book_icon",
+    "$toggle_group_forced_index": "$furnace_recipe_book_layout_index",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_recipe_book_layout",
+
+    "$focus_id": "furnace_recipe_book_layout_toggle",
+    "$toggle_tts_header": "accessibility.button.recipebook.layout"
+  },
+
+  "furnace_survival_layout_toggle@common.layout_toggle": {
+    "$icon_control": "common.inventory_icon",
+    "$toggle_group_forced_index": "$furnace_survival_layout_index",
+
+    "$toggle_binding_type": "global",
+    "$toggle_state_binding_name": "#is_survival_layout",
+    "$toggle_tts_header": "accessibility.button.survival.layout"
+  },
+
+  "crafting_root_input_panel@common.root_panel": {
+    "type": "input_panel",
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.destroy_selection",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_secondary_select",
+        "to_button_id": "button.container_reset_held",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.menu_ok",
+        "to_button_id": "button.destroy_selection",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.controller_back",
+        "to_button_id": "button.destroy_selection",
+        "mapping_type": "pressed",
+        "ignored": "(not $is_ps4)"
+      },
+      {
+        "from_button_id": "button.controller_select",
+        "to_button_id": "button.clear_hotbar_or_remove_one",
+        "mapping_type": "pressed"
+      },
+      {
+        "from_button_id": "button.controller_secondary_select",
+        "to_button_id": "button.container_reset_held",
+        "mapping_type": "pressed"
+      }
+    ]
+  },
+
+  "toolbar_background_image": {
+    "type": "image",
+    "texture": "textures/ui/toolbar_background"
+  },
+
+  // #endregion
 
   //---------------------------------------------------------------------------
   // Scroll
@@ -6745,7 +6952,7 @@
                 "min_size": [ 8, 8 ],
                 // The max y is 200 due to the fact that we have no way to say use inherited max sibling height
                 //   - 200 was used in thoughts that whatever text was used would not need more that 200px
-                //     allowing the image to grow and string with the height of the text object
+                //   allowing the image to grow and string with the height of the text object
                 "max_size": [ 12, 200 ],
                 "controls": [
                   {
@@ -6835,14 +7042,15 @@
         }
       }
     ],
-    "bindings": [
+    "$static_tooltip_popup_with_image_and_text_bindings|default": [
       {
         "binding_name": "$tooltip_popup_visible_binding",
         "binding_name_override": "#visible",
         "binding_collection_name": "$tooltip_button_collection_name",
         "binding_type": "$tooltip_button_binding_type"
       }
-    ]
+    ],
+    "bindings": "$static_tooltip_popup_with_image_and_text_bindings"
   },
 
   "dynamic_tooltip_popup_with_custom_content@common.tooltip_background": {
@@ -6931,7 +7139,7 @@
                 "min_size": [ 8, 8 ],
                 // The max y is 200 due to the fact that we have no way to say use inherited max sibling height
                 //   - 200 was used in thoughts that whatever text was used would not need more that 200px
-                //     allowing the image to grow and string with the height of the text object
+                //   allowing the image to grow and string with the height of the text object
                 "max_size": [ 15, 200 ],
                 "controls": [
                   {
@@ -7132,6 +7340,34 @@
   "error_glyph": {
     "type": "image",
     "texture": "textures/ui/ErrorGlyph"
+  },
+
+  "creative_icon": {
+    "type": "image",
+    "size": [ 19, 13 ],
+    "texture": "textures/ui/creative_icon"
+  },
+
+  "inventory_icon": {
+    "type": "image",
+    "size": [ 19, 13 ],
+    "texture": "textures/ui/inventory_icon"
+  },
+
+  "recipe_book_icon": {
+    "type": "image",
+    "size": [ 19, 13 ],
+    "texture": "textures/ui/recipe_book_icon"
+  },
+
+  "tab_icon_image": {
+    "layer": -1,
+    "type": "image",
+    "size": [ 17, 17 ]
+  },
+
+  "search_icon@common.tab_icon_image": {
+    "texture": "textures/ui/magnifyingGlass"
   },
 
   "service_repo_image_panel": {
