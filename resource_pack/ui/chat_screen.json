@@ -121,6 +121,58 @@
     ]
   },
 
+  "new_messages": {
+    "type": "image",
+    "texture": "textures/ui/purpleBorder",
+    "size": [ "100%c", "100%c" ],
+    "layer": 200,
+    "$border_color|default": "$light_border_default_color",
+    "controls": [
+      {
+        "focus_border@common_buttons.focus_border": {
+          "size": [ "100%c + 12px", "100%c + 8px" ],
+          "color": "$border_color",
+          "controls": [
+            {
+              "stack": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "size": [ "100%c", "100%cm" ],
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "$content_color": [0, 1, 0, 1],
+                "controls": [
+                  {
+                    "arrow_icon": {
+                      "type": "image",
+                      "texture": "textures/ui/arrow_down",
+                      "size": [ 8, 11 ],
+                      "color": "$content_color"
+                    }
+                  },
+                  {
+                    "separator": {
+                      "type": "panel",
+                      "size": [ "4px", "1px" ]
+                    }
+                  },
+                  {
+                    "tooltip_text": {
+                      "type": "label",
+                      "size": [ "default", "default" ],
+                      "color": "$content_color",
+                      "text": "chat.newMessages"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   // Buttons //
 
   "small_button@common_buttons.light_content_button": {
@@ -182,6 +234,43 @@
     ]
   },
 
+  "new_messages_button@common.button": {
+    "anchor_from": "bottom_middle",
+    "anchor_to": "bottom_middle",
+    "size": [ "100%c", "100%c" ],
+    "offset": [ 0, -33 ],
+    "$pressed_button_name": "button.new_messages",
+    "$focus_id": "new_messages_button_focus_id",
+    "$focus_override_down": "text_edit_box_focus_id",
+    "controls": [
+      { "default@chat.new_messages": {} },
+      { "pressed@chat.new_messages": {} },
+      {
+        "hover@chat.new_messages": {
+          "$border_color": "$light_border_hover_color"
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "binding_type": "view",
+        "source_control_name": "messages_scroll_view",
+        "source_property_name": "#scrolled_to_end",
+        "target_property_name": "#chat_scrolled_to_end"
+      },
+      {
+        "binding_type": "global",
+        "binding_condition": "always",
+        "binding_name": "#scroll_status_update"
+      },
+      {
+        "binding_condition": "always",
+        "binding_name": "#has_new_messages",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
   // Messages Panel //
 
   "messages_text": {
@@ -236,6 +325,9 @@
     "anchor_to": "bottom_left",
     "offset": [ 2, -27 ],
     "$scrolling_content": "chat.messages_stack_panel",
+    "$scroll_view_name": "messages_scroll_view",
+    "$force_scroll_to_end_binding_name": "#scroll_chat_to_bottom",
+    "$force_scroll_to_end_binding_type": "global",
     "$scroll_size": [ 5, "100%-4px" ],
     "$jump_to_bottom_on_update": true,
     "$show_background": false,
@@ -877,8 +969,9 @@
       { "messages_panel@chat.messages_scrolling_panel": {} },
       { "chat_bottom_panel@chat.chat_bottom_panel": { "layer": 2 } },
       { "chat_top_panel@chat.chat_header": { "layer": 2 } },
-      { "autocomplete_commands_panel@chat.commands_panel": { "layer": 3 } },
-      { "host_main_panel@host_options.host_panel": { "layer": 4 } },
+      { "new_messages_button@chat.new_messages_button": { "layer": 3 } },
+      { "autocomplete_commands_panel@chat.commands_panel": { "layer": 4 } },
+      { "host_main_panel@host_options.host_panel": { "layer": 5 } },
       { "popup_factory@chat_settings.popup_factory": {} }
     ]
   },

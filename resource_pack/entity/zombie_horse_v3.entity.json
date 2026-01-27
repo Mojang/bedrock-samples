@@ -5,7 +5,7 @@
       "identifier": "minecraft:zombie_horse",
       "min_engine_version": "1.17.10",
       "materials": {
-        "default": "horse"
+        "default": "horse_leather_armor"
       },
       "textures": {
         "zombie": "textures/entity/horse2/horse_zombie",
@@ -16,10 +16,12 @@
         "armor_gold": "textures/entity/horse2/armor/horse_armor_gold",
         "armor_diamond": "textures/entity/horse2/armor/horse_armor_diamond",
         "armor_copper": "textures/entity/horse2/armor/horse_armor_copper",
-        "armor_netherite": "textures/entity/horse2/armor/horse_armor_netherite"
+        "armor_netherite": "textures/entity/horse2/armor/horse_armor_netherite",
+        "baby_zombie": "textures/entity/horse2/horse_zombie_baby"
       },
       "geometry": {
-        "default": "geometry.horse.v3"
+        "default": "geometry.horse.v3",
+        "baby": "geometry.horse.baby"
       },
       "animations": {
         "baby_transform": "animation.horse.v3.baby_transform",
@@ -34,6 +36,7 @@
           "variable.eat_anim = 0.0;"
         ],
         "pre_animation": [
+          "variable.armor_texture_slot = query.armor_texture_slot(4);",
           "variable.eat_anim = math.clamp(variable.eat_anim + (query.is_grazing ? ((1.0 - variable.eat_anim) * 0.4 + 0.05) : -variable.eat_anim * 0.4 - 0.05) * query.delta_time * 20.0, 0.0, 1.0);",
           "variable.head_x_rot = query.target_x_rotation + (query.modified_move_speed > 0.2 ? (math.cos(query.modified_distance_moved * 11.46) * 11.46 * query.modified_move_speed + query.modified_move_speed * 11.46) : 0.0);",
           "variable.inverse_max_stand_eat = (1.0 - math.max(variable.stand_anim, variable.eat_anim));",
@@ -41,9 +44,6 @@
           "variable.leg_x_rot_anim = variable.leg_stand_factor * 45.8 * query.modified_move_speed;"
         ],
         "animate": [
-          {
-            "baby_transform": "query.is_baby"
-          },
           "walk",
           "look_at_player",
           {
@@ -58,7 +58,7 @@
         ]
       },
       "render_controllers": [
-        "controller.render.zombie_horse.v3"
+        "controller.render.zombie_horse.v4"
       ],
       "spawn_egg": {
         "texture": "spawn_egg_zombie_horse"

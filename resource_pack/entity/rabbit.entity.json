@@ -8,35 +8,52 @@
         "default": "rabbit"
       },
       "textures": {
-        "brown": "textures/entity/rabbit/brown",
-        "white": "textures/entity/rabbit/white",
-        "black": "textures/entity/rabbit/blackrabbit",
-        "white_splotched": "textures/entity/rabbit/white_splotched",
-        "gold": "textures/entity/rabbit/gold",
-        "salt": "textures/entity/rabbit/salt",
-        "toast": "textures/entity/rabbit/toast"
+        "brown": "textures/entity/rabbit/rabbit_brown",
+        "white": "textures/entity/rabbit/rabbit_white",
+        "black": "textures/entity/rabbit/rabbit_black",
+        "white_splotched": "textures/entity/rabbit/rabbit_white_splotched",
+        "gold": "textures/entity/rabbit/rabbit_gold",
+        "salt": "textures/entity/rabbit/rabbit_salt",
+        "toast": "textures/entity/rabbit/rabbit_toast",
+        "baby_brown": "textures/entity/rabbit/rabbit_brown_baby",
+        "baby_white": "textures/entity/rabbit/rabbit_white_baby",
+        "baby_black": "textures/entity/rabbit/rabbit_black_baby",
+        "baby_white_splotched": "textures/entity/rabbit/rabbit_white_splotched_baby",
+        "baby_gold": "textures/entity/rabbit/rabbit_gold_baby",
+        "baby_salt": "textures/entity/rabbit/rabbit_salt_baby",
+        "baby_toast": "textures/entity/rabbit/rabbit_toast_baby"
       },
       "geometry": {
-        "default": "geometry.rabbit.v1.8"
+        "default": "geometry.rabbit.v2",
+        "baby": "geometry.rabbit.baby"
       },
       "animations": {
-        "move": "animation.rabbit.move",
+        "move": "animation.rabbit.move.v2",
         "baby_transform": "animation.rabbit.baby_transform",
-        "look_at_target": "animation.common.look_at_target"
+        "look_at_target": "animation.common.look_at_target",
+        "move_baby": "animation.rabbit.move.baby",
+        "idle_head_tilt": "animation.rabbit.idle_head_tilt"
       },
       "animation_controllers": [
         {
-          "general": "controller.animation.rabbit.general"
-        },
-        {
-          "baby": "controller.animation.rabbit.baby"
+          "general": "controller.animation.rabbit.general.v2"
         }
       ],
       "render_controllers": [
-        "controller.render.rabbit"
+        "controller.render.rabbit.v2"
       ],
       "spawn_egg": {
         "texture": "spawn_egg_rabbit"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.was_moving = (variable.moving ?? false);",
+          "variable.moving = query.modified_move_speed > 0.05 || query.vertical_speed > 0.05;",
+          "variable.random_cooldown = math.random(9, 11);",
+          "variable.idle_cooldown = ((!variable.moving && variable.was_moving) || (variable.idle_cooldown ?? 0) <= 0) ? variable.random_cooldown : (variable.idle_cooldown ?? variable.random_cooldown);",
+          "variable.idle_cooldown = math.max(0, variable.idle_cooldown - query.delta_time);",
+          "variable.should_idle = variable.idle_cooldown <= 0;"
+        ]
       }
     }
   }

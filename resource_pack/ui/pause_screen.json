@@ -366,12 +366,13 @@
         "paper_doll_name_tag": {
           "ignored": "($pocket_edition and $pocket_screen)",
           "type": "custom",
+          "background_color": [ 0, 0, 0, 0.8 ],
           "renderer": "name_tag_renderer",
           "layer": 2,
           "anchor_from": "top_middle",
           "anchor_to": "bottom_middle",
           "size": [ 8, 8 ],
-		  "offset": [ 0, 20 ],
+          "offset": [ 0, 20 ],
           "bindings": [
             {
               "binding_name": "#playername"
@@ -734,6 +735,43 @@
     ]
   },
 
+  "icon_button_hover_text": {
+    "type": "image",
+    "texture": "textures/ui/purpleBorder",
+    "size": [ "100%cm + 8px", "100%cm + 8px" ],
+    "offset": [ 0, 2 ],
+    "layer": 200,
+    "anchor_from": "bottom_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      {
+        "tooltip_text": {
+          "type": "label",
+          "size": [ "default", "default" ],
+          "text": "$tooltip_text",
+          "color": "$item_hover_text_color"
+        }
+      }
+    ]
+  },
+
+  "icon_button_tooltip_trigger@common.button": {
+    "size": [ "100%", "100%" ],
+    "layer": 10,
+    "ignored": "$touch",
+    "sound_volume": 0.0,
+    "$pressed_button_name": "button.do_nothing",
+    "consume_hover_events": false,
+    "focus_enabled": false,
+    "$tooltip_text": "",
+    "button_mappings": [],
+    "controls": [
+      { "default@common.empty_panel": {} },
+      { "pressed@common.empty_panel": {} },
+      { "hover@pause.icon_button_hover_text": {} }
+    ]
+  },
+
   "feedback_button@common_buttons.light_content_button": {
     "size": [ 24, 24 ],
     "$button_pressed_offset": [ 0, 0 ],
@@ -743,6 +781,7 @@
 
   "feedback_icon_button": {
     "type": "panel",
+    "size": [ 24, 24 ],
     "$button_tts_header": "accessibility.start.feedback",
     "$pressed_button_name": "button.feedback",
     "controls": [
@@ -750,6 +789,12 @@
         "feedback_button@pause.feedback_button": {
           "ignored": "$education_edition",
           "$focus_override_left": "FOCUS_OVERRIDE_STOP"
+        }
+      },
+      {
+        "tooltip_trigger@pause.icon_button_tooltip_trigger": {
+          "ignored": "$education_edition",
+          "$tooltip_text": "accessibility.start.feedback"
         }
       }
     ]
@@ -815,6 +860,22 @@
     ]
   },
 
+  "achievements_button_small_with_tooltip": {
+    "type": "panel",
+    "size": [ 24, 24 ],
+    "bindings": [
+      {
+        "binding_type": "global",
+        "binding_name": "#achievements_visible",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "button@pause.achievements_button_small": {} },
+      { "tooltip_trigger@pause.icon_button_tooltip_trigger": { "$tooltip_text": "menu.achievements" } }
+    ]
+  },
+
   "settings_button_small@common_buttons.light_content_button": {
     "$pressed_button_name": "button.menu_settings",
     "$focus_id": "icon_panel_main_focus",
@@ -823,6 +884,16 @@
     "size": [ 24, 24 ],
     "$button_content": "pause.settings_icon",
     "$pressed_alpha": 0.65
+  },
+
+  "settings_button_small_with_tooltip": {
+    "type": "panel",
+    "size": [ 24, 24 ],
+    "$focus_change_left|default": "",
+    "controls": [
+      { "button@pause.settings_button_small": { "focus_change_left": "$focus_change_left" } },
+      { "tooltip_trigger@pause.icon_button_tooltip_trigger": { "$tooltip_text": "menu.settings" } }
+    ]
   },
 
   "take_screenshot_button@common_buttons.light_content_button": {
@@ -837,6 +908,37 @@
         "binding_name": "(not #is_using_gamepad)",
         "binding_name_override": "#visible"
       }
+    ]
+  },
+
+  "take_screenshot_button_with_tooltip": {
+    "type": "panel",
+    "size": [ 24, 24 ],
+    "bindings": [
+      {
+        "binding_name": "(not #is_using_gamepad)",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "button@pause.take_screenshot_button": {} },
+      { "tooltip_trigger@pause.icon_button_tooltip_trigger": { "$tooltip_text": "key.screenshot" } }
+    ]
+  },
+
+  "take_screenshot_gamepad_button_with_tooltip": {
+    "type": "panel",
+    "size": [ 44, 24 ],
+    "bindings": [
+      {
+        "binding_type": "global",
+        "binding_name": "#is_using_gamepad",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      { "button@pause.take_screenshot_gamepad_button": {} },
+      { "tooltip_trigger@pause.icon_button_tooltip_trigger": { "$tooltip_text": "key.screenshot" } }
     ]
   },
 
@@ -1013,8 +1115,7 @@
         "binding_type": "global"
       }
     ],
-    "$focus_id": "friendsdrawer_button",
-    "$button_tts_header": "menu.onlinefriends.tts.msg"
+    "$focus_id": "friendsdrawer_button"
   },
 
   "pause_screen_main_panels": {
@@ -1104,8 +1205,8 @@
                 "size": [ "100%c + 4px", 32 ],
                 "controls": [
                   {
-                    "small_settings_btn@pause.settings_button_small": {
-                      "focus_change_left": "$focus_id"
+                    "small_settings_btn@pause.settings_button_small_with_tooltip": {
+                      "$focus_change_left": "$focus_id"
                     }
                   }
                 ],
@@ -1134,7 +1235,7 @@
                 "ignored": "$achievements_ignored",
                 "size": [ "100%c + 4px", 32 ],
                 "controls": [
-                  { "small_achievements_btn@pause.achievements_button_small": {} }
+                  { "small_achievements_btn@pause.achievements_button_small_with_tooltip": {} }
                 ],
                 "button_mappings": [
                   {
@@ -1157,8 +1258,8 @@
                 "type": "input_panel",
                 "size": [ "100%c + 4px", 32 ],
                 "controls": [
-                  { "take_screenshot_button@pause.take_screenshot_button": {} },
-                  { "take_screenshot_gamepad_button@pause.take_screenshot_gamepad_button": {} }
+                  { "take_screenshot_button@pause.take_screenshot_button_with_tooltip": {} },
+                  { "take_screenshot_gamepad_button@pause.take_screenshot_gamepad_button_with_tooltip": {} }
                 ],
                 "bindings": [
                   {

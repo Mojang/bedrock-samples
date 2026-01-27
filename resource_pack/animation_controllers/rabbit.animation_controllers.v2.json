@@ -1,0 +1,39 @@
+{
+	"format_version" : "1.10.0",
+	"animation_controllers" : {
+		"controller.animation.rabbit.general.v2" : {
+			"initial_state" : "default",
+      "states": {
+        "default": {
+          "transitions": [
+            { "moving": "variable.moving" },
+            { "idling": "!variable.moving && variable.should_idle" }
+          ],
+          "animations": [
+            "look_at_target"
+          ]
+        },
+        "idling": {
+          "transitions": [
+            { "default": "!variable.moving && query.all_animations_finished" },
+            { "moving": "variable.moving" }
+          ],
+          "animations": [
+            "idle_head_tilt",
+            "look_at_target"
+          ]
+        },
+        "moving": {
+          "transitions": [
+            { "default": "!variable.moving || (query.all_animations_finished && !query.is_on_ground)" }
+          ],
+          "animations": [
+            { "move": "!query.is_baby" },
+            { "move_baby": "query.is_baby" },
+            "look_at_target"
+          ]
+        }
+      }
+		}
+	}
+}
