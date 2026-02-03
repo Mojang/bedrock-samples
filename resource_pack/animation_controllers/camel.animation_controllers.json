@@ -15,37 +15,55 @@
           "transitions": [
             { "moving": "variable.moving" },
             { "sit_down": "query.is_sitting" },
-            { "dashing": "query.has_dash_cooldown && !query.is_on_ground && !query.is_in_water && !query.is_in_lava && !query.is_riding" }
+            {
+              "dashing": "query.has_dash_cooldown && !query.is_on_ground && !query.is_in_water && !query.is_in_lava && !query.is_riding"
+            }
           ],
           "blend_transition": 0.5
         },
         "moving": {
           "animations": [
-            { "moving": "math.min(1.0, math.lerp(0.4, 1.25, query.modified_move_speed))" }
+            {
+              "moving": "math.min(1.0, math.lerp(0.4, 1.25, query.modified_move_speed)) && !query.is_baby",
+              "baby_moving": "math.min(1.0, math.lerp(0.4, 1.25, query.modified_move_speed)) && query.is_baby"
+            }
           ],
           "transitions": [
             { "idling": "!variable.moving" },
             { "sit_down": "query.is_sitting" },
-            { "dashing": "query.has_dash_cooldown && !query.is_on_ground && !query.is_in_water && !query.is_in_lava && !query.is_riding" }
+            {
+              "dashing": "query.has_dash_cooldown && !query.is_on_ground && !query.is_in_water && !query.is_in_lava && !query.is_riding"
+            }
           ],
           "blend_transition": 0.2
         },
         "sitting": {
-          "animations": [ "sitting" ],
-          "transitions": [
-            { "stand_up": "!query.is_sitting" }
+          "animations": [
+            {
+              "sitting": "!query.is_baby",
+              "baby_sitting": "query.is_baby"
+            }
           ],
+          "transitions": [{ "stand_up": "!query.is_sitting" }],
           "blend_transition": 0.5
         },
         "sit_down": {
-          "animations": [ "sit_down" ],
-          "transitions": [
-            { "stand_up": "!query.is_sitting" }
+          "animations": [
+            {
+              "sit_down": "!query.is_baby",
+              "baby_sit_down": "query.is_baby"
+            }
           ],
+          "transitions": [{ "stand_up": "!query.is_sitting" }],
           "blend_transition": 0.5
         },
         "stand_up": {
-          "animations": [ "stand_up" ],
+          "animations": [
+            {
+              "stand_up": "!query.is_baby",
+              "baby_stand_up": "query.is_baby"
+            }
+          ],
           "transitions": [
             { "sit_down": "query.is_sitting" },
             { "idling": "query.all_animations_finished" },
@@ -54,10 +72,20 @@
           "blend_transition": 0.5
         },
         "dashing": {
-          "animations": [ "dashing", "dashing_sound" ],
+          "animations": [
+            {
+              "dashing": "!query.is_baby",
+              "baby_dashing": "query.is_baby"
+            },
+            "dashing_sound"
+          ],
           "transitions": [
-            { "idling": "(query.is_on_ground || query.is_in_water || query.is_in_lava || query.is_riding) && !variable.moving" },
-            { "moving": "(query.is_on_ground || query.is_in_water || query.is_in_lava || query.is_riding) && variable.moving" }
+            {
+              "idling": "(query.is_on_ground || query.is_in_water || query.is_in_lava || query.is_riding) && !variable.moving"
+            },
+            {
+              "moving": "(query.is_on_ground || query.is_in_water || query.is_in_lava || query.is_riding) && variable.moving"
+            }
           ],
           "blend_transition": 0.5
         }
@@ -67,7 +95,12 @@
       "initial_state": "idling",
       "states": {
         "idling": {
-          "animations": [ "idle" ]
+          "animations": [
+            {
+              "idle": "!query.is_baby",
+              "baby_idle": "query.is_baby"
+            }
+          ]
         }
       }
     }

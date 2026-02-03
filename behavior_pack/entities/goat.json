@@ -10,9 +10,6 @@
     "component_groups": {
       "goat_baby": {
         "minecraft:is_baby": {},
-        "minecraft:scale": {
-          "value": 0.5
-        },
         "minecraft:behavior.follow_parent": {
           "priority": 6,
           "speed_multiplier": 1
@@ -20,6 +17,8 @@
         "minecraft:ageable": {
           "duration": 1200,
           "feed_items": "wheat",
+          "pause_growth_items": [ "golden_dandelion" ],
+          "reset_growth_items": [ "golden_dandelion" ],
           "grow_up": {
             "event": "minecraft:ageable_grow_up",
             "target": "self"
@@ -27,6 +26,10 @@
         },
         "minecraft:attack": {
           "damage": 1
+        },
+        "minecraft:collision_box": {
+          "width": 0.45,
+          "height": 0.65
         }
       },
       "goat_adult": {
@@ -37,8 +40,7 @@
         "minecraft:loot": {
           "table": "loot_tables/entities/goat.json"
         },
-        "minecraft:leashable_to": {
-        },
+        "minecraft:leashable_to": {},
         "minecraft:behavior.breed": {
           "priority": 3,
           "speed_multiplier": 0.6
@@ -52,6 +54,10 @@
         },
         "minecraft:attack": {
           "damage": 2
+        },
+        "minecraft:collision_box": {
+          "width": 0.9,
+          "height": 1.3
         }
       },
       "goat_default": {
@@ -107,9 +113,23 @@
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test": "has_component", "subject": "self", "operator": "!=", "value": "minecraft:is_baby" },
-                    { "test": "is_family", "subject": "other", "value": "player" },
-                    { "test": "has_equipment", "domain": "hand", "subject": "other", "value": "bucket:0" }
+                    {
+                      "test": "has_component",
+                      "subject": "self",
+                      "operator": "!=",
+                      "value": "minecraft:is_baby"
+                    },
+                    {
+                      "test": "is_family",
+                      "subject": "other",
+                      "value": "player"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "domain": "hand",
+                      "subject": "other",
+                      "value": "bucket:0"
+                    }
                   ]
                 }
               },
@@ -133,10 +153,7 @@
           "knockback_height": 0.04,
           "pre_ram_sound": "pre_ram",
           "ram_impact_sound": "ram_impact",
-          "cooldown_range": [
-            30,
-            300
-          ],
+          "cooldown_range": [30, 300],
           "on_start": [
             {
               "event": "start_event",
@@ -156,10 +173,7 @@
           "knockback_height": 0.04,
           "pre_ram_sound": "pre_ram.screamer",
           "ram_impact_sound": "ram_impact.screamer",
-          "cooldown_range": [
-            5,
-            15
-          ],
+          "cooldown_range": [5, 15],
           "on_start": [
             {
               "event": "start_event",
@@ -170,10 +184,7 @@
       },
       "attack_cooldown": {
         "minecraft:attack_cooldown": {
-          "attack_cooldown_time": [
-            30,
-            40
-          ],
+          "attack_cooldown_time": [30, 40],
           "attack_cooldown_complete_event": {
             "event": "attack_cooldown_complete_event",
             "target": "self"
@@ -182,8 +193,7 @@
       }
     },
     "components": {
-      "minecraft:is_hidden_when_invisible": {
-      },
+      "minecraft:is_hidden_when_invisible": {},
       "minecraft:behavior.jump_to_block": {
         "priority": 8,
         "search_width": 10,
@@ -191,10 +201,7 @@
         "minimum_path_length": 8,
         "minimum_distance": 1,
         "scale_factor": 0.6,
-        "cooldown_range": [
-          30,
-          60
-        ]
+        "cooldown_range": [30, 60]
       },
       "minecraft:genetics": {
         "mutation_rate": 0.02,
@@ -232,10 +239,7 @@
         ]
       },
       "minecraft:type_family": {
-        "family": [
-          "goat",
-          "animal"
-        ]
+        "family": ["goat", "animal"]
       },
       "minecraft:breathable": {
         "total_supply": 15,
@@ -254,10 +258,6 @@
       "minecraft:movement.basic": {},
       "minecraft:jump.static": {},
       "minecraft:can_climb": {},
-      "minecraft:collision_box": {
-        "width": 0.9,
-        "height": 1.3
-      },
       "minecraft:nameable": {},
       "minecraft:offspring": {
         "offspring_pairs": {
@@ -276,7 +276,8 @@
         "damage_conditions": [
           {
             "filters": {
-              "test": "in_lava", "subject": "self"
+              "test": "in_lava",
+              "subject": "self"
             },
             "cause": "lava",
             "damage_per_tick": 4
@@ -299,9 +300,7 @@
       "minecraft:behavior.tempt": {
         "priority": 4,
         "speed_multiplier": 0.75,
-        "items": [
-          "wheat"
-        ]
+        "items": ["wheat"]
       },
       "minecraft:behavior.nearest_attackable_target": {
         "priority": 6,
@@ -310,8 +309,18 @@
           {
             "filters": {
               "all_of": [
-                { "test": "is_family", "subject": "other", "operator": "!=", "value": "goat" },
-                { "test": "has_component", "subject": "self", "operator": "!=", "value": "minecraft:attack_cooldown" }
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "operator": "!=",
+                  "value": "goat"
+                },
+                {
+                  "test": "has_component",
+                  "subject": "self",
+                  "operator": "!=",
+                  "value": "minecraft:attack_cooldown"
+                }
               ]
             },
             "max_dist": 16
@@ -338,10 +347,8 @@
       "minecraft:behavior.random_look_around": {
         "priority": 11
       },
-      "minecraft:leashable": {
-      },
-      "minecraft:balloonable": {
-      },
+      "minecraft:leashable": {},
+      "minecraft:balloonable": {},
       "minecraft:physics": {},
       "minecraft:pushable": {
         "is_pushable": true,
@@ -354,26 +361,20 @@
           {
             "weight": 95,
             "add": {
-              "component_groups": [
-                "goat_adult"
-              ]
+              "component_groups": ["goat_adult"]
             }
           },
           {
             "weight": 5,
             "add": {
-              "component_groups": [
-                "goat_baby"
-              ]
+              "component_groups": ["goat_baby"]
             }
           }
         ]
       },
       "minecraft:entity_born": {
         "add": {
-          "component_groups": [
-            "goat_baby"
-          ]
+          "component_groups": ["goat_baby"]
         }
       },
       "minecraft:born_default": {
@@ -396,28 +397,20 @@
       },
       "minecraft:ageable_grow_up": {
         "remove": {
-          "component_groups": [
-            "goat_baby"
-          ]
+          "component_groups": ["goat_baby"]
         },
         "add": {
-          "component_groups": [
-            "goat_adult"
-          ]
+          "component_groups": ["goat_adult"]
         }
       },
       "start_event": {
         "add": {
-          "component_groups": [
-            "attack_cooldown"
-          ]
+          "component_groups": ["attack_cooldown"]
         }
       },
       "attack_cooldown_complete_event": {
         "remove": {
-          "component_groups": [
-            "attack_cooldown"
-          ]
+          "component_groups": ["attack_cooldown"]
         }
       }
     }
