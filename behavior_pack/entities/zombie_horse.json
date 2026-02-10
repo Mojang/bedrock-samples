@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.130",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:zombie_horse",
@@ -18,16 +18,8 @@
       "minecraft:horse_baby": {
         "minecraft:is_baby": {
         },
-        "minecraft:scale_by_age": {
-          "start_scale": 0.5,
-          "end_scale": 0.5
-        },
-        "minecraft:ageable": {
-          "duration": 1200,
-          "grow_up": {
-            "event": "minecraft:ageable_grow_up",
-            "target": "self"
-          }
+        "minecraft:scale": {
+          "value": 0.5
         },
         "minecraft:behavior.follow_parent": {
           "priority": 4,
@@ -42,6 +34,33 @@
           "table": "loot_tables/entities/zombie_horse.json"
         },
         "minecraft:leashable_to": {
+        },
+        "minecraft:equippable": {
+          "slots": [
+            {
+              "slot": 0,
+              "item": "saddle",
+              "accepted_items": [ "saddle" ],
+              "on_equip": {
+                "event": "minecraft:horse_saddled"
+              },
+              "on_unequip": {
+                "event": "minecraft:horse_unsaddled"
+              }
+            },
+            {
+              "slot": 1,
+              "item": "horsearmoriron",
+              "accepted_items": [
+                "horsearmorleather",
+                "horsearmoriron",
+                "horsearmorgold",
+                "horsearmordiamond",
+                "minecraft:copper_horse_armor",
+                "minecraft:netherite_horse_armor"
+              ]
+            }
+          ]
         },
         "minecraft:behavior.run_around_like_crazy": {
           "priority": 1,
@@ -60,8 +79,7 @@
           "family_types": [
             "player",
             "zombie_rider",
-            "baby_zombie",
-            "baby_husk"
+            "baby_undead"
           ],
           "interact_text": "action.interact.mount",
           "seats": {
@@ -175,8 +193,7 @@
                 "target": "self"
               },
               "equip_item_slot": "0",
-              "interact_text": "action.interact.saddle",
-              "play_sounds": "saddle"
+              "interact_text": "action.interact.saddle"
             },
             {
               "on_interact": {
@@ -325,33 +342,12 @@
       },
       "minecraft:nameable": {
       },
-      "minecraft:equippable": {
-        "slots": [
-          {
-            "slot": 0,
-            "item": "saddle",
-            "accepted_items": [ "saddle" ],
-            "on_equip": {
-              "event": "minecraft:horse_saddled"
-            },
-            "on_unequip": {
-              "event": "minecraft:horse_unsaddled"
-            }
-          },
-          {
-            "slot": 1,
-            "item": "horsearmoriron",
-            "accepted_items": [
-              "horsearmorleather",
-              "horsearmoriron",
-              "horsearmorgold",
-              "horsearmordiamond",
-              "minecraft:copper_horse_armor",
-              "minecraft:netherite_horse_armor"
-            ]
-          }
-        ]
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:zombie_horse": "minecraft:zombie_horse"
+        }
       },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:horse.jump_strength": {
         "value": {
           "range_min": 0.5,
@@ -372,29 +368,6 @@
         "priority": 1,
         "speed_multiplier": 1.2
       },
-        "minecraft:behavior.panic": {
-            "priority": 2,
-            "damage_sources": [
-                "campfire",
-                "fire",
-                "freezing",
-                "lava",
-                "lightning",
-                "magma",
-                "soul_campfire",
-                "temperature",
-                "entity_attack",
-                "entity_explosion",
-                "fireworks",
-                "magic",
-                "projectile",
-                "ram_attack",
-                "sonic_boom",
-                "wither",
-                "mace_smash"
-            ],
-            "speed_multiplier": 1.2
-        },
       "minecraft:behavior.tempt": {
         "priority": 3,
         "speed_multiplier": 1.2,
@@ -410,7 +383,7 @@
         "priority": 7,
         "look_distance": 6.0,
         "probability": 0.02,
-        "look_time": [ 2, 4 ]
+        "look_time": { "min": 2.0, "max": 4.0 }
       },
       "minecraft:behavior.random_look_around": {
         "priority": 8
@@ -503,6 +476,9 @@
           "component_groups": [
             "minecraft:horse_saddled"
           ]
+        },
+        "play_sound": {
+          "sound": "saddle"
         }
       },
       "minecraft:horse_unsaddled": {
@@ -540,9 +516,18 @@
         "sequence":  [
           {
             "filters": {
-              "test": "has_component",
-              "operator": "!=",
-              "value": "minecraft:rideable"
+              "all_of": [
+                {
+                  "test": "has_component",
+                  "operator": "!=",
+                  "value": "minecraft:rideable"
+
+                },
+                {
+                  "test": "is_baby",
+                  "value": false
+                }
+              ]
             },
             "add": {
               "component_groups": [
@@ -552,9 +537,17 @@
           },
           {
             "filters": {
-              "test": "has_component",
-              "operator": "!=",
-              "value": "minecraft:leashable"
+              "all_of": [
+                {
+                  "test": "has_component",
+                  "operator": "!=",
+                  "value": "minecraft:leashable"
+                },
+                {
+                  "test": "is_baby",
+                  "value": false
+                }
+              ]
             },
             "add": {
               "component_groups": [

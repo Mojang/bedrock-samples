@@ -2,6 +2,20 @@
   "$id": "1677381825",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "1057349585": {
+      "properties": {
+        "max": {
+          "default": 0,
+          "type": "number"
+        },
+        "min": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "title": "FloatRange",
+      "type": "object"
+    },
     "1088021931": {
       "properties": {
         "bone_visibility": {
@@ -68,10 +82,77 @@
       "title": "Friction",
       "type": "number"
     },
+    "1159520788": {
+      "properties": {
+        "allowed_faces": {
+          "$ref": "#/definitions/2683144891",
+          "default": [
+            "down",
+            "up",
+            "north",
+            "south",
+            "west",
+            "east"
+          ],
+          "description": "List of any of the following strings describing which face(s) this block can be placed on"
+        },
+        "block_filter": {
+          "default": [
+          ],
+          "description": "List of blocks that this block can be placed against in the \"allowed_faces\" direction. Each block in this list can either be specified as a String (block name) or as a BlockDescriptor.",
+          "items": {
+            "$ref": "#/definitions/2794205495"
+          },
+          "maxItems": 64,
+          "type": "array"
+        }
+      },
+      "title": "Placement Condition",
+      "type": "object"
+    },
     "1273803565": {
       "$ref": "#/definitions/1135547207",
       "description": "The path to the loot table, relative to the behavior pack. Path string is limited to 256 characters.",
       "title": "Loot"
+    },
+    "1469009689": {
+      "description": "Defines whether other blocks such as fences, walls, bars, and glass panes are allowed to connect to this block.",
+      "properties": {
+        "accepts_connections_from": {
+          "default": "all",
+          "description": "The type of block allowed to connect to this block. Note that the \"only_fences\" option allows connections from all Vanilla fences excluding NetherBrick.",
+          "enum": [
+            "none",
+            "only_fences",
+            "all"
+          ],
+          "title": "Connection Type",
+          "type": "string"
+        },
+        "enabled_directions": {
+          "default": [
+            "south",
+            "north",
+            "east",
+            "west"
+          ],
+          "description": "The cardinal directions that connection is enabled for. Note that if \"none\" is specified for \"accepts_connections_from\", this field will not be used.",
+          "items": {
+            "enum": [
+              "south",
+              "west",
+              "north",
+              "east"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "type": "array",
+          "x-unique-values": true
+        }
+      },
+      "title": "Connection Rule",
+      "type": "object"
     },
     "1483802163": {
       "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
@@ -93,14 +174,12 @@
         "catch_chance_modifier": {
           "default": 5,
           "description": "A modifier affecting the chance that this block will catch flame when next to a fire. Values are greater than or equal to 0, with a higher number meaning more likely to catch on fire. For a catch_chance_modifier greater than 0, the fire will continue to burn until the block is destroyed (or it will burn forever if the destroy_chance_modifier is 0). If the catch_chance_modifier is 0, and the block is directly ignited, the fire will eventually burn out without destroying the block (or it will have a chance to be destroyed if destroy_chance_modifier is greater than 0). The default value of 5 is the same as that of Planks.",
-          "maximum": 65535,
           "minimum": 0,
           "type": "integer"
         },
         "destroy_chance_modifier": {
           "default": 20,
           "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a destroy_chance_modifier of 0, the block will never be destroyed by fire, and the fire will burn forever if the catch_chance_modifier is greater than 0. The default value of 20 is the same as that of Planks.",
-          "maximum": 65535,
           "minimum": 0,
           "type": "integer"
         }
@@ -176,6 +255,26 @@
       ],
       "title": "Detailed Flammable"
     },
+    "2128101180": {
+      "properties": {
+        "range": {
+          "$ref": "#/definitions/1057349585",
+          "description": "The range of the random offset.",
+          "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+        },
+        "steps": {
+          "default": 0,
+          "description": "The number of steps between the range. Specify 0 for all possible values between the range.",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "range"
+      ],
+      "title": "Range And Steps",
+      "type": "object"
+    },
     "2144332438": {
       "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to mine.",
       "oneOf": [
@@ -233,8 +332,6 @@
               "type": "string"
             },
             "version": {
-              "maximum": 32767,
-              "minimum": -32768,
               "type": "integer"
             }
           },
@@ -332,6 +429,22 @@
       "description": "This component allows the held item version of this block to be interacted with an empty flowerpot to place the block in it.",
       "title": "Flower Pottable"
     },
+    "2683144891": {
+      "items": {
+        "enum": [
+          "down",
+          "up",
+          "north",
+          "south",
+          "west",
+          "east"
+        ],
+        "title": "Facing",
+        "type": "string"
+      },
+      "title": "Blocked Directions",
+      "type": "array"
+    },
     "2735968029": {
       "description": "Use this component to define tags, vanilla or custom. Valid tags are of the format \"namespace:tag_name\". The array of tags must be non-empty.",
       "items": {
@@ -342,11 +455,83 @@
       "title": "Tags",
       "type": "array"
     },
+    "2770948419": {
+      "properties": {
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "states": {
+          "additionalProperties": {
+            "$ref": "#/definitions/517105782"
+          },
+          "default": {
+          },
+          "type": "object"
+        },
+        "tags": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "title": "BlockDescriptorProxy",
+      "type": "object"
+    },
+    "2794205495": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
+        },
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/2770948419",
+          "x-runtime-constraint-description": "Check that a valid block name or expression is provided, and in the latter case verify that there are no block states as well"
+        }
+      ],
+      "title": "Block Descriptor"
+    },
     "2879220220": {
       "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name.",
       "maxLength": 256,
       "title": "Display Name",
       "type": "string"
+    },
+    "2908099874": {
+      "description": "The \"minecraft:geometry\" component and \"minecraft:material_instances\" component of an item. Can be used instead of having separated component for each.",
+      "properties": {
+        "geometry": {
+          "$ref": "#/definitions/1483802163",
+          "description": "The \"minecraft:geometry\" component of the item."
+        },
+        "material_instances": {
+          "$ref": "#/definitions/800260518",
+          "description": "The \"minecraft:material_instances\" component of the item."
+        }
+      },
+      "required": [
+        "geometry",
+        "material_instances"
+      ],
+      "title": "Item Visual",
+      "type": "object"
+    },
+    "2986395074": {
+      "description": "Defines the area of the block that is selected by the player's cursor. If set to true, default values are used. If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/3903423213",
+          "description": "Information for the collision box.",
+          "x-runtime-constraint-description": "\"origin\" + \"size\", must be inside the following limit: Vec3(-8,0,-8) and Vec3(8,24,8)"
+        }
+      ],
+      "title": "Selection Box"
     },
     "3142471136": {
       "description": "Adds the \"minecraft:block_face\" and/or \"minecraft:vertical_half\" states and setter function to the block.",
@@ -374,8 +559,6 @@
           "$ref": "#/definitions/2267778531"
         },
         {
-          "maximum": 3.4028234663852886e+38,
-          "minimum": 1.1754943508222875e-38,
           "type": "number"
         }
       ],
@@ -423,27 +606,57 @@
       "title": "Redstone Conductivity",
       "type": "object"
     },
+    "3264477714": {
+      "description": "The definitions for how a block behaves when detecting liquid. Only one rule definition is allowed per liquid type - if multiple are specified, the first will be used and the rest will be ignored.",
+      "properties": {
+        "detection_rules": {
+          "items": {
+            "$ref": "#/definitions/538564332"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "detection_rules"
+      ],
+      "title": "Liquid Detection",
+      "type": "object"
+    },
+    "338268096": {
+      "description": "Defines the area of the block that collides with entities. If set to true, default values are used. If set to false, the block's collision with entities is disabled. If this component is omitted, default values are used.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/3903423213",
+          "description": "Information for the collision box.",
+          "x-runtime-constraint-description": "\"origin\" + \"size\", must be inside the following limit: Vec3(-8,0,-8) and Vec3(8,24,8)"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/3903423213",
+            "description": "Information for the collision box."
+          },
+          "maxItems": 16,
+          "type": "array",
+          "x-runtime-constraint-description": "\"origin\" + \"size\", must be inside the following limit: Vec3(-8,0,-8) and Vec3(8,24,8)"
+        }
+      ],
+      "title": "Collision Box"
+    },
     "3404364787": {
       "properties": {
         "components": {
           "$ref": "#/definitions/471923105",
           "propertyNames": {
-            "pattern": "^(?!(minecraft:support|minecraft:flower_pottable)$)",
+            "pattern": "^(?!(minecraft:support|minecraft:on_placed|minecraft:flower_pottable|minecraft:on_fall_on|minecraft:on_interact|minecraft:on_player_destroyed|minecraft:on_player_placing|minecraft:on_step_off|minecraft:on_step_on)$)",
             "type": "string"
           },
-          "x-runtime-constraint-description": "Block needs both a geometry and material instances component."
+          "x-runtime-constraint-description": "Block with \"geometry\" set at \"minecraft:geometry.full_block\" cannot have a \"random_offset\""
         },
         "condition": {
           "type": "string"
-        },
-        "mOrderedV1CustomComponents": {
-          "default": [
-          ],
-          "deprecated": true,
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
         }
       },
       "required": [
@@ -524,7 +737,6 @@
         },
         "seconds_to_destroy": {
           "description": "Sets the number of seconds it takes to mine the block with base equipment. Greater numbers result in greater mining times. A negative number means the block can't be mined",
-          "maximum": 3.4028234663852886e+38,
           "minimum": 0,
           "type": "number"
         }
@@ -534,6 +746,10 @@
       ],
       "title": "Detailed Mining Speed",
       "type": "object"
+    },
+    "3623939283": {
+      "description": "A block with this component can be replaced when another block is placed in the same block position.",
+      "title": "Replaceable"
     },
     "3655705218": {
       "description": "The amount of light this block will emit. Higher value means more light will be emitted.",
@@ -546,6 +762,33 @@
       "title": "Reference",
       "type": "string"
     },
+    "3903423213": {
+      "description": "Information for the collision box.",
+      "properties": {
+        "origin": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            -8,
+            0,
+            -8
+          ],
+          "description": "Minimal position of the bounds of the collision box.",
+          "x-runtime-constraint-description": "There are different constraints for different indexes, please refer to member help for more details"
+        },
+        "size": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            16,
+            16,
+            16
+          ],
+          "description": "Size of each side of the collision box.",
+          "x-runtime-constraint-description": "There are different constraints for different indexes, please refer to member help for more details"
+        }
+      },
+      "title": "Bounding Box Data",
+      "type": "object"
+    },
     "3915697282": {
       "$metaProperties": {
         "CEREAL_EDITOR_SCHEMA_TAG": "type:color"
@@ -557,8 +800,6 @@
         },
         {
           "items": {
-            "maximum": 2147483647,
-            "minimum": -2147483648,
             "type": "integer"
           },
           "maxItems": 3,
@@ -631,12 +872,40 @@
       "title": "Description",
       "type": "object"
     },
+    "4004946602": {
+      "oneOf": [
+        {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "type": "array"
+        },
+        {
+          "properties": {
+            "x": {
+              "default": 0,
+              "type": "number"
+            },
+            "y": {
+              "default": 0,
+              "type": "number"
+            },
+            "z": {
+              "default": 0,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        }
+      ],
+      "title": "vec3"
+    },
     "4005170816": {
       "properties": {
         "destroy_speed": {
           "description": "Mining speed for that specific item. A negative number means the block can't be mined with that item.",
-          "maximum": 3.4028234663852886e+38,
-          "minimum": 1.1754943508222875e-38,
           "type": "number"
         },
         "item": {
@@ -649,6 +918,43 @@
         "item"
       ],
       "title": "Item Specific Speed",
+      "type": "object"
+    },
+    "4006409319": {
+      "description": "This component defines a random offset for the block, seeded based on the block's position and the specified range and steps. It affects the block's rendered position, outline, and collision.\nIf the random offset causes the collision box to extend beyond the bounds of a cube, the offset range will automatically adjust to keep the collision box within the cube.\nCulling for this block is performed without considering the random offset.",
+      "properties": {
+        "x": {
+          "$ref": "#/definitions/2128101180",
+          "default": {
+            "range": {
+              "max": 0,
+              "min": 0
+            },
+            "steps": 0
+          }
+        },
+        "y": {
+          "$ref": "#/definitions/2128101180",
+          "default": {
+            "range": {
+              "max": 0,
+              "min": 0
+            },
+            "steps": 0
+          }
+        },
+        "z": {
+          "$ref": "#/definitions/2128101180",
+          "default": {
+            "range": {
+              "max": 0,
+              "min": 0
+            },
+            "steps": 0
+          }
+        }
+      },
+      "title": "Random Offset",
       "type": "object"
     },
     "4203318441": {
@@ -737,14 +1043,28 @@
       "title": "Values",
       "type": "object"
     },
+    "4254798072": {
+      "properties": {
+        "conditions": {
+          "default": [
+          ],
+          "description": "List of conditions where the block can be placed/survive",
+          "items": {
+            "$ref": "#/definitions/1159520788"
+          },
+          "maxItems": 64,
+          "type": "array"
+        }
+      },
+      "title": "Placement Filter",
+      "type": "object"
+    },
     "4291018146": {
       "description": "Configures the behavior of an entity falling on this block. The minimum distance in blocks that an actor needs to fall before events are triggered.",
       "properties": {
         "min_fall_distance": {
           "default": 0,
           "description": "The minimum distance in blocks that an actor needs to fall before events are triggered.",
-          "maximum": 3.4028234663852886e+38,
-          "minimum": 1.1754943508222875e-38,
           "type": "number"
         }
       },
@@ -753,6 +1073,14 @@
     },
     "471923105": {
       "properties": {
+        "minecraft:collision_box": {
+          "$ref": "#/definitions/338268096",
+          "description": "Defines the area of the block that collides with entities. If set to true, default values are used. If set to false, the block's collision with entities is disabled. If this component is omitted, default values are used."
+        },
+        "minecraft:connection_rule": {
+          "$ref": "#/definitions/1469009689",
+          "description": "Defines whether other blocks such as fences, walls, bars, and glass panes are allowed to connect to this block."
+        },
         "minecraft:crafting_table": {
           "$ref": "#/definitions/3210633909",
           "description": "Makes your block into a custom crafting table which enables the crafting table UI and the ability to craft recipes."
@@ -793,6 +1121,10 @@
           "$ref": "#/definitions/1483802163",
           "description": "The component that describes the geometry to use to render this block. It can be specified as a JSON object with the following fields, or simply as a string containing the description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\"."
         },
+        "minecraft:item_visual": {
+          "$ref": "#/definitions/2908099874",
+          "description": "The \"minecraft:geometry\" component and \"minecraft:material_instances\" component of an item. Can be used instead of having separated component for each."
+        },
         "minecraft:light_dampening": {
           "$ref": "#/definitions/2155690250",
           "description": "The amount that light will be dampened when it passes through the block. Higher value means the light will be dampened more."
@@ -800,6 +1132,10 @@
         "minecraft:light_emission": {
           "$ref": "#/definitions/3655705218",
           "description": "The amount of light this block will emit. Higher value means more light will be emitted."
+        },
+        "minecraft:liquid_detection": {
+          "$ref": "#/definitions/3264477714",
+          "description": "The definitions for how a block behaves when detecting liquid. Only one rule definition is allowed per liquid type - if multiple are specified, the first will be used and the rest will be ignored."
         },
         "minecraft:loot": {
           "$ref": "#/definitions/1273803565",
@@ -817,6 +1153,13 @@
           "$ref": "#/definitions/2344109265",
           "description": "This defines how a block reacts to being moved by another block like a piston."
         },
+        "minecraft:placement_filter": {
+          "$ref": "#/definitions/4254798072"
+        },
+        "minecraft:random_offset": {
+          "$ref": "#/definitions/4006409319",
+          "description": "This component defines a random offset for the block, seeded based on the block's position and the specified range and steps. It affects the block's rendered position, outline, and collision.\nIf the random offset causes the collision box to extend beyond the bounds of a cube, the offset range will automatically adjust to keep the collision box within the cube.\nCulling for this block is performed without considering the random offset."
+        },
         "minecraft:redstone_conductivity": {
           "$ref": "#/definitions/3212487924",
           "description": "The basic redstone properties of a block. If the component is not provided the default values are used."
@@ -825,6 +1168,14 @@
           "$ref": "#/definitions/4203318441",
           "description": "The definitions for how a block can produce a redstone signal."
         },
+        "minecraft:replaceable": {
+          "$ref": "#/definitions/3623939283",
+          "description": "A block with this component can be replaced when another block is placed in the same block position."
+        },
+        "minecraft:selection_box": {
+          "$ref": "#/definitions/2986395074",
+          "description": "Defines the area of the block that is selected by the player's cursor. If set to true, default values are used. If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used."
+        },
         "minecraft:support": {
           "$ref": "#/definitions/2279409622",
           "description": "Defines the support shape of the block. Currently only allows for blocks to have the same shape as a Vanilla fence and Vanilla stair. To work with custom stairs, requires the use of \"minecraft:vertical_half\" and \"minecraft:cardinal_direction\" or \"minecraft:facing_direction\" which can be set through the \"minecraft:placement_direction\" block trait. Custom blocks without this component will default to unit cube support. The type of support shape for this block. Currently, the options are: \"fence\" and \"stair\"."
@@ -832,16 +1183,78 @@
         "minecraft:tags": {
           "$ref": "#/definitions/2735968029",
           "description": "Use this component to define tags, vanilla or custom. Valid tags are of the format \"namespace:tag_name\". The array of tags must be non-empty."
+        },
+        "minecraft:tick": {
+          "$ref": "#/definitions/939187588"
+        },
+        "minecraft:transformation": {
+          "$ref": "#/definitions/861574760"
         }
       },
       "title": "Components",
+      "type": "object"
+    },
+    "517105782": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "title": "compound_proxy"
+    },
+    "538564332": {
+      "properties": {
+        "can_contain_liquid": {
+          "default": false,
+          "description": "Whether this block can contain the liquid. For example, if the liquid type is `water`, this means the block can be waterlogged.",
+          "type": "boolean"
+        },
+        "liquid_type": {
+          "default": "water",
+          "description": "The type of liquid this detection rule is for. Currently, `water` is the only supported liquid type. If this field is omitted, `water` will be the liquid type by default.",
+          "enum": [
+            "water"
+          ],
+          "title": "Liquid Type",
+          "type": "string"
+        },
+        "on_liquid_touches": {
+          "default": "blocking",
+          "description": "How the block reacts to flowing water. Must be one of the following options:\n\"blocking\" - The default value for this field. The block stops the liquid from flowing.\n\"broken\" - The block is destroyed completely.\n\"popped\" - The block is destroyed and its item is spawned.\n\"no_reaction\" - The block is unaffected; visually, the liquid will flow through the block.",
+          "enum": [
+            "broken",
+            "popped",
+            "blocking",
+            "no_reaction"
+          ],
+          "title": "Liquid Reaction",
+          "type": "string"
+        },
+        "stops_liquid_flowing_from_direction": {
+          "$ref": "#/definitions/2683144891",
+          "default": [
+          ],
+          "description": "When a block contains a liquid, controls the directions in which the liquid can't flow out from the block. Also controls the directions in which a block can stop liquid flowing into it if `no_reaction` is set for the `on_liquid_touches` field. Can be a list of the following directions: \"up\", \"down\", \"north\", \"south\", \"east\", \"west\". The default is an empty list; this means that liquid can flow out of all directions by default."
+        },
+        "use_liquid_clipping": {
+          "default": false,
+          "description": "Whether this block uses the encompassing collider to visually clip the liquid. The encompassing collider is the smallest single AABB that contains all of the block's colliders.",
+          "type": "boolean"
+        }
+      },
+      "title": "Detection Rule",
       "type": "object"
     },
     "691321428": {
       "properties": {
         "explosion_resistance": {
           "description": "Sets the explosion resistance for the block. Greater values result in greater resistance to explosions. The scale will be different for different explosion power levels. A negative value or 0 means it will easily explode; larger numbers increase level of resistance.",
-          "maximum": 3.4028234663852886e+38,
           "minimum": 0,
           "type": "number"
         }
@@ -877,13 +1290,9 @@
       "description": "Define a range of integer value using a \"min\" and \"max\" limit and must be assigned to \"values\"",
       "properties": {
         "max": {
-          "maximum": 2147483647,
-          "minimum": -2147483648,
           "type": "integer"
         },
         "min": {
-          "maximum": 2147483647,
-          "minimum": -2147483648,
           "type": "integer"
         }
       },
@@ -958,25 +1367,97 @@
       },
       "title": "Material Instance",
       "type": "object"
+    },
+    "861574760": {
+      "properties": {
+        "rotation": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's rotation in increments of 90 degrees",
+          "multipleOf": 90
+        },
+        "rotation_pivot": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's rotation pivot"
+        },
+        "scale": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            1,
+            1,
+            1
+          ],
+          "description": "The block's scale"
+        },
+        "scale_pivot": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's scale pivot"
+        },
+        "translation": {
+          "$ref": "#/definitions/4004946602",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "The block's translation"
+        }
+      },
+      "title": "Transformation",
+      "type": "object"
+    },
+    "939187588": {
+      "properties": {
+        "interval_range": {
+          "description": "A range of values, specified in ticks, that will be used to decide the interval between times this block will tick. Each interval will be chosen randomly from the range, so the times between this block ticking will differ given an interval_range of two different values. If the values in the interval_range are the same, the block will always be ticked after that number of ticks.",
+          "items": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array",
+          "x-runtime-constraint-description": "The first value must be equal or lower than the second value"
+        },
+        "looping": {
+          "default": true,
+          "description": "Does the block tick continuously? If false, the block will only be ticked once, after a delay equal to a number of ticks randomly chosen from the interval_range. If true, the block will loop, and each interval between ticks will be equal to a number of ticks randomly chosen from the interval_range.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "interval_range"
+      ],
+      "title": "Tick",
+      "type": "object"
     }
   },
   "properties": {
     "components": {
       "$ref": "#/definitions/471923105",
-      "x-runtime-constraint-description": "Block needs both a geometry and material instances component."
+      "propertyNames": {
+        "pattern": "^(?!(minecraft:on_fall_on|minecraft:on_interact|minecraft:on_placed|minecraft:on_player_destroyed|minecraft:on_step_on|minecraft:on_player_placing|minecraft:on_step_off)$)",
+        "type": "string"
+      },
+      "x-runtime-constraint-description": "Block with \"geometry\" set at \"minecraft:geometry.full_block\" cannot have a \"random_offset\""
     },
     "description": {
       "$ref": "#/definitions/3993091038",
       "description": "Information about the block, must have at minimum an \"identifier\" and can have also the following optional field \"menu_category\", \"states\" and/or \"traits\""
-    },
-    "mOrderedV1CustomComponents": {
-      "default": [
-      ],
-      "deprecated": true,
-      "items": {
-        "type": "string"
-      },
-      "type": "array"
     },
     "permutations": {
       "default": [

@@ -1,8 +1,9 @@
 {
-  "format_version": "1.21.130",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:zombie_nautilus",
+      "spawn_category": "monster",
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
@@ -14,6 +15,7 @@
         }
       }
     },
+
     "components": {
       "minecraft:breathable": {
         "total_supply": 15,
@@ -59,7 +61,7 @@
         "is_pushable_by_piston": true
       },
       "minecraft:type_family": {
-        "family":[ "aquatic", "zombie_nautilus", "undead", "mob" ]
+        "family":[ "aquatic", "zombie_nautilus", "undead", "monster", "mob" ]
       },
       "minecraft:knockback_resistance": {
         "value": 0.3
@@ -112,6 +114,7 @@
         "success_rate": 0.1
       }
     },
+
     "component_groups": {
       "minecraft:zombie_nautilus_tameable": {
         "minecraft:behavior.tempt": {
@@ -150,7 +153,7 @@
             "drowned"
           ],
           "seats": {
-            "position": [ 0.0, 1.0, -0.2 ]
+            "position": [ 0.0, 0.925, -0.2 ]
           }
         }
       },
@@ -162,8 +165,8 @@
           "within_radius": 25.0,
           "must_see_forget_duration": 17.0,
           "attack_interval": {
-            "range_min": 120.0,
-            "range_max": 180.0
+            "min": 120.0,
+            "max": 180.0
           },
           "target_acquisition_probability": 0.5,
           "entity_types": [
@@ -195,6 +198,12 @@
         },
         "minecraft:underwater_movement": {
           "value": 0.15
+        },
+        "minecraft:behavior.mount_pathing": {
+          "priority": 3,
+          "speed_multiplier": 1.0,
+          "target_dist": 2.0,
+          "track_target": true
         }
       },
       "minecraft:zombie_nautilus_wild_calm": {
@@ -217,7 +226,7 @@
         "minecraft:behavior.aquatic_charge_attack": {
           "priority": 2,
           "max_charge_distance": 16,
-          "charge_speed_multiplier": 10.0,
+          "charge_speed": 0.96,
           "attack_reach": 0.05,
           "knockback_force": 2.0,
           "charge_overshoot_distance": 1.5,
@@ -288,7 +297,10 @@
                 "minecraft:golden_nautilus_armor",
                 "minecraft:diamond_nautilus_armor",
                 "minecraft:netherite_nautilus_armor"
-              ]
+              ],
+              "on_equip": {
+                "event": "minecraft:on_armor_equip"
+              }
             }
           ]
         },
@@ -305,7 +317,6 @@
                 },
                 "target": "self"
               },
-              "play_sounds": "saddle",
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
             },
@@ -339,8 +350,7 @@
                 "target": "self"
               },
               "equip_item_slot": "1",
-              "interact_text": "action.interact.equipnautilusarmor",
-              "play_sounds": "armor.equip_generic"
+              "interact_text": "action.interact.equipnautilusarmor"
             },
             {
               "on_interact": {
@@ -516,27 +526,14 @@
         "minecraft:underwater_movement": {
           "value": 0.1
         }
-      },
-      "minecraft:zombie_nautilus_charging": {
-        "minecraft:underwater_movement": {
-          "value": 0.06
-        }
       }
     },
+
     "events": {
       "minecraft:entity_spawned": {
         "sequence": [
           {
-            "add": {
-              "component_groups": [
-                "minecraft:zombie_nautilus_wild",
-                "minecraft:zombie_nautilus_wild_unmounted",
-                "minecraft:zombie_nautilus_wild_calm",
-                "minecraft:zombie_nautilus_leashable",
-                "minecraft:zombie_nautilus_tameable",
-                "minecraft:zombie_nautilus_ai_controlled"
-              ]
-            }
+            "trigger": "minecraft:spawn_wild"
           },
           {
             "first_valid": [
@@ -556,6 +553,29 @@
           }
         ]
       },
+      "minecraft:spawn_wild": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_wild",
+            "minecraft:zombie_nautilus_wild_unmounted",
+            "minecraft:zombie_nautilus_wild_calm",
+            "minecraft:zombie_nautilus_leashable",
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        }
+      },
+      "minecraft:spawn_tame": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_nautilus_tame",
+            "minecraft:zombie_nautilus_tame_unmounted",
+            "minecraft:zombie_nautilus_tame_unsaddled",
+            "minecraft:zombie_nautilus_leashable",
+            "minecraft:zombie_nautilus_ai_controlled"
+          ]
+        }
+      },
       "minecraft:on_saddled": {
         "sequence": [
           {
@@ -574,7 +594,8 @@
               "component_groups": [
                 "minecraft:zombie_nautilus_tame_saddled"
               ]
-            }
+            },
+            "set_home_position": {}
           },
           {
             "filters": {
@@ -590,7 +611,9 @@
             "trigger": "minecraft:on_saddled_out_of_water"
           },
           {
-            "set_home_position": {}
+            "play_sound": {
+              "sound": "saddle"
+            }
           }
         ]
       },
@@ -604,8 +627,7 @@
           "component_groups": [
             "minecraft:zombie_nautilus_tame_saddled_in_water"
           ]
-        },
-        "set_home_position": {}
+        }
       },
       "minecraft:on_saddled_out_of_water": {
         "remove": {
@@ -644,18 +666,25 @@
           }
         ]
       },
+      "minecraft:on_armor_equip": {
+        "play_sound": {
+          "sound": "armor.equip_generic"
+        }
+      },
       "minecraft:on_tame": {
         "remove": {
           "component_groups": [
             "minecraft:zombie_nautilus_wild",
             "minecraft:zombie_nautilus_wild_unmounted",
             "minecraft:zombie_nautilus_wild_calm",
-            "minecraft:zombie_nautilus_tameable"
+            "minecraft:zombie_nautilus_tameable",
+            "minecraft:zombie_nautilus_ai_controlled"
           ]
         },
         "add": {
           "component_groups": [
             "minecraft:zombie_nautilus_tame",
+            "minecraft:zombie_nautilus_tame_unmounted",
             "minecraft:zombie_nautilus_tame_unsaddled"
           ]
         },
@@ -733,20 +762,6 @@
             "minecraft:zombie_nautilus_wild_calm",
             "minecraft:zombie_nautilus_leashable",
             "minecraft:zombie_nautilus_tameable"
-          ]
-        }
-      },
-      "minecraft:start_charge": {
-        "add": {
-          "component_groups": [
-            "minecraft:zombie_nautilus_charging"
-          ]
-        }
-      },
-      "minecraft:stop_charge": {
-        "remove": {
-          "component_groups": [
-            "minecraft:zombie_nautilus_charging"
           ]
         }
       },

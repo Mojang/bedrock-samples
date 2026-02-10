@@ -33,13 +33,34 @@
 <td style="border-style:solid; border-width:2; padding:8px">origin</td>
 <td style="border-style:solid; border-width:2; padding:8px">Vector [a, b, c]</td>
 <td style="border-style:solid; border-width:2; padding:8px">[-8.0, 0.0, -8.0]</td>
-<td style="border-style:solid; border-width:2; padding:8px">Minimal position of the bounds of the collision box. "origin" is specified as [x, y, z] and must be in the range (-8, 0, -8) to (8, 24, 8), inclusive. A max Y value above 16 requires 'format_version' >= 1.21.130 and the `Upcoming Creator Features` toggle</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">Minimal position of the bounds of the collision box. "origin" is specified as [x, y, z] and must be in the range (-8, 0, -8) to (8, 24, 8), inclusive.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">size</td>
 <td style="border-style:solid; border-width:2; padding:8px">Vector [a, b, c]</td>
 <td style="border-style:solid; border-width:2; padding:8px">[16.0, 24.0, 16.0]</td>
-<td style="border-style:solid; border-width:2; padding:8px">Size of each side of the collision box. Size is specified as [x, y, z]. "origin" + "size" must be in the range (-8, 0, -8) to (8, 24, 8), inclusive. A max Y value above 16 requires 'format_version' >= 1.21.130 and the `Upcoming Creator Features` toggle</br></td>
+<td style="border-style:solid; border-width:2; padding:8px">Size of each side of the collision box. Size is specified as [x, y, z]. "origin" + "size" must be in the range (-8, 0, -8) to (8, 24, 8), inclusive.</br></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:connection_rule</td>
+<td style="border-style:solid; border-width:3; padding:7px">JSON Object</td>
+<td style="border-style:solid; border-width:3; padding:7px"></td>
+<td style="border-style:solid; border-width:3; padding:7px">Defines whether other blocks such as fences, walls, bars, and glass panes are allowed to connect to this block.</br>Experimental toggles required: Upcoming Creator Features (in format versions before 1.26.0)</br><table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:2;">
+<tr> <th style="border-style:solid; border-width:2;">Name</th> <th style="border-style:solid; border-width:2;">Type</th> <th style="border-style:solid; border-width:2;">Default Value</th> <th style="border-style:solid; border-width:2;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">accepts_connections_from</td>
+<td style="border-style:solid; border-width:2; padding:8px">String</td>
+<td style="border-style:solid; border-width:2; padding:8px">all</td>
+<td style="border-style:solid; border-width:2; padding:8px">The type of block allowed to connect to this block. Currently, the options are: `all` (default), `only_fences`, and `none`. Note that the `only_fences` option allows connections from all Vanilla fences excluding NetherBrick.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">enabled_directions</td>
+<td style="border-style:solid; border-width:2; padding:8px">Array</td>
+<td style="border-style:solid; border-width:2; padding:8px">['north', 'south', 'east', 'west']</td>
+<td style="border-style:solid; border-width:2; padding:8px">The cardinal directions that connection is enabled for: `north`, `south`, `east`, and `west`. All directions are enabled by default. Note that if `none` is specified for `accepts_connections_from`, this field will not be used.</br></td>
 </tr>
 </table>
 </td>
@@ -259,6 +280,12 @@ The component can be defined as an object to gain control over more specific beh
 <td style="border-style:solid; border-width:2; padding:8px">Array</td>
 <td style="border-style:solid; border-width:2; padding:8px"></td>
 <td style="border-style:solid; border-width:2; padding:8px">When a block contains a liquid, controls the directions in which the liquid can't flow out from the block. Also controls the directions in which a block can stop liquid flowing into it if `no_reaction` is set for the `on_liquid_touches` field. Can be a list of the following directions: "up", "down", "north", "south", "east", "west". The default is an empty list; this means that liquid can flow out of all directions by default.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:2; padding:8px">use_liquid_clipping</td>
+<td style="border-style:solid; border-width:2; padding:8px">Boolean</td>
+<td style="border-style:solid; border-width:2; padding:8px">false</td>
+<td style="border-style:solid; border-width:2; padding:8px">Whether this block uses the encompassing collider to visually clip the liquid. The encompassing collider is the smallest single AABB that contains all of the block's colliders.</br></td>
 </tr>
 </table>
 </td>
@@ -548,7 +575,7 @@ What behavior should the block have. Three possible values: obstruct_rain, obstr
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:support</td>
 <td style="border-style:solid; border-width:3; padding:7px">JSON Object</td>
 <td style="border-style:solid; border-width:3; padding:7px"></td>
-<td style="border-style:solid; border-width:3; padding:7px">Defines the support shape of the block. Currently only allows for blocks to have the same shape as a Vanilla fence and Vanilla stair. To work with custom stairs, requires the use of `minecraft:vertical_half` and `minecraft:cardinal_direction` or `minecraft:facing_direction` which can be set through the `minecraft:placement_direction` block trait. Custom blocks without this component will default to unit cube support.</br>Experimental toggles required: Upcoming Creator Features</br><table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:2;">
+<td style="border-style:solid; border-width:3; padding:7px">Defines the support shape of the block. Currently only allows for blocks to have the same shape as a Vanilla fence and Vanilla stair. To work with custom stairs, requires the use of `minecraft:vertical_half` and `minecraft:cardinal_direction` or `minecraft:facing_direction` which can be set through the `minecraft:placement_direction` block trait. Custom blocks without this component will default to unit cube support.</br>Experimental toggles required: Upcoming Creator Features (in format versions before 1.26.0)</br><table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:2;">
 <tr> <th style="border-style:solid; border-width:2;">Name</th> <th style="border-style:solid; border-width:2;">Type</th> <th style="border-style:solid; border-width:2;">Default Value</th> <th style="border-style:solid; border-width:2;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:2; padding:8px">shape</td>
@@ -610,7 +637,7 @@ These properties are part of the Block Definition. This helps the system determi
 <h2>Code Example</h2>
 Example<br / ><textarea readonly="true" cols="66" rows="20">
 {
-  "format_version": "1.21.130",
+  "format_version": "1.26.0",
   "minecraft:block": {
     "description": {
       "identifier": "design:lavenderstone"

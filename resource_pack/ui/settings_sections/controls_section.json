@@ -104,10 +104,47 @@
     "type": "stack_panel",
     "orientation": "vertical",
     "layer": 1,
-    "size": [ "100%", 50 ],
+    "size": [ "100%", "100%c + 15px" ],
     "controls": [
       {
-        "keymapping_row@controls_section.keymapping_item": {}
+        "keymapping_row@controls_section.keymapping_item_frame": {}
+      }
+    ]
+  },
+
+  "keymapping_item_frame": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "layer": 1,
+    "size": [ "100%", "100%c" ],
+    "$is_command_macro_keymapping|default": false,
+    "controls": [
+      {
+        "keymap@controls_section.keymapping_item": {}
+      },
+      {
+        "command_macro_command@controls_section.command_macro_command_textbox": {}
+      }
+    ]
+  },
+
+  "command_macro_command_textbox": {
+    "type": "panel", 
+    "size": [ "100%", "100%c" ],
+    "visible": "$is_command_macro_keymapping",
+    "controls": [
+      {
+        "text_box@common.text_edit_box": {
+          "size": [ "100%", 30 ],
+          "max_length": 512,
+          "$place_holder_text": "controllerLayoutScreen.command_macro.command_placeholder",
+          "$text_edit_box_content_binding_name": "#command_macro_command",
+          "$text_edit_box_content_binding_type": "collection",
+          "$text_box_name": "command_macro_command_text_box",
+          "$text_edit_box_grid_collection_name": "$keymapping_collection",
+          "$text_edit_box_enabled_binding_type": "collection",
+          "$text_box_enabled_binding_name": "#command_macro_command_enabled"
+        }
       }
     ]
   },
@@ -294,6 +331,94 @@
     ]
   },
 
+  "keyboard_command_macros_grid": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%c" ],
+    "bindings": [
+      {
+        "binding_name": "#can_use_command_macros",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "divider_before": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "section_divider": {
+                "type": "image",
+                "size": [ "100% - 30px", 1 ],
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "layer": 3,
+                "texture": "textures/ui/list_item_divider_line_light"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "divider_before_padding": {
+          "type": "panel",
+          "size": [ "100%", 16 ]
+        }
+      },
+      {
+        "command_macro_title": {
+          "type": "label",
+          "text": "controllerLayoutScreen.command_macros.title",
+          "size": [ "100%", "default" ],
+          "color": "$body_text_color"
+        }
+      },
+      {
+        "command_macro_title_desc": {
+          "type": "label",
+          "text": "controllerLayoutScreen.command_macros.title.description",
+          "size": [ "100%", "default" ],
+          "color": "$option_description_text_color"
+        }
+      },
+      {
+        "command_macro_title_padding": {
+          "type": "panel",
+          "size": [ "100%", 16 ]
+        }
+      },
+      {
+        "command_macro_keymapping_grid@controls_section.keymapping_grid": {
+          "$is_command_macro_keymapping": true
+        }
+      },
+      {
+        "divider_after": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "section_divider": {
+                "type": "image",
+                "size": [ "100% - 30px", 1 ],
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "layer": 3,
+                "texture": "textures/ui/list_item_divider_line_light"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "divider_after_padding": {
+          "type": "panel",
+          "size": [ "100%", 16 ]
+        }
+      }
+    ]
+  },
+
   // Keyboard and Mouse button & section
 
   "keyboard_and_mouse_button@settings_common.section_toggle_base": {
@@ -307,54 +432,6 @@
     }
   },
 
-  "keyboard_and_mouse_section_ore_ui": {
-    "type": "stack_panel",
-    "size": [ "100%", "100%c" ],
-    "anchor_from": "top_left",
-    "anchor_to": "top_left",
-    "bindings": [
-      {
-        "binding_type": "view",
-        "source_control_name": "keyboard_and_mouse_button_toggle",
-        "source_property_name": "(#toggle_state and $use_ore_ui_settings_keyboard_and_mouse)",
-        "target_property_name": "#visible"
-      }
-    ],
-    "controls": [
-      {
-        "spacer_0": {
-          "type": "panel",
-          "size": [ 0, 10 ]
-        }
-      },
-      {
-        "generic_label@settings_common.white_label": {
-          "size": [ "100%", 30 ],
-          "text_alignment": "center",
-          "$text": "menu.keyboardAndMouse.generalMessage"
-        }
-      },
-      {
-        "spacer_1": {
-          "type": "panel",
-          "size": [ "100%", 10 ]
-        }
-      },
-      {
-        "gamepad_helper_label@settings_common.white_label": {
-          "size": [ "100%", 30 ],
-          "text_alignment": "center",
-          "$text": "#keyboard_and_mouse_gamepad_helper_label_text",
-          "bindings": [
-            {
-              "binding_name": "#keyboard_and_mouse_gamepad_helper_label_text"
-            }
-          ]
-        }
-      }
-    ]
-  },
-
   "keyboard_and_mouse_section": {
     "type": "stack_panel",
     "size": [ "100%", "100%c" ],
@@ -366,7 +443,7 @@
       {
         "binding_type": "view",
         "source_control_name": "keyboard_and_mouse_button_toggle",
-        "source_property_name": "(#toggle_state and not $use_ore_ui_settings_keyboard_and_mouse)",
+        "source_property_name": "#toggle_state",
         "target_property_name": "#visible"
       }
     ],
@@ -502,6 +579,12 @@
                   }
                 ]
               }
+            },
+            {
+              "command_macros@controls_section.keyboard_command_macros_grid": {
+                "$keymapping_grid_dimension": "#keyboard_standard_command_macro_grid_dimension",
+                "$keymapping_collection": "keyboard_standard_command_macro_collection"
+              }
             }
           ]
         }
@@ -567,6 +650,12 @@
                   }
                 ]
               }
+            },
+            {
+                "command_macros@controls_section.keyboard_command_macros_grid": {
+                    "$keymapping_grid_dimension": "#keyboard_full_command_macro_grid_dimension",
+                    "$keymapping_collection": "keyboard_full_command_macro_collection"
+                }
             }
           ]
         }

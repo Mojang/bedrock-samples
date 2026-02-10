@@ -1,18 +1,25 @@
 {
-  "format_version": "1.21.130",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:nautilus",
+      "spawn_category": "water_creature",
       "is_spawnable": true,
       "is_summonable": true
     },
+
     "components": {
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:nautilus": "minecraft:nautilus"
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:breathable": {
         "total_supply": 15,
         "suffocate_time": 0,
         "breathes_air": false,
-        "breathes_water": true,
-        "can_dehydrate" : true
+        "breathes_water": true
       },
       "minecraft:experience_reward": {
         "on_death": "query.last_hit_by_player && !query.is_baby ? Math.Random(1,3) : 0",
@@ -97,6 +104,7 @@
         "success_rate": 0.1
       }
     },
+
     "component_groups": {
       "minecraft:nautilus_baby": {
         "minecraft:collision_box": {
@@ -196,12 +204,7 @@
             "cooked_salmon"
           ],
           "breeds_with": {
-            "mate_type": "minecraft:nautilus",
-            "baby_type": "minecraft:nautilus",
-            "breed_event": {
-              "event": "minecraft:entity_born",
-              "target": "baby"
-            }
+            "minecraft:nautilus": {}
           },
           "require_tame": true
         },
@@ -220,8 +223,8 @@
           "within_radius": 25.0,
           "must_see_forget_duration": 17.0,
           "attack_interval": {
-            "range_min": 120.0,
-            "range_max": 180.0
+            "min": 120.0,
+            "max": 180.0
           },
           "target_acquisition_probability": 0.5,
           "entity_types": [
@@ -380,7 +383,10 @@
                 "minecraft:golden_nautilus_armor",
                 "minecraft:diamond_nautilus_armor",
                 "minecraft:netherite_nautilus_armor"
-              ]
+              ],
+              "on_equip": {
+                "event": "minecraft:on_armor_equip"
+              }
             }
           ]
         },
@@ -397,7 +403,6 @@
                 },
                 "target": "self"
               },
-              "play_sounds": "saddle",
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
             },
@@ -413,8 +418,7 @@
                 "target": "self"
               },
               "equip_item_slot": "1",
-              "interact_text": "action.interact.equipnautilusarmor",
-              "play_sounds": "armor.equip_generic"
+              "interact_text": "action.interact.equipnautilusarmor"
             },
             {
               "on_interact": {
@@ -500,7 +504,6 @@
             {
               "filters": {
                 "test": "in_water",
-                "operator": "==",
                 "value": false
               },
               "event": "minecraft:on_saddled_out_of_water"
@@ -522,9 +525,7 @@
           "triggers": [
             {
               "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
+                "test": "in_water"
               },
               "event": "minecraft:on_saddled_in_water"
             }
@@ -540,26 +541,6 @@
         },
         "minecraft:behavior.player_ride_tamed": {
           "priority": 0
-        },
-        "minecraft:environment_sensor": {
-          "triggers": [
-            {
-              "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": true
-              },
-              "event": "minecraft:on_saddled_in_water"
-            },
-            {
-              "filters": {
-                "test": "in_water",
-                "operator": "==",
-                "value": false
-              },
-              "event": "minecraft:on_saddled_out_of_water"
-            }
-          ]
         }
       },
       "minecraft:nautilus_tame_unsaddled": {
@@ -584,11 +565,6 @@
           "value": 0.07
         }
       },
-      "minecraft:nautilus_charging": {
-        "minecraft:underwater_movement": {
-          "value": 0.12
-        }
-      },
       "minecraft:nautilus_wild_adult_angry": {
         "minecraft:angry": {  
           "duration": 20,
@@ -603,7 +579,7 @@
         "minecraft:behavior.aquatic_charge_attack": {
           "priority": 3,
           "max_charge_distance": 16,
-          "charge_speed_multiplier": 10.0,
+          "charge_speed": 1.2,
           "attack_reach": 0.0,
           "knockback_force": 2.0,
           "charge_overshoot_distance": 1.5,
@@ -614,6 +590,7 @@
         }
       }
     },
+
     "events": {
       "minecraft:entity_spawned": {
         "randomize": [
@@ -635,6 +612,18 @@
           "component_groups": [
             "minecraft:nautilus_adult",
             "minecraft:nautilus_wild_adult_calm",
+            "minecraft:nautilus_ai_controlled",
+            "minecraft:nautilus_leashable"
+          ]
+        }
+      },
+      "minecraft:spawn_tame_adult": {
+        "add": {
+          "component_groups": [
+            "minecraft:nautilus_adult",
+            "minecraft:nautilus_tame",
+            "minecraft:nautilus_tame_adult",
+            "minecraft:nautilus_tame_unsaddled",
             "minecraft:nautilus_ai_controlled",
             "minecraft:nautilus_leashable"
           ]
@@ -716,13 +705,12 @@
               "component_groups": [
                 "minecraft:nautilus_tame_saddled"
               ]
-            }
+            },
+            "set_home_position": {}
           },
           {
             "filters": {
-              "test": "in_water",
-              "operator": "==",
-              "value": true
+              "test": "in_water"
             },
             "trigger": "minecraft:on_saddled_in_water"
           },
@@ -734,7 +722,9 @@
             "trigger": "minecraft:on_saddled_out_of_water"
           },
           {
-            "set_home_position": {}
+            "play_sound": {
+              "sound": "saddle"
+            }
           }
         ]
       },
@@ -748,8 +738,7 @@
           "component_groups": [
             "minecraft:nautilus_tame_saddled_in_water"
           ]
-        },
-        "set_home_position": {}
+        }
       },
       "minecraft:on_saddled_out_of_water": {
         "remove": {
@@ -787,6 +776,11 @@
             "set_home_position": {}
           }
         ]
+      },
+      "minecraft:on_armor_equip": {
+        "play_sound": {
+          "sound": "armor.equip_generic"
+        }
       },
       "minecraft:on_tame": {
         "sequence": [
@@ -836,20 +830,6 @@
       "minecraft:on_dismount": {
         "trigger": "minecraft:switch_to_ai_controlled",
         "set_home_position": {}
-      },
-      "minecraft:start_charge": {
-        "add": {
-          "component_groups": [
-            "minecraft:nautilus_charging"
-          ]
-        }
-      },
-      "minecraft:stop_charge": {
-        "remove": {
-          "component_groups": [
-            "minecraft:nautilus_charging"
-          ]
-        }
       },
       "minecraft:become_angry": {
         "remove": {
