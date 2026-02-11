@@ -611,18 +611,19 @@
     "size": [ 0, 0 ],
     "bindings": [
       {
-        "binding_name": "(not #is_left_tab_inventory)",
+        "binding_name": "(not #is_left_tab_inventory or $is_pocket_mode)",
         "binding_name_override": "#visible"
       }
     ]
   },
 
   "creative_label": {
+    "$text_alignment|default": "right",
     "type": "label",
     "size": [ "100%", 10 ],
     "anchor_from": "center",
     "anchor_to": "center",
-    "text_alignment": "right",
+    "text_alignment": "$text_alignment",
     "color": "$title_text_color",
     "layer": 2,
 
@@ -637,6 +638,8 @@
   "tab_content": {
     "type": "panel",
     "layer": 1,
+    "$is_pocket_mode|default": false,
+    "$scroll_view_name|default": "tab_scroll_view",
     "controls": [
       {
         "tab_content_search_bar_panel": {
@@ -651,6 +654,13 @@
               }
             },
             {
+              "pocket_vertical_padding_1": {
+                "type": "panel",
+                "size": [ 0, 3 ],
+                "visible": "$is_pocket_mode"
+              }
+            },
+            {
               "creative_label_and_filter_toggle_holder": {
                 "type": "stack_panel",
                 "size": [ "100% + 1px", 10 ],
@@ -658,7 +668,7 @@
 
                 "bindings": [
                   {
-                    "binding_name": "(not #is_left_tab_inventory)",
+                    "binding_name": "(not #is_left_tab_inventory or $is_pocket_mode)",
                     "binding_name_override": "#visible"
                   }
                 ],
@@ -693,8 +703,11 @@
                           "binding_name": "#is_left_tab_search"
                         },
                         {
+                          "binding_name": "#is_left_tab_inventory"
+                        },
+                        {
                           "binding_type": "view",
-                          "source_property_name": "(not #is_creative_mode and not #is_left_tab_search)",
+                          "source_property_name": "(not #is_creative_mode and not #is_left_tab_inventory and (not #is_left_tab_search or $is_pocket_mode))",
                           "target_property_name": "#visible"
                         }
                       ],
@@ -713,6 +726,12 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "pocket_horizontal_padding_1": {
+                      "type": "panel",
+                      "size": [ "1px", 0 ]
+                    }
                   }
                 ]
               }
@@ -723,11 +742,34 @@
               }
             },
             {
+              "pocket_vertical_padding_2": {
+                "type": "panel",
+                "size": [ 0, 2 ],
+                "visible": "$is_pocket_mode"
+              }
+            },
+            {
+              "pocket_vertical_padding_3": {
+                "type": "panel",
+                "size": [ 0, 2 ],
+                "bindings": [
+                  {
+                    "binding_name": "#is_left_tab_search"
+                  },
+                  {
+                    "binding_type": "view",
+                    "source_property_name": "($is_pocket_mode and #is_left_tab_search)",
+                    "target_property_name": "#visible"
+                  }
+                ]
+              }
+            },
+            {
               "search_and_filter_panel": {
                 "type": "stack_panel",
                 "orientation": "horizontal",
                 "size": [ "100% + 1px", 16 ],
-                "layer": 2,
+                "layer": 11,
 
                 "bindings": [
                   {
@@ -739,6 +781,7 @@
                   {
                     "text_edit_control@common.text_edit_box": {
                       "size": [ "fill", "100%" ],
+                      "layer": 24,
 
                       "property_bag": {
                         "#property_field": "#item_name"
@@ -780,7 +823,7 @@
 
                       "bindings": [
                         {
-                          "binding_name": "(not #is_creative_mode)",
+                          "binding_name": "(not $is_pocket_mode and not #is_creative_mode)",
                           "binding_name_override": "#visible"
                         }
                       ],
@@ -799,18 +842,132 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "pocket_horizontal_padding_1": {
+                      "type": "panel",
+                      "size": [ "1px", 0 ],
+                      "bindings": [
+                        {
+                          "binding_name": "(not $is_pocket_mode and not #is_creative_mode)",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
             },
             {
-              "vertical_padding_3@crafting.tab_content_padding": {
-                "size": [ 0, 2 ]
+              "vertical_padding_3": {
+                "type": "panel",
+                "size": [ 0, 2 ],
+                "bindings": [
+                  {
+                    "binding_name": "(not $is_pocket_mode and not #is_left_tab_inventory)",
+                    "binding_name_override": "#visible"
+                  }
+                ]
               }
             },
             {
-              "scroll_pane@$scrolling_pane_control": {
-                "size": [ "100%", "fill" ]
+              "vertical_padding_3_1": {
+                "type": "panel",
+                "size": [ 0, 2 ],
+                "bindings": [
+                  {
+                    "binding_name": "($is_pocket_mode and not #is_left_tab_search)",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "items_panel": {
+                "type": "panel",
+                "size": [ "100%", "fill" ],
+                "controls": [
+                  {
+                    "scroll_pane@$scrolling_pane_control": {
+                      "size": [ "100%", "100%" ],
+                      "$scroll_view_name": "$scroll_view_name",
+                      "$scroll_view_port_offset": [ 0, 0 ],
+                      "$scroll_view_port_offset_touch": [ 0, 0 ],
+                      "$scroll_view_port_size": [ "100%", "100%" ],
+                      "$scroll_view_port_size_touch": [ "100% - 16px", "100%" ],
+                      "$view_port_clip_background": false
+                    }
+                  },
+                  {
+                    "shadow_stack": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100%", "100%c"],
+                      "anchor_from": "top_left",
+                      "anchor_to": "top_left",
+                      "controls": [
+                        {
+                          "shadow_container": {
+                            "type": "panel",
+                            "layer": 10,
+                            "size": [ "fill", "100%c" ],
+                            "anchor_from": "top_left",
+                            "anchor_to": "top_left",
+                            "controls": [
+                              {
+                                "top_shadow": {
+                                  "type": "image",
+                                  "size": [ "100%", "2px" ],
+                                  "layer": 20,
+                                  "texture": "textures/ui/White",
+                                  "color": [ 0, 0, 0 ],
+                                  "alpha": 0.5,
+                                  "anchor_from": "top_left",
+                                  "anchor_to": "top_left",
+                                  "keep_ratio": false
+                                }
+                              },
+                              {
+                                "top_overlay": {
+                                  "type": "image",
+                                  "size": [ "100%", "1px" ],
+                                  "offset": [ "0px", "-1px"],
+                                  "layer": 20,
+                                  "texture": "textures/ui/White",
+                                  "color": [ 0.75, 0.75, 0.75 ],
+                                  "anchor_from": "top_left",
+                                  "anchor_to": "top_left",
+                                  "keep_ratio": false
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "shadow_cutter": {
+                            "type": "panel",
+                            "size": [ "6px", "1px" ],
+                            "bindings": [
+                              {
+                                "binding_type": "view",
+                                "source_control_name": "$scroll_view_name",
+                                "source_property_name": "(#scroll_bar_visible and not $touch)",
+                                "target_property_name": "#visible",
+                                "binding_condition": "always_when_visible"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "bindings": [
+                        {
+                          "binding_name": "($is_pocket_mode or not #is_left_tab_inventory)",
+                          "binding_name_override": "#visible"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             }
           ]
@@ -1874,7 +2031,7 @@
 
   "scroll_grid_panel@common.crafting_root_input_panel": {
     "type": "input_panel",
-    "size": [ "100%", "100%c + 2px" ],
+    "size": [ "100%", "100%c" ],
     "controls": [
       { "grid@crafting.scroll_grid": {} }
     ]
@@ -2053,6 +2210,7 @@
       {
         "tab_content_panel@crafting.tab_content": {
           "size": [ "100%", "100%" ],
+          "$scroll_view_name": "tab_content_scroll_view",
           "layer": 8,
           "$scrolling_pane_control": "crafting.recipe_book_scroll_panel"
         }

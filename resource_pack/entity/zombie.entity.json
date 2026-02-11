@@ -8,32 +8,63 @@
         "default": "zombie"
       },
       "textures": {
-        "default": "textures/entity/zombie/zombie"
+        "default": "textures/entity/zombie/zombie",
+        "baby": "textures/entity/zombie/zombie_baby"
       },
       "geometry": {
-        "default": "geometry.zombie.v1.8"
+        "default": "geometry.zombie.v1.8",
+        "baby": "geometry.zombie.baby"
       },
       "spawn_egg": {
         "texture": "spawn_egg_zombie"
       },
       "scripts": {
         "pre_animation": [
-          "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;",
-          "variable.riding_y_offset_baby_scaling = query.is_baby ? -3.5 : 0.0;",
-          "variable.riding_y_offset_with_respect_to_player = 1.0;",
-          "variable.riding_y_offset_on_vehicle_where_other_entites_can_stand = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat') ? -3.0 : 0.0;",
-          "variable.unscaled_riding_y_offset = variable.riding_y_offset_with_respect_to_player + variable.riding_y_offset_on_vehicle_where_other_entites_can_stand;",
-          "variable.riding_y_offset = variable.riding_y_offset_baby_scaling * math.abs(variable.unscaled_riding_y_offset) + variable.unscaled_riding_y_offset + variable.riding_y_offset_baby_scaling * 0.2f;"
+          "v.use_dedicated_baby_armor = true;",
+          "v.tcos0 = Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / v.gliding_speed_value * 57.3;",
+          "v.riding_y_offset_baby_scaling = query.is_baby ? -3.5 : 0.0;",
+          "v.riding_y_offset_with_respect_to_player = 1.0;",
+          "v.riding_y_offset_on_vehicle_where_other_entites_can_stand = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat') ? -3.0 : 0.0;",
+          "v.unscaled_riding_y_offset = v.riding_y_offset_with_respect_to_player + v.riding_y_offset_on_vehicle_where_other_entites_can_stand;",
+          "v.riding_y_offset = v.riding_y_offset_baby_scaling * math.abs(v.unscaled_riding_y_offset) + v.unscaled_riding_y_offset + v.riding_y_offset_baby_scaling * 0.2f;",
+          "v.item_use_duration = query.is_using_item ? ((v.item_use_duration ?? 0.0) + query.delta_time * 20.0) : 0.0;",
+          "v.item_use_normalized = v.item_use_duration / query.main_hand_item_max_duration;",
+          "v.melee_spear_equipped = query.equipped_item_any_tag('slot.weapon.mainhand', 'minecraft:is_spear');",
+          "(v.melee_spear_equipped) ? {",
+          "  t.melee_spear_use_finish_raise_tick = query.kinetic_weapon_delay;",
+          "  t.melee_spear_use_finish_sway_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_dismount_duration;",
+          "  t.melee_spear_use_start_sway_tick = t.melee_spear_use_finish_sway_tick - 20.0;",
+          "  t.melee_spear_use_finish_lower_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_knockback_duration;",
+          "  t.melee_spear_use_start_lower_tick = t.melee_spear_use_finish_lower_tick - 40.0;",
+          "  t.melee_spear_use_finish_raise_back_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_damage_duration;",
+          "  t.melee_spear_use_start_raise_back_tick = t.melee_spear_use_finish_raise_back_tick - 5.0;",
+          "  t.melee_spear_use_raise_progress = math.clamp(math.inverse_lerp(0.0, t.melee_spear_use_finish_raise_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_start = math.clamp(math.inverse_lerp(0.0, 0.5, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_middle = math.clamp(math.inverse_lerp(0.5, 0.8, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_end = math.clamp(math.inverse_lerp(0.8, 1.0, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_sway_progress = math.clamp(math.inverse_lerp(t.melee_spear_use_start_sway_tick, t.melee_spear_use_finish_sway_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_lower_progress = math.ease_in_out_elastic(0.0, 1.0, math.clamp(math.inverse_lerp(t.melee_spear_use_start_lower_tick, t.melee_spear_use_finish_lower_tick, v.item_use_duration - 20.0), 0.0, 1.0));",
+          "  t.melee_spear_use_raise_back_progress = math.clamp(math.inverse_lerp(t.melee_spear_use_start_raise_back_tick, t.melee_spear_use_finish_raise_back_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_sway_intensity = math.ease_out_circ(0.0, 2.0, t.melee_spear_use_sway_progress) + math.ease_in_circ(0.0, -2.0, t.melee_spear_use_raise_back_progress);",
+          "  t.melee_spear_use_sway_scale_slow = math.sin(v.item_use_duration * 19.0) * t.melee_spear_use_sway_intensity;",
+          "  t.melee_spear_use_sway_scale_fast = math.sin(v.item_use_duration * 30.0) * t.melee_spear_use_sway_intensity;",
+          "  v.tp_melee_spear_use_arm_rotation_x = t.melee_spear_use_raise_progress_start * -40.0 + t.melee_spear_use_raise_progress_middle * 30.0 + t.melee_spear_use_raise_progress_end * -20.0 + t.melee_spear_use_lower_progress * 20.0 + t.melee_spear_use_raise_back_progress * 10.0;",
+          "  v.tp_melee_spear_use_arm_rotation_x = v.tp_melee_spear_use_arm_rotation_x + t.melee_spear_use_sway_scale_slow * 0.6;",
+          "  v.tp_melee_spear_use_arm_rotation_y = t.melee_spear_use_sway_scale_fast * 1.0;",
+          "  v.tp_melee_spear_use_arm_rotation_z = t.melee_spear_use_sway_scale_slow * 0.5;",
+          "  v.tp_melee_spear_use_item_rotation_x = t.melee_spear_use_raise_progress * 60.0 + t.melee_spear_use_raise_back_progress * -60.0;",
+          "  v.tp_melee_spear_use_attachable_rotation_z = t.melee_spear_use_raise_progress * 90.0 + t.melee_spear_use_sway_progress * -90.0;",
+          "};"
         ],
         "variables": {
           "variable.item_use_normalized": "public",
-          "variable.tp_melee_spear_use_attachable_rotation_z": "public"
+          "variable.tp_melee_spear_use_attachable_rotation_z": "public",
+          "variable.use_dedicated_baby_armor": "public"
         },
         "initialize": [
           "v.tp_melee_spear_base_arm_rotation_x = -30.0;"
         ],
         "animate": [
-          "humanoid_big_head_controller",
           "look_at_target_controller",
           "move_controller",
           "riding_controller",
@@ -56,7 +87,8 @@
             "melee_spear_controller": "v.melee_spear_equipped"
           }
         ],
-        "should_update_effects_offscreen": "1.0"
+        "should_update_effects_offscreen": "1.0",
+        "scale": "query.is_baby ? 2.0 : 1.0"
       },
       "animations": {
         "humanoid_big_head": "animation.humanoid.big_head",
@@ -145,7 +177,7 @@
         }
       ],
       "render_controllers": [
-        "controller.render.zombie"
+        "controller.render.zombie.v2"
       ],
       "enable_attachables": true
     }

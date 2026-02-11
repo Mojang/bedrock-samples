@@ -8,24 +8,24 @@
         "default": "drowned"
       },
       "textures": {
-        "default": "textures/entity/zombie/drowned"
+        "default": "textures/entity/zombie/drowned",
+        "baby": "textures/entity/zombie/drowned_baby"
       },
       "geometry": {
-        "default": "geometry.zombie.drowned.v1.16"
+        "default": "geometry.zombie.drowned.v1.16",
+        "baby": "geometry.zombie.baby"
       },
       "scripts": {
         "pre_animation": [
+          "v.use_dedicated_baby_armor = true;",
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;",
-          "variable.riding_y_offset_baby_scaling = query.is_baby ? -3.5 : 0.0;",
+          "variable.riding_y_offset_baby_scaling = query.is_baby ? -5.0 : 0.0;",
           "variable.riding_y_offset_with_respect_to_player = 1.0;",
           "variable.riding_y_offset_on_vehicle_where_other_entites_can_stand = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat') ? -3.0 : 0.0;",
           "variable.unscaled_riding_y_offset = variable.riding_y_offset_with_respect_to_player + variable.riding_y_offset_on_vehicle_where_other_entites_can_stand;",
           "variable.riding_y_offset = variable.riding_y_offset_baby_scaling * math.abs(variable.unscaled_riding_y_offset) + variable.unscaled_riding_y_offset + variable.riding_y_offset_baby_scaling * 0.2f;"
         ],
         "animate": [
-          {
-            "humanoid_big_head": "query.is_baby"
-          },
           "look_at_target",
           "move",
           {
@@ -56,7 +56,10 @@
             "swimming": "variable.swim_amount > 0.0"
           }
         ],
-        "should_update_effects_offscreen": "1.0"
+        "should_update_effects_offscreen": "1.0",
+        "variables": {
+          "variable.use_dedicated_baby_armor": "public"
+        }
       },
       "animations": {
         "humanoid_big_head": "animation.humanoid.big_head",
@@ -80,7 +83,7 @@
         "riding.body": "animation.humanoid.riding.body"
       },
       "render_controllers": [
-        "controller.render.drowned"
+        "controller.render.zombie.v2"
       ],
       "enable_attachables": true,
       "spawn_egg": {
