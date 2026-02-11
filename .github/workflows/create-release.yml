@@ -1,0 +1,139 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.26.0.2) — do not include the "v" prefix or "-preview" suffix'
+        required: true
+        type: string
+      release_notes_url:
+        description: 'URL to the release notes'
+        required: true
+        type: string
+
+# Only allow dispatching from main or preview branches
+run-name: "Release ${{ github.ref_name == 'preview' && format('v{0}-preview', inputs.version) || format('v{0}', inputs.version) }}"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Validate inputs ───────────────────────────────────────────────
+      - name: Validate version format
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version must be four dot-separated numbers (e.g., 1.26.0.2). Got: $VERSION"
+            exit 1
+          fi
+
+      - name: Validate branch
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          if [[ "$BRANCH" != "main" && "$BRANCH" != "preview" ]]; then
+            echo "::error::This workflow can only be run from the 'main' or 'preview' branch. Current branch: $BRANCH"
+            exit 1
+          fi
+
+      # ── Compute tag and release metadata ──────────────────────────────
+      - name: Set release variables
+        id: vars
+        run: |
+          VERSION="${{ inputs.version }}"
+          BRANCH="${{ github.ref_name }}"
+
+          if [[ "$BRANCH" == "preview" ]]; then
+            TAG="v${VERSION}-preview"
+            PRERELEASE=true
+            MAKE_LATEST=false
+          else
+            TAG="v${VERSION}"
+            PRERELEASE=false
+            MAKE_LATEST=true
+          fi
+
+          echo "tag=$TAG"                 >> "$GITHUB_OUTPUT"
+          echo "prerelease=$PRERELEASE"   >> "$GITHUB_OUTPUT"
+          echo "make_latest=$MAKE_LATEST" >> "$GITHUB_OUTPUT"
+
+          echo "### Release info" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Tag:** $TAG"  >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Branch:** $BRANCH" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Pre-release:** $PRERELEASE" >> "$GITHUB_STEP_SUMMARY"
+
+      # ── Checkout ──────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Build full zip ────────────────────────────────────────────────
+      - name: Build full zip
+        run: |
+          ZIP_NAME="bedrock-samples-${{ steps.vars.outputs.tag }}-full.zip"
+
+          zip -r "$ZIP_NAME" \
+            behavior_pack/ \
+            resource_pack/ \
+            documentation/ \
+            metadata/ \
+            README.md \
+            LICENSE.md \
+            CONTRIBUTING.md
+
+      # ── Build min zip (no binary files) ───────────────────────────────
+      - name: Build min zip
+        run: |
+          ZIP_NAME="bedrock-samples-${{ steps.vars.outputs.tag }}-min.zip"
+
+          zip -r "$ZIP_NAME" \
+            behavior_pack/ \
+            resource_pack/ \
+            documentation/ \
+            metadata/ \
+            README.md \
+            LICENSE.md \
+            CONTRIBUTING.md \
+            -x '*.png' \
+            -x '*.tga' \
+            -x '*.jpg' \
+            -x '*.fsb' \
+            -x '*.ogg' \
+            -x '*.pdn' \
+            -x '*.hdr'
+
+      # ── Verify LICENSE.md is in both zips ─────────────────────────────
+      - name: Verify LICENSE.md is present in both zips
+        run: |
+          FULL="bedrock-samples-${{ steps.vars.outputs.tag }}-full.zip"
+          MIN="bedrock-samples-${{ steps.vars.outputs.tag }}-min.zip"
+          for ZIP in "$FULL" "$MIN"; do
+            if ! unzip -l "$ZIP" | grep -q "LICENSE.md"; then
+              echo "::error::LICENSE.md is missing from $ZIP"
+              exit 1
+            fi
+            echo "✓ LICENSE.md found in $ZIP"
+          done
+
+      # ── Create GitHub Release ─────────────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: ${{ steps.vars.outputs.tag }}
+          body: |
+            ## Minecraft Bedrock Samples ${{ steps.vars.outputs.tag }}
+
+            **Release notes:** ${{ inputs.release_notes_url }}
+
+            ### Assets
+            - **full** — Complete samples including all textures, models, and sounds
+            - **min** — Text-only samples (JSON, HTML, MD) with binary files excluded
+          prerelease: ${{ steps.vars.outputs.prerelease == 'true' }}
+          make_latest: ${{ steps.vars.outputs.make_latest == 'true' }}
+          files: |
+            bedrock-samples-${{ steps.vars.outputs.tag }}-full.zip
+            bedrock-samples-${{ steps.vars.outputs.tag }}-min.zip
