@@ -12,17 +12,22 @@
           "values": ["temperate", "warm", "cold"],
           "default": "temperate",
           "client_sync": true
+        },
+        "minecraft:sound_variant": {
+          "type": "enum",
+          "values": [ "default", "moody" ],
+          "default": "default",
+          "client_sync": true
         }
       }
     },
 
     "component_groups": {
       "minecraft:cow_baby": {
-        "minecraft:collision_box": {
-          "width": 0.45,
-          "height": 0.7
-        },
         "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.5
+        },
         "minecraft:ageable": {
           "duration": 1200,
           "feed_items": "wheat",
@@ -46,10 +51,6 @@
         }
       },
       "minecraft:cow_adult": {
-        "minecraft:collision_box": {
-          "width": 0.9,
-          "height": 1.4
-        },
         "minecraft:leashable_to": {},
         "minecraft:experience_reward": {
           "on_bred": "Math.Random(1,7)",
@@ -71,10 +72,10 @@
         },
         "minecraft:breedable": {
           "require_tame": false,
+          "breed_items": ["wheat"],
           "breeds_with": {
             "minecraft:cow": {}
-          },
-          "breed_items": ["wheat"]
+          }
         },
         "minecraft:interact": {
           "interactions": [
@@ -108,6 +109,15 @@
     },
 
     "components": {
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:cow": "minecraft:cow"
+        },
+        "property_inheritance": {
+          "minecraft:climate_variant": {}
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:is_hidden_when_invisible": {},
       "minecraft:type_family": {
         "family": ["cow", "mob"]
@@ -124,16 +134,11 @@
       "minecraft:movement.basic": {},
       "minecraft:jump.static": {},
       "minecraft:can_climb": {},
-      "minecraft:nameable": {},
-      "minecraft:offspring": {
-        "offspring_pairs": {
-          "minecraft:cow": "minecraft:cow"
-        },
-        "property_inheritance": {
-          "minecraft:climate_variant": {}
-        }
+      "minecraft:collision_box": {
+        "width": 0.9,
+        "height": 1.3
       },
-      "minecraft:spawn_egg_interaction": {},
+      "minecraft:nameable": {},
       "minecraft:health": {
         "value": 10,
         "max": 10
@@ -251,7 +256,8 @@
       "minecraft:entity_born": {
         "add": {
           "component_groups": ["minecraft:cow_baby"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
 
       "minecraft:entity_transformed": {
@@ -273,7 +279,24 @@
       "minecraft:spawn_adult": {
         "add": {
           "component_groups": ["minecraft:cow_adult"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
+      },
+      "minecraft:randomize_sound_variant": {
+        "randomize": [
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "default"
+            }
+          },
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "moody"
+            }
+          }
+        ]
       }
     }
   }

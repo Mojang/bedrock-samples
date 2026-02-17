@@ -3,685 +3,51 @@
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:husk",
-      "spawn_category": "monster",
-      "is_spawnable": true,
       "is_summonable": true,
+      "is_spawnable": true,
       "properties": {
         "minecraft:is_riding_camel_husk": {
-          "type": "bool",
+          "client_sync": false,
           "default": false,
-          "client_sync": false
+          "type": "bool"
         }
-      }
+      },
+      "spawn_category": "monster"
     },
-
-    "component_groups": {
-      "minecraft:look_to_start_zombie_transformation": {
-        "minecraft:environment_sensor": {
-          "triggers": [
-            {
-              "filters": {
-                "test": "is_underwater"
-              },
-              "event": "minecraft:start_transforming"
-            },
-            // Keep these the same for each "minecraft:environment_sensor".
-            {
-              "filters": {
-                "all_of": [
-                  { "test": "is_vehicle_family", "value": "camel_husk" },
-                  {
-                    "test": "bool_property",
-                    "domain": "minecraft:is_riding_camel_husk",
-                    "value": false
-                  }
-                ]
-              },
-              "event": "minecraft:on_start_riding_camel_husk"
-            },
-            {
-              "filters": {
-                "all_of": [
-                  {
-                    "test": "is_vehicle_family",
-                    "operator": "not",
-                    "value": "camel_husk"
-                  },
-                  {
-                    "test": "bool_property",
-                    "domain": "minecraft:is_riding_camel_husk"
-                  }
-                ]
-              },
-              "event": "minecraft:on_stop_riding_camel_husk"
-            }
-          ]
-        }
-      },
-      "minecraft:start_zombie_transformation": {
-        "minecraft:environment_sensor": {
-          "triggers": [
-            {
-              "filters": {
-                "test": "is_underwater",
-                "value": false
-              },
-              "event": "minecraft:stop_transforming"
-            },
-            // Keep these the same for each "minecraft:environment_sensor".
-            {
-              "filters": {
-                "all_of": [
-                  { "test": "is_vehicle_family", "value": "camel_husk" },
-                  {
-                    "test": "bool_property",
-                    "domain": "minecraft:is_riding_camel_husk",
-                    "value": false
-                  }
-                ]
-              },
-              "event": "minecraft:on_start_riding_camel_husk"
-            },
-            {
-              "filters": {
-                "all_of": [
-                  {
-                    "test": "is_vehicle_family",
-                    "operator": "not",
-                    "value": "camel_husk"
-                  },
-                  {
-                    "test": "bool_property",
-                    "domain": "minecraft:is_riding_camel_husk"
-                  }
-                ]
-              },
-              "event": "minecraft:on_stop_riding_camel_husk"
-            }
-          ]
-        },
-        "minecraft:timer": {
-          "looping": false,
-          "time": 30,
-          "time_down_event": {
-            "event": "minecraft:convert_to_zombie"
-          }
-        }
-      },
-      "minecraft:convert_to_zombie": {
-        "minecraft:transformation": {
-          "into": "minecraft:zombie<minecraft:as_adult>",
-          "transformation_sound": "mob.husk.convert_to_zombie",
-          "drop_equipment": true,
-          "delay": {
-            "value": 15
-          }
-        },
-        "minecraft:is_shaking": {}
-      },
-      "minecraft:convert_to_baby_zombie": {
-        "minecraft:transformation": {
-          "into": "minecraft:zombie<minecraft:as_baby>",
-          "transformation_sound": "mob.husk.convert_to_zombie",
-          "drop_equipment": true,
-          "delay": {
-            "value": 15
-          }
-        },
-        "minecraft:is_shaking": {}
-      },
-      "minecraft:zombie_husk_baby": {
-        "minecraft:experience_reward": {
-          "on_death": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0"
-        },
-        "minecraft:is_baby": {},
-        "minecraft:movement": {
-          "value": 0.35
-        },
-        "minecraft:type_family": {
-          "family": [
-            "baby_undead ",
-            "husk",
-            "zombie",
-            "undead",
-            "monster",
-            "mob"
-          ]
-        },
-        "minecraft:collision_box": {
-          "width": 0.3,
-          "height": 0.8
-        }
-      },
-      "minecraft:zombie_husk_adult": {
-        "minecraft:experience_reward": {
-          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
-        },
-        "minecraft:movement": {
-          "value": 0.23
-        },
-        "minecraft:collision_box": {
-          "width": 0.6,
-          "height": 1.9
-        },
-        "minecraft:rideable": {
-          "seat_count": 1,
-          "family_types": ["baby_undead"],
-          "seats": {
-            "position": [0.0, 1.175, -0.35],
-            "lock_rider_rotation": 0
-          }
-        },
-        "minecraft:behavior.mount_pathing": {
-          "priority": 2,
-          "speed_multiplier": 1.25,
-          "target_dist": 0.0,
-          "track_target": true
-        }
-      },
-      "minecraft:zombie_husk_jockey": {
-        "minecraft:behavior.find_mount": {
-          "priority": 0,
-          "within_radius": 16
-        }
-      },
-      "minecraft:zombie_husk_rider": {
-        "minecraft:loot": {
-          "table": "loot_tables/entities/husk_rider.json"
-        },
-        "minecraft:equipment": {
-          "table": "loot_tables/entities/zombie_rider_equipment.json"
-        },
-        "minecraft:type_family": {
-          "family": ["husk_rider", "husk", "zombie", "undead", "monster", "mob"]
-        }
-      },
-      "minecraft:can_break_doors": {
-        "minecraft:annotation.break_door": {}
-      },
-      "minecraft:on_camel_husk": {
-        "minecraft:behavior.use_kinetic_weapon": {
-          "priority": 3,
-          "track_target": true,
-          "approach_distance": 12.0,
-          "reposition_distance": {
-            "min": 8.0,
-            "max": 9.0
-          },
-          "cooldown_distance": {
-            "min": 11.0,
-            "max": 13.0
-          },
-          "weapon_reach_multiplier": 0.5,
-          "weapon_min_speed_multiplier": 0.2,
-          "speed_multiplier": 4.0,
-          "reposition_speed_multiplier": 4.0,
-          "cooldown_speed_multiplier": 4.0,
-          "hijack_mount_navigation": true
-        }
-      },
-      "minecraft:not_on_camel_husk": {
-        "minecraft:behavior.use_kinetic_weapon": {
-          "priority": 3,
-          "track_target": true,
-          "approach_distance": 10.0,
-          "reposition_distance": {
-            "min": 6.0,
-            "max": 7.0
-          },
-          "cooldown_distance": {
-            "min": 9.0,
-            "max": 11.0
-          },
-          "weapon_reach_multiplier": 0.5,
-          "weapon_min_speed_multiplier": 0.2,
-          "hijack_mount_navigation": true
-        }
-      }
-    },
-
     "components": {
-      "minecraft:is_hidden_when_invisible": {},
-      "minecraft:rotation_locked_to_vehicle": {},
-      "minecraft:breathable": {
-        "total_supply": 15,
-        "suffocate_time": 0,
-        "breathes_water": true
-      },
-      "minecraft:equip_item": {
-        "excluded_items": [
-          {
-            "item": "minecraft:banner:15"
-          }
-        ]
-      },
-      "minecraft:nameable": {},
-      "minecraft:offspring": {
-        "offspring_pairs": {
-          "minecraft:husk": "minecraft:husk"
-        }
-      },
-      "minecraft:spawn_egg_interaction": {},
-      "minecraft:type_family": {
-        "family": ["husk", "zombie", "undead", "monster", "mob"]
-      },
-      "minecraft:loot": {
-        "table": "loot_tables/entities/zombie.json"
-      },
-      "minecraft:equipment": {
-        "table": "loot_tables/entities/zombie_equipment.json"
-      },
-      "minecraft:health": {
-        "value": 20,
-        "max": 20
-      },
-      "minecraft:hurt_on_condition": {
-        "damage_conditions": [
-          {
-            "filters": {
-              "test": "in_lava"
-            },
-            "cause": "lava",
-            "damage_per_tick": 4
-          }
-        ]
-      },
       "minecraft:attack": {
         "damage": 3,
-        "effect_name": "hunger",
-        "effect_duration": 30
-      },
-      "minecraft:variant": {
-        "value": 2
-      },
-      "minecraft:conditional_bandwidth_optimization": {},
-      "minecraft:navigation.walk": {
-        "is_amphibious": true,
-        "can_pass_doors": true,
-        "can_break_doors": true,
-        "avoid_portals": false
-      },
-      "minecraft:movement.basic": {},
-      "minecraft:jump.static": {},
-      "minecraft:can_climb": {},
-      "minecraft:shareables": {
-        "singular_pickup": true,
-        "items": [
-          {
-            "item": "minecraft:netherite_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:golden_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:copper_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:stone_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:wooden_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:netherite_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:golden_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:copper_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:stone_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:wooden_spear",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:netherite_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:turtle_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 7
-          },
-          {
-            "item": "minecraft:skull:0",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:skull:1",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:carved_pumpkin",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:netherite_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:netherite_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:netherite_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          }
-        ]
-      },
-      "minecraft:environment_sensor": {
-        "triggers": [
-          {
-            "filters": {
-              "test": "is_underwater"
-            },
-            "event": "minecraft:start_transforming"
-          },
-          // Keep these the same for each "minecraft:environment_sensor".
-          {
-            "filters": {
-              "all_of": [
-                { "test": "is_vehicle_family", "value": "camel_husk" },
-                {
-                  "test": "bool_property",
-                  "domain": "minecraft:is_riding_camel_husk",
-                  "value": false
-                }
-              ]
-            },
-            "event": "minecraft:on_start_riding_camel_husk"
-          },
-          {
-            "filters": {
-              "all_of": [
-                {
-                  "test": "is_vehicle_family",
-                  "operator": "not",
-                  "value": "camel_husk"
-                },
-                {
-                  "test": "bool_property",
-                  "domain": "minecraft:is_riding_camel_husk"
-                }
-              ]
-            },
-            "event": "minecraft:on_stop_riding_camel_husk"
-          }
-        ]
-      },
-      "minecraft:despawn": {
-        "despawn_from_distance": {}
+        "effect_duration": 30,
+        "effect_name": "hunger"
       },
       "minecraft:behavior.equip_item": {
         "priority": 2
+      },
+      "minecraft:behavior.hurt_by_target": {
+        "entity_types": [
+          {
+            "filters": {
+              "operator": "not",
+              "test": "is_family",
+              "subject": "other",
+              "value": "breeze"
+            }
+          }
+        ],
+        "priority": 1
+      },
+      "minecraft:behavior.look_at_player": {
+        "look_distance": 6,
+        "priority": 8
       },
       "minecraft:behavior.melee_box_attack": {
         "can_spread_on_fire": true,
         "priority": 4
       },
-      "minecraft:behavior.stomp_turtle_egg": {
-        "priority": 5,
-        "speed_multiplier": 1,
-        "search_range": 10,
-        "search_height": 2,
-        "goal_radius": 1.14,
-        "interval": 20
-      },
-      "minecraft:behavior.pickup_items": {
-        "priority": 6,
-        "max_dist": 3,
-        "goal_radius": 2,
-        "speed_multiplier": 1.0,
-        "pickup_based_on_chance": true,
-        "can_pickup_any_item": true,
-        "excluded_items": ["minecraft:glow_ink_sac"]
-      },
-      "minecraft:behavior.random_stroll": {
-        "priority": 7,
-        "speed_multiplier": 1
-      },
-      "minecraft:behavior.look_at_player": {
-        "priority": 8,
-        "look_distance": 6,
-        "probability": 0.02
-      },
-      "minecraft:behavior.random_look_around": {
-        "priority": 9
-      },
-      "minecraft:behavior.hurt_by_target": {
-        "priority": 1,
-        "entity_types": [
-          {
-            "filters": {
-              "test": "is_family",
-              "subject": "other",
-              "operator": "not",
-              "value": "breeze"
-            }
-          }
-        ]
-      },
       "minecraft:behavior.nearest_attackable_target": {
-        "priority": 2,
-        "must_see": true,
         "reselect_targets": true,
-        "within_radius": 25.0,
+        "must_see": true,
+        "within_radius": 25,
         "entity_types": [
           {
             "filters": {
@@ -740,73 +106,683 @@
             },
             "max_dist": 35
           }
+        ],
+        "priority": 2
+      },
+      "minecraft:behavior.pickup_items": {
+        "can_pickup_any_item": true,
+        "excluded_items": [
+          "minecraft:glow_ink_sac"
+        ],
+        "pickup_based_on_chance": true,
+        "goal_radius": 2,
+        "priority": 6,
+        "max_dist": 3,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.stomp_turtle_egg": {
+        "goal_radius": 1.14,
+        "priority": 5,
+        "search_height": 2,
+        "interval": 20,
+        "search_range": 10,
+        "speed_multiplier": 1
+      },
+      "minecraft:breathable": {
+        "breathes_water": true,
+        "suffocate_time": 0,
+        "total_supply": 15
+      },
+      "minecraft:can_climb": {},
+      "minecraft:collision_box": {
+        "height": 1.9,
+        "width": 0.6
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:environment_sensor": {
+        "triggers": [
+          {
+            "event": "minecraft:start_transforming",
+            "filters": {
+              "test": "is_underwater"
+            }
+          },
+          // Keep these the same for each "minecraft:environment_sensor".
+          {
+            "event": "minecraft:on_start_riding_camel_husk",
+            "filters": {
+              "all_of": [
+                {
+                  "test": "is_vehicle_family",
+                  "value": "camel_husk"
+                },
+                {
+                  "domain": "minecraft:is_riding_camel_husk",
+                  "test": "bool_property",
+                  "value": false
+                }
+              ]
+            }
+          },
+          {
+            "event": "minecraft:on_stop_riding_camel_husk",
+            "filters": {
+              "all_of": [
+                {
+                  "operator": "not",
+                  "test": "is_vehicle_family",
+                  "value": "camel_husk"
+                },
+                {
+                  "domain": "minecraft:is_riding_camel_husk",
+                  "test": "bool_property"
+                }
+              ]
+            }
+          }
         ]
+      },
+      "minecraft:equip_item": {
+        "excluded_items": [
+          {
+            "item": "minecraft:banner:15"
+          }
+        ]
+      },
+      "minecraft:equipment": {
+        "table": "loot_tables/entities/zombie_equipment.json"
+      },
+      "minecraft:health": {
+        "max": 20,
+        "value": 20
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "cause": "lava",
+            "damage_per_tick": 4,
+            "filters": {
+              "test": "in_lava"
+            }
+          }
+        ]
+      },
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:jump.static": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/zombie.json"
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:nameable": {},
+      "minecraft:navigation.walk": {
+        "avoid_portals": false,
+        "can_break_doors": true,
+        "is_amphibious": true,
+        "can_pass_doors": true
+      },
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:husk": "minecraft:husk"
+        }
       },
       "minecraft:physics": {},
       "minecraft:pushable": {
         "is_pushable": true,
         "is_pushable_by_piston": true
-      }
-    },
-
-    "events": {
-      "minecraft:entity_spawned": {
-        "sequence": [
+      },
+      "minecraft:rotation_locked_to_vehicle": {},
+      "minecraft:shareables": {
+        "items": [
           {
-            "randomize": [
-              {
-                "weight": 9500,
-                "trigger": "minecraft:as_adult"
-              },
-              {
-                "weight": 425,
-                "trigger": "minecraft:as_baby"
-              },
-              {
-                "weight": 75,
-                "trigger": "minecraft:as_baby_jockey"
-              }
-            ]
+            "item": "minecraft:netherite_sword",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
           },
           {
-            "randomize": [
-              {
-                "weight": 10,
-                "add": {
-                  "component_groups": ["minecraft:can_break_doors"]
-                }
-              },
-              {
-                "weight": 90
-              }
-            ]
+            "item": "minecraft:diamond_sword",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_sword",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:wooden_sword",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_spear",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_spear",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_spear",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_spear",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_spear",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:stone_spear",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:wooden_spear",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_helmet",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_helmet",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_helmet",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_helmet",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_helmet",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_helmet",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_helmet",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:turtle_helmet",
+            "priority": 7,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:skull:0",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:skull:1",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:carved_pumpkin",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_chestplate",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_chestplate",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_chestplate",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_chestplate",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_chestplate",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_chestplate",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_leggings",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_leggings",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_leggings",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_leggings",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_leggings",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_leggings",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_boots",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_boots",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_boots",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_boots",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_boots",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_boots",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
           }
+        ],
+        "singular_pickup": true
+      },
+      "minecraft:spawn_egg_interaction": {},
+      "minecraft:type_family": {
+        "family": [
+          "husk",
+          "zombie",
+          "undead",
+          "monster",
+          "mob"
         ]
       },
-      "minecraft:as_adult": {
-        "add": {
-          "component_groups": [
-            "minecraft:zombie_husk_adult",
-            "minecraft:not_on_camel_husk"
+      "minecraft:variant": {
+        "value": 2
+      }
+    },
+    "component_groups": {
+      "minecraft:on_camel_husk": {
+        "minecraft:behavior.use_kinetic_weapon": {
+          "approach_distance": 12,
+          "reposition_distance": {
+            "min": 8,
+            "max": 9
+          },
+          "reposition_speed_multiplier": 4,
+          "cooldown_distance": {
+            "min": 11,
+            "max": 13
+          },
+          "cooldown_speed_multiplier": 4,
+          "weapon_reach_multiplier": 0.5,
+          "weapon_min_speed_multiplier": 0.2,
+          "hijack_mount_navigation": true,
+          "speed_multiplier": 4,
+          "track_target": true,
+          "priority": 3
+        }
+      },
+      "minecraft:can_break_doors": {
+        "minecraft:annotation.break_door": {}
+      },
+      "minecraft:convert_to_baby_zombie": {
+        "minecraft:is_shaking": {},
+        "minecraft:transformation": {
+          "delay": {
+            "value": 15
+          },
+          "drop_equipment": true,
+          "into": "minecraft:zombie<minecraft:as_baby>",
+          "transformation_sound": "mob.husk.convert_to_zombie"
+        }
+      },
+      "minecraft:zombie_husk_adult": {
+        "minecraft:behavior.mount_pathing": {
+          "priority": 2,
+          "target_dist": 0,
+          "speed_multiplier": 1.25,
+          "track_target": true
+        },
+        "minecraft:experience_reward": {
+          "on_death": {
+            "expression": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0",
+            "version": 13
+          }
+        },
+        "minecraft:movement": {
+          "value": 0.23
+        },
+        "minecraft:rideable": {
+          "family_types": [
+            "baby_undead"
+          ],
+          "seat_count": 1,
+          "seats": {
+            "lock_rider_rotation": 0,
+            "position": [
+              0,
+              1.175,
+              -0.35
+            ]
+          }
+        }
+      },
+      "minecraft:convert_to_zombie": {
+        "minecraft:is_shaking": {},
+        "minecraft:transformation": {
+          "delay": {
+            "value": 15
+          },
+          "drop_equipment": true,
+          "into": "minecraft:zombie<minecraft:as_adult>",
+          "transformation_sound": "mob.husk.convert_to_zombie"
+        }
+      },
+      "minecraft:look_to_start_zombie_transformation": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "event": "minecraft:start_transforming",
+              "filters": {
+                "test": "is_underwater"
+              }
+            },
+            // Keep these the same for each "minecraft:environment_sensor".
+            {
+              "event": "minecraft:on_start_riding_camel_husk",
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_vehicle_family",
+                    "value": "camel_husk"
+                  },
+                  {
+                    "domain": "minecraft:is_riding_camel_husk",
+                    "test": "bool_property",
+                    "value": false
+                  }
+                ]
+              }
+            },
+            {
+              "event": "minecraft:on_stop_riding_camel_husk",
+              "filters": {
+                "all_of": [
+                  {
+                    "operator": "not",
+                    "test": "is_vehicle_family",
+                    "value": "camel_husk"
+                  },
+                  {
+                    "domain": "minecraft:is_riding_camel_husk",
+                    "test": "bool_property"
+                  }
+                ]
+              }
+            }
           ]
         }
       },
-      "minecraft:as_baby": {
-        "add": {
-          "component_groups": [
-            "minecraft:zombie_husk_baby",
-            "minecraft:not_on_camel_husk"
+      "minecraft:not_on_camel_husk": {
+        "minecraft:behavior.use_kinetic_weapon": {
+          "approach_distance": 10,
+          "reposition_distance": {
+            "min": 6,
+            "max": 7
+          },
+          "cooldown_distance": {
+            "min": 9,
+            "max": 11
+          },
+          "weapon_reach_multiplier": 0.5,
+          "weapon_min_speed_multiplier": 0.2,
+          "hijack_mount_navigation": true,
+          "track_target": true,
+          "priority": 3
+        }
+      },
+      "minecraft:start_zombie_transformation": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "event": "minecraft:stop_transforming",
+              "filters": {
+                "test": "is_underwater",
+                "value": false
+              }
+            },
+            // Keep these the same for each "minecraft:environment_sensor".
+            {
+              "event": "minecraft:on_start_riding_camel_husk",
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_vehicle_family",
+                    "value": "camel_husk"
+                  },
+                  {
+                    "domain": "minecraft:is_riding_camel_husk",
+                    "test": "bool_property",
+                    "value": false
+                  }
+                ]
+              }
+            },
+            {
+              "event": "minecraft:on_stop_riding_camel_husk",
+              "filters": {
+                "all_of": [
+                  {
+                    "operator": "not",
+                    "test": "is_vehicle_family",
+                    "value": "camel_husk"
+                  },
+                  {
+                    "domain": "minecraft:is_riding_camel_husk",
+                    "test": "bool_property"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "minecraft:timer": {
+          "looping": false,
+          "time": 30,
+          "time_down_event": {
+            "event": "minecraft:convert_to_zombie"
+          }
+        }
+      },
+      "minecraft:zombie_husk_baby": {
+        "minecraft:experience_reward": {
+          "on_death": {
+            "expression": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0",
+            "version": 13
+          }
+        },
+        "minecraft:is_baby": {},
+        "minecraft:movement": {
+          "value": 0.35
+        },
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:type_family": {
+          "family": [
+            "baby_undead",
+            "husk",
+            "zombie",
+            "undead",
+            "monster",
+            "mob"
           ]
         }
       },
-      "minecraft:as_baby_jockey": {
-        "add": {
-          "component_groups": [
-            "minecraft:zombie_husk_baby",
-            "minecraft:zombie_husk_jockey",
-            "minecraft:not_on_camel_husk"
+      "minecraft:zombie_husk_jockey": {
+        "minecraft:behavior.find_mount": {
+          "priority": 0,
+          "within_radius": 16
+        }
+      },
+      "minecraft:zombie_husk_rider": {
+        "minecraft:equipment": {
+          "table": "loot_tables/entities/zombie_rider_equipment.json"
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/husk_rider.json"
+        },
+        "minecraft:type_family": {
+          "family": [
+            "husk_rider",
+            "husk",
+            "zombie",
+            "undead",
+            "monster",
+            "mob"
           ]
         }
+      }
+    },
+    "events": {
+      "minecraft:entity_born": {
+        "trigger": "minecraft:as_baby"
       },
       "minecraft:spawn_as_rider": {
         "add": {
@@ -822,23 +798,56 @@
           "minecraft:is_riding_camel_husk": true
         }
       },
-      "minecraft:entity_born": {
-        "trigger": "minecraft:as_baby"
-      },
-      "minecraft:start_transforming": {
+      "minecraft:as_adult": {
         "add": {
-          "component_groups": ["minecraft:start_zombie_transformation"]
-        },
-        "remove": {
-          "component_groups": ["minecraft:look_to_start_zombie_transformation"]
+          "component_groups": [
+            "minecraft:zombie_husk_adult",
+            "minecraft:not_on_camel_husk"
+          ]
         }
       },
       "minecraft:stop_transforming": {
         "add": {
-          "component_groups": ["minecraft:look_to_start_zombie_transformation"]
+          "component_groups": [
+            "minecraft:look_to_start_zombie_transformation"
+          ]
         },
         "remove": {
-          "component_groups": ["minecraft:start_zombie_transformation"]
+          "component_groups": [
+            "minecraft:start_zombie_transformation"
+          ]
+        }
+      },
+      "minecraft:on_stop_riding_camel_husk": {
+        "add": {
+          "component_groups": [
+            "minecraft:not_on_camel_husk"
+          ]
+        },
+        "set_property": {
+          "minecraft:is_riding_camel_husk": false
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:on_camel_husk"
+          ]
+        }
+      },
+      "minecraft:as_baby_jockey": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_husk_baby",
+            "minecraft:zombie_husk_jockey",
+            "minecraft:not_on_camel_husk"
+          ]
+        }
+      },
+      "minecraft:as_baby": {
+        "add": {
+          "component_groups": [
+            "minecraft:zombie_husk_baby",
+            "minecraft:not_on_camel_husk"
+          ]
         }
       },
       "minecraft:convert_to_zombie": {
@@ -850,10 +859,14 @@
               "value": "minecraft:is_baby"
             },
             "add": {
-              "component_groups": ["minecraft:convert_to_zombie"]
+              "component_groups": [
+                "minecraft:convert_to_zombie"
+              ]
             },
             "remove": {
-              "component_groups": ["minecraft:start_zombie_transformation"]
+              "component_groups": [
+                "minecraft:start_zombie_transformation"
+              ]
             }
           },
           {
@@ -862,34 +875,78 @@
               "value": "minecraft:is_baby"
             },
             "add": {
-              "component_groups": ["minecraft:convert_to_baby_zombie"]
+              "component_groups": [
+                "minecraft:convert_to_baby_zombie"
+              ]
             },
             "remove": {
-              "component_groups": ["minecraft:start_zombie_transformation"]
+              "component_groups": [
+                "minecraft:start_zombie_transformation"
+              ]
             }
+          }
+        ]
+      },
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "randomize": [
+              {
+                "trigger": "minecraft:as_adult",
+                "weight": 9500
+              },
+              {
+                "trigger": "minecraft:as_baby",
+                "weight": 425
+              },
+              {
+                "trigger": "minecraft:as_baby_jockey",
+                "weight": 75
+              }
+            ]
+          },
+          {
+            "randomize": [
+              {
+                "add": {
+                  "component_groups": [
+                    "minecraft:can_break_doors"
+                  ]
+                },
+                "weight": 10
+              },
+              {
+                "weight": 90
+              }
+            ]
           }
         ]
       },
       "minecraft:on_start_riding_camel_husk": {
         "add": {
-          "component_groups": ["minecraft:on_camel_husk"]
-        },
-        "remove": {
-          "component_groups": ["minecraft:not_on_camel_husk"]
+          "component_groups": [
+            "minecraft:on_camel_husk"
+          ]
         },
         "set_property": {
           "minecraft:is_riding_camel_husk": true
-        }
-      },
-      "minecraft:on_stop_riding_camel_husk": {
-        "add": {
-          "component_groups": ["minecraft:not_on_camel_husk"]
         },
         "remove": {
-          "component_groups": ["minecraft:on_camel_husk"]
+          "component_groups": [
+            "minecraft:not_on_camel_husk"
+          ]
+        }
+      },
+      "minecraft:start_transforming": {
+        "add": {
+          "component_groups": [
+            "minecraft:start_zombie_transformation"
+          ]
         },
-        "set_property": {
-          "minecraft:is_riding_camel_husk": false
+        "remove": {
+          "component_groups": [
+            "minecraft:look_to_start_zombie_transformation"
+          ]
         }
       }
     }

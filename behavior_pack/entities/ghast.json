@@ -1,107 +1,119 @@
 {
-  "format_version": "1.21.90",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:ghast",
-      "spawn_category": "monster",
+      "is_summonable": true,
       "is_spawnable": true,
-      "is_summonable": true
+      "spawn_category": "monster"
     },
-
     "components": {
-      "minecraft:is_hidden_when_invisible": {
-      },
-      "minecraft:experience_reward": {
-        "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
-      },
-      "minecraft:breathable": {
-        "total_supply": 15,
-        "suffocate_time": 0
-      },
-      "minecraft:fire_immune": {
-      },
-      "minecraft:nameable": {
-      },
-      "minecraft:health": {
-        "value": 10,
-        "max": 10
-      },
-      "minecraft:collision_box": {
-        // The extra 0.02 prevents the Ghast from spawning in areas where it would suffocate.
-        "width": 4.02,
-        "height": 4.0
-      },
-      "minecraft:movement": {
-        "value": 0.03
-      },
-      "minecraft:navigation.float": {
-        "can_path_over_water": true
+      "minecraft:behavior.float": {
+        "priority": 0
       },
       "minecraft:behavior.float_wander": {
-        "priority": 2,
-        "must_reach": true,
+        "float_duration": [
+          2,
+          7
+        ],
+        "float_wander_has_move_control": false,
         "random_reselect": true,
-        "float_duration": [ 2, 7 ],
-        "float_wander_has_move_control": false
+        "must_reach": true,
+        "priority": 2
       },
-      "minecraft:can_fly": {
+      "minecraft:behavior.hurt_by_target": {
+        "priority": 1
       },
-      "minecraft:loot": {
-        "table": "loot_tables/entities/ghast.json"
+      "minecraft:behavior.nearest_attackable_target": {
+        "must_see": true,
+        "entity_types": [
+          {
+            "filters": {
+              "AND": [
+                {
+                  "test": "is_family",
+                  "subject": 1,
+                  "operator": 0,
+                  "value": "player"
+                }
+              ]
+            },
+            "max_dist": 28
+          }
+        ],
+        "priority": 2
       },
-      "minecraft:shooter": {
-        "def": "minecraft:fireball"
+      "minecraft:behavior.ranged_attack": {
+        "attack_radius": 64,
+        "charge_charged_trigger": 1,
+        "priority": 1,
+        "charge_shoot_trigger": 2
       },
-      "minecraft:type_family": {
-        "family": [ "ghast", "monster", "mob" ]
+      "minecraft:breathable": {
+        "suffocate_time": 0,
+        "total_supply": 15
       },
+      "minecraft:can_fly": {},
+      "minecraft:cannot_be_attacked": {},
+      "minecraft:collision_box": {
+        "height": 4,
+        // The extra 0.02 prevents the Ghast from spawning in areas where it would suffocate.
+        "width": 4.02
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
       "minecraft:damage_sensor": {
         "triggers": {
           "cause": "fall",
           "deals_damage": "no"
         }
       },
-      "minecraft:jump.static": {
-      },
       "minecraft:despawn": {
         "despawn_from_distance": {}
       },
-      "minecraft:behavior.float": {
-        "priority": 0
+      "minecraft:experience_reward": {
+        "on_death": {
+          "expression": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0",
+          "version": 12
+        }
       },
-      "minecraft:behavior.ranged_attack": {
-        "priority": 1,
-        "attack_radius": 64,
-        "charge_shoot_trigger": 2,
-        "charge_charged_trigger": 1
-      },
+      "minecraft:fire_immune": {},
       "minecraft:follow_range": {
-        "value": 64,
-        "max": 64
+        "max": 64,
+        "value": 64
       },
-      "minecraft:behavior.hurt_by_target": {
-        "priority": 1
+      "minecraft:health": {
+        "max": 10,
+        "value": 10
       },
-      "minecraft:behavior.nearest_attackable_target": {
-        "priority": 2,
-        "entity_types": [
-          {
-            "filters": { "test": "is_family", "subject": "other", "value": "player" },
-            "max_dist": 28
-          }
-        ],
-        "must_see": true
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:jump.static": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/ghast.json"
       },
-      "minecraft:physics": {
+      "minecraft:movement": {
+        "value": 0.03
       },
+      "minecraft:nameable": {},
+      "minecraft:navigation.float": {
+        "can_path_over_water": true,
+        "using_door_annotation": true
+      },
+      "minecraft:physics": {},
       "minecraft:pushable": {
         "is_pushable": true,
         "is_pushable_by_piston": true
       },
-      "minecraft:conditional_bandwidth_optimization": {
+      "minecraft:shooter": {
+        "def": "minecraft:fireball"
       },
-      "minecraft:cannot_be_attacked": {
+      "minecraft:type_family": {
+        "family": [
+          "ghast",
+          "monster",
+          "mob"
+        ]
       }
-    }
+    },
+    "events": null
   }
 }

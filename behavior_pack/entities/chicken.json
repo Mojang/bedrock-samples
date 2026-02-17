@@ -12,6 +12,12 @@
           "values": ["temperate", "warm", "cold"],
           "default": "temperate",
           "client_sync": true
+        },
+        "minecraft:sound_variant": {
+          "type": "enum",
+          "values": [ "default", "picky" ],
+          "default": "default",
+          "client_sync": true
         }
       }
     },
@@ -19,6 +25,9 @@
     "component_groups": {
       "minecraft:chicken_baby": {
         "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.5
+        },
         "minecraft:ageable": {
           "duration": 1200,
           "feed_items": [
@@ -39,10 +48,6 @@
         "minecraft:behavior.follow_parent": {
           "priority": 5,
           "speed_multiplier": 1.1
-        },
-        "minecraft:collision_box": {
-          "width": 0.3,
-          "height": 0.4
         }
       },
 
@@ -55,15 +60,6 @@
           "table": "loot_tables/entities/chicken.json"
         },
         "minecraft:leashable_to": {},
-        "minecraft:offspring": {
-          "offspring_pairs": {
-            "minecraft:chicken": "minecraft:chicken"
-          },
-          "property_inheritance": {
-            "minecraft:climate_variant": {}
-          }
-        },
-        "minecraft:spawn_egg_interaction": {},
         "minecraft:breedable": {
           "require_tame": false,
           "breeds_with": {
@@ -152,24 +148,11 @@
               ]
             }
           ]
-        },
-        "minecraft:collision_box": {
-          "width": 0.6,
-          "height": 0.8
         }
       }
     },
 
     "components": {
-      "minecraft:is_hidden_when_invisible": {},
-      "minecraft:type_family": {
-        "family": ["chicken", "mob"]
-      },
-      "minecraft:breathable": {
-        "total_supply": 15,
-        "suffocate_time": 0
-      },
-      "minecraft:nameable": {},
       "minecraft:offspring": {
         "offspring_pairs": {
           "minecraft:chicken": "minecraft:chicken"
@@ -179,6 +162,19 @@
         }
       },
       "minecraft:spawn_egg_interaction": {},
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:type_family": {
+        "family": ["chicken", "mob"]
+      },
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 0.8
+      },
+      "minecraft:nameable": {},
       "minecraft:health": {
         "value": 4,
         "max": 4
@@ -314,7 +310,8 @@
         "remove": {},
         "add": {
           "component_groups": ["minecraft:chicken_baby"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
 
       "minecraft:ageable_grow_up": {
@@ -329,7 +326,8 @@
       "minecraft:spawn_adult": {
         "add": {
           "component_groups": ["minecraft:chicken_adult"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
 
       "minecraft:hatch_warm": {
@@ -341,6 +339,22 @@
         "set_property": {
           "minecraft:climate_variant": "cold"
         }
+      },
+      "minecraft:randomize_sound_variant": {
+        "randomize": [
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "default"
+            }
+          },
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "picky"
+            }
+          }
+        ]
       }
     }
   }

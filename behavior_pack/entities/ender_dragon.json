@@ -1,88 +1,53 @@
 {
-  "format_version": "1.21.40",
+  "format_version": "1.26.0",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:ender_dragon",
-      "spawn_category": "monster",
+      "is_summonable": true,
       "is_spawnable": true,
-      "is_summonable": true
+      "spawn_category": "monster"
     },
-
-    "component_groups": {
-      "dragon_sitting": {
-        "minecraft:behavior.dragonlanding": {
-          "priority": 0
-        },
-        "minecraft:behavior.dragonflaming": {
-          "priority": 1
-        },
-        "minecraft:behavior.dragonscanning": {
-          "priority": 2
-        }
-      },
-      "dragon_flying": {
-        "minecraft:behavior.dragontakeoff": {
-          "priority": 0
-        },
-        "minecraft:behavior.dragonchargeplayer": {
-          "priority": 1
-        },
-        "minecraft:behavior.dragonstrafeplayer": {
-          "priority": 2
-        },
-        "minecraft:behavior.dragonholdingpattern": {
-          "priority": 3
-        },
-        "minecraft:shooter": {
-          "def": "minecraft:dragon_fireball"
-        }
-      },
-      "dragon_death": {
-        "minecraft:behavior.dragondeath": {
-          "priority": 0
-        }
-      }
-    },
-
     "components": {
-      "minecraft:is_hidden_when_invisible": {
-      },
-      "minecraft:dimension_bound": {
-      },
-      "minecraft:type_family": {
-        "family": [ "dragon", "mob" ]
-      },
-      "minecraft:health": {
-        "value": 200,
-        "max": 200
-      },
-      "minecraft:boss": {
-        "should_darken_sky": false,
-        "hud_range": 125
-      },
-      "minecraft:collision_box": {
-        "width": 13,
-        "height": 4
-      },
-      "minecraft:movement": {
-        "value": 0.3
-      },
-      "minecraft:fire_immune": true,
-      "minecraft:knockback_resistance": {
-        "value": 100,
-        "max": 100
-      },
-      "minecraft:flying_speed": {
-        "value": 0.6
-      },
       "minecraft:attack": {
         "damage": 3
+      },
+      "minecraft:boss": {
+        "hud_range": 125,
+        "should_darken_sky": false
+      },
+      "minecraft:collision_box": {
+        "height": 4,
+        "width": 13
       },
       "minecraft:damage_sensor": {
         "triggers": {
           "cause": "fall",
           "deals_damage": "no"
         }
+      },
+      "minecraft:dimension_bound": {},
+      "minecraft:fire_immune": {},
+      "minecraft:flying_speed": {
+        "value": 0.6
+      },
+      "minecraft:game_event_movement_tracking": {
+        "emit_flap": true
+      },
+      "minecraft:health": {
+        "max": 200,
+        "value": 200
+      },
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:knockback_resistance": {
+        "max": 100,
+        "value": 100
+      },
+      "minecraft:movement": {
+        "value": 0.3
+      },
+      "minecraft:on_death": {
+        "event": "minecraft:start_death",
+        "target": "self"
       },
       "minecraft:on_start_landing": {
         "event": "minecraft:start_land",
@@ -92,65 +57,96 @@
         "event": "minecraft:start_fly",
         "target": "self"
       },
-      "minecraft:on_death": {
-        "event": "minecraft:start_death",
-        "target": "self"
-      },
-      "minecraft:persistent": {
-      },
+      "minecraft:persistent": {},
       "minecraft:physics": {
-        "has_gravity": false,
-        "has_collision": false
+        "has_collision": false,
+        "has_gravity": false
       },
-      "minecraft:game_event_movement_tracking": {
-        "emit_flap": true
+      "minecraft:type_family": {
+        "family": [
+          "dragon",
+          "mob"
+        ]
       }
     },
-
+    "component_groups": {
+      "dragon_death": {
+        "minecraft:behavior.dragondeath": {
+          "priority": 0
+        }
+      },
+      "dragon_flying": {
+        "minecraft:behavior.dragonchargeplayer": {
+          "priority": 1
+        },
+        "minecraft:behavior.dragonholdingpattern": {
+          "priority": 3
+        },
+        "minecraft:behavior.dragonstrafeplayer": {
+          "priority": 2
+        },
+        "minecraft:behavior.dragontakeoff": {
+          "priority": 0
+        },
+        "minecraft:shooter": {
+          "def": "minecraft:dragon_fireball"
+        }
+      },
+      "dragon_sitting": {
+        "minecraft:behavior.dragonflaming": {
+          "priority": 1
+        },
+        "minecraft:behavior.dragonlanding": {
+          "priority": 0
+        },
+        "minecraft:behavior.dragonscanning": {
+          "priority": 2
+        }
+      }
+    },
     "events": {
       "minecraft:entity_spawned": {
-        "remove": {
-        },
         "add": {
           "component_groups": [
             "dragon_flying"
           ]
-        }
-      },
-      "minecraft:start_land": {
-        "remove": {
-          "component_groups": [
-            "dragon_flying"
-          ]
         },
-        "add": {
-          "component_groups": [
-            "dragon_sitting"
-          ]
-        }
-      },
-      "minecraft:start_fly": {
-        "remove": {
-          "component_groups": [
-            "dragon_sitting"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "dragon_flying"
-          ]
-        }
+        "remove": {}
       },
       "minecraft:start_death": {
+        "add": {
+          "component_groups": [
+            "dragon_death"
+          ]
+        },
         "remove": {
           "component_groups": [
             "dragon_sitting",
             "dragon_flying"
           ]
-        },
+        }
+      },
+      "minecraft:start_fly": {
         "add": {
           "component_groups": [
-            "dragon_death"
+            "dragon_flying"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "dragon_sitting"
+          ]
+        }
+      },
+      "minecraft:start_land": {
+        "add": {
+          "component_groups": [
+            "dragon_sitting"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "dragon_flying"
           ]
         }
       }

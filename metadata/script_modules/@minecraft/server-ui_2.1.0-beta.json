@@ -132,29 +132,9 @@
           "is_constructor": false,
           "is_script_generated": true,
           "is_static": false,
-          "name": "canShow",
-          "raw_script_text": "canShow(): boolean;",
-          "raw_tsdoc_text": "/**\n * Can this form be shown to the player right now?\n */\n",
-          "return_type": {
-            "is_bind_type": false,
-            "is_errorable": false,
-            "name": "boolean"
-          }
-        },
-        {
-          "arguments": [
-          ],
-          "call_privilege": [
-            {
-              "name": "read_only"
-            }
-          ],
-          "is_constructor": false,
-          "is_script_generated": true,
-          "is_static": false,
           "name": "close",
           "raw_script_text": "close(): void;",
-          "raw_tsdoc_text": "/**\n * Closes the form. Throws an error if the form is not open.\n *\n * @beta\n */\n",
+          "raw_tsdoc_text": "/**\n * Tell the client to close the form. Throws an error if the form is not open.\n *\n * @beta\n */\n",
           "return_type": {
             "is_bind_type": false,
             "is_errorable": false,
@@ -553,6 +533,26 @@
         },
         {
           "arguments": [
+          ],
+          "call_privilege": [
+            {
+              "name": "read_only"
+            }
+          ],
+          "is_constructor": false,
+          "is_script_generated": true,
+          "is_static": false,
+          "name": "isShowing",
+          "raw_script_text": "isShowing(): boolean;",
+          "raw_tsdoc_text": "/**\n * Returns true if the form is currently being shown to the player.\n */\n",
+          "return_type": {
+            "is_bind_type": false,
+            "is_errorable": false,
+            "name": "boolean"
+          }
+        },
+        {
+          "arguments": [
             {
               "name": "text",
               "type": {
@@ -663,8 +663,8 @@
           "is_script_generated": true,
           "is_static": false,
           "name": "show",
-          "raw_script_text": "show(): Promise<void>;",
-          "raw_tsdoc_text": "/**\n * Shows the form to the player. Will throw errors if the form is currently being shown or if another behavior pack is showing a form.\n *\n * @beta\n */\n",
+          "raw_script_text": "show(): Promise<boolean>;",
+          "raw_tsdoc_text": "/**\n * Shows the form to the player. Will return false if the client was busy (i.e. in another menu or this one is open). Will throw if the user disconnects.\n *\n * @throws\n *\n * This method may throw when used\n *\n * {@link PlayerLeftError} {@link FormCloseError}\n *\n * @beta\n */\n",
           "return_type": {
             "generic_base": {
               "is_bind_type": false,
@@ -677,12 +677,12 @@
               {
                 "is_bind_type": false,
                 "is_errorable": false,
-                "name": "void"
+                "name": "boolean"
               }
             ],
             "is_bind_type": false,
             "is_errorable": false,
-            "name": "Promise<void>"
+            "name": "Promise<boolean>"
           }
         },
         {
@@ -1249,7 +1249,7 @@
           "is_static": false,
           "name": "body",
           "raw_script_text": "body(text: Observable<string> | Observable<UIRawMessage> | string | UIRawMessage): MessageBox;",
-          "raw_tsdoc_text": "/**\n * Sets the data for the text in the body of the form. It is contained within a scroll view to allow for lots of text.\n */\n",
+          "raw_tsdoc_text": "/**\n * Sets the data for the text in the body of the message box. It is contained within a scroll view to allow for lots of text.\n */\n",
           "return_type": {
             "is_bind_type": false,
             "is_class": true,
@@ -1401,7 +1401,7 @@
           "is_static": false,
           "name": "button1",
           "raw_script_text": "button1(label: Observable<string> | Observable<UIRawMessage> | string | UIRawMessage, tooltip?: Observable<string> | Observable<UIRawMessage> | string | UIRawMessage): MessageBox;",
-          "raw_tsdoc_text": "/**\n * Sets the data for the top button in the form.\n */\n",
+          "raw_tsdoc_text": "/**\n * Sets the data for the top button in the message box.\n */\n",
           "return_type": {
             "is_bind_type": false,
             "is_class": true,
@@ -1553,7 +1553,7 @@
           "is_static": false,
           "name": "button2",
           "raw_script_text": "button2(label: Observable<string> | Observable<UIRawMessage> | string | UIRawMessage, tooltip?: Observable<string> | Observable<UIRawMessage> | string | UIRawMessage): MessageBox;",
-          "raw_tsdoc_text": "/**\n * Sets the data for the bottom button in the form.\n */\n",
+          "raw_tsdoc_text": "/**\n * Sets the data for the bottom button in the message box.\n */\n",
           "return_type": {
             "is_bind_type": false,
             "is_class": true,
@@ -1575,7 +1575,7 @@
           "is_static": false,
           "name": "close",
           "raw_script_text": "close(): void;",
-          "raw_tsdoc_text": "/**\n * Closes the form. Will throw an error if the form is not open.\n */\n",
+          "raw_tsdoc_text": "/**\n * Tell the client to close the message box. Throws {@link FormCloseError} if the message box is not open.\n *\n * @beta\n */\n",
           "return_type": {
             "is_bind_type": false,
             "is_errorable": false,
@@ -1666,7 +1666,7 @@
           "is_static": true,
           "name": "create",
           "raw_script_text": "static create(player: minecraftserver.Player, title: Observable<string> | Observable<UIRawMessage> | string | UIRawMessage): MessageBox;",
-          "raw_tsdoc_text": "/**\n * Creates a message form for a certain player. Use this instead of a constructor.\n */\n",
+          "raw_tsdoc_text": "/**\n * Creates a message box for a certain player. Use this instead of a constructor.\n */\n",
           "return_type": {
             "is_bind_type": false,
             "is_class": true,
@@ -1686,9 +1686,29 @@
           "is_constructor": false,
           "is_script_generated": true,
           "is_static": false,
+          "name": "isShowing",
+          "raw_script_text": "isShowing(): boolean;",
+          "raw_tsdoc_text": "/**\n * Returns true if the message box is currently being shown to the player.\n */\n",
+          "return_type": {
+            "is_bind_type": false,
+            "is_errorable": false,
+            "name": "boolean"
+          }
+        },
+        {
+          "arguments": [
+          ],
+          "call_privilege": [
+            {
+              "name": "read_only"
+            }
+          ],
+          "is_constructor": false,
+          "is_script_generated": true,
+          "is_static": false,
           "name": "show",
           "raw_script_text": "show(): Promise<MessageBoxResult>;",
-          "raw_tsdoc_text": "/**\n * Show this modal to the player. Will throw an error if the modal is already showing.\n */\n",
+          "raw_tsdoc_text": "/**\n * Show this message box to the player. Will return a result even if the client was busy (i.e. in another menu). Will throw if the user disconnects.\n */\n",
           "return_type": {
             "generic_base": {
               "is_bind_type": false,
@@ -2502,6 +2522,18 @@
               "is_errorable": false,
               "name": "number"
             }
+          }
+        },
+        {
+          "is_read_only": false,
+          "is_script_generated": true,
+          "name": "wasShown",
+          "raw_script_text": "wasShown: boolean;",
+          "raw_tsdoc_text": "/**\n * Whether the message box was shown\n */\n",
+          "type": {
+            "is_bind_type": false,
+            "is_errorable": false,
+            "name": "boolean"
           }
         }
       ],

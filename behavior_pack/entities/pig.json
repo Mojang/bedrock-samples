@@ -12,6 +12,12 @@
           "values": ["temperate", "warm", "cold"],
           "default": "temperate",
           "client_sync": true
+        },
+        "minecraft:sound_variant": {
+          "type": "enum",
+          "values": [ "default", "big", "mini" ],
+          "default": "default",
+          "client_sync": true
         }
       }
     },
@@ -19,6 +25,9 @@
     "component_groups": {
       "minecraft:pig_baby": {
         "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.5
+        },
         "minecraft:ageable": {
           "duration": 1200,
           "feed_items": ["carrot", "beetroot", "potato"],
@@ -32,10 +41,6 @@
         "minecraft:behavior.follow_parent": {
           "priority": 6,
           "speed_multiplier": 1.1
-        },
-        "minecraft:collision_box": {
-          "width": 0.45,
-          "height": 0.45
         }
       },
       "minecraft:pig_transform": {
@@ -64,10 +69,6 @@
             "minecraft:pig": {}
           },
           "breed_items": ["carrot", "beetroot", "potato"]
-        },
-        "minecraft:collision_box": {
-          "width": 0.9,
-          "height": 0.9
         }
       },
       "minecraft:pig_unsaddled": {
@@ -221,6 +222,10 @@
       "minecraft:movement.basic": {},
       "minecraft:jump.static": {},
       "minecraft:can_climb": {},
+      "minecraft:collision_box": {
+        "width": 0.9,
+        "height": 0.9
+      },
       "minecraft:leashable": {},
       "minecraft:balloonable": {
         "mass": 0.9
@@ -316,8 +321,10 @@
         "remove": {},
         "add": {
           "component_groups": ["minecraft:pig_baby"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
+
       "minecraft:ageable_grow_up": {
         "remove": {
           "component_groups": ["minecraft:pig_baby"]
@@ -345,8 +352,31 @@
       "minecraft:spawn_adult": {
         "add": {
           "component_groups": ["minecraft:pig_adult", "minecraft:pig_unsaddled"]
+        },
+        "trigger": "minecraft:randomize_sound_variant"
+      },
+      "minecraft:randomize_sound_variant": {
+        "randomize": [
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "default"
+            }
+          },
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "big"
+            }
+          },
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "mini"
+          }
         }
-      }
+      ]
     }
   }
+}
 }

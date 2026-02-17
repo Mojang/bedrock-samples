@@ -3,530 +3,30 @@
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:drowned",
-      "spawn_category": "monster",
+      "is_summonable": true,
       "is_spawnable": true,
-      "is_summonable": true
+      "spawn_category": "monster"
     },
-
-    "component_groups": {
-      "minecraft:baby_drowned": {
-        "minecraft:experience_reward": {
-          "on_death": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0"
-        },
-        "minecraft:is_baby": {},
-        "minecraft:movement": {
-          "value": 0.35
-        },
-        "minecraft:underwater_movement": {
-          "value": 0.08
-        },
-        "minecraft:type_family": {
-          "family": [
-            "drowned",
-            "baby_undead",
-            "zombie",
-            "undead",
-            "monster",
-            "mob"
-          ]
-        },
-        "minecraft:collision_box": {
-          "width": 0.3,
-          "height": 0.8
-        }
-      },
-      "minecraft:drowned_jockey": {
-        "minecraft:behavior.find_mount": {
-          "priority": 1,
-          "within_radius": 16,
-          "start_delay": 15,
-          "max_failed_attempts": 20
-        }
-      },
-      "minecraft:adult_drowned": {
-        "minecraft:experience_reward": {
-          "on_death": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
-        },
-        "minecraft:type_family": {
-          "family": ["drowned", "zombie", "undead", "monster", "mob"]
-        },
-        "minecraft:collision_box": {
-          "width": 0.6,
-          "height": 1.9
-        }
-      },
-      "minecraft:drowned_rider": {
-        "minecraft:navigation.generic": {
-          "is_amphibious": true,
-          "can_path_over_water": false,
-          "can_break_doors": false,
-          "can_swim": false,
-          "can_walk": false,
-          "avoid_sun": false
-        },
-        "minecraft:spawn_entity": {
-          "entities": {
-            "min_wait_time": 0,
-            "max_wait_time": 0,
-            "num_to_spawn": 1,
-            "single_use": true,
-            "spawn_entity": "minecraft:zombie_nautilus",
-            "spawn_event": "minecraft:entity_spawned"
-          }
-        },
-        "minecraft:equipment": {
-          "table": "loot_tables/entities/drowned_rider_equipment.json"
-        }
-      },
-      "minecraft:mode_switcher": {
-        "minecraft:target_nearby_sensor": {
-          "inside_range": 3.0,
-          "outside_range": 5.0,
-          "on_inside_range": {
-            "event": "minecraft:switch_to_melee",
-            "target": "self"
-          },
-          "on_outside_range": {
-            "event": "minecraft:switch_to_ranged",
-            "target": "self"
-          }
-        }
-      },
-      "minecraft:ranged_mode": {
-        "minecraft:shooter": {
-          "def": "minecraft:thrown_trident",
-          "sound": "item.trident.throw"
-        },
-        "minecraft:behavior.ranged_attack": {
-          "priority": 3,
-          "attack_interval_min": 1.0,
-          "attack_interval_max": 3.0,
-          "attack_radius": 10.0,
-          "swing": true
-        }
-      },
-      "minecraft:ranged_equipment": {
-        "minecraft:equipment": {
-          "table": "loot_tables/entities/drowned_ranged_equipment.json",
-          "slot_drop_chance": [
-            {
-              "slot": "slot.weapon.offhand",
-              "drop_chance": 1.0
-            }
-          ]
-        }
-      },
-      "minecraft:melee_mode": {
-        "minecraft:attack": {
-          "damage": 3
-        },
-        "minecraft:behavior.melee_box_attack": {
-          "can_spread_on_fire": true,
-          "priority": 3,
-          "speed_multiplier": 1,
-          "track_target": false,
-          "require_complete_path": true
-        }
-      },
-      "minecraft:melee_equipment": {
-        "minecraft:equipment": {
-          "table": "loot_tables/entities/drowned_equipment.json",
-          "slot_drop_chance": [
-            {
-              "slot": "slot.weapon.offhand",
-              "drop_chance": 1.0
-            }
-          ]
-        }
-      },
-      "minecraft:hunter_mode": {
-        "minecraft:navigation.generic": {
-          "is_amphibious": true,
-          "can_path_over_water": false,
-          "can_break_doors": true,
-          "can_swim": true,
-          "can_walk": true,
-          "avoid_sun": true
-        }
-      },
-      "minecraft:wander_mode": {
-        "minecraft:navigation.generic": {
-          "is_amphibious": true,
-          "can_path_over_water": false,
-          "can_break_doors": true,
-          "can_swim": false,
-          "can_walk": true,
-          "avoid_sun": true
-        }
-      },
-      "minecraft:can_break_doors": {
-        "minecraft:annotation.break_door": {}
-      }
-    },
-
     "components": {
-      "minecraft:nameable": {},
-      "minecraft:offspring": {
-        "offspring_pairs": {
-          "minecraft:drowned": "minecraft:drowned"
-        }
-      },
-      "minecraft:spawn_egg_interaction": {},
-      "minecraft:loot": {
-        "table": "loot_tables/entities/drowned.json"
-      },
-      "minecraft:rotation_locked_to_vehicle": {},
-      "minecraft:equip_item": {
-        "excluded_items": [
-          {
-            "item": "minecraft:banner:15"
-          }
-        ]
-      },
-      "minecraft:underwater_movement": {
-        "value": 0.06
-      },
-      "minecraft:movement.generic": {},
-      "minecraft:jump.static": {},
-      "minecraft:can_climb": {},
-      "minecraft:health": {
-        "value": 20,
-        "max": 20
-      },
-      "minecraft:hurt_on_condition": {
-        "damage_conditions": [
-          {
-            "filters": {
-              "test": "in_lava",
-              "subject": "self",
-              "operator": "==",
-              "value": true
-            },
-            "cause": "lava",
-            "damage_per_tick": 4
-          }
-        ]
-      },
-      "minecraft:movement": {
-        "value": 0.23
-      },
-      "minecraft:burns_in_daylight": {},
-      "minecraft:breathable": {
-        "total_supply": 15,
-        "suffocate_time": 0,
-        "breathes_air": true,
-        "breathes_water": true
-      },
-      "minecraft:navigation.generic": {
-        "is_amphibious": true,
-        "can_path_over_water": false,
-        "can_break_doors": true,
-        "can_swim": false,
-        "can_walk": true,
-        "avoid_sun": true
-      },
-      "minecraft:shareables": {
-        "singular_pickup": true,
-        "items": [
-          {
-            "item": "minecraft:trident",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:nautilus_shell",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:netherite_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:diamond_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:iron_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:golden_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:copper_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:stone_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 7
-          },
-          {
-            "item": "minecraft:wooden_sword",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:netherite_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:turtle_helmet",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 7
-          },
-          {
-            "item": "minecraft:skull:0",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:skull:1",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:carved_pumpkin",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 8
-          },
-          {
-            "item": "minecraft:netherite_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_chestplate",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:netherite_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_leggings",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          },
-          {
-            "item": "minecraft:netherite_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 0
-          },
-          {
-            "item": "minecraft:diamond_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 1
-          },
-          {
-            "item": "minecraft:iron_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 2
-          },
-          {
-            "item": "minecraft:chainmail_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 3
-          },
-          {
-            "item": "minecraft:golden_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 4
-          },
-          {
-            "item": "minecraft:copper_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 5
-          },
-          {
-            "item": "minecraft:leather_boots",
-            "want_amount": 1,
-            "surplus_amount": 1,
-            "priority": 6
-          }
-        ]
-      },
-      "minecraft:despawn": {
-        "despawn_from_distance": {}
+      "minecraft:behavior.equip_item": {
+        "priority": 3
       },
       "minecraft:behavior.flee_sun": {
         "priority": 2,
         "speed_multiplier": 1
       },
-      "minecraft:behavior.equip_item": {
-        "priority": 3
-      },
-      "minecraft:behavior.stomp_turtle_egg": {
-        "priority": 4,
-        "speed_multiplier": 1,
-        "search_range": 10,
-        "search_height": 2,
-        "goal_radius": 1.14,
-        "interval": 20
-      },
-      "minecraft:behavior.pickup_items": {
-        "priority": 6,
-        "max_dist": 3,
-        "goal_radius": 2,
-        "speed_multiplier": 1.0,
-        "pickup_based_on_chance": true,
-        "can_pickup_any_item": true,
-        "excluded_items": [
-          "minecraft:glow_ink_sac",
-          { "tags": "q.all_tags('minecraft:is_spear')" }
-        ]
-      },
-      "minecraft:behavior.random_stroll": {
-        "priority": 7,
-        "speed_multiplier": 1
-      },
-      "minecraft:behavior.look_at_player": {
-        "priority": 8,
-        "look_distance": 6,
-        "probability": 0.02
-      },
-      "minecraft:behavior.random_look_around": {
-        "priority": 9
-      },
       "minecraft:behavior.hurt_by_target": {
         "priority": 1
       },
+      "minecraft:behavior.look_at_player": {
+        "look_distance": 6,
+        "priority": 8
+      },
       "minecraft:behavior.nearest_attackable_target": {
-        "priority": 2,
         "reselect_targets": true,
         "must_see": true,
-        "within_radius": 12.0,
-        "must_see_forget_duration": 17.0,
+        "within_radius": 12,
+        "must_see_forget_duration": 17,
         "persist_time": 0.5,
         "entity_types": [
           {
@@ -558,8 +58,15 @@
                 },
                 {
                   "any_of": [
-                    { "test": "in_water", "subject": "other", "value": true },
-                    { "test": "is_daytime", "value": false }
+                    {
+                      "test": "in_water",
+                      "subject": "other",
+                      "value": true
+                    },
+                    {
+                      "test": "is_daytime",
+                      "value": false
+                    }
                   ]
                 }
               ]
@@ -585,8 +92,15 @@
                 },
                 {
                   "any_of": [
-                    { "test": "in_water", "subject": "other", "value": true },
-                    { "test": "is_daytime", "value": false }
+                    {
+                      "test": "in_water",
+                      "subject": "other",
+                      "value": true
+                    },
+                    {
+                      "test": "is_daytime",
+                      "value": false
+                    }
                   ]
                 }
               ]
@@ -612,12 +126,100 @@
             },
             "max_dist": 20
           }
+        ],
+        "priority": 2
+      },
+      "minecraft:behavior.pickup_items": {
+        "can_pickup_any_item": true,
+        "excluded_items": [
+          "minecraft:glow_ink_sac",
+          {
+            "tags": "q.all_tags('minecraft:is_spear')"
+          }
+        ],
+        "pickup_based_on_chance": true,
+        "goal_radius": 2,
+        "priority": 6,
+        "max_dist": 3,
+        "speed_multiplier": 1.0
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 1
+      },
+      "minecraft:behavior.stomp_turtle_egg": {
+        "goal_radius": 1.14,
+        "priority": 4,
+        "search_height": 2,
+        "interval": 20,
+        "search_range": 10,
+        "speed_multiplier": 1
+      },
+      "minecraft:breathable": {
+        "breathes_air": true,
+        "breathes_water": true,
+        "suffocate_time": 0,
+        "total_supply": 15
+      },
+      "minecraft:burns_in_daylight": {},
+      "minecraft:can_climb": {},
+      "minecraft:collision_box": {
+        "height": 1.9,
+        "width": 0.6
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:despawn": {
+        "despawn_from_distance": {}
+      },
+      "minecraft:equip_item": {
+        "excluded_items": [
+          {
+            "item": "minecraft:banner:15"
+          }
         ]
       },
-      "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
+      "minecraft:health": {
+        "max": 20,
+        "value": 20
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "cause": "lava",
+            "damage_per_tick": 4,
+            "filters": {
+              "operator": "==",
+              "test": "in_lava",
+              "subject": "self",
+              "value": true
+            }
+          }
+        ]
+      },
+      "minecraft:jump.static": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/drowned.json"
+      },
+      "minecraft:movement": {
+        "value": 0.23
+      },
+      "minecraft:movement.generic": {},
+      "minecraft:nameable": {},
+      "minecraft:navigation.generic": {
+        "avoid_sun": true,
+        "can_break_doors": true,
+        "is_amphibious": true,
+        "can_path_over_water": false,
+        "can_swim": false,
+        "can_walk": true
+      },
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:drowned": "minecraft:drowned"
+        }
       },
       "minecraft:on_target_acquired": {
         "event": "minecraft:has_target",
@@ -627,79 +229,457 @@
         "event": "minecraft:lost_target",
         "target": "self"
       },
-      "minecraft:conditional_bandwidth_optimization": {}
-    },
-
-    "events": {
-      "minecraft:entity_spawned": {
-        "sequence": [
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:rotation_locked_to_vehicle": {},
+      "minecraft:shareables": {
+        "items": [
           {
-            "randomize": [
-              {
-                "weight": 9500,
-                "randomize": [
-                  {
-                    "weight": 25,
-                    "trigger": "minecraft:as_ranged_adult"
-                  },
-                  {
-                    "weight": 375,
-                    "trigger": "minecraft:as_adult"
-                  }
-                ]
-              },
-              {
-                "weight": 425,
-                "randomize": [
-                  {
-                    "weight": 25,
-                    "trigger": "minecraft:as_ranged_baby"
-                  },
-                  {
-                    "weight": 375,
-                    "trigger": "minecraft:as_baby"
-                  }
-                ]
-              },
-              {
-                "weight": 75,
-                "randomize": [
-                  {
-                    "weight": 25,
-                    "trigger": "minecraft:as_ranged_baby_jockey"
-                  },
-                  {
-                    "weight": 375,
-                    "trigger": "minecraft:as_baby_jockey"
-                  }
-                ]
-              }
-            ]
+            "item": "minecraft:trident",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
           },
           {
-            "randomize": [
-              {
-                "weight": 10,
-                "add": {
-                  "component_groups": ["minecraft:can_break_doors"]
-                }
-              },
-              {
-                "weight": 90
-              }
-            ]
+            "item": "minecraft:nautilus_shell",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_sword",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_sword",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_sword",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_sword",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "priority": 7,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:wooden_sword",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_helmet",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_helmet",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_helmet",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_helmet",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_helmet",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_helmet",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_helmet",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:turtle_helmet",
+            "priority": 7,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:skull:0",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:skull:1",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:carved_pumpkin",
+            "priority": 8,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_chestplate",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_chestplate",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_chestplate",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_chestplate",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_chestplate",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_chestplate",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_chestplate",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_leggings",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_leggings",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_leggings",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_leggings",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_leggings",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_leggings",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_leggings",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:netherite_boots",
+            "priority": 0,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:diamond_boots",
+            "priority": 1,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:iron_boots",
+            "priority": 2,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:chainmail_boots",
+            "priority": 3,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:golden_boots",
+            "priority": 4,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:copper_boots",
+            "priority": 5,
+            "surplus_amount": 1,
+            "want_amount": 1
+          },
+          {
+            "item": "minecraft:leather_boots",
+            "priority": 6,
+            "surplus_amount": 1,
+            "want_amount": 1
           }
-        ]
+        ],
+        "singular_pickup": true
       },
+      "minecraft:spawn_egg_interaction": {},
+      "minecraft:underwater_movement": {
+        "value": 0.06
+      }
+    },
+    "component_groups": {
+      "minecraft:drowned_rider": {
+        "minecraft:equipment": {
+          "table": "loot_tables/entities/drowned_rider_equipment.json"
+        },
+        "minecraft:navigation.generic": {
+          "avoid_sun": false,
+          "can_break_doors": false,
+          "is_amphibious": true,
+          "can_path_over_water": false,
+          "can_swim": false,
+          "can_walk": false
+        },
+        "minecraft:spawn_entity": {
+          "entities": {
+            "max_wait_time": 0,
+            "min_wait_time": 0,
+            "num_to_spawn": 1,
+            "single_use": true,
+            "spawn_entity": "minecraft:zombie_nautilus",
+            "spawn_event": "minecraft:entity_spawned"
+          }
+        }
+      },
+      "minecraft:can_break_doors": {
+        "minecraft:annotation.break_door": {}
+      },
+      "minecraft:baby_drowned": {
+        "minecraft:experience_reward": {
+          "on_death": {
+            "expression": "query.last_hit_by_player ? 12 + (query.equipment_count * Math.Random(1,3)) : 0",
+            "version": 13
+          }
+        },
+        "minecraft:is_baby": {},
+        "minecraft:movement": {
+          "value": 0.35
+        },
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:type_family": {
+          "family": [
+            "drowned",
+            "baby_undead",
+            "zombie",
+            "undead",
+            "monster",
+            "mob"
+          ]
+        },
+        "minecraft:underwater_movement": {
+          "value": 0.08
+        }
+      },
+      "minecraft:adult_drowned": {
+        "minecraft:experience_reward": {
+          "on_death": {
+            "expression": "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0",
+            "version": 13
+          }
+        },
+        "minecraft:type_family": {
+          "family": [
+            "drowned",
+            "zombie",
+            "undead",
+            "monster",
+            "mob"
+          ]
+        }
+      },
+      "minecraft:melee_equipment": {
+        "minecraft:equipment": {
+          "slot_drop_chance": [
+            {
+              "drop_chance": 1.0,
+              "slot": "slot.weapon.offhand"
+            }
+          ],
+          "table": "loot_tables/entities/drowned_equipment.json"
+        }
+      },
+      "minecraft:drowned_jockey": {
+        "minecraft:behavior.find_mount": {
+          "max_failed_attempts": 20,
+          "priority": 1,
+          "start_delay": 15,
+          "within_radius": 16
+        }
+      },
+      "minecraft:hunter_mode": {
+        "minecraft:navigation.generic": {
+          "avoid_sun": true,
+          "can_break_doors": true,
+          "is_amphibious": true,
+          "can_path_over_water": false,
+          "can_swim": true,
+          "can_walk": true
+        }
+      },
+      "minecraft:melee_mode": {
+        "minecraft:attack": {
+          "damage": 3
+        },
+        "minecraft:behavior.melee_box_attack": {
+          "can_spread_on_fire": true,
+          "require_complete_path": true,
+          "priority": 3
+        }
+      },
+      "minecraft:mode_switcher": {
+        "minecraft:target_nearby_sensor": {
+          "inside_range": 3.0,
+          "on_inside_range": {
+            "event": "minecraft:switch_to_melee",
+            "target": "self"
+          },
+          "on_outside_range": {
+            "event": "minecraft:switch_to_ranged",
+            "target": "self"
+          },
+          "outside_range": 5.0
+        }
+      },
+      "minecraft:ranged_equipment": {
+        "minecraft:equipment": {
+          "slot_drop_chance": [
+            {
+              "drop_chance": 1.0,
+              "slot": "slot.weapon.offhand"
+            }
+          ],
+          "table": "loot_tables/entities/drowned_ranged_equipment.json"
+        }
+      },
+      "minecraft:ranged_mode": {
+        "minecraft:behavior.ranged_attack": {
+          "attack_interval_max": 3.0,
+          "attack_interval_min": 1.0,
+          "attack_radius": 10.0,
+          "priority": 3,
+          "swing": true
+        },
+        "minecraft:shooter": {
+          "def": "minecraft:thrown_trident",
+          "sound": "item.trident.throw"
+        }
+      },
+      "minecraft:wander_mode": {
+        "minecraft:navigation.generic": {
+          "avoid_sun": true,
+          "can_break_doors": true,
+          "is_amphibious": true,
+          "can_path_over_water": false,
+          "can_swim": false,
+          "can_walk": true
+        }
+      }
+    },
+    "events": {
       "minecraft:entity_born": {
         "trigger": "minecraft:as_baby"
       },
-      "minecraft:as_baby": {
+      "minecraft:as_rider": {
+        "add": {
+          "component_groups": [
+            "minecraft:adult_drowned",
+            "minecraft:ranged_mode",
+            "minecraft:drowned_rider"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:melee_equipment",
+            "minecraft:ranged_equipment",
+            "minecraft:melee_mode",
+            "minecraft:baby_drowned",
+            "minecraft:wander_mode",
+            "minecraft:mode_switcher"
+          ]
+        }
+      },
+      "minecraft:as_adult": {
         "add": {
           "component_groups": [
             "minecraft:melee_equipment",
             "minecraft:melee_mode",
-            "minecraft:baby_drowned",
+            "minecraft:adult_drowned",
             "minecraft:wander_mode"
           ]
         }
@@ -715,23 +695,23 @@
           ]
         }
       },
-      "minecraft:as_adult": {
+      "minecraft:as_baby": {
         "add": {
           "component_groups": [
             "minecraft:melee_equipment",
             "minecraft:melee_mode",
-            "minecraft:adult_drowned",
+            "minecraft:baby_drowned",
             "minecraft:wander_mode"
           ]
         }
       },
-      "minecraft:as_ranged_baby": {
+      "minecraft:as_ranged_adult": {
         "add": {
           "component_groups": [
             "minecraft:mode_switcher",
             "minecraft:ranged_equipment",
             "minecraft:ranged_mode",
-            "minecraft:baby_drowned",
+            "minecraft:adult_drowned",
             "minecraft:wander_mode"
           ]
         }
@@ -748,43 +728,93 @@
           ]
         }
       },
-      "minecraft:as_ranged_adult": {
+      "minecraft:as_ranged_baby": {
         "add": {
           "component_groups": [
             "minecraft:mode_switcher",
             "minecraft:ranged_equipment",
             "minecraft:ranged_mode",
-            "minecraft:adult_drowned",
+            "minecraft:baby_drowned",
             "minecraft:wander_mode"
           ]
         }
       },
-      "minecraft:switch_to_melee": {
-        "remove": {
-          "component_groups": ["minecraft:ranged_mode"]
-        },
-        "add": {
-          "component_groups": ["minecraft:melee_mode"]
-        }
-      },
-      "minecraft:switch_to_ranged": {
-        "remove": {
-          "component_groups": ["minecraft:melee_mode"]
-        },
-        "add": {
-          "component_groups": ["minecraft:ranged_mode"]
-        }
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "randomize": [
+              {
+                "randomize": [
+                  {
+                    "trigger": "minecraft:as_ranged_adult",
+                    "weight": 25
+                  },
+                  {
+                    "trigger": "minecraft:as_adult",
+                    "weight": 375
+                  }
+                ],
+                "weight": 9500
+              },
+              {
+                "randomize": [
+                  {
+                    "trigger": "minecraft:as_ranged_baby",
+                    "weight": 25
+                  },
+                  {
+                    "trigger": "minecraft:as_baby",
+                    "weight": 375
+                  }
+                ],
+                "weight": 425
+              },
+              {
+                "randomize": [
+                  {
+                    "trigger": "minecraft:as_ranged_baby_jockey",
+                    "weight": 25
+                  },
+                  {
+                    "trigger": "minecraft:as_baby_jockey",
+                    "weight": 375
+                  }
+                ],
+                "weight": 75
+              }
+            ]
+          },
+          {
+            "randomize": [
+              {
+                "add": {
+                  "component_groups": [
+                    "minecraft:can_break_doors"
+                  ]
+                },
+                "weight": 10
+              },
+              {
+                "weight": 90
+              }
+            ]
+          }
+        ]
       },
       "minecraft:has_target": {
         "filters": {
           "test": "is_riding",
           "value": false
         },
-        "remove": {
-          "component_groups": ["minecraft:wander_mode"]
-        },
         "add": {
-          "component_groups": ["minecraft:hunter_mode"]
+          "component_groups": [
+            "minecraft:hunter_mode"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:wander_mode"
+          ]
         }
       },
       "minecraft:lost_target": {
@@ -792,29 +822,38 @@
           "test": "is_riding",
           "value": false
         },
-        "remove": {
-          "component_groups": ["minecraft:hunter_mode"]
-        },
         "add": {
-          "component_groups": ["minecraft:wander_mode"]
-        }
-      },
-      "minecraft:as_rider": {
-        "remove": {
           "component_groups": [
-            "minecraft:melee_equipment",
-            "minecraft:ranged_equipment",
-            "minecraft:melee_mode",
-            "minecraft:baby_drowned",
-            "minecraft:wander_mode",
-            "minecraft:mode_switcher"
+            "minecraft:wander_mode"
           ]
         },
+        "remove": {
+          "component_groups": [
+            "minecraft:hunter_mode"
+          ]
+        }
+      },
+      "minecraft:switch_to_melee": {
         "add": {
           "component_groups": [
-            "minecraft:adult_drowned",
-            "minecraft:ranged_mode",
-            "minecraft:drowned_rider"
+            "minecraft:melee_mode"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:ranged_mode"
+          ]
+        }
+      },
+      "minecraft:switch_to_ranged": {
+        "add": {
+          "component_groups": [
+            "minecraft:ranged_mode"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:melee_mode"
           ]
         }
       }

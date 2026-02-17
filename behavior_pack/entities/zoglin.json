@@ -3,107 +3,24 @@
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:zoglin",
-      "spawn_category": "monster",
+      "is_summonable": true,
       "is_spawnable": true,
-      "is_summonable": true
+      "spawn_category": "monster"
     },
-
-    "component_groups": {
-      "zoglin_baby": {
-        "minecraft:type_family": {
-          "family": ["zoglin", "zoglin_baby", "undead", "monster", "mob"]
-        },
-        "minecraft:is_baby": {},
-        "minecraft:attack": {
-          "damage": 0.5
-        },
-        "minecraft:scale": {
-          "value": 0.5
-        },
-        "minecraft:collision_box": {
-          "width": 0.85,
-          "height": 0.85
-        },
-        "minecraft:custom_hit_test": {
-          "hitboxes": [
-            {
-              "width": 1.0,
-              "height": 0.85,
-              "pivot": [0, 0.5, 0]
-            }
-          ]
-        }
-      },
-      "zoglin_adult": {
-        "minecraft:type_family": {
-          "family": ["zoglin", "zoglin_adult", "undead", "monster", "mob"]
-        },
-        "minecraft:collision_box": {
-          "width": 1.4,
-          "height": 1.4
-        },
-        "minecraft:leashable_to": {},
-        "minecraft:custom_hit_test": {
-          "hitboxes": [
-            {
-              "width": 2.0,
-              "height": 1.75,
-              "pivot": [0, 1, 0]
-            }
-          ]
-        },
-        "minecraft:behavior.hurt_by_target": {
-          "priority": 1
-        },
-        "minecraft:attack": {
-          "damage": [3, 8]
-        }
-      },
-      "angry_zoglin": {
-        "minecraft:angry": {
-          "duration": 10,
-          "calm_event": {
-            "event": "become_calm_event",
-            "target": "self"
-          },
-          "angry_sound": "angry",
-          "sound_interval": {
-            "range_min": 2.0,
-            "range_max": 5.0
-          }
-        }
-      }
-    },
-
     "components": {
-      "minecraft:on_target_acquired": {
-        "event": "become_angry_event",
-        "target": "self"
+      "minecraft:balloonable": {},
+      "minecraft:behavior.look_at_player": {
+        "look_distance": 6,
+        "priority": 8
       },
-      "minecraft:is_hidden_when_invisible": {},
-      "minecraft:nameable": {},
-      "minecraft:offspring": {
-        "offspring_pairs": {
-          "minecraft:zoglin": "minecraft:zoglin"
-        }
-      },
-      "minecraft:spawn_egg_interaction": {},
-      "minecraft:loot": {
-        "table": "loot_tables/entities/zoglin.json"
-      },
-      "minecraft:experience_reward": {
-        "on_death": "query.last_hit_by_player ? 5 : 0"
-      },
-      "minecraft:health": {
-        "value": 40,
-        "max": 40
-      },
-      "minecraft:knockback_resistance": {
-        "value": 0.6
+      "minecraft:behavior.melee_box_attack": {
+        "speed_multiplier": 1.15,
+        "track_target": true,
+        "priority": 4
       },
       "minecraft:behavior.nearest_attackable_target": {
-        "priority": 3,
-        "within_radius": 16.0,
+        "must_see": true,
+        "within_radius": 16,
         "entity_types": [
           {
             "filters": {
@@ -121,58 +38,59 @@
                   "value": "creeper"
                 }
               ]
-            },
-            "max_dist": 16
+            }
           }
         ],
-        "must_see": true
+        "priority": 3
       },
-      "minecraft:behavior.melee_box_attack": {
-        "priority": 4,
-        "speed_multiplier": 1.15,
-        "track_target": true
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 1.0
       },
       "minecraft:breathable": {
-        "total_supply": 15,
+        "breathes_water": true,
         "suffocate_time": 0,
-        "breathes_water": true
+        "total_supply": 15
       },
-      "minecraft:movement": {
-        "value": 0.25
-      },
-      "minecraft:navigation.walk": {
-        "is_amphibious": true,
-        "can_path_over_water": false,
-        "avoid_water": true,
-        "avoid_damage_blocks": true
-      },
-      "minecraft:movement.basic": {},
-      "minecraft:jump.static": {},
       "minecraft:can_climb": {},
-      "minecraft:fire_immune": {},
-      "minecraft:leashable": {},
-      "minecraft:balloonable": {},
+      "minecraft:conditional_bandwidth_optimization": {},
       "minecraft:despawn": {
         "filters": {
           "any_of": [
             {
               "all_of": [
-                { "test": "is_persistent", "value": false },
                 {
-                  "test": "distance_to_nearest_player",
+                  "test": "is_persistent",
+                  "value": false
+                },
+                {
                   "operator": ">",
+                  "test": "distance_to_nearest_player",
                   "value": 54
                 }
               ]
             },
             {
               "all_of": [
-                { "test": "is_persistent", "value": false },
-                { "test": "inactivity_timer", "subject": "self", "value": 30 },
-                { "test": "random_chance", "value": 800 },
                 {
-                  "test": "distance_to_nearest_player",
+                  "test": "is_persistent",
+                  "value": false
+                },
+                {
+                  "subject": "self",
+                  "test": "inactivity_timer",
+                  "value": 30
+                },
+                {
+                  "test": "random_chance",
+                  "value": 800
+                },
+                {
                   "operator": ">",
+                  "test": "distance_to_nearest_player",
                   "value": 32
                 }
               ]
@@ -180,90 +98,222 @@
           ]
         }
       },
-      "minecraft:behavior.random_stroll": {
-        "priority": 7,
-        "speed_multiplier": 1.0
+      "minecraft:experience_reward": {
+        "on_death": {
+          "expression": "query.last_hit_by_player ? 5 : 0",
+          "version": 13
+        }
       },
-      "minecraft:behavior.random_look_around": {
-        "priority": 9
+      "minecraft:fire_immune": {},
+      "minecraft:health": {
+        "max": 40,
+        "value": 40
       },
-      "minecraft:behavior.look_at_player": {
-        "priority": 8,
-        "look_distance": 6.0,
-        "probability": 0.02
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:jump.static": {},
+      "minecraft:knockback_resistance": {
+        "value": 0.6
+      },
+      "minecraft:leashable": {},
+      "minecraft:loot": {
+        "table": "loot_tables/entities/zoglin.json"
+      },
+      "minecraft:movement": {
+        "value": 0.25
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:nameable": {},
+      "minecraft:navigation.walk": {
+        "avoid_damage_blocks": true,
+        "avoid_water": true,
+        "can_path_over_water": false,
+        "is_amphibious": true
+      },
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:zoglin": "minecraft:zoglin"
+        }
+      },
+      "minecraft:on_target_acquired": {
+        "event": "become_angry_event",
+        "target": "self"
       },
       "minecraft:physics": {},
       "minecraft:pushable": {
         "is_pushable": true,
         "is_pushable_by_piston": true
       },
-      "minecraft:conditional_bandwidth_optimization": {}
+      "minecraft:spawn_egg_interaction": {}
     },
-
-    "events": {
-      "become_angry_event": {
-        "add": {
-          "component_groups": ["angry_zoglin"]
+    "component_groups": {
+      "angry_zoglin": {
+        "minecraft:angry": {
+          "angry_sound": "angry",
+          "calm_event": {
+            "event": "become_calm_event",
+            "target": "self"
+          },
+          "duration": 10,
+          "sound_interval": {
+            "range_max": 5.0,
+            "range_min": 2.0
+          }
         }
       },
+      "zoglin_adult": {
+        "minecraft:attack": {
+          "damage": [
+            3,
+            8
+          ]
+        },
+        "minecraft:behavior.hurt_by_target": {
+          "priority": 1
+        },
+        "minecraft:collision_box": {
+          "height": 1.4,
+          "width": 1.4
+        },
+        "minecraft:custom_hit_test": {
+          "hitboxes": [
+            {
+              "height": 1.75,
+              "pivot": [
+                0,
+                1,
+                0
+              ],
+              "width": 2.0
+            }
+          ]
+        },
+        "minecraft:leashable_to": {},
+        "minecraft:type_family": {
+          "family": [
+            "zoglin",
+            "zoglin_adult",
+            "undead",
+            "monster",
+            "mob"
+          ]
+        }
+      },
+      "zoglin_baby": {
+        "minecraft:attack": {
+          "damage": 0.5
+        },
+        "minecraft:collision_box": {
+          "height": 0.85,
+          "width": 0.85
+        },
+        "minecraft:custom_hit_test": {
+          "hitboxes": [
+            {
+              "height": 0.85,
+              "pivot": [
+                0,
+                0.5,
+                0
+              ],
+              "width": 1.0
+            }
+          ]
+        },
+        "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:type_family": {
+          "family": [
+            "zoglin",
+            "zoglin_baby",
+            "undead",
+            "monster",
+            "mob"
+          ]
+        }
+      }
+    },
+    "events": {
       "become_calm_event": {
         "remove": {
-          "component_groups": ["angry_zoglin"]
+          "component_groups": [
+            "angry_zoglin"
+          ]
         }
       },
-      "minecraft:entity_transformed": {
-        "sequence": [
-          {
-            "filters": {
-              "test": "has_component",
-              "subject": "other",
-              "value": "minecraft:is_baby"
-            },
-            "add": {
-              "component_groups": ["zoglin_baby"]
-            }
-          },
-          {
-            "filters": {
-              "test": "has_component",
-              "subject": "other",
-              "operator": "!=",
-              "value": "minecraft:is_baby"
-            },
-            "add": {
-              "component_groups": ["zoglin_adult"]
-            }
-          }
-        ]
-      },
-      "minecraft:entity_spawned": {
-        "randomize": [
-          {
-            "weight": 95,
-            "add": {
-              "component_groups": ["zoglin_adult"]
-            }
-          },
-          {
-            "weight": 5,
-            "add": {
-              "component_groups": ["zoglin_baby"]
-            }
-          }
-        ]
+      "become_angry_event": {
+        "add": {
+          "component_groups": [
+            "angry_zoglin"
+          ]
+        }
       },
       "minecraft:entity_born": {
         "trigger": "minecraft:as_baby"
       },
       "minecraft:as_adult": {
         "add": {
-          "component_groups": ["zoglin_adult"]
+          "component_groups": [
+            "zoglin_adult"
+          ]
         }
       },
       "minecraft:as_baby": {
         "add": {
-          "component_groups": ["zoglin_baby"]
+          "component_groups": [
+            "zoglin_baby"
+          ]
         }
+      },
+      "minecraft:entity_spawned": {
+        "randomize": [
+          {
+            "add": {
+              "component_groups": [
+                "zoglin_adult"
+              ]
+            },
+            "weight": 95
+          },
+          {
+            "add": {
+              "component_groups": [
+                "zoglin_baby"
+              ]
+            },
+            "weight": 5
+          }
+        ]
+      },
+      "minecraft:entity_transformed": {
+        "sequence": [
+          {
+            "filters": {
+              "subject": "other",
+              "test": "has_component",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "zoglin_baby"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "!=",
+              "subject": "other",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "zoglin_adult"
+              ]
+            }
+          }
+        ]
       }
     }
   }

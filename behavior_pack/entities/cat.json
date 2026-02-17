@@ -5,12 +5,23 @@
       "identifier": "minecraft:cat",
       "spawn_category": "creature",
       "is_spawnable": true,
-      "is_summonable": true
+      "is_summonable": true,
+      "properties": {
+        "minecraft:sound_variant": {
+          "type": "enum",
+          "values": ["default", "royal"],
+          "default": "default",
+          "client_sync": true
+        }
+      }
     },
 
     "component_groups": {
       "minecraft:cat_baby": {
         "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.4
+        },
         "minecraft:ageable": {
           "duration": 1200,
           "feed_items": ["fish", "salmon"],
@@ -20,10 +31,6 @@
             "event": "minecraft:ageable_grow_up",
             "target": "self"
           }
-        },
-        "minecraft:collision_box": {
-          "width": 0.3,
-          "height": 0.35
         }
       },
       "minecraft:cat_adult": {
@@ -50,10 +57,6 @@
         "minecraft:behavior.breed": {
           "priority": 3,
           "speed_multiplier": 1.0
-        },
-        "minecraft:collision_box": {
-          "width": 0.6,
-          "height": 0.7
         }
       },
       "minecraft:cat_wild": {
@@ -284,6 +287,13 @@
     },
 
     "components": {
+      "minecraft:offspring": {
+        "offspring_pairs": {
+          "minecraft:cat": "minecraft:cat"
+        },
+        "combine_parent_colors": true
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:leashable": {},
       "minecraft:balloonable": {
         "mass": 0.6
@@ -293,19 +303,16 @@
         "value": 4
       },
       "minecraft:nameable": {},
-      "minecraft:offspring": {
-        "combine_parent_colors": true,
-        "offspring_pairs": {
-          "minecraft:cat": "minecraft:cat"
-        }
-      },
-      "minecraft:spawn_egg_interaction": {},
       "minecraft:type_family": {
         "family": ["cat", "mob"]
       },
       "minecraft:breathable": {
         "total_supply": 15,
         "suffocate_time": 0
+      },
+      "minecraft:collision_box": {
+        "width": 0.6,
+        "height": 0.7
       },
       "minecraft:healable": {
         "items": [
@@ -503,6 +510,9 @@
                 }
               }
             ]
+          },
+          {
+            "trigger": "minecraft:randomize_sound_variant"
           }
         ]
       },
@@ -600,11 +610,16 @@
         "sequence": [
           {
             "filters": {
-              "test": "has_component",
-              "operator": "!=",
-              "value": "minecraft:is_baby"
+              "test": "is_tamed"
             },
             "trigger": "minecraft:spawn_tame_baby"
+          },
+          {
+            "filters": {
+              "test": "is_tamed",
+              "value": false
+            },
+            "trigger": "minecraft:spawn_wild_baby"
           }
         ]
       },
@@ -616,7 +631,8 @@
       "minecraft:spawn_wild_adult": {
         "add": {
           "component_groups": ["minecraft:cat_adult", "minecraft:cat_wild"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
       "minecraft:spawn_tame_baby": {
         "add": {
@@ -626,7 +642,8 @@
       "minecraft:spawn_tame_adult": {
         "add": {
           "component_groups": ["minecraft:cat_adult", "minecraft:cat_tame"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
       "minecraft:ageable_grow_up": {
         "remove": {
@@ -634,7 +651,8 @@
         },
         "add": {
           "component_groups": ["minecraft:cat_adult"]
-        }
+        },
+        "trigger": "minecraft:randomize_sound_variant"
       },
       "minecraft:on_tame": {
         "sequence": [
@@ -659,6 +677,22 @@
         "remove": {
           "component_groups": ["minecraft:cat_gift_for_owner"]
         }
+      },
+      "minecraft:randomize_sound_variant": {
+        "randomize": [
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "default"
+            }
+          },
+          {
+            "weight": 1,
+            "set_property": {
+              "minecraft:sound_variant": "royal"
+            }
+          }
+        ]
       }
     }
   }
