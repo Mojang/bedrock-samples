@@ -1047,6 +1047,108 @@
     ]
   },
   
+  "anim_subtitle_txt_alpha": {
+    "anim_type": "alpha",
+    "easing": "in_quart",
+    "duration": 1,
+    "from": 1,
+    "to": 0
+  },
+
+  "anim_subtitle_txt_wait": {
+    "anim_type": "wait",
+    "duration": "$chat_item_lifetime",
+    "next": "@hud.anim_subtitle_txt_alpha"
+  },
+
+  "anim_subtitle_bg_alpha": {
+    "anim_type": "alpha",
+    "easing": "in_quart",
+    "destroy_at_end": "subtitle_grid_item",
+    "duration": 1,
+    "from": "$chat_background_opacity",
+    "to": 0
+  },
+
+  "anim_subtitle_bg_wait": {
+    "anim_type": "wait",
+    "duration": "$chat_item_lifetime",
+    "next": "@hud.anim_subtitle_bg_alpha"
+  },
+
+  "subtitle_direction_label": {
+    "type": "label",
+    "layer": 31,
+    "shadow": true,
+    "localize": false,
+    "color": "$chat_text_color",
+    "font_type": "$chat_font_type",
+    "font_scale_factor": "$chat_font_scale_factor",
+    "size": [ "default", "default" ],
+    "anims": [
+      "@hud.anim_subtitle_txt_wait"
+    ]
+  },
+
+  "subtitle_grid_item": {
+    "type": "panel",
+    "layer": 1,
+    "size": [ "100%-2px", "100%cm" ],
+    "anchor_from": "top_right",
+    "anchor_to": "top_right",
+    "$subtitle_direction_left|default": false,
+    "$subtitle_direction_right|default": false,
+    "bindings": [
+      {
+        "binding_name": "(not #on_new_death_screen)",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "subtitle_background": {
+          "type": "image",
+          "texture": "textures/ui/Black",
+          "alpha": "$chat_background_opacity",
+          "size": [ "100%", "100%cm" ],
+          "anims": [
+            "@hud.anim_subtitle_bg_wait"
+          ],
+          "controls": [
+            {
+              "direction_left@hud.subtitle_direction_label": {
+                "text": "<",
+                "visible": "$subtitle_direction_left",
+                "anchor_from": "left_middle",
+                "anchor_to": "left_middle",
+                "offset": [ 2, 0 ]
+              }
+            },
+            {
+              "subtitle_text@hud.chat_label": {
+                "text_alignment": "center",
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "anims": [
+                  "@hud.anim_subtitle_txt_wait"
+                ]
+              }
+            },
+            {
+              "direction_right@hud.subtitle_direction_label": {
+                "text": ">",
+                "visible": "$subtitle_direction_right",
+                "anchor_from": "right_middle",
+                "anchor_to": "right_middle",
+                "offset": [ -2, 0 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "subtitle_panel": {
         "type": "panel",
         "anchor_from": "bottom_right",
@@ -1064,7 +1166,7 @@
                         "name": "subtitle_item_factory",
                         "max_children_size": 50,
                         "control_ids": {
-                            "chat_item": "chat_item@hud.chat_grid_item"
+                            "subtitle_item": "subtitle_item@hud.subtitle_grid_item"
                         }
                     }
                 }

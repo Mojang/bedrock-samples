@@ -8,7 +8,7 @@
   "sdl_scrolling_content_panel": {
     "type": "panel",
     "$is_non_scrollable_sdl_screen|default": false,
-    "$sdl_scrolling_content_panel_size": [ "100%", "100%c" ],
+    "$sdl_scrolling_content_panel_size|default": [ "100%", "100%c" ],
     "variables": [
       {
         "requires": "$is_non_scrollable_sdl_screen",
@@ -32,6 +32,7 @@
     "$sdl_scrolling_content_max_size": [ "100%", "100%c" ],
     "$sdl_scrolling_content_anchor_from": "top_left",
     "$sdl_scrolling_content_anchor_to": "top_left",
+    "$factory_type|default": "common_store.store_section_factory",
     "variables": [
       {
         "requires": "$is_non_scrollable_sdl_screen",
@@ -55,7 +56,7 @@
           "size": [ "100%", 4 ]
         }
       },
-      { "store_screen_layout_factory@common_store.store_section_factory": {} },
+      { "store_screen_layout_factory@$factory_type": {} },
       { "footer@common_store.footer": {} }
     ]
   },
@@ -209,9 +210,13 @@
       },
       {
         "main_panel_content": {
-          "type": "panel",
+          "type": "stack_panel",
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "orientation": "horizontal",
           "size": [ "100%", "100%" ],
           "layer": 2,
+          "$sdl_nav_content|default": "store_layout.sdl_scrolling_section",
           "$sdl_screen_content|default": "store_layout.sdl_scrolling_section",
           "bindings": [
             {
@@ -221,7 +226,47 @@
             }
           ],
           "controls": [
-            { "sdl_screen_content@$sdl_screen_content": {} }
+            {
+              "nav_panel":
+              {
+                "type": "panel",
+                "size": [ "30%", "100%" ], // Copying the inventory page layout
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "controls": [
+                  {
+                    "sdl_screen_content@$sdl_nav_content":
+                    {
+                      "$factory_type": "sdl_content_navigation.content_navigation_factory"
+                    }
+                  }
+                ],
+                "property_bag": {
+                  "#section_name": "navigation" // Needed for the has_navigation binding.
+                },
+               "bindings": [
+                  {
+                    "binding_name": "#has_navigation",
+                    "binding_name_override": "#visible",
+                    "binding_condition": "always"
+                  }
+                ]
+              }
+            },
+            {
+              "main_panel_because_screen_content_is_a_whiny_baby_and_cant_use_fill":
+              {
+                "type": "panel",
+                "size": [ "fill", "100%" ],
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "controls": [
+                  {
+                    "sdl_screen_content@$sdl_screen_content": {}
+                  }
+                ]
+              }
+            }
           ]
         }
       },

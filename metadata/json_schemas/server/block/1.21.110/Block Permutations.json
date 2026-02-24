@@ -61,33 +61,17 @@
       "type": "string"
     },
     "1212677976": {
-      "description": "Sets the color and optional tint of the block when rendered to a map.",
-      "properties": {
-        "color": {
-          "$ref": "#/definitions/3915697282",
-          "description": "Sets the color of the block when rendered to a map. The color is represented as a hex value in the format \"#RRGGBB\". May also be expressed as an array of [R, G, B] from 0 to 255."
+      "description": "Sets the color of the block when rendered to a map.Can be a direct color representation or an object with a \"color\" and \"tint_method\" field.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/3915697282"
         },
-        "tint_method": {
-          "default": "none",
-          "description": "Sets the tint method of the block when rendered to a map. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
-          "enum": [
-            "none",
-            "default_foliage",
-            "birch_foliage",
-            "evergreen_foliage",
-            "dry_foliage",
-            "grass",
-            "water"
-          ],
-          "title": "Tint Method",
-          "type": "string"
+        {
+          "$ref": "#/definitions/545997413",
+          "description": "Sets the color and optional tint of the block."
         }
-      },
-      "required": [
-        "color"
       ],
-      "title": "Map Color",
-      "type": "object"
+      "title": "Map Color"
     },
     "1217970463": {
       "title": "Placed Component"
@@ -160,6 +144,25 @@
         }
       },
       "title": "Transformation",
+      "type": "object"
+    },
+    "1356194009": {
+      "description": "This defines how a block embedded into an other block renders. Eg. a block in a flowerpot.",
+      "properties": {
+        "geometry": {
+          "$ref": "#/definitions/3224784835",
+          "description": "The \"minecraft:geometry\" component of the embedded block."
+        },
+        "material_instances": {
+          "$ref": "#/definitions/1622905174",
+          "description": "The \"minecraft:material_instances\" component of the embedded block."
+        }
+      },
+      "required": [
+        "geometry",
+        "material_instances"
+      ],
+      "title": "Embedded Visual",
       "type": "object"
     },
     "1368069469": {
@@ -585,11 +588,34 @@
     "2869280267": {
       "title": "Player Placing Component"
     },
+    "2908060043": {
+      "description": "A component describing how a block can consume and potentially propagate a redstone signal. This component is not available for block permutations.",
+      "properties": {
+        "min_power": {
+          "default": 0,
+          "description": "Optional minimum value for incoming signal strength. If signal strength is greater than or equal to this value then the 'onRedstoneUpdate' event is sent to Scripts. Defaults to 0 meaning event is always emitted.",
+          "maximum": 15,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "propagates_power": {
+          "default": false,
+          "description": "Optional Boolean to control whether a signal can pass through this block or not, defaults to false.",
+          "type": "boolean"
+        }
+      },
+      "title": "Redstone Consumer",
+      "type": "object"
+    },
     "2972862513": {
       "properties": {
         "minecraft:breathability": {
           "$ref": "#/definitions/3409248078",
           "deprecated": true
+        },
+        "minecraft:chest_obstruction": {
+          "$ref": "#/definitions/415070108",
+          "description": "This defines how a block reacts to a chest being opened underneath it."
         },
         "minecraft:collision_box": {
           "$ref": "#/definitions/1008450416",
@@ -618,6 +644,10 @@
         "minecraft:display_name": {
           "$ref": "#/definitions/256560940",
           "description": "Specifies the language file key that maps to what text will be displayed when you hover over the block in your inventory and hotbar. If the string given can not be resolved as a loc string, the raw string given will be displayed. If this component is omitted, the name of the block will be used as the display name."
+        },
+        "minecraft:embedded_visual": {
+          "$ref": "#/definitions/1356194009",
+          "description": "This defines how a block embedded into an other block renders. Eg. a block in a flowerpot."
         },
         "minecraft:entity_fall_on": {
           "$ref": "#/definitions/2278661106",
@@ -661,7 +691,7 @@
         },
         "minecraft:map_color": {
           "$ref": "#/definitions/1212677976",
-          "description": "Sets the color and optional tint of the block when rendered to a map."
+          "description": "Sets the color of the block when rendered to a map.Can be a direct color representation or an object with a \"color\" and \"tint_method\" field."
         },
         "minecraft:material_instances": {
           "$ref": "#/definitions/1622905174",
@@ -721,6 +751,10 @@
         "minecraft:redstone_conductivity": {
           "$ref": "#/definitions/3595738916",
           "description": "The basic redstone properties of a block. If the component is not provided the default values are used."
+        },
+        "minecraft:redstone_consumer": {
+          "$ref": "#/definitions/2908060043",
+          "description": "A component describing how a block can consume and potentially propagate a redstone signal. This component is not available for block permutations."
         },
         "minecraft:redstone_producer": {
           "$ref": "#/definitions/3927443513",
@@ -1084,6 +1118,23 @@
     "4148960506": {
       "title": "Queued Ticking Component"
     },
+    "415070108": {
+      "description": "This defines how a block reacts to a chest being opened underneath it.",
+      "properties": {
+        "obstruction_rule": {
+          "default": "shape",
+          "enum": [
+            "always",
+            "never",
+            "shape"
+          ],
+          "title": "Chest Obstruction rule",
+          "type": "string"
+        }
+      },
+      "title": "chest_obstruction",
+      "type": "object"
+    },
     "4181829993": {
       "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance.",
       "oneOf": [
@@ -1268,6 +1319,35 @@
       "title": "Detailed Geometry",
       "type": "object"
     },
+    "545997413": {
+      "description": "Sets the color and optional tint of the block.",
+      "properties": {
+        "color": {
+          "$ref": "#/definitions/3915697282",
+          "description": "Sets the color of the block when rendered to a map."
+        },
+        "tint_method": {
+          "default": "none",
+          "description": "Sets the tint method of the block when rendered to a map. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
+          "enum": [
+            "none",
+            "default_foliage",
+            "birch_foliage",
+            "evergreen_foliage",
+            "dry_foliage",
+            "grass",
+            "water"
+          ],
+          "title": "Tint Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "color"
+      ],
+      "title": "Detailed Map Color",
+      "type": "object"
+    },
     "623828846": {
       "title": "Player Destroyed Component"
     },
@@ -1328,7 +1408,7 @@
     "components": {
       "$ref": "#/definitions/2972862513",
       "propertyNames": {
-        "pattern": "^(?!(minecraft:item_visual|minecraft:support|minecraft:on_placed|minecraft:flower_pottable|minecraft:on_fall_on|minecraft:on_interact|minecraft:breathability|minecraft:on_player_destroyed|minecraft:on_player_placing|minecraft:on_step_off|minecraft:on_step_on|minecraft:queued_ticking|minecraft:random_ticking|minecraft:unit_cube)$)",
+        "pattern": "^(?!(minecraft:flower_pottable|minecraft:on_fall_on|minecraft:redstone_consumer|minecraft:embedded_visual|minecraft:on_placed|minecraft:support|minecraft:item_visual|minecraft:on_interact|minecraft:breathability|minecraft:on_player_destroyed|minecraft:on_player_placing|minecraft:on_step_off|minecraft:on_step_on|minecraft:queued_ticking|minecraft:random_ticking|minecraft:unit_cube)$)",
         "type": "string"
       },
       "x-runtime-constraint-description": "Block with \"geometry\" set at \"minecraft:geometry.full_block\" cannot have a \"random_offset\""

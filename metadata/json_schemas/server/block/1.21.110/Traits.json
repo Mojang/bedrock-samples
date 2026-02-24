@@ -11,10 +11,10 @@
             "enum": [
               "minecraft:cardinal_connections"
             ],
-            "title": "Connection::EnabledState",
+            "title": "Connection Enabled State",
             "type": "string"
           },
-          "minProperties": 1,
+          "minItems": 1,
           "type": "array"
         }
       },
@@ -30,10 +30,13 @@
         "enabled_states": {
           "description": "Which states to enable. Must specify at least one. Options: [\"minecraft:block_face\", \"minecraft:vertical_half\"].",
           "items": {
-            "pattern": "^(minecraft:block_face|minecraft:vertical_half)$",
+            "enum": [
+              "minecraft:block_face",
+              "minecraft:vertical_half"
+            ],
+            "title": "Placement Position Enabled State",
             "type": "string"
           },
-          "maxItems": 2,
           "minItems": 1,
           "type": "array"
         }
@@ -98,10 +101,14 @@
         "enabled_states": {
           "description": "Which states to enable. Must specify at least one. Options: [\"minecraft:cardinal_direction\", \"minecraft:facing_direction\", \"minecraft:corner_and_cardinal_direction\"].",
           "items": {
-            "pattern": "^(minecraft:cardinal_direction|minecraft:facing_direction|minecraft:corner_and_cardinal_direction)$",
+            "enum": [
+              "minecraft:cardinal_direction",
+              "minecraft:corner_and_cardinal_direction",
+              "minecraft:facing_direction"
+            ],
+            "title": "Placement Position Enabled State",
             "type": "string"
           },
-          "maxItems": 3,
           "minItems": 1,
           "type": "array"
         },
@@ -119,6 +126,45 @@
       "title": "Placement Direction",
       "type": "object"
     },
+    "47219750": {
+      "description": "Adds the \"minecraft:multi_block_part\" state and multi block functionality to the block.",
+      "properties": {
+        "direction": {
+          "description": "The direction the block parts are placed starting from 'minecraft:multi_block_part' permutation '0' to permutation 'parts'. Default value is 'up'.",
+          "enum": [
+            "down",
+            "up"
+          ],
+          "title": "Facing",
+          "type": "string"
+        },
+        "enabled_states": {
+          "description": "Which state to enable. Must specify at least one. Options: [\"minecraft:multi_block_part\"].",
+          "items": {
+            "enum": [
+              "minecraft:multi_block_part"
+            ],
+            "title": "Multi Block Enabled State",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "parts": {
+          "default": 2,
+          "description": "The number of block parts, this sets the value for state 'minecraft:multi_block_part'. Default value is '2'.",
+          "maximum": 4,
+          "minimum": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "direction",
+        "enabled_states"
+      ],
+      "title": "Multi Block",
+      "type": "object"
+    },
     "517105782": {
       "oneOf": [
         {
@@ -134,7 +180,7 @@
       "title": "compound_proxy"
     }
   },
-  "description": "Change the placement position and direction behavior of a block",
+  "description": "Change the connection, multiblock state, placement position and/or direction behaviors of a block",
   "properties": {
     "minecraft:connection": {
       "$ref": "#/definitions/2036565844",
@@ -143,6 +189,16 @@
         ]
       },
       "description": "Adds connection states to the block. The values of these states are updated when the block or neighboring blocks change."
+    },
+    "minecraft:multi_block": {
+      "$ref": "#/definitions/47219750",
+      "default": {
+        "direction": "up",
+        "enabled_states": [
+        ],
+        "parts": 2
+      },
+      "description": "Adds the \"minecraft:multi_block_part\" state and multi block functionality to the block."
     },
     "minecraft:placement_direction": {
       "$ref": "#/definitions/3773031244",
