@@ -1,0 +1,235 @@
+{
+  "$id": "3489422907",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "100089226": {
+      "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+      "properties": {
+        "AND": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+        },
+        "NOT": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+        },
+        "OR": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+        },
+        "all": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+        },
+        "all_of": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+        },
+        "any": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+        },
+        "any_of": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+        },
+        "none_of": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+        }
+      },
+      "title": "Filter Group Map",
+      "type": "object"
+    },
+    "2457665045": {
+      "properties": {
+        "domain": {
+          "description": "The domain the test should be performed in.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "operator": {
+          "description": "The comparison to apply with 'value'.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "subject": {
+          "description": "The subject of this filter test.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "test": {
+          "description": "The name of the test to apply.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value being compared with the test.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "test"
+      ],
+      "title": "Filter Test",
+      "type": "object"
+    },
+    "2566306602": {
+      "properties": {
+        "max": {
+          "default": 0,
+          "type": "number"
+        },
+        "min": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "title": "FloatRange",
+      "type": "object"
+    },
+    "2789112004": {
+      "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/2457665045"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/2789112004",
+            "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+          },
+          "type": "array"
+        },
+        {
+          "$ref": "#/definitions/100089226",
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        }
+      ],
+      "title": "Filter Group"
+    }
+  },
+  "description": "Allows an entity to move around a target.If the entity is too close(i.e.closer than destination range min and height difference limit) it will try to move away from its target.If the entity is too far away from its target it will try to move closer to a random position within the destination range.A randomized amount of those positions will be behind the target, and the spread can be tweaked with 'destination_pos_spread_degrees'.",
+  "properties": {
+    "control_flags": {
+      "default": [
+      ],
+      "items": {
+        "enum": [
+          "move",
+          "look",
+          "jump"
+        ],
+        "title": "Goal's control flags",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "destination_pos_spread_degrees": {
+      "default": 90,
+      "description": "This angle (in degrees) is used for controlling the spread when picking a destination position behind the target. A zero spread angle means the destination position will be straight behind the target with no variance. A 90 degree spread angle means the destination position can be up to 45 degrees to the left and to the right of the position straight behind the target's view direction.",
+      "type": "number"
+    },
+    "destination_position_range": {
+      "$ref": "#/definitions/2566306602",
+      "default": {
+        "max": 8,
+        "min": 4
+      },
+      "description": "The range of distances from the target entity within which the goal should look for a position to move the owner entity to."
+    },
+    "filters": {
+      "$ref": "#/definitions/2789112004",
+      "default": {
+        "AND": null,
+        "NOT": null,
+        "OR": null,
+        "all": null,
+        "all_of": null,
+        "any": null,
+        "any_of": null,
+        "none_of": null
+      },
+      "description": "Conditions that need to be met for the behavior to start."
+    },
+    "height_difference_limit": {
+      "default": 10,
+      "description": "Distance in height (in blocks) between the owner entity and the target has to be less than this value when owner checks if it is too close and should move away from the target. This value needs to be bigger than zero for the move away logic to trigger.",
+      "minimum": 0,
+      "type": "number"
+    },
+    "horizontal_search_distance": {
+      "default": 5,
+      "description": "Horizontal search distance (in blocks) when searching for a position to move away from target.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "movement_speed": {
+      "default": 0.6000000238418579,
+      "description": "The speed with which the entity should move to its target position.",
+      "type": "number"
+    },
+    "priority": {
+      "default": 0,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "vertical_search_distance": {
+      "default": 5,
+      "description": "Vertical search distance (in blocks) when searching for a position to move away from target.",
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "title": "minecraft:behavior.move_around_target",
+  "type": "object",
+  "x-format-version": "1.26.20"
+}
