@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.10",
+  "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:camel",
@@ -222,12 +222,30 @@
           "height": 2.375
         }
       },
+      "minecraft:camel_baby_standing": {
+        "minecraft:pushable_by_entity": {
+        },
+        "minecraft:pushable_by_block": {
+        },
+        "minecraft:collision_box": {
+          "width": 2.11, //0.95/0.45
+          "height": 3.11 //1.4/0.45
+        }
+      },
       "minecraft:camel_sitting": {
         "minecraft:pushable_by_block": {
         },
         "minecraft:collision_box": {
           "width": 1.7,
           "height": 0.945
+        }
+      },
+      "minecraft:camel_baby_sitting": {
+        "minecraft:pushable_by_block": {
+        },
+        "minecraft:collision_box": {
+          "width": 2.11, //0.95/0.45
+          "height": 0.944 //1.425/0.45
         }
       }
     },
@@ -383,7 +401,7 @@
         "add": {
           "component_groups": [
             "minecraft:camel_baby",
-            "minecraft:camel_standing"
+            "minecraft:camel_baby_standing"
           ]
         }
       },
@@ -409,6 +427,23 @@
         }
       },
       "minecraft:start_sitting": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "is_baby"
+            },
+            "trigger": "minecraft:start_sitting_baby"
+          },
+          {
+            "filters": {
+              "test": "is_baby",
+              "value": false
+            },
+            "trigger": "minecraft:start_sitting_adult"
+          }
+        ]
+      },
+      "minecraft:start_sitting_adult": {
         "add": {
           "component_groups": ["minecraft:camel_sitting"]
         },
@@ -416,12 +451,53 @@
           "component_groups": ["minecraft:camel_standing"]
         }
       },
+      "minecraft:start_sitting_baby": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_baby_sitting"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_baby_standing"
+          ]
+        }
+      },
       "minecraft:stop_sitting": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "is_baby"
+            },
+            "trigger": "minecraft:stop_sitting_baby"
+          },
+          {
+            "filters": {
+              "test": "is_baby",
+              "value": false
+            },
+            "trigger": "minecraft:stop_sitting_adult"
+          }
+        ]
+      },
+      "minecraft:stop_sitting_adult": {
         "add": {
           "component_groups": ["minecraft:camel_standing"]
         },
         "remove": {
           "component_groups": ["minecraft:camel_sitting"]
+        }
+      },
+      "minecraft:stop_sitting_baby": {
+        "add": {
+          "component_groups": [
+            "minecraft:camel_baby_standing"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:camel_baby_sitting"
+          ]
         }
       }
     }
