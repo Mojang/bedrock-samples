@@ -3333,6 +3333,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -4826,6 +4828,33 @@
       "title": "minecraft:behavior.follow_parent",
       "type": "object"
     },
+    "315797137": {
+      "description": "Defines how an entity applies knockback.",
+      "properties": {
+        "check_if_target_is_immersed_in_water": {
+          "default": false,
+          "description": "Whether or not the target should be fully immersed in water for the knockback rules to apply.",
+          "type": "boolean"
+        },
+        "horizontal_power": {
+          "default": 1,
+          "description": "Power with which a target should be knocked backwards.",
+          "type": "number"
+        },
+        "vertical_power": {
+          "default": 0.4000000059604645,
+          "description": "Power with which a target should be knocked upwards.",
+          "type": "number"
+        },
+        "vertical_velocity_cap": {
+          "default": 0.4000000059604645,
+          "description": "Maximum allowed Y velocity after target's knockback rules have been evaluated.",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:apply_knockback_rules",
+      "type": "object"
+    },
     "3162453531": {
       "description": "Allows the entity to move in random directions like a slime.",
       "properties": {
@@ -5574,6 +5603,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -5891,6 +5922,32 @@
     },
     "3397928451": {
       "title": "IsChestedDefinition"
+    },
+    "343958640": {
+      "description": "Allows the mob to be ridden by the player after being tamed.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.player_ride_tamed",
+      "type": "object"
     },
     "3444542536": {
       "description": "Allows the mob to run away from direct sunlight and seek shade.",
@@ -6311,6 +6368,10 @@
       },
       "title": "minecraft:behavior.take_flower",
       "type": "object"
+    },
+    "359329739": {
+      "description": "Allows an entity to be pushed by other entities.",
+      "title": "minecraft:pushable_by_entity"
     },
     "3616113920": {
       "title": "IsStunnedDefinition"
@@ -7919,6 +7980,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -8929,6 +8992,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -9839,6 +9904,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -10411,6 +10478,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -11018,6 +11087,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -11267,6 +11338,127 @@
         }
       ],
       "title": "vec3"
+    },
+    "737223098": {
+      "description": "Allows the mob to pick up items on the ground.",
+      "properties": {
+        "can_pickup_any_item": {
+          "default": false,
+          "description": "If true, the mob can pick up any item",
+          "type": "boolean"
+        },
+        "can_pickup_to_hand_or_equipment": {
+          "default": true,
+          "description": "If true, the mob can pick up items to its hand or armor slots",
+          "type": "boolean"
+        },
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cooldown_after_being_attacked": {
+          "default": 0,
+          "description": "Time in seconds the mob cannot pickup items after being attacked",
+          "type": "integer"
+        },
+        "excluded_items": {
+          "default": [
+          ],
+          "description": "List of items this mob will not pick up",
+          "items": {
+            "$ref": "#/definitions/1429287564"
+          },
+          "type": "array"
+        },
+        "goal_radius": {
+          "default": 0.5,
+          "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot",
+          "type": "number"
+        },
+        "max_dist": {
+          "default": 1,
+          "description": "Maximum distance this mob will look for items to pick up",
+          "type": "integer"
+        },
+        "on_pickup_item_end": {
+          "$ref": "#/definitions/3379368818",
+          "default": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          },
+          "description": "Event to run when this mob either finishes or loses interest in picking up an item"
+        },
+        "on_pickup_item_start": {
+          "$ref": "#/definitions/3379368818",
+          "default": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          },
+          "description": "Event to run when this mob moves to pick up an item"
+        },
+        "pickup_based_on_chance": {
+          "default": false,
+          "description": "If true, depending on the difficulty, there is a random chance that the mob may not be able to pickup items",
+          "type": "boolean"
+        },
+        "pickup_same_items_as_in_hand": {
+          "default": false,
+          "description": "If true, the mob will only pick up items that match what's in their hand",
+          "type": "boolean"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "search_height": {
+          "default": 1,
+          "description": "Height in blocks the mob will search for items",
+          "type": "integer"
+        },
+        "speed_multiplier": {
+          "default": 1,
+          "description": "Movement speed multiplier of the mob when using this AI Goal",
+          "type": "number"
+        },
+        "track_target": {
+          "default": false,
+          "description": "If true, this mob will chase after the target as long as it's a valid target",
+          "type": "boolean"
+        }
+      },
+      "title": "minecraft:behavior.pickup_items",
+      "type": "object"
     },
     "742152213": {
       "oneOf": [
@@ -11909,6 +12101,8 @@
             "item.netherite_spear.use",
             "pause_growth",
             "reset_growth",
+            "pushed_by_player",
+            "bounce",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -11988,6 +12182,52 @@
         }
       },
       "title": "minecraft:behavior.lay_egg",
+      "type": "object"
+    },
+    "823494865": {
+      "description": "Allows the pet mob to move onto a bed with its owner while sleeping.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "goal_radius": {
+          "default": 0.5,
+          "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot",
+          "type": "number"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "search_height": {
+          "default": 1,
+          "description": "Height in blocks from the owner the pet can be to sleep with owner.",
+          "type": "integer"
+        },
+        "search_range": {
+          "default": 0,
+          "description": "The distance in blocks from the owner the pet can be to sleep with owner.",
+          "type": "integer"
+        },
+        "speed_multiplier": {
+          "default": 1,
+          "description": "Movement speed multiplier of the mob when using this AI Goal",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.pet_sleep_with_owner",
       "type": "object"
     },
     "855125494": {
@@ -12177,6 +12417,10 @@
     },
     "minecraft:annotation.open_door": {
       "description": "Dynamic value"
+    },
+    "minecraft:apply_knockback_rules": {
+      "$ref": "#/definitions/315797137",
+      "description": "Defines how an entity applies knockback."
     },
     "minecraft:area_attack": {
       "description": "Dynamic value"
@@ -12386,7 +12630,7 @@
       "$ref": "#/definitions/3148256395",
       "description": "Allows the mob to follow their parent around."
     },
-    "minecraft:behavior.follow_target_captain": {
+    "minecraft:behavior.follow_target_leader": {
       "description": "Dynamic value"
     },
     "minecraft:behavior.go_and_give_items_to_noteblock": {
@@ -12580,10 +12824,12 @@
       "description": "Dynamic value"
     },
     "minecraft:behavior.pet_sleep_with_owner": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/823494865",
+      "description": "Allows the pet mob to move onto a bed with its owner while sleeping."
     },
     "minecraft:behavior.pickup_items": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/737223098",
+      "description": "Allows the mob to pick up items on the ground."
     },
     "minecraft:behavior.place_block": {
       "description": "Dynamic value"
@@ -12597,7 +12843,8 @@
       "description": "Allows this entity to pretend to be dead to avoid being targeted by attackers."
     },
     "minecraft:behavior.player_ride_tamed": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/343958640",
+      "description": "Allows the mob to be ridden by the player after being tamed."
     },
     "minecraft:behavior.raid_garden": {
       "$ref": "#/definitions/489956372",
@@ -13314,7 +13561,8 @@
       "description": "Dynamic value"
     },
     "minecraft:pushable_by_entity": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/359329739",
+      "description": "Allows an entity to be pushed by other entities."
     },
     "minecraft:raid_trigger": {
       "description": "Dynamic value"
