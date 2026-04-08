@@ -1,0 +1,250 @@
+{
+  "$id": "2492648039",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "100089226": {
+      "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+      "properties": {
+        "AND": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+        },
+        "NOT": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+        },
+        "OR": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+        },
+        "all": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+        },
+        "all_of": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must pass in order for the group to pass."
+        },
+        "any": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+        },
+        "any_of": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates tests in the group, one or more must pass in order for the group to pass."
+        },
+        "none_of": {
+          "$ref": "#/definitions/2789112004",
+          "description": "Evaluates all tests in the group, all must fail in order for the group to pass."
+        }
+      },
+      "title": "Filter Group Map",
+      "type": "object"
+    },
+    "2457665045": {
+      "properties": {
+        "domain": {
+          "description": "The domain the test should be performed in.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "operator": {
+          "description": "The comparison to apply with 'value'.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "subject": {
+          "description": "The subject of this filter test.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "test": {
+          "description": "The name of the test to apply.",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value being compared with the test.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "test"
+      ],
+      "title": "Filter Test",
+      "type": "object"
+    },
+    "2789112004": {
+      "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/2457665045"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/2789112004",
+            "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+          },
+          "type": "array"
+        },
+        {
+          "$ref": "#/definitions/100089226",
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        }
+      ],
+      "title": "Filter Group"
+    },
+    "3379368818": {
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "ActorDefinitionTrigger",
+      "type": "object"
+    }
+  },
+  "description": "Allows the mob to move back to the position they were spawned.",
+  "properties": {
+    "calculate_new_path_radius": {
+      "default": 2,
+      "description": "Distance in blocks that the mob is considered close enough to the end of the current path. A new path will then be calculated to continue toward home.",
+      "type": "number"
+    },
+    "control_flags": {
+      "default": [
+      ],
+      "items": {
+        "enum": [
+          "move",
+          "look",
+          "jump"
+        ],
+        "title": "Goal's control flags",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "goal_radius": {
+      "default": 0.5,
+      "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot.",
+      "type": "number"
+    },
+    "interval": {
+      "default": 120,
+      "description": "A random value to determine when to randomly move somewhere. This has a 1/interval chance to choose this goal.",
+      "type": "integer"
+    },
+    "on_failed": {
+      "default": [
+      ],
+      "description": "Event(s) to run when this goal fails.",
+      "items": {
+        "$ref": "#/definitions/3379368818"
+      },
+      "type": "array"
+    },
+    "on_home": {
+      "default": [
+      ],
+      "description": "Event(s) to run when this mob gets home.",
+      "items": {
+        "$ref": "#/definitions/3379368818"
+      },
+      "type": "array"
+    },
+    "priority": {
+      "default": 0,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "speed_multiplier": {
+      "default": 1,
+      "description": "Movement speed multiplier of the mob when using this AI Goal.",
+      "type": "number"
+    }
+  },
+  "title": "minecraft:behavior.go_home",
+  "type": "object",
+  "x-format-version": "1.26.20"
+}

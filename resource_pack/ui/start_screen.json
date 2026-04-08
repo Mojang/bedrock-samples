@@ -780,83 +780,6 @@
     ]
   },
 
-  "gathering_animation": {
-    "anim_type": "aseprite_flip_book",
-    "initial_uv": [ 0, 0 ]
-  },
-
-  "badge_and_caption_animated": {
-    "type": "stack_panel",
-    "orientation": "vertical",
-    "size": [ "100%", "100%c" ],
-    "controls": [
-      {
-        "caption_and_padding": {
-          "type": "stack_panel",
-          "orientation": "horizontal",
-          "size": [ "100%", "100%c" ],
-          "layer": 14,
-          "controls": [
-            {
-              "pad@common.empty_panel": {
-                  "size": [ 10, 1 ]
-              }
-            },
-            {
-              "caption@start.gathering_caption": {}
-            }
-          ]
-        }
-      },
-      {
-        "badge_and_padding": {
-          "type": "stack_panel",
-          "orientation": "horizontal",
-          "use_child_anchors": true,
-          "size": [ "100%", 40 ],
-          "controls": [
-            {
-              "badge": {
-                "size": [ 100, 40 ],
-                "type": "image",
-                "anchor_from": "bottom_left",
-                "anchor_to": "bottom_left",
-                "layer": 8,
-                "uv_size": [ 475, 200 ],
-                "uv": "@start.gathering_animation",
-                "disable_anim_fast_forward": true,
-                "allow_debug_missing_texture": false,
-                "bindings": [
-                  {
-                    "binding_name": "#gathering_badge",
-                    "binding_name_override": "#texture"
-                  }
-                ]
-              }
-            },
-            {
-              "fill@common.empty_panel": {
-                "size": [ "fill", "100%" ]
-              }
-            }
-          ],
-          "bindings": [
-            {
-              "binding_name": "#gathering_badge_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      }
-    ],
-    "bindings": [
-      {
-        "binding_name": "#gathering_animated_badge",
-        "binding_name_override": "#visible"
-      }
-    ]
-  },
-
   "gathering_badge": {
     "type": "image",
     "size": [ "237%y", "100%" ],
@@ -866,6 +789,35 @@
       {
         "binding_name": "#gathering_badge",
         "binding_name_override": "#texture"
+      },
+      {
+        "binding_name": "#gathering_badge_file_system",
+        "binding_name_override": "#texture_file_system"
+      },
+      {
+        "binding_name": "(not #gathering_gif_badge)",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "gathering_badge_gif": {
+    "type": "custom",
+    "renderer": "animated_gif_renderer",
+    "size": [ "237%y", "100%" ],
+    "layer": 20,
+    "property_bag": {
+      "#pause_gif": false
+    },
+    "bindings": [
+      {
+        "binding_name": "#gathering_badge",
+        "binding_name_override": "#gif_path",
+        "binding_condition": "visible"
+      },
+      {
+        "binding_name": "#gathering_gif_badge",
+        "binding_name_override": "#visible"
       }
     ]
   },
@@ -895,16 +847,19 @@
       },
       {
         "badge_and_padding": {
-          "type": "stack_panel",
-          "orientation": "horizontal",
+          "type": "panel",
           "size": [ "100%", 30 ],
           "controls": [
             {
-              "badge@start.gathering_badge": {}
+              "badge@start.gathering_badge": {
+                "anchor_from": "left_middle",
+                "anchor_to": "left_middle"
+              }
             },
             {
-              "fill@common.empty_panel": {
-                "size": [ "fill", "100%" ]
+              "badge_gif@start.gathering_badge_gif": {
+                "anchor_from": "left_middle",
+                "anchor_to": "left_middle"
               }
             }
           ],
@@ -916,12 +871,6 @@
           ]
         }
       }
-    ],
-    "bindings": [
-      {
-        "binding_name": "(not #gathering_animated_badge)",
-        "binding_name_override": "#visible"
-      }
     ]
   },
 
@@ -931,8 +880,8 @@
     "anchor_to": "bottom_middle",
     "anchor_from": "bottom_middle",
     "layer": 9,
-    "$gathering_caption_foreground_color|default": "$0_color_format",
-    "$gathering_caption_background_color|default": "$f_color_format",
+    "$gathering_caption_foreground_color|default": "$f_color_format",
+    "$gathering_caption_background_color|default": [ 0.871, 0.0, 0.0 ],
     "color": "$gathering_caption_background_color",
     "texture": "textures/ui/flyout",
     "keep_ratio": false,
@@ -952,19 +901,9 @@
               "binding_name": "#gathering_countdown_text",
               "binding_name_override": "#text",
               "binding_condition": "always_when_visible"
-            },
-            {
-              "binding_name": "#gathering_caption_foreground_color",
-              "binding_name_override": "#color"
             }
           ]
         }
-      }
-    ],
-    "bindings": [
-      {
-        "binding_name": "#gathering_caption_background_color",
-        "binding_name_override": "#color"
       }
     ]
   },
@@ -996,9 +935,6 @@
                 "controls": [
                   {
                     "badge_and_caption@start.badge_and_caption": {}
-                  },
-                  {
-                    "badge_and_caption_animated@start.badge_and_caption_animated": {}
                   },
                   {
                     "gathering_button@start.gathering_button": {}

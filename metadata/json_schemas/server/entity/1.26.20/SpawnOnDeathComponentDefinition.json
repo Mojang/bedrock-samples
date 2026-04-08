@@ -1,5 +1,5 @@
 {
-  "$id": "2334974500",
+  "$id": "2356116542",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "100089226": {
@@ -39,83 +39,6 @@
         }
       },
       "title": "Filter Group Map",
-      "type": "object"
-    },
-    "1432208322": {
-      "properties": {
-        "filters": {
-          "$ref": "#/definitions/2789112004",
-          "default": {
-            "AND": null,
-            "NOT": null,
-            "OR": null,
-            "all": null,
-            "all_of": null,
-            "any": null,
-            "any_of": null,
-            "none_of": null
-          },
-          "description": "Conditions that must be met for this preset to be applied."
-        },
-        "kick_distance_threshold": {
-          "default": 1.2999999523162842,
-          "description": "Maximum horizontal distance at which another entity can kick this entity. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "kick_speed_scale": {
-          "default": 2,
-          "description": "Multiplier applied to the pushing entity's movement speed to determine kick force. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "max_kick_speed": {
-          "default": 0.5,
-          "description": "Maximum speed the ball can be kicked at, regardless of how fast the pushing entity is moving. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "min_distance": {
-          "default": 0.009999999776482582,
-          "description": "Minimum distance between two entities for push forces to be applied. Entities closer than this will not push each other.",
-          "type": "number"
-        },
-        "min_kick_speed": {
-          "default": 0,
-          "description": "Minimum speed the ball will be kicked at, regardless of how slowly the pushing entity is moving. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "push_mode": {
-          "default": "default",
-          "description": "Defines the type of push vector calculation applied to the entity:\n- \"default\": Standard push calculation used by most entities.\n- \"legacy_boat\": Legacy push calculation historically used by boats. Includes dampened forces and sneak-based cancellation.\n- \"legacy_minecart\": Legacy push calculation historically used by minecarts. Includes alignment-based collision handling and velocity averaging.- \"ball\": Push calculation for ball-like entities. The ball is kicked in the direction of the pushing entity's movement, with force based on their movement speed.",
-          "enum": [
-            "default",
-            "legacy_boat",
-            "legacy_minecart",
-            "ball"
-          ],
-          "title": "PushMode",
-          "type": "string"
-        },
-        "push_scale_other": {
-          "default": 1,
-          "description": "Scales how much push force this entity applies to the other entity when colliding. A value of 1.0 applies full force, 0.5 applies half.",
-          "type": "number"
-        },
-        "push_scale_self": {
-          "default": 1,
-          "description": "Scales how much this entity pushes itself away when colliding with another entity. A value of 1.0 applies full force, 0.5 applies half.",
-          "type": "number"
-        },
-        "strength_multiplier": {
-          "default": 0.05000000074505806,
-          "description": "Multiplier applied to the push strength. Higher values result in stronger pushes.",
-          "type": "number"
-        },
-        "vertical_kick_multiplier": {
-          "default": 0.30000001192092896,
-          "description": "Multiplier for the upward force applied when the ball is kicked while on the ground. A value of 0 keeps the ball flat. Only used when push_mode is \"ball\".",
-          "type": "number"
-        }
-      },
-      "title": "PushableByEntityPreset",
       "type": "object"
     },
     "2457665045": {
@@ -218,21 +141,69 @@
         }
       ],
       "title": "Filter Group"
-    }
-  },
-  "description": "Allows an entity to be pushed by other entities.",
-  "properties": {
-    "presets": {
-      "default": [
-      ],
-      "description": "Defines how this entity behaves when pushed by another entity. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.",
-      "items": {
-        "$ref": "#/definitions/1432208322"
+    },
+    "3861103875": {
+      "properties": {
+        "max": {
+          "default": 0,
+          "type": "integer"
+        },
+        "min": {
+          "default": 0,
+          "type": "integer"
+        }
       },
-      "type": "array"
+      "title": "IntRange",
+      "type": "object"
     }
   },
-  "title": "minecraft:pushable_by_entity",
+  "description": "Component for spawning entities when an entity perishes.",
+  "properties": {
+    "additional_spawn_range": {
+      "$ref": "#/definitions/3861103875",
+      "default": {
+        "max": 0,
+        "min": 0
+      },
+      "description": "Additional random range of entities to spawn, defaults to 0, 0 when not set"
+    },
+    "entity_to_spawn": {
+      "default": "self",
+      "description": "What entity to spawn, defaults to owning entity when not set",
+      "type": "string"
+    },
+    "filters": {
+      "$ref": "#/definitions/2789112004",
+      "default": {
+        "AND": null,
+        "NOT": null,
+        "OR": null,
+        "all": null,
+        "all_of": null,
+        "any": null,
+        "any_of": null,
+        "none_of": null
+      },
+      "description": "Conditions that need to be met for the behavior to start."
+    },
+    "inherit_parent_name": {
+      "default": true,
+      "description": "If true, the entity will inherit the name of the parent entity, defaults to true when not set",
+      "type": "boolean"
+    },
+    "spawn_amount": {
+      "default": 1,
+      "description": "How many entities to spawn, defaults to 1 when not set",
+      "exclusiveMinimum": 0,
+      "type": "integer"
+    },
+    "spawn_method": {
+      "default": "spawned",
+      "description": "Spawn method. born, spawned, or summoned, defaults to spawned when not set",
+      "type": "string"
+    }
+  },
+  "title": "minecraft:spawn_on_death",
   "type": "object",
-  "x-format-version": "beta"
+  "x-format-version": "1.26.20"
 }
