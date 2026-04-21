@@ -99,34 +99,53 @@
       "title": "minecraft:frozen_ocean",
       "type": "object"
     },
+    "156839308": {
+      "properties": {
+        "block": {
+          "$ref": "#/definitions/1170899181",
+          "description": "The block to place if the noise sample satisfies the provided threshold/range"
+        },
+        "noise": {
+          "default": "",
+          "description": "The string identifier of the noise associated with this NoiseBlockSpecifier.",
+          "pattern": "^\\S+$",
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
+        },
+        "range": {
+          "$ref": "#/definitions/2566306602",
+          "default": {
+            "max": 0,
+            "min": 0
+          },
+          "description": "The range of sampled noise value associated with the provided Block."
+        },
+        "threshold": {
+          "default": 0,
+          "description": "The minimum sampled noise value associated with the provided Block.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "block"
+      ],
+      "title": "NoiseBlockSpecifier",
+      "type": "object"
+    },
     "1995717901": {
       "description": "Places continuous bands of blocks according to a noise distribution. This surface builder's processing has been implemented with sub-terrain height ranges in mind.",
       "properties": {
-        "amplitudes": {
-          "description": "Governs the attenuation of the first n octaves in the generated noise.",
+        "noise_block_specifiers": {
+          "description": "The noise block specifiers defining which ranges of noise are associated with which blocks. The ranges provided are valid on the interval [0, 1], and may overlap at their endpoints.",
           "items": {
-            "type": "number"
+            "$ref": "#/definitions/156839308"
           },
           "minItems": 1,
           "type": "array"
         },
-        "first_octave": {
-          "description": "Governs the general frequency characteristics of the generated noise. Lower value results in noise with lower frequency content.",
-          "type": "integer"
-        },
-        "gradient_blocks": {
-          "description": "A list of block names that will be sampled according to a Perlin noise distribution. Specifying `minecraft:air`-blocks is permitted, and will result in the original block not being replaced, meaning it is possible to adjust the density/intensity of block replacement in the biome using this surface builder type.",
-          "items": {
-            "$ref": "#/definitions/1170899181",
-            "description": "Specifies a particular block. Can be a string block name or a JSON object"
-          },
-          "minItems": 1,
-          "type": "array"
-        },
-        "noise_seed_string": {
-          "description": "The string used to initialize the noise. Has no impact on the qualitative aspects of the generated values.",
-          "minLength": 1,
-          "type": "string"
+        "noise_descriptor": {
+          "$ref": "#/definitions/3120233754",
+          "description": "The Specification for the Noise used by the surface builder."
         },
         "non_replaceable_blocks": {
           "description": "A list of blocks that the surface builder is not allowed to replace. Leaving this list empty or unspecified will allow the replacement of any (non-air) block type.",
@@ -152,14 +171,25 @@
         }
       },
       "required": [
-        "amplitudes",
-        "first_octave",
-        "gradient_blocks",
-        "noise_seed_string",
-        "non_replaceable_blocks",
+        "noise_block_specifiers",
+        "noise_descriptor",
         "type"
       ],
       "title": "minecraft:noise_gradient",
+      "type": "object"
+    },
+    "2566306602": {
+      "properties": {
+        "max": {
+          "default": 0,
+          "type": "number"
+        },
+        "min": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "title": "FloatRange",
       "type": "object"
     },
     "2610378247": {
@@ -219,6 +249,36 @@
         "type"
       ],
       "title": "minecraft:capped",
+      "type": "object"
+    },
+    "3120233754": {
+      "properties": {
+        "amplitudes": {
+          "description": "Governs the attenuation of the first n octaves in the generated noise.",
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "type": "array"
+        },
+        "first_octave": {
+          "description": "Governs the general frequency characteristics of the generated noise. Lower value results in noise with lower frequency content.",
+          "type": "integer"
+        },
+        "name": {
+          "description": "The string used to initialize the noise. Has no impact on the qualitative aspects of the generated values.",
+          "pattern": "^\\S+$",
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
+        }
+      },
+      "required": [
+        "amplitudes",
+        "first_octave",
+        "name"
+      ],
+      "title": "NoiseDescriptor",
       "type": "object"
     },
     "3152646801": {

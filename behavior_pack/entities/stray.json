@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.0",
+  "format_version": "1.26.30",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:stray",
@@ -105,8 +105,8 @@
         "speed_multiplier": 1
       },
       "minecraft:behavior.ranged_attack": {
-        "attack_interval_max": 3.0,
-        "attack_interval_min": 1.0,
+        "attack_interval_max": 2.0,
+        "attack_interval_min": 2.0,
         "attack_radius": 15.0,
         "priority": 0
       },
@@ -197,10 +197,8 @@
         "avoid_water": true
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
+      "minecraft:pushable_by_entity": {},
       "minecraft:shareables": {
         "items": [
           {
@@ -504,7 +502,49 @@
       },
       "minecraft:ranged_attack": {
         "minecraft:behavior.ranged_attack": {
-          "attack_interval_max": 3.0,
+          "attack_interval_max": 2.0,
+          "attack_interval_min": 2.0,
+          "attack_radius": 15.0,
+          "priority": 0
+        },
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "event": "minecraft:melee_mode",
+              "filters": {
+                "operator": "==",
+                "test": "is_underwater",
+                "subject": "self",
+                "value": true
+              }
+            },
+            {
+              "event": "minecraft:melee_mode",
+              "filters": {
+                "operator": "==",
+                "test": "has_ranged_weapon",
+                "subject": "self",
+                "value": false
+              }
+            },
+            {
+              "event": "minecraft:switch_to_hard_ranged",
+              "filters": {
+                "test": "is_difficulty",
+                "value": "hard"
+              }
+            }
+          ]
+        },
+        "minecraft:shooter": {
+          "aux_val": 19,
+          "def": "minecraft:arrow",
+          "sound": "bow"
+        }
+      },
+      "minecraft:ranged_attack_hard": {
+        "minecraft:behavior.ranged_attack": {
+          "attack_interval_max": 1.0,
           "attack_interval_min": 1.0,
           "attack_radius": 15.0,
           "priority": 0
@@ -527,6 +567,14 @@
                 "test": "has_ranged_weapon",
                 "subject": "self",
                 "value": false
+              }
+            },
+            {
+              "event": "minecraft:switch_to_normal_ranged",
+              "filters": {
+                "test": "is_difficulty",
+                "operator": "!=",
+                "value": "hard"
               }
             }
           ]
@@ -581,18 +629,51 @@
         },
         "remove": {
           "component_groups": [
-            "minecraft:ranged_attack"
+            "minecraft:ranged_attack",
+            "minecraft:ranged_attack_hard"
           ]
         }
       },
       "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "is_difficulty",
+              "value": "hard"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:ranged_attack_hard"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "is_difficulty",
+              "operator": "!=",
+              "value": "hard"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:ranged_attack"
+              ]
+            }
+          }
+        ]
+      },
+      "minecraft:switch_to_hard_ranged": {
         "add": {
+          "component_groups": [
+            "minecraft:ranged_attack_hard"
+          ]
+        },
+        "remove": {
           "component_groups": [
             "minecraft:ranged_attack"
           ]
         }
       },
-      "minecraft:ranged_mode": {
+      "minecraft:switch_to_normal_ranged": {
         "add": {
           "component_groups": [
             "minecraft:ranged_attack"
@@ -600,9 +681,48 @@
         },
         "remove": {
           "component_groups": [
-            "minecraft:melee_attack"
+            "minecraft:ranged_attack_hard"
           ]
         }
+      },
+      "minecraft:ranged_mode": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "is_difficulty",
+              "value": "hard"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:ranged_attack_hard"
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:melee_attack",
+                "minecraft:ranged_attack"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "is_difficulty",
+              "operator": "!=",
+              "value": "hard"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:ranged_attack"
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:melee_attack",
+                "minecraft:ranged_attack_hard"
+              ]
+            }
+          }
+        ]
       }
     }
   }
