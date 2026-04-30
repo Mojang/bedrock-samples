@@ -1,0 +1,287 @@
+<h1>LIGHTING DOCUMENTATION </h1>
+This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
+<h2><p id="Index">Index</p></h2>
+<table border="1">
+<tr> <th><a href="#Overview">Overview</a></th> </tr>
+<tr> <th><a href="#JSON Format">JSON Format</a></th> </tr>
+<tr> <th><a href="#Adding Lighting Settings">Adding Lighting Settings</a></th> </tr>
+<tr> <th><a href="#Schema">Schema</a></th> </tr>
+<tr> <td> <a href="#AmbientLight"> AmbientLight</a> </tr> </td>
+<tr> <td> <a href="#DirectionalLights"> DirectionalLights</a> </tr> </td>
+<tr> <td> <a href="#Emissive"> Emissive</a> </tr> </td>
+<tr> <td> <a href="#KeyframedDirectionalLightImpl"> KeyframedDirectionalLightImpl</a> </tr> </td>
+<tr> <td> <a href="#Lighting JSON File"> Lighting JSON File</a> </tr> </td>
+<tr> <td> <a href="#LightingDescription"> LightingDescription</a> </tr> </td>
+<tr> <td> <a href="#LightingSettings"> LightingSettings</a> </tr> </td>
+<tr> <td> <a href="#OrbitalLights"> OrbitalLights</a> </tr> </td>
+<tr> <td> <a href="#SkyIntensity"> SkyIntensity</a> </tr> </td>
+<tr> <td> <a href="#StaticDirectionalLight"> StaticDirectionalLight</a> </tr> </td>
+</table>
+<a href="#Index">Back to top</a>
+<h1><p id="Overview">Overview</p></h1>
+
+There are many different Lighting controls in Minecraft. Things like sun color, ambient color, and moon illuminance are all lighting controls. </br>You can override all of these lighting controls to change the colors and illuminance of many things!</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="JSON Format">JSON Format</p></h1>
+
+All lighting settings overrides should specify the version that they target via the "format_version" field. The remainder of the lighting data is divided up into independent JSON sub-objects for each lighting control. </br>These overrides define the lighting data of the overarching light settings collection. To be valid, a definition must include exactly one of these type objects. See the full lighting schema below for additional details and the full list of supported lighting overrides.</br><h2></h2>
+Here is a sample lighting file.<br / ><textarea readonly="true" cols="58" rows="32">
+{
+        "format_version": "1.21.40",
+        "description": {
+          "identifier": "myResourcePack:default_lighting"
+        },
+        "directional_lights": {
+          "sun": {
+            "illuminance": {
+              "0.0": 109880.0,
+              "0.25": 20000.0,
+              "0.35": 400.0,
+              "0.5": 1.0,
+              "0.65": 400.0,
+              "0.75": 20000.0,
+              "1.0": 109880.0
+            },
+            "color": [ 255.0, 255.0, 255.0, 255.0 ]
+          },
+          "moon": {
+            "illuminance": 0.27,
+            "color": {
+              "0.0": "#ffffffff",
+              "1.0": "#ffffffff"
+            }
+          },
+          "orbital_offset_degrees": 3.0
+        },
+      "emissive": {
+          "desaturation": 0.1
+        }
+      }
+    
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Adding Lighting Settings">Adding Lighting Settings</p></h1>
+
+Lighting Settings are read from JSON files in the "lighting" subfolder of behavior packs. Loading enforces one lighting settings collection per file. The settings collection's identifier acts as its name and must be namespaced. If two behavior packs define the same lighting settings name (including namespace), then the settings from the highest pack in the stack will be used. Adding a file with a new name to the lighting data location will make it available for the game to use, while existing lighting settings can be overridden using another settings collection with the same identifier. </br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Schema">Schema</p></h1>
+
+<h1><p id="AmbientLight">AmbientLight</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">color</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Keyframes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'color' value can be expressed either as an array of three numerical values in the range of 0–255, or as a six-digit hexadecimal string. This can also be specified using keyframes in a time_of_day:color format where time_of_day ranges from 0-1 inclusive.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">illuminance</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Keyframes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'illuminance' value corresponds to the strength, in lux (lx), of the ambient light, and should be kept quite low in general. The allowed range for this value is 0.0 - 5.0. This can also be specified using keyframes in a time_of_day:illuminance format where time_of_day ranges from 0-1 inclusive.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="DirectionalLights">DirectionalLights</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">flash</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type StaticDirectionalLight</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A single Static Directional Light definition, containing Static Directional Light settings defined by resource pack</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">orbital</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type OrbitalLights</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A single Orbital Light definition, containing Orbital Light settings defined by resource pack</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Emissive">Emissive</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">desaturation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'desaturation' is a factor from 0.0 to 1.0 that controls how much the albedo of a given pixel is desaturated when computing the color of emissive light.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="KeyframedDirectionalLightImpl">KeyframedDirectionalLightImpl</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">color</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Keyframes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'color' value can be expressed either as an array of three numerical values in the range of 0–255, or as a six-digit hexadecimal string. This can also be specified using keyframes in a time_of_day:color format where time_of_day ranges from 0-1 inclusive.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">illuminance</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Keyframes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'illuminance' value corresponds to the strength, in lux (lx) as a float. This can also be specified using keyframes in a time_of_day:illuminance format where time_of_day ranges from 0-1 inclusive.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Lighting JSON File">Lighting JSON File</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">format_version</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Specifies the version of the game this entity was made in. If the version is lower than the current version, any changes made to the entity in the vanilla version will be applied to it.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:lighting_settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type LightingSettings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Lighting Settings definition which includes the 'description,' 'ambient,' 'directional_lights,' 'emissive,' and 'sky sections.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="LightingDescription">LightingDescription</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The name of this Lighting Description in the format 'namespace_name:description_name'.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="LightingSettings">LightingSettings</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">ambient</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type AmbientLight</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control ambient lighting.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">description</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type LightingDescription</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Identifier for the Lighting Settings.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">directional_lights</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type DirectionalLights</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control directional lights like the sun and moon.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">emissive</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Emissive</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to emissives.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sky</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type SkyIntensity</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control sky intensity.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="OrbitalLights">OrbitalLights</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">moon</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type KeyframedDirectionalLightImpl</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The directional light description including color and illuminance values to control the moon.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">orbital_offset_degrees</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Keyframes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A pair of float:float values with the format time_of_day:orbital_offset, where the time_of_day is in a range from 0-1 inclusive.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">sun</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type KeyframedDirectionalLightImpl</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The directional light description including color and illuminance values to control the sun.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="SkyIntensity">SkyIntensity</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">intensity</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Keyframes</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The sky's 'intensity' value is a factor from 0.1 to 1.0 that controls how much sky light is factored into the indirect term for both diffuse and specular. A value of 1.0 causes the sky to contribute more to indirect light, and will result in shadows being less dark; a value of 0.1 will result in darker shadows, because less indirect light is contributed from the sky. The default value, if not provided, is 1.0.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="StaticDirectionalLight">StaticDirectionalLight</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">color</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Color255RGB</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'color' value can be expressed either as an array of three numerical values in the range of 0–255, or as a six-digit hexadecimal string.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">illuminance</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The 'illuminance' value corresponds to the strength, in lux(lx) as a float.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<br><br>
+

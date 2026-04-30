@@ -26,6 +26,7 @@ This is documentation for a preview release of Minecraft. New features, componen
 <tr> <td> <a href="#minecraft:mountain_parameters - steep_material_adjustment settings"> minecraft:mountain_parameters - steep_material_adjustment settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:mountain_parameters - top_slide settings"> minecraft:mountain_parameters - top_slide settings</a> </tr> </td>
 <tr> <td> <a href="#minecraft:multinoise_generation_rules"> minecraft:multinoise_generation_rules</a> </tr> </td>
+<tr> <td> <a href="#minecraft:noise_gradient"> minecraft:noise_gradient</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld"> minecraft:overworld</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld_generation_rules"> minecraft:overworld_generation_rules</a> </tr> </td>
 <tr> <td> <a href="#minecraft:overworld_generation_rules - Weighted biome names settings"> minecraft:overworld_generation_rules - Weighted biome names settings</a> </tr> </td>
@@ -174,10 +175,16 @@ Any components that this Biome uses</br><h2></h2>
 <td style="border-style:solid; border-width:3; padding:7px">Replaces a specified portion of one or more Minecraft biomes.</br></td>
 </tr>
 <tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:subsurface_builder</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:surface_builder</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Sub Surface Builders allow specifying a `minecraft:surface_builder` to be applied to biomes located underneath regular terrain surface. Note, however, that pre-existing surface builder types' processing have not been updated to accommodate the ability to specify them for sub-terrain height ranges, which may lead to unexpected results when using them.</br></td>
+</tr>
+<tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_builder</td>
 <td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:surface_builder</td>
 <td style="border-style:solid; border-width:3; padding:7px">Optional</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the materials used for terrain generation.</br></td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls materials used for terrain generation.</br></td>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">minecraft:surface_material_adjustments</td>
@@ -389,7 +396,7 @@ Generates surface on blocks with non-solid blocks above or below.</br><h2></h2>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">type</td>
-<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use</br></td>
 </tr>
@@ -482,7 +489,7 @@ Similar to overworld_surface. Adds icebergs.</br><h2></h2>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">type</td>
-<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use.</br></td>
 </tr>
@@ -593,7 +600,7 @@ Similar to overworld_surface. Adds colored strata and optional pillars.</br><h2>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">type</td>
-<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use.</br></td>
 </tr>
@@ -714,6 +721,39 @@ Controls how this biome is instantiated (and then potentially modified) during w
 </table>
 <a href="#Index">Back to top</a><br><br>
 
+<h1><p id="minecraft:noise_gradient">minecraft:noise_gradient</p></h1>
+
+Places continuous bands of blocks according to a noise distribution. This surface builder's processing has been implemented with sub-terrain height ranges in mind.</br><h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">noise_block_specifiers</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type NoiseBlockSpecifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The noise block specifiers defining which ranges of noise are associated with which blocks. The ranges provided are valid on the interval [0, 1], and may overlap at their endpoints.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">noise_descriptor</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type NoiseDescriptor</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The Specification for the Noise used by the surface builder.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">non_replaceable_blocks</td>
+<td style="border-style:solid; border-width:3; padding:7px">Array of Object of type Block Specifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A list of blocks that the surface builder is not allowed to replace. Leaving this list empty or unspecified will allow the replacement of any (non-air) block type.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px"></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
 <h1><p id="minecraft:overworld">minecraft:overworld</p></h1>
 
 Controls the blocks used for the default Minecraft Overworld terrain generation.</br><h2></h2>
@@ -758,7 +798,7 @@ Controls the blocks used for the default Minecraft Overworld terrain generation.
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">type</td>
-<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use.</br></td>
 </tr>
@@ -854,15 +894,15 @@ Replaces a specified portion of one or more Minecraft biomes.</br><h2></h2>
 
 <h1><p id="minecraft:surface_builder">minecraft:surface_builder</p></h1>
 
-Controls the materials used for terrain generation.</br><h2></h2>
+Controls materials used for terrain generation.</br><h2></h2>
 
 <table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">builder</td>
-<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld or Object of type minecraft:frozen_ocean or Object of type minecraft:mesa or Object of type minecraft:swamp or Object of type minecraft:capped or Object of type minecraft:the_end</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type minecraft:overworld or Object of type minecraft:frozen_ocean or Object of type minecraft:mesa or Object of type minecraft:swamp or Object of type minecraft:capped or Object of type minecraft:the_end or Object of type minecraft:noise_gradient</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
-<td style="border-style:solid; border-width:3; padding:7px">Controls the block types used for terrain generation.</br></td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls block types and strategy used for terrain generation.</br></td>
 </tr>
 </table>
 <a href="#Index">Back to top</a><br><br>
@@ -1004,7 +1044,7 @@ Used to add decoration to the surface of swamp biomes such as water lilies.</br>
 </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">type</td>
-<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Controls the type of surface builder to use.</br></td>
 </tr>
@@ -1034,7 +1074,7 @@ Used to add decoration to the surface of swamp biomes such as water lilies.</br>
 <tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
 <tr>
 <td style="border-style:solid; border-width:3; padding:7px">type</td>
-<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end"</td>
+<td style="border-style:solid; border-width:3; padding:7px">"minecraft:overworld", "minecraft:frozen_ocean", "minecraft:mesa", "minecraft:swamp", "minecraft:capped", "minecraft:the_end", "minecraft:noise_gradient"</td>
 <td style="border-style:solid; border-width:3; padding:7px">Required</td>
 <td style="border-style:solid; border-width:3; padding:7px">Use default Minecraft End terrain generation.</br></td>
 </tr>

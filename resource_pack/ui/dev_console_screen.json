@@ -127,18 +127,156 @@
     ]
   },
 
+  "clipboard_icon": {
+    "layer": 1,
+    "type": "image",
+    "texture": "textures/ui/copy",
+    "size": [ 13, 14 ]
+  },
 
+  "clipboard_button_content": {
+    "type": "panel",
+    "size": [ "100% - 2px", "100% - 2px" ],
+    "controls": [
+      {
+        "stack_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "controls": [
+            {
+              "icon_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  { "icon@dev_console.clipboard_icon": {} }
+                ]
+              }
+            },
+            {
+              "offset": {
+                "type": "panel",
+                "size": [ 4, "100%" ]
+              }
+            },
+            {
+              "label_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  {
+                    "label": {
+                      "type": "label",
+                      "text": "contentlog.history.copyToClipboard",
+                      "color": "$text_color"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
 
-  "dev_console_dialog@common_dialogs.main_panel_no_buttons": {
-    "$child_control": "dev_console.main_with_intellisense",
-    "size": [ "100%", "75%" ],
-    "anchor_from": "top_middle",
-    "anchor_to": "top_middle"
+  "copy_button@common_buttons.light_content_button": {
+    "size": [ "50% - 1px", 30 ],
+    "$pressed_button_name": "button.copy_to_clipboard",
+    "$button_content": "dev_console.clipboard_button_content"
+  },
 
+  "clear_icon": {
+    "layer": 1,
+    "type": "image",
+    "texture": "textures/ui/crossout",
+    "size": [ 10, 10 ]
+  },
+
+  "clear_button_content": {
+    "type": "panel",
+    "size": [ "100% - 2px", "100% - 2px" ],
+    "controls": [
+      {
+        "stack_panel": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "controls": [
+            {
+              "icon_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  { "icon@dev_console.clear_icon": {} }
+                ]
+              }
+            },
+            {
+              "offset": {
+                "type": "panel",
+                "size": [ 4, "100%" ]
+              }
+            },
+            {
+              "label_panel": {
+                "type": "panel",
+                "size": [ "100%c", "100%" ],
+                "controls": [
+                  {
+                    "label": {
+                      "type": "label",
+                      "text": "contentlog.history.clear",
+                      "color": "$text_color"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "clear_button@common_buttons.light_content_button": {
+    "size": [ "50% - 1px", 30 ],
+    "$pressed_button_name": "button.clear_dev_console",
+    "$button_content": "dev_console.clear_button_content"
+  },
+
+  "button_bar": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "controls": [
+      { "copy_button@dev_console.copy_button": {} },
+      { "clear_button@dev_console.clear_button": {} }
+    ]
+  },
+
+  "dev_console_dialog_panel": {
+    "type": "panel",
+    "$dialog_control|default": "common_dialogs.main_panel_no_buttons",
+    "variables": [
+      {
+        "requires": "$supports_clipboard_set",
+        "$dialog_control": "common_dialogs.main_panel_one_button"
+      }
+    ],
+    "controls": [
+      {
+        "dev_console_dialog@$dialog_control": {
+          "$child_control": "dev_console.main_with_intellisense",
+          "$button_panel": "dev_console.button_bar",
+          "$text_name": "chat.title",
+          "size": [ "100%", "75%" ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle"
+        }
+      }
+    ]
   },
 
   "dev_console_screen@common.base_screen": {
-    "$screen_content": "dev_console.dev_console_dialog",
+    "$screen_content": "dev_console.dev_console_dialog_panel",
     "force_render_below": true,
     "button_mappings": [
       {

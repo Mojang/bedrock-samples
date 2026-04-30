@@ -1,0 +1,409 @@
+{
+  "name": "Lighting",
+  "nodes": [
+    {
+      "description": [
+        "There are many different Lighting controls in Minecraft. Things like sun color, ambient color, and moon illuminance are all lighting controls. ",
+        "You can override all of these lighting controls to change the colors and illuminance of many things!"
+      ],
+      "header_level": 1,
+      "name": "Overview",
+      "show_in_index": true
+    },
+    {
+      "description": [
+        "All lighting settings overrides should specify the version that they target via the \"format_version\" field. The remainder of the lighting data is divided up into independent JSON sub-objects for each lighting control. ",
+        "These overrides define the lighting data of the overarching light settings collection. To be valid, a definition must include exactly one of these type objects. See the full lighting schema below for additional details and the full list of supported lighting overrides."
+      ],
+      "examples": [
+        {
+          "name": "Here is a sample lighting file.",
+          "text": [
+            "{",
+            "\t\t\t\t\"format_version\": \"1.21.40\",",
+            "\t\t\t\t\"description\": {",
+            "\t\t\t\t\t\"identifier\": \"myResourcePack:default_lighting\"",
+            "\t\t\t\t},",
+            "\t\t\t\t\"directional_lights\": {",
+            "\t\t\t\t\t\"sun\": {",
+            "\t\t\t\t\t\t\"illuminance\": {",
+            "\t\t\t\t\t\t\t\"0.0\": 109880.0,",
+            "\t\t\t\t\t\t\t\"0.25\": 20000.0,",
+            "\t\t\t\t\t\t\t\"0.35\": 400.0,",
+            "\t\t\t\t\t\t\t\"0.5\": 1.0,",
+            "\t\t\t\t\t\t\t\"0.65\": 400.0,",
+            "\t\t\t\t\t\t\t\"0.75\": 20000.0,",
+            "\t\t\t\t\t\t\t\"1.0\": 109880.0",
+            "\t\t\t\t\t\t},",
+            "\t\t\t\t\t\t\"color\": [ 255.0, 255.0, 255.0, 255.0 ]",
+            "\t\t\t\t\t},",
+            "\t\t\t\t\t\"moon\": {",
+            "\t\t\t\t\t\t\"illuminance\": 0.27,",
+            "\t\t\t\t\t\t\"color\": {",
+            "\t\t\t\t\t\t\t\"0.0\": \"#ffffffff\",",
+            "\t\t\t\t\t\t\t\"1.0\": \"#ffffffff\"",
+            "\t\t\t\t\t\t}",
+            "\t\t\t\t\t},",
+            "\t\t\t\t\t\"orbital_offset_degrees\": 3.0",
+            "\t\t\t\t},",
+            "\t\t\t\"emissive\": {",
+            "\t\t\t\t\t\"desaturation\": 0.1",
+            "\t\t\t\t}",
+            "\t\t\t}",
+            "\t\t"
+          ]
+        }
+      ],
+      "examples_print_mode": "code",
+      "header_level": 1,
+      "name": "JSON Format",
+      "show_in_index": true
+    },
+    {
+      "description": [
+        "Lighting Settings are read from JSON files in the \"lighting\" subfolder of behavior packs. Loading enforces one lighting settings collection per file. The settings collection's identifier acts as its name and must be namespaced. If two behavior packs define the same lighting settings name (including namespace), then the settings from the highest pack in the stack will be used. Adding a file with a new name to the lighting data location will make it available for the game to use, while existing lighting settings can be overridden using another settings collection with the same identifier. "
+      ],
+      "header_level": 1,
+      "name": "Adding Lighting Settings",
+      "show_in_index": true
+    },
+    {
+      "header_level": 1,
+      "name": "Schema",
+      "nodes": [
+        {
+          "header_level": 2,
+          "name": "AmbientLight",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "The 'color' value can be expressed either as an array of three numerical values in the range of 0–255, or as a six-digit hexadecimal string. This can also be specified using keyframes in a time_of_day:color format where time_of_day ranges from 0-1 inclusive."
+              ],
+              "header_level": 3,
+              "name": "color",
+              "show_in_index": true,
+              "type": "Object of type Keyframes"
+            },
+            {
+              "default": "Required",
+              "description": [
+                "The 'illuminance' value corresponds to the strength, in lux (lx), of the ambient light, and should be kept quite low in general. The allowed range for this value is 0.0 - 5.0. This can also be specified using keyframes in a time_of_day:illuminance format where time_of_day ranges from 0-1 inclusive."
+              ],
+              "header_level": 3,
+              "name": "illuminance",
+              "show_in_index": true,
+              "type": "Object of type Keyframes"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "DirectionalLights",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "A single Static Directional Light definition, containing Static Directional Light settings defined by resource pack"
+              ],
+              "header_level": 3,
+              "name": "flash",
+              "show_in_index": true,
+              "type": "Object of type StaticDirectionalLight"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A single Orbital Light definition, containing Orbital Light settings defined by resource pack"
+              ],
+              "header_level": 3,
+              "name": "orbital",
+              "show_in_index": true,
+              "type": "Object of type OrbitalLights"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Emissive",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The 'desaturation' is a factor from 0.0 to 1.0 that controls how much the albedo of a given pixel is desaturated when computing the color of emissive light."
+              ],
+              "header_level": 3,
+              "name": "desaturation",
+              "show_in_index": true,
+              "type": "Float"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "KeyframedDirectionalLightImpl",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The 'color' value can be expressed either as an array of three numerical values in the range of 0–255, or as a six-digit hexadecimal string. This can also be specified using keyframes in a time_of_day:color format where time_of_day ranges from 0-1 inclusive."
+              ],
+              "header_level": 3,
+              "name": "color",
+              "show_in_index": true,
+              "type": "Object of type Keyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The 'illuminance' value corresponds to the strength, in lux (lx) as a float. This can also be specified using keyframes in a time_of_day:illuminance format where time_of_day ranges from 0-1 inclusive."
+              ],
+              "header_level": 3,
+              "name": "illuminance",
+              "show_in_index": true,
+              "type": "Object of type Keyframes"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Lighting JSON File",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "Specifies the version of the game this entity was made in. If the version is lower than the current version, any changes made to the entity in the vanilla version will be applied to it."
+              ],
+              "header_level": 3,
+              "name": "format_version",
+              "show_in_index": true,
+              "type": "String"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Lighting Settings definition which includes the 'description,' 'ambient,' 'directional_lights,' 'emissive,' and 'sky sections."
+              ],
+              "header_level": 3,
+              "name": "minecraft:lighting_settings",
+              "show_in_index": true,
+              "type": "Object of type LightingSettings"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "LightingDescription",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "The name of this Lighting Description in the format 'namespace_name:description_name'."
+              ],
+              "header_level": 3,
+              "name": "identifier",
+              "show_in_index": true,
+              "type": "Object of type Identifier"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "LightingSettings",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control ambient lighting."
+              ],
+              "header_level": 3,
+              "name": "ambient",
+              "show_in_index": true,
+              "type": "Object of type AmbientLight"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Identifier for the Lighting Settings."
+              ],
+              "header_level": 3,
+              "name": "description",
+              "show_in_index": true,
+              "type": "Object of type LightingDescription"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control directional lights like the sun and moon."
+              ],
+              "header_level": 3,
+              "name": "directional_lights",
+              "show_in_index": true,
+              "type": "Object of type DirectionalLights"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to emissives."
+              ],
+              "header_level": 3,
+              "name": "emissive",
+              "show_in_index": true,
+              "type": "Object of type Emissive"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control sky intensity."
+              ],
+              "header_level": 3,
+              "name": "sky",
+              "show_in_index": true,
+              "type": "Object of type SkyIntensity"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "OrbitalLights",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The directional light description including color and illuminance values to control the moon."
+              ],
+              "header_level": 3,
+              "name": "moon",
+              "show_in_index": true,
+              "type": "Object of type KeyframedDirectionalLightImpl"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A pair of float:float values with the format time_of_day:orbital_offset, where the time_of_day is in a range from 0-1 inclusive."
+              ],
+              "header_level": 3,
+              "name": "orbital_offset_degrees",
+              "show_in_index": true,
+              "type": "Object of type Keyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The directional light description including color and illuminance values to control the sun."
+              ],
+              "header_level": 3,
+              "name": "sun",
+              "show_in_index": true,
+              "type": "Object of type KeyframedDirectionalLightImpl"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "SkyIntensity",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The sky's 'intensity' value is a factor from 0.1 to 1.0 that controls how much sky light is factored into the indirect term for both diffuse and specular. A value of 1.0 causes the sky to contribute more to indirect light, and will result in shadows being less dark; a value of 0.1 will result in darker shadows, because less indirect light is contributed from the sky. The default value, if not provided, is 1.0."
+              ],
+              "header_level": 3,
+              "name": "intensity",
+              "show_in_index": true,
+              "type": "Object of type Keyframes"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "StaticDirectionalLight",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The 'color' value can be expressed either as an array of three numerical values in the range of 0–255, or as a six-digit hexadecimal string."
+              ],
+              "header_level": 3,
+              "name": "color",
+              "show_in_index": true,
+              "type": "Object of type Color255RGB"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The 'illuminance' value corresponds to the strength, in lux(lx) as a float."
+              ],
+              "header_level": 3,
+              "name": "illuminance",
+              "show_in_index": true,
+              "type": "Float"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        }
+      ],
+      "nodes_as_table": false,
+      "show_in_index": true
+    }
+  ]
+}

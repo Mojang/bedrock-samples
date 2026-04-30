@@ -1,0 +1,68 @@
+{
+  "format_version": "1.26.30",
+  "particle_effect": {
+    "description": {
+      "identifier": "minecraft:geyser_plume",
+      "basic_render_parameters": {
+        "material": "particles_opaque",
+        "texture": "textures/particle/geyser_plume"
+      }
+    },
+    "components": {
+      "minecraft:emitter_local_space": {
+        "position": true,
+        "rotation": false,
+        "velocity": true
+      },
+      "minecraft:emitter_rate_steady": {
+        "spawn_rate": "7 * variable.plume_height",
+        "max_particles": "5 * variable.plume_height"
+      },
+      "minecraft:emitter_lifetime_once": {
+        "active_time": "variable.active_time"
+      },
+      "minecraft:emitter_shape_box": {
+        "offset": ["Math.random(-0.4, 0.4)", 0.5, "Math.random(-0.4, 0.4)"],
+        "half_dimensions": [0.1, 0.5, 0.1],
+        "direction": [0, 1, 0]
+      },
+      "minecraft:particle_lifetime_expression": {
+        "max_lifetime": "math.ln(1 + 0.15 * (3.74 * math.sqrt(variable.plume_height) + 0.98 * variable.plume_height)) / 1.2"
+      },
+      "minecraft:particle_initial_speed": "3 * math.sqrt(variable.plume_height) + 0.98 * variable.plume_height",
+      "minecraft:particle_motion_dynamic": {
+        "linear_acceleration": [
+          "(2 * variable.particle_random_1 - 1) * 18 * math.pow(variable.particle_age / variable.particle_lifetime, 2)",
+          "-8 + 6 * math.pow(variable.particle_age / variable.particle_lifetime, 2)",
+          "(2 * variable.particle_random_2 - 1) * 18 * math.pow(variable.particle_age / variable.particle_lifetime, 2)"
+        ],
+        "linear_drag_coefficient": 1.2
+      },
+      "minecraft:particle_appearance_billboard": {
+        "size": [
+          "0.12 * (2.0 + variable.plume_height / 8.0 + 1.0 * (variable.particle_age / variable.particle_lifetime))",
+          "0.12 * (2.0 + variable.plume_height / 8.0 + 1.0 * (variable.particle_age / variable.particle_lifetime))"
+        ],
+        "facing_camera_mode": "rotate_xyz",
+        "uv": {
+          "texture_width": 16,
+          "texture_height": 128,
+          "flipbook": {
+            "base_UV": [0, 0],
+            "size_UV": [16, 16],
+            "step_UV": [0, 16],
+            "frames_per_second": 12,
+            "max_frame": 8,
+            "stretch_to_lifetime": true
+          }
+        }
+      },
+      "minecraft:particle_motion_collision": {
+        "collision_drag": 5,
+        "coefficient_of_restitution": 0,
+        "collision_radius": 0.5
+      },
+      "minecraft:particle_appearance_lighting": {}
+    }
+  }
+}

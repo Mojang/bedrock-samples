@@ -1,5 +1,5 @@
 {
-  "$id": "3569090981",
+  "$id": "894717301",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "100089226": {
@@ -41,9 +41,15 @@
       "title": "Filter Group Map",
       "type": "object"
     },
-    "1432208322": {
+    "1150863446": {
+      "description": "Intance of rules definition.",
       "properties": {
-        "filters": {
+        "check_if_target_is_immersed_in_water": {
+          "default": false,
+          "description": "Whether or not the target should be fully immersed in water for the knockback rules to apply.",
+          "type": "boolean"
+        },
+        "filter": {
           "$ref": "#/definitions/2789112004",
           "default": {
             "AND": null,
@@ -55,79 +61,56 @@
             "any_of": null,
             "none_of": null
           },
-          "description": "Conditions that must be met for this preset to be applied."
+          "description": "Filter for the entity type that will be affected by these knockback rules."
         },
-        "kick_distance_threshold": {
-          "default": 1.2999999523162842,
-          "description": "Maximum horizontal distance at which another entity can kick this entity. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "kick_speed_scale": {
-          "default": 2,
-          "description": "Multiplier applied to the pushing entity's movement speed to determine kick force. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "max_kick_speed": {
-          "default": 0.5,
-          "description": "Maximum speed the ball can be kicked at, regardless of how fast the pushing entity is moving. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "min_distance": {
-          "default": 0.009999999776482582,
-          "description": "Minimum distance between two entities for push forces to be applied. Entities closer than this will not push each other.",
-          "type": "number"
-        },
-        "min_kick_speed": {
+        "horizontal_hit_angle_scale": {
           "default": 0,
-          "description": "Minimum speed the ball will be kicked at, regardless of how slowly the pushing entity is moving. Only used when push_mode is \"ball\".",
+          "description": "Scaling factor to angle the knockback horizontally based on the attacker's aim direction.",
           "type": "number"
         },
-        "play_sound_cooldown_in_seconds": {
-          "default": 0.20000000298023224,
-          "description": "Cooldown in seconds between sounds. A lower number results in more sounds.",
+        "horizontal_power": {
+          "default": 1,
+          "description": "Power with which a target should be knocked backwards.",
+          "type": "number"
+        },
+        "scale_previous_velocity": {
+          "default": 0.5,
+          "description": "Scaling factor to apply to the target's velocity before applying knockback.",
+          "maximum": 1,
           "minimum": 0,
           "type": "number"
         },
-        "play_sound_impulse_threshold": {
-          "default": 0.20000000298023224,
-          "description": "Minimum change of velocity needed to trigger the push sound. A lower value means higher sensitivity.",
+        "scale_with_damage": {
+          "default": false,
+          "description": "Scaling factor to the magnitude of knockback based on the inverse square of the damage.",
+          "type": "boolean"
+        },
+        "vertical_hit_angle_scale": {
+          "default": 0,
+          "description": "Scaling factor to angle the knockback vertically based on the attacker's aim direction.",
+          "maximum": 1,
           "minimum": 0,
           "type": "number"
         },
-        "push_mode": {
-          "default": "default",
-          "description": "Defines the type of push vector calculation applied to the entity:\n- \"default\": Standard push calculation used by most entities.\n- \"legacy_boat\": Legacy push calculation historically used by boats. Includes dampened forces and sneak-based cancellation.\n- \"legacy_minecart\": Legacy push calculation historically used by minecarts. Includes alignment-based collision handling and velocity averaging.- \"ball\": Push calculation for ball-like entities. The ball is kicked in the direction of the pushing entity's movement, with force based on their movement speed.",
-          "enum": [
-            "default",
-            "legacy_boat",
-            "legacy_minecart",
-            "ball"
-          ],
-          "title": "PushMode",
-          "type": "string"
-        },
-        "push_scale_other": {
-          "default": 1,
-          "description": "Scales how much push force this entity applies to the other entity when colliding. A value of 1.0 applies full force, 0.5 applies half.",
+        "vertical_position_angle_scale": {
+          "default": 0,
+          "description": "Scaling factor to angle the knockback vertically based on the difference in the attacker's feet position to the target's feet position.",
+          "maximum": 1,
+          "minimum": 0,
           "type": "number"
         },
-        "push_scale_self": {
-          "default": 1,
-          "description": "Scales how much this entity pushes itself away when colliding with another entity. A value of 1.0 applies full force, 0.5 applies half.",
+        "vertical_power": {
+          "default": 0.4000000059604645,
+          "description": "Power with which a target should be knocked upwards.",
           "type": "number"
         },
-        "strength_multiplier": {
-          "default": 0.05000000074505806,
-          "description": "Multiplier applied to the push strength. Higher values result in stronger pushes.",
-          "type": "number"
-        },
-        "vertical_kick_multiplier": {
-          "default": 0.30000001192092896,
-          "description": "Multiplier for the upward force applied when the ball is kicked while on the ground. A value of 0 keeps the ball flat. Only used when push_mode is \"ball\".",
+        "vertical_velocity_cap": {
+          "default": 0.4000000059604645,
+          "description": "Maximum allowed Y velocity after target's knockback rules have been evaluated.",
           "type": "number"
         }
       },
-      "title": "PushableByEntityPreset",
+      "title": "minecraft:apply_knockback_rules_instance",
       "type": "object"
     },
     "2457665045": {
@@ -232,19 +215,20 @@
       "title": "Filter Group"
     }
   },
-  "description": "Allows an entity to be pushed by other entities.",
+  "description": "Defines how an entity applies knockback.",
   "properties": {
     "presets": {
       "default": [
       ],
-      "description": "Defines how this entity behaves when pushed by another entity. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.",
+      "description": "Array of rules instances defining how knockback should be applied to the entity.",
       "items": {
-        "$ref": "#/definitions/1432208322"
+        "$ref": "#/definitions/1150863446",
+        "description": "Intance of rules definition."
       },
       "type": "array"
     }
   },
-  "title": "minecraft:pushable_by_entity",
+  "title": "minecraft:apply_knockback_rules",
   "type": "object",
-  "x-format-version": "beta"
+  "x-format-version": "1.26.30"
 }

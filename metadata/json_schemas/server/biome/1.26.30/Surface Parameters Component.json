@@ -1,0 +1,550 @@
+{
+  "$id": "1416206402",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "1170899181": {
+      "description": "Specifies a particular block. Can be a string block name or a JSON object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/3152646801"
+        },
+        {
+          "properties": {
+            "name": {
+              "$ref": "#/definitions/3152646801",
+              "description": "Name of the block"
+            },
+            "states": {
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "default": {
+              },
+              "description": "Contains members named after each state, with boolean, integer, or string values.",
+              "type": "object"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object"
+        }
+      ],
+      "title": "Block Specifier"
+    },
+    "1219198032": {
+      "description": "Similar to overworld_surface. Adds icebergs.",
+      "properties": {
+        "foundation_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used deep underground in this biome."
+        },
+        "mid_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used in a layer below the surface of this biome."
+        },
+        "sea_floor_depth": {
+          "description": "Controls how deep below the world water level the floor should occur.",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sea_floor_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used as a floor for bodies of water in this biome."
+        },
+        "sea_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the bodies of water in this biome."
+        },
+        "top_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the surface of this biome."
+        },
+        "type": {
+          "const": "minecraft:frozen_ocean",
+          "description": "Controls the type of surface builder to use.",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "foundation_material",
+        "mid_material",
+        "sea_floor_depth",
+        "sea_floor_material",
+        "sea_material",
+        "top_material",
+        "type"
+      ],
+      "title": "minecraft:frozen_ocean",
+      "type": "object"
+    },
+    "1609720327": {
+      "description": "Places continuous bands of blocks according to a noise distribution. This surface builder's processing has been implemented with sub-terrain height ranges in mind.",
+      "properties": {
+        "noise_block_specifiers": {
+          "description": "The noise block specifiers defining which ranges of noise are associated with which blocks. The ranges provided are valid on the interval [0, 1], and may overlap at their endpoints.",
+          "items": {
+            "$ref": "#/definitions/2521241142"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "noise_descriptor": {
+          "$ref": "#/definitions/1854367640",
+          "description": "The Specification for the Noise used by the surface builder."
+        },
+        "non_replaceable_blocks": {
+          "description": "A list of blocks that the surface builder is not allowed to replace. Leaving this list empty or unspecified will allow the replacement of any (non-air) block type.",
+          "items": {
+            "$ref": "#/definitions/1170899181",
+            "description": "Specifies a particular block. Can be a string block name or a JSON object"
+          },
+          "type": "array"
+        },
+        "type": {
+          "const": "minecraft:noise_gradient",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "noise_block_specifiers",
+        "noise_descriptor",
+        "type"
+      ],
+      "title": "minecraft:noise_gradient",
+      "type": "object"
+    },
+    "1854367640": {
+      "properties": {
+        "amplitudes": {
+          "description": "Governs the attenuation of the first n octaves in the generated noise.",
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "type": "array"
+        },
+        "first_octave": {
+          "description": "Governs the general frequency characteristics of the generated noise. Lower value results in noise with lower frequency content.",
+          "type": "integer"
+        },
+        "name": {
+          "description": "The string used to initialize the noise. Has no impact on the qualitative aspects of the generated values.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amplitudes",
+        "first_octave",
+        "name"
+      ],
+      "title": "NoiseDescriptor",
+      "type": "object"
+    },
+    "2521241142": {
+      "properties": {
+        "block": {
+          "$ref": "#/definitions/1170899181",
+          "description": "The block to place if the noise sample satisfies the provided threshold/range"
+        },
+        "noise": {
+          "default": "",
+          "description": "The string identifier of the noise associated with this NoiseBlockSpecifier.",
+          "pattern": "^\\S+$",
+          "type": "string",
+          "x-regex-flags": "ECMAScript,icase"
+        },
+        "range": {
+          "$ref": "#/definitions/2566306602",
+          "default": {
+            "max": 0,
+            "min": 0
+          },
+          "description": "The range of sampled noise value associated with the provided Block."
+        },
+        "threshold": {
+          "default": 0,
+          "description": "The minimum sampled noise value associated with the provided Block.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "block"
+      ],
+      "title": "NoiseBlockSpecifier",
+      "type": "object"
+    },
+    "2566306602": {
+      "properties": {
+        "max": {
+          "default": 0,
+          "type": "number"
+        },
+        "min": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "title": "FloatRange",
+      "type": "object"
+    },
+    "2610378247": {
+      "description": "Generates surface on blocks with non-solid blocks above or below.",
+      "properties": {
+        "beach_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Material used to decorate surface near sea level."
+        },
+        "ceiling_materials": {
+          "description": "Materials used for the surface ceiling.",
+          "items": {
+            "$ref": "#/definitions/1170899181",
+            "description": "Specifies a particular block. Can be a string block name or a JSON object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "floor_materials": {
+          "description": "Materials used for the surface floor.",
+          "items": {
+            "$ref": "#/definitions/1170899181",
+            "description": "Specifies a particular block. Can be a string block name or a JSON object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "foundation_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Material used to replace solid blocks that are not surface blocks."
+        },
+        "sea_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Material used to replace air blocks below sea level."
+        },
+        "type": {
+          "const": "minecraft:capped",
+          "description": "Controls the type of surface builder to use",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ceiling_materials",
+        "floor_materials",
+        "foundation_material",
+        "sea_material",
+        "type"
+      ],
+      "title": "minecraft:capped",
+      "type": "object"
+    },
+    "3152646801": {
+      "title": "Reference",
+      "type": "string"
+    },
+    "3163100562": {
+      "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
+      "properties": {
+        "foundation_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used deep underground in this biome."
+        },
+        "mid_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used in a layer below the surface of this biome."
+        },
+        "sea_floor_depth": {
+          "description": "Controls how deep below the world water level the floor should occur.",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sea_floor_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used as a floor for bodies of water in this biome."
+        },
+        "sea_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the bodies of water in this biome."
+        },
+        "top_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the surface of this biome."
+        },
+        "type": {
+          "const": "minecraft:overworld",
+          "description": "Controls the type of surface builder to use.",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "foundation_material",
+        "mid_material",
+        "sea_floor_depth",
+        "sea_floor_material",
+        "sea_material",
+        "top_material",
+        "type"
+      ],
+      "title": "minecraft:overworld",
+      "type": "object"
+    },
+    "3817857446": {
+      "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
+      "properties": {
+        "bryce_pillars": {
+          "description": "Whether the mesa generates with pillars",
+          "type": "boolean"
+        },
+        "clay_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Base clay block to use"
+        },
+        "foundation_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used deep underground in this biome."
+        },
+        "hard_clay_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Hardened clay block to use"
+        },
+        "has_forest": {
+          "description": "Places coarse dirt and grass at high altitudes",
+          "type": "boolean"
+        },
+        "mid_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used in a layer below the surface of this biome."
+        },
+        "sea_floor_depth": {
+          "description": "Controls how deep below the world water level the floor should occur.",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sea_floor_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used as a floor for bodies of water in this biome."
+        },
+        "sea_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the bodies of water in this biome."
+        },
+        "top_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the surface of this biome."
+        },
+        "type": {
+          "const": "minecraft:mesa",
+          "description": "Controls the type of surface builder to use.",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "bryce_pillars",
+        "clay_material",
+        "foundation_material",
+        "hard_clay_material",
+        "has_forest",
+        "mid_material",
+        "sea_floor_depth",
+        "sea_floor_material",
+        "sea_material",
+        "top_material",
+        "type"
+      ],
+      "title": "minecraft:mesa",
+      "type": "object"
+    },
+    "3951675300": {
+      "description": "Used to add decoration to the surface of swamp biomes such as water lilies.",
+      "properties": {
+        "foundation_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used deep underground in this biome."
+        },
+        "max_puddle_depth_below_sea_level": {
+          "description": "Controls the depth at which surface level blocks can be replaced with water for puddles. The number represents the number of blocks (0, 127) below sea level that we will go down to look for a surface block.",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mid_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used in a layer below the surface of this biome."
+        },
+        "sea_floor_depth": {
+          "description": "Controls how deep below the world water level the floor should occur.",
+          "maximum": 127,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sea_floor_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used as a floor for bodies of water in this biome."
+        },
+        "sea_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the bodies of water in this biome."
+        },
+        "top_material": {
+          "$ref": "#/definitions/1170899181",
+          "description": "Controls the block type used for the surface of this biome."
+        },
+        "type": {
+          "const": "minecraft:swamp",
+          "description": "Controls the type of surface builder to use.",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "foundation_material",
+        "max_puddle_depth_below_sea_level",
+        "mid_material",
+        "sea_floor_depth",
+        "sea_floor_material",
+        "sea_material",
+        "top_material",
+        "type"
+      ],
+      "title": "minecraft:swamp",
+      "type": "object"
+    },
+    "4171787800": {
+      "properties": {
+        "type": {
+          "const": "minecraft:the_end",
+          "description": "Use default Minecraft End terrain generation.",
+          "enum": [
+            "minecraft:overworld",
+            "minecraft:frozen_ocean",
+            "minecraft:mesa",
+            "minecraft:swamp",
+            "minecraft:capped",
+            "minecraft:the_end",
+            "minecraft:noise_gradient"
+          ],
+          "title": "SurfaceBuilderType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "minecraft:the_end",
+      "type": "object"
+    }
+  },
+  "description": "Controls materials used for terrain generation.",
+  "properties": {
+    "builder": {
+      "description": "Controls block types and strategy used for terrain generation.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/3163100562",
+          "description": "Controls the blocks used for the default Minecraft Overworld terrain generation."
+        },
+        {
+          "$ref": "#/definitions/1219198032",
+          "description": "Similar to overworld_surface. Adds icebergs."
+        },
+        {
+          "$ref": "#/definitions/3817857446",
+          "description": "Similar to overworld_surface. Adds colored strata and optional pillars."
+        },
+        {
+          "$ref": "#/definitions/3951675300",
+          "description": "Used to add decoration to the surface of swamp biomes such as water lilies."
+        },
+        {
+          "$ref": "#/definitions/2610378247",
+          "description": "Generates surface on blocks with non-solid blocks above or below."
+        },
+        {
+          "$ref": "#/definitions/4171787800"
+        },
+        {
+          "$ref": "#/definitions/1609720327",
+          "description": "Places continuous bands of blocks according to a noise distribution. This surface builder's processing has been implemented with sub-terrain height ranges in mind."
+        }
+      ]
+    }
+  },
+  "required": [
+    "builder"
+  ],
+  "title": "minecraft:surface_builder",
+  "type": "object",
+  "x-format-version": "1.26.30"
+}
