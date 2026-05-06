@@ -1,0 +1,411 @@
+<h1>COLOR GRADING AND TONEMAPPING DOCUMENTATION </h1>
+This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
+<h2><p id="Index">Index</p></h2>
+<table border="1">
+<tr> <th><a href="#Overview">Overview</a></th> </tr>
+<tr> <th><a href="#JSON Format">JSON Format</a></th> </tr>
+<tr> <th><a href="#Adding Color Grading and Tonemapping Settings">Adding Color Grading and Tonemapping Settings</a></th> </tr>
+<tr> <th><a href="#Schema">Schema</a></th> </tr>
+<tr> <td> <a href="#Color Grading JSON File v1"> Color Grading JSON File v1</a> </tr> </td>
+<tr> <td> <a href="#ColorGrading"> ColorGrading</a> </tr> </td>
+<tr> <td> <a href="#ColorGradingDescription"> ColorGradingDescription</a> </tr> </td>
+<tr> <td> <a href="#ColorGradingSettings"> ColorGradingSettings</a> </tr> </td>
+<tr> <td> <a href="#Highlights"> Highlights</a> </tr> </td>
+<tr> <td> <a href="#Midtones"> Midtones</a> </tr> </td>
+<tr> <td> <a href="#Shadows"> Shadows</a> </tr> </td>
+<tr> <td> <a href="#Temperature"> Temperature</a> </tr> </td>
+<tr> <td> <a href="#TemperatureGrading Type"> TemperatureGrading Type</a> </tr> </td>
+<tr> <td> <a href="#ToneMapping"> ToneMapping</a> </tr> </td>
+<tr> <td> <a href="#Tonemapper"> Tonemapper</a> </tr> </td>
+</table>
+<a href="#Index">Back to top</a>
+<h1><p id="Overview">Overview</p></h1>
+
+There are several Color Gradng and Tonemapping controls in Minecraft. Color Grading controls include midtones, highlights, and shadows. Tonemapping operators include Reinhard, Hable, and several other options. </br>You can override all of these settings to change the contrast, gamma, gain, and more of shadows, midtones, and highlights, as well as how colors are remapped using tonemapping.</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="JSON Format">JSON Format</p></h1>
+
+All color grading settings overrides should specify the version that they target via the "format_version" field. The remainder of the color grading data is divided up into independent JSON sub-objects for each control. </br>These overrides define the data of the overarching color grading settings collection. To be valid, a definition must include exactly one of these type objects. See the full color grading settings schema below for additional details and the full list of supported color grading overrides.</br><h2></h2>
+Here is a sample color grading settings file.<br / ><textarea readonly="true" cols="58" rows="27">
+{
+          "format_version": "1.21.90",
+          "minecraft:color_grading_settings": {
+          "description": {
+            "identifier": "my_pack:default_color_grading"
+          },
+          "color_grading": {
+            "midtones": {
+            "contrast": [1.3, 1.3, 1.3],
+            "gain": [1.0, 1.0, 1.0],
+            "gamma": [2.2, 2.2, 2.2],
+            "offset": [0.0, 0.0, 0.0],
+            "saturation": [1.05, 1.05, 1.05]
+            },
+            "temperature": {
+            "enabled": true,
+            "temperature": 6500,
+            "type": "color_temperature"
+            }
+          },
+          "tone_mapping": {
+            "operator": "generic"
+          }
+          }
+        }
+    
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Adding Color Grading and Tonemapping Settings">Adding Color Grading and Tonemapping Settings</p></h1>
+
+Color Grading and Tonemapping Settings are read from JSON files in the "color_grading" subfolder of resource packs. Loading enforces one Color Grading and Tonemapping settings collection per file. The settings collection's identifier acts as its name and must be namespaced. If two resource packs define the same Color Grading and Tonemapping settings name (including namespace), then the settings from the highest pack in the stack will be used. Adding a file with a new name to the Color Grading and Tonemapping data location will make it available for the game to use, while existing Color Grading and Tonemapping settings can be overridden using another settings collection with the same identifier. </br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Schema">Schema</p></h1>
+
+<h1><p id="Color Grading JSON File v1">Color Grading JSON File v1</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">format_version</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Specifies the version of the game these Color Grading Settings were made in. If the version is lower than the current version, any changes made to the settings in the vanilla version will be applied to it.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:color_grading_settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type ColorGradingSettings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Color Grading Settings definition which includes the 'midtones,' 'temperature,' 'shadows,' and 'highlights' sections.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="ColorGrading">ColorGrading</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">highlights</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Highlights</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control highlights.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">midtones</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Midtones</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control midtones.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">shadows</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Shadows</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control shadows.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">temperature</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Temperature</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control temperatur.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="ColorGradingDescription">ColorGradingDescription</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The name of this Color Grading Description in the format 'namespace_name:description_name'.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="ColorGradingSettings">ColorGradingSettings</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">color_grading</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type ColorGrading</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control color grading.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">description</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type ColorGradingDescription</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Identifier for the Color Grading Settings.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">tone_mapping</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type ToneMapping</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Parameters to control tone mapping.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Highlights">Highlights</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">contrast</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which describes the tonal range, the difference in luminance between the bright and dark pixels in an image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">enabled</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Whether or not highlights are on or off.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">gain</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 10.0 which is a multiplication factor applied to each color channel to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">gamma</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">highlightsMin</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 1.0 and 4.0 which is a factor multiplied by the average luminance of the scene to determine which pixels are considered highlights.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">offset</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">saturation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 10.0 which determines the hue intensity of colors.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Midtones">Midtones</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">contrast</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which describes the tonal range, the difference in luminance between the bright and dark pixels in an image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">gain</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 10.0 which is a multiplication factor applied to each color channel to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">gamma</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">offset</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">saturation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 10.0 which determines the hue intensity of colors.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Shadows">Shadows</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">contrast</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which describes the tonal range, the difference in luminance between the bright and dark pixels in an image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">enabled</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Whether or not shadows are on or off.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">gain</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 10.0 which is a multiplication factor applied to each color channel to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">gamma</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">offset</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">saturation</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type vec3</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.0 and 10.0 which determines the hue intensity of colors.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">shadowsMax</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 0.1 and 1.0 which is a factor multiplied by the average luminance of the scene to determine which pixels are considered shadows.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Temperature">Temperature</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">enabled</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Whether or not temperature is on or off.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">temperature</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A value between 1000.0 and 15000.0 which is the overall image temperature measured in Kelvin. The default value is 6500.0, the standard 'daylight' illumination.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">type</td>
+<td style="border-style:solid; border-width:3; padding:7px">"white_balance", "color_temperature"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The name of the desired temperature type from the following list: 'white_balance' or 'color_temperature'.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="TemperatureGrading Type">TemperatureGrading Type</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">color_temperature</td>
+<td style="border-style:solid; border-width:3; padding:7px">"white_balance", "color_temperature"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Causes higher temperature values to result in a warmer image, while lower temperature values will result in a cooler image.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">white_balance</td>
+<td style="border-style:solid; border-width:3; padding:7px">"white_balance", "color_temperature"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Causes higher temperature values to result tin a cooler image, while lower temperature values will result in a warmer image.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="ToneMapping">ToneMapping</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">operator</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The name of the desired tonemapping operator from the following list: 'aces', 'hable', 'reinhard', 'reinhard_luma', 'reinhard_luminance', 'reinhard_luminance', or 'generic'.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Tonemapper">Tonemapper</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">aces</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">A filmic tone mapping operator meant to emulate the behaviors of real-life film, specifically following the ACES standard used in television and film.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">generic</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">A generic tone mapping curve that has been hand-tuned by Mojang's artists. It is similar to the other filmic operators but preserves a bit more hue saturation at high luminance regions.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">hable</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">A filmic tone mapping operator meant to emulate the behaviors of real-life film, developed and shared by John Hable at a GDC talk from 2010 titled  'Uncharted 2 : HDR Lighting'.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">reinhard</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">A low-cost tone mapping operator that remaps HDR color values in the range [0, ∞) to [0, 1). This operator looks especially good when applied to low-contrast scenes whose values are already within the range of [0, 1), but tends to mute higher luminance values.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">reinhard_luma</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">An extended version of the Reinhard operator that comes at a slightly higher cost, but it preserves details in low dynamic range regions of an image that would otherwise be lost by the standard Reinhard operator.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">reinhard_luminance</td>
+<td style="border-style:solid; border-width:3; padding:7px">"aces", "hable", "reinhard", "reinhard_luma", "reinhard_luminance", "generic"</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">A version of the extended Reinhard operator modified to adjust the luminance of the input colors. It comes at a slightly higher cost, but it preserves colors in high luminance regions of an image that would otherwise be washed out by the standard Reinhard operator.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<br><br>
+

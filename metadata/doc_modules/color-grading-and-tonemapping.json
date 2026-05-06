@@ -1,0 +1,615 @@
+{
+  "name": "Color Grading and Tonemapping",
+  "nodes": [
+    {
+      "description": [
+        "There are several Color Gradng and Tonemapping controls in Minecraft. Color Grading controls include midtones, highlights, and shadows. Tonemapping operators include Reinhard, Hable, and several other options. ",
+        "You can override all of these settings to change the contrast, gamma, gain, and more of shadows, midtones, and highlights, as well as how colors are remapped using tonemapping."
+      ],
+      "header_level": 1,
+      "name": "Overview",
+      "show_in_index": true
+    },
+    {
+      "description": [
+        "All color grading settings overrides should specify the version that they target via the \"format_version\" field. The remainder of the color grading data is divided up into independent JSON sub-objects for each control. ",
+        "These overrides define the data of the overarching color grading settings collection. To be valid, a definition must include exactly one of these type objects. See the full color grading settings schema below for additional details and the full list of supported color grading overrides."
+      ],
+      "examples": [
+        {
+          "name": "Here is a sample color grading settings file.",
+          "text": [
+            "{",
+            "\t\t\t\t  \"format_version\": \"1.21.90\",",
+            "\t\t\t\t  \"minecraft:color_grading_settings\": {",
+            "\t\t\t\t\t\"description\": {",
+            "\t\t\t\t\t  \"identifier\": \"my_pack:default_color_grading\"",
+            "\t\t\t\t\t},",
+            "\t\t\t\t\t\"color_grading\": {",
+            "\t\t\t\t\t  \"midtones\": {",
+            "\t\t\t\t\t\t\"contrast\": [1.3, 1.3, 1.3],",
+            "\t\t\t\t\t\t\"gain\": [1.0, 1.0, 1.0],",
+            "\t\t\t\t\t\t\"gamma\": [2.2, 2.2, 2.2],",
+            "\t\t\t\t\t\t\"offset\": [0.0, 0.0, 0.0],",
+            "\t\t\t\t\t\t\"saturation\": [1.05, 1.05, 1.05]",
+            "\t\t\t\t\t  },",
+            "\t\t\t\t\t  \"temperature\": {",
+            "\t\t\t\t\t\t\"enabled\": true,",
+            "\t\t\t\t\t\t\"temperature\": 6500,",
+            "\t\t\t\t\t\t\"type\": \"color_temperature\"",
+            "\t\t\t\t\t  }",
+            "\t\t\t\t\t},",
+            "\t\t\t\t\t\"tone_mapping\": {",
+            "\t\t\t\t\t  \"operator\": \"generic\"",
+            "\t\t\t\t\t}",
+            "\t\t\t\t  }",
+            "\t\t\t\t}",
+            "\t\t"
+          ]
+        }
+      ],
+      "examples_print_mode": "code",
+      "header_level": 1,
+      "name": "JSON Format",
+      "show_in_index": true
+    },
+    {
+      "description": [
+        "Color Grading and Tonemapping Settings are read from JSON files in the \"color_grading\" subfolder of resource packs. Loading enforces one Color Grading and Tonemapping settings collection per file. The settings collection's identifier acts as its name and must be namespaced. If two resource packs define the same Color Grading and Tonemapping settings name (including namespace), then the settings from the highest pack in the stack will be used. Adding a file with a new name to the Color Grading and Tonemapping data location will make it available for the game to use, while existing Color Grading and Tonemapping settings can be overridden using another settings collection with the same identifier. "
+      ],
+      "header_level": 1,
+      "name": "Adding Color Grading and Tonemapping Settings",
+      "show_in_index": true
+    },
+    {
+      "header_level": 1,
+      "name": "Schema",
+      "nodes": [
+        {
+          "header_level": 2,
+          "name": "Color Grading JSON File v1",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "Specifies the version of the game these Color Grading Settings were made in. If the version is lower than the current version, any changes made to the settings in the vanilla version will be applied to it."
+              ],
+              "header_level": 3,
+              "name": "format_version",
+              "show_in_index": true,
+              "type": "String"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Color Grading Settings definition which includes the 'midtones,' 'temperature,' 'shadows,' and 'highlights' sections."
+              ],
+              "header_level": 3,
+              "name": "minecraft:color_grading_settings",
+              "show_in_index": true,
+              "type": "Object of type ColorGradingSettings"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "ColorGrading",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control highlights."
+              ],
+              "header_level": 3,
+              "name": "highlights",
+              "show_in_index": true,
+              "type": "Object of type Highlights"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control midtones."
+              ],
+              "header_level": 3,
+              "name": "midtones",
+              "show_in_index": true,
+              "type": "Object of type Midtones"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control shadows."
+              ],
+              "header_level": 3,
+              "name": "shadows",
+              "show_in_index": true,
+              "type": "Object of type Shadows"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control temperatur."
+              ],
+              "header_level": 3,
+              "name": "temperature",
+              "show_in_index": true,
+              "type": "Object of type Temperature"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "ColorGradingDescription",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The name of this Color Grading Description in the format 'namespace_name:description_name'."
+              ],
+              "header_level": 3,
+              "name": "identifier",
+              "show_in_index": true,
+              "type": "Object of type Identifier"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "ColorGradingSettings",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control color grading."
+              ],
+              "header_level": 3,
+              "name": "color_grading",
+              "show_in_index": true,
+              "type": "Object of type ColorGrading"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Identifier for the Color Grading Settings."
+              ],
+              "header_level": 3,
+              "name": "description",
+              "show_in_index": true,
+              "type": "Object of type ColorGradingDescription"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Parameters to control tone mapping."
+              ],
+              "header_level": 3,
+              "name": "tone_mapping",
+              "show_in_index": true,
+              "type": "Object of type ToneMapping"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Highlights",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which describes the tonal range, the difference in luminance between the bright and dark pixels in an image."
+              ],
+              "header_level": 3,
+              "name": "contrast",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Whether or not highlights are on or off."
+              ],
+              "header_level": 3,
+              "name": "enabled",
+              "show_in_index": true,
+              "type": "Boolean"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 10.0 which is a multiplication factor applied to each color channel to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "gain",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "gamma",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 1.0 and 4.0 which is a factor multiplied by the average luminance of the scene to determine which pixels are considered highlights."
+              ],
+              "header_level": 3,
+              "name": "highlightsMin",
+              "show_in_index": true,
+              "type": "Float"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "offset",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 10.0 which determines the hue intensity of colors."
+              ],
+              "header_level": 3,
+              "name": "saturation",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Midtones",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which describes the tonal range, the difference in luminance between the bright and dark pixels in an image."
+              ],
+              "header_level": 3,
+              "name": "contrast",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 10.0 which is a multiplication factor applied to each color channel to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "gain",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "gamma",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "offset",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 10.0 which determines the hue intensity of colors."
+              ],
+              "header_level": 3,
+              "name": "saturation",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Shadows",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which describes the tonal range, the difference in luminance between the bright and dark pixels in an image."
+              ],
+              "header_level": 3,
+              "name": "contrast",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "Whether or not shadows are on or off."
+              ],
+              "header_level": 3,
+              "name": "enabled",
+              "show_in_index": true,
+              "type": "Boolean"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 10.0 which is a multiplication factor applied to each color channel to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "gain",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "gamma",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 4.0 which is an exponential factor applied to the final color after both color grading and tone mapping to adjust the overall luminance intensity of the image."
+              ],
+              "header_level": 3,
+              "name": "offset",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.0 and 10.0 which determines the hue intensity of colors."
+              ],
+              "header_level": 3,
+              "name": "saturation",
+              "show_in_index": true,
+              "type": "Object of type vec3"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 0.1 and 1.0 which is a factor multiplied by the average luminance of the scene to determine which pixels are considered shadows."
+              ],
+              "header_level": 3,
+              "name": "shadowsMax",
+              "show_in_index": true,
+              "type": "Float"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Temperature",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "Whether or not temperature is on or off."
+              ],
+              "header_level": 3,
+              "name": "enabled",
+              "show_in_index": true,
+              "type": "Boolean"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "A value between 1000.0 and 15000.0 which is the overall image temperature measured in Kelvin. The default value is 6500.0, the standard 'daylight' illumination."
+              ],
+              "header_level": 3,
+              "name": "temperature",
+              "show_in_index": true,
+              "type": "Float"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The name of the desired temperature type from the following list: 'white_balance' or 'color_temperature'."
+              ],
+              "header_level": 3,
+              "name": "type",
+              "show_in_index": true,
+              "type": "\"white_balance\", \"color_temperature\""
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "TemperatureGrading Type",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "Causes higher temperature values to result in a warmer image, while lower temperature values will result in a cooler image."
+              ],
+              "header_level": 3,
+              "name": "color_temperature",
+              "show_in_index": true,
+              "type": "\"white_balance\", \"color_temperature\""
+            },
+            {
+              "default": "Required",
+              "description": [
+                "Causes higher temperature values to result tin a cooler image, while lower temperature values will result in a warmer image."
+              ],
+              "header_level": 3,
+              "name": "white_balance",
+              "show_in_index": true,
+              "type": "\"white_balance\", \"color_temperature\""
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "ToneMapping",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The name of the desired tonemapping operator from the following list: 'aces', 'hable', 'reinhard', 'reinhard_luma', 'reinhard_luminance', 'reinhard_luminance', or 'generic'."
+              ],
+              "header_level": 3,
+              "name": "operator",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "Tonemapper",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "A filmic tone mapping operator meant to emulate the behaviors of real-life film, specifically following the ACES standard used in television and film."
+              ],
+              "header_level": 3,
+              "name": "aces",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            },
+            {
+              "default": "Required",
+              "description": [
+                "A generic tone mapping curve that has been hand-tuned by Mojang's artists. It is similar to the other filmic operators but preserves a bit more hue saturation at high luminance regions."
+              ],
+              "header_level": 3,
+              "name": "generic",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            },
+            {
+              "default": "Required",
+              "description": [
+                "A filmic tone mapping operator meant to emulate the behaviors of real-life film, developed and shared by John Hable at a GDC talk from 2010 titled  'Uncharted 2 : HDR Lighting'."
+              ],
+              "header_level": 3,
+              "name": "hable",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            },
+            {
+              "default": "Required",
+              "description": [
+                "A low-cost tone mapping operator that remaps HDR color values in the range [0, ∞) to [0, 1). This operator looks especially good when applied to low-contrast scenes whose values are already within the range of [0, 1), but tends to mute higher luminance values."
+              ],
+              "header_level": 3,
+              "name": "reinhard",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            },
+            {
+              "default": "Required",
+              "description": [
+                "An extended version of the Reinhard operator that comes at a slightly higher cost, but it preserves details in low dynamic range regions of an image that would otherwise be lost by the standard Reinhard operator."
+              ],
+              "header_level": 3,
+              "name": "reinhard_luma",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            },
+            {
+              "default": "Required",
+              "description": [
+                "A version of the extended Reinhard operator modified to adjust the luminance of the input colors. It comes at a slightly higher cost, but it preserves colors in high luminance regions of an image that would otherwise be washed out by the standard Reinhard operator."
+              ],
+              "header_level": 3,
+              "name": "reinhard_luminance",
+              "show_in_index": true,
+              "type": "\"aces\", \"hable\", \"reinhard\", \"reinhard_luma\", \"reinhard_luminance\", \"generic\""
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        }
+      ],
+      "nodes_as_table": false,
+      "show_in_index": true
+    }
+  ]
+}

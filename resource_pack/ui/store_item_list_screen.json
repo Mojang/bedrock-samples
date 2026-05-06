@@ -87,12 +87,21 @@
     "type": "grid",
     "size": [ "100% + 2px", "100%c + 4px" ],
     "grid_rescaling_type": "horizontal",
-    "grid_item_template": "store_item_list.store_offer_grid_item",
+    "grid_item_template": "$grid_item_template",
     "clip_state_change_event": "$store_factory_clipping_event",
     "$store_offer_grid_prefix|default": "list",
     "$store_offer_grid_collection_name|default": "list_collection",
     "collection_name": "$store_offer_grid_collection_name",
-
+    "variables": [
+      {
+        "requires": "$content_cards_enabled",
+        "$grid_item_template": "store_item_list.store_offer_grid_item"
+      },
+      {
+        "requires": "(not $content_cards_enabled)",
+        "$grid_item_template": "store_item_list.store_offer_grid_item_OLD"
+      }
+    ],
     "$store_offer_grid_bindings|default": [
       {
         "binding_type": "$store_factory_collection_details",
@@ -153,12 +162,21 @@
     "type": "grid",
     "size": [ "100% + 2px", "100%c + 4px" ],
     "grid_rescaling_type": "vertical",
-    "grid_item_template": "store_item_list.store_offer_grid_item",
+    "grid_item_template": "$grid_item_template",
     "clip_state_change_event": "$store_factory_clipping_event",
     "$store_offer_grid_prefix|default": "list",
     "$store_offer_grid_collection_name|default": "list_collection",
     "collection_name": "$store_offer_grid_collection_name",
-
+    "variables": [
+      {
+        "requires": "$content_cards_enabled",
+        "$grid_item_template": "store_item_list.store_offer_grid_item"
+      },
+      {
+        "requires": "(not $content_cards_enabled)",
+        "$grid_item_template": "store_item_list.store_offer_grid_item_OLD"
+      }
+    ],
     "$store_offer_grid_bindings|default": [
       {
         "binding_type": "$store_factory_collection_details",
@@ -197,6 +215,32 @@
   },
 
   "store_offer_grid_item": {
+    "type": "panel",
+    "$store_offer_grid_item_size|default": [ "25%", "100%c+2px" ],
+    "size": "$store_offer_grid_item_size",
+    "$offer_collection_name": "$store_offer_grid_collection_name",
+    "$offer_collection_prefix": "$store_offer_grid_prefix",
+    "controls": [
+      {
+        "item@common_store.content_card_offer_item_standard": {
+          "size": [ "100%-2px", "56.25%x + 34px" ],
+
+          "$offer_binding_type|default": "collection",
+          "$offer_collection_details|default": "collection_details",
+
+          // offer factory binding vars (for offers that are created within a factory)
+          "$offer_category_collection_details|default": "none",
+          "$offer_category_collection_name|default": "",
+          "$offer_category_collection_prefix|default": "",
+          "$store_factory_collection_details|default": "$offer_category_collection_details",
+          "$store_factory_collection_prefix|default": "$offer_category_collection_prefix",
+          "$store_factory_collection_name|default": "$offer_category_collection_name"
+        }
+      }
+    ]
+  },
+
+  "store_offer_grid_item_OLD": {
     "type": "panel",
     "$section_name|default": "",
     "$store_offer_grid_item_size|default": [ "25%", "56.25%x + 36px" ],
@@ -357,18 +401,18 @@
                             "size": [ "100%c", 12 ],
                             "priority": 2,
                             "controls": [
-                                {
-                                    "markdown_banner@common_store.markdown_background": {
-                                        "$markdown_label": "common_store.discount_label",
-                                        "size": [ "100%c", 12 ],
-                                        "offset": [0, 1.5],
-                                        "$banner_size": [ "100%c", "100%" ],
-                                        "$triangle_offset": [ 0, 0 ],
-                                        "layer": 9,
-                                        "$triangle_texture": "textures/ui/saleflagtrianglebeveldefault",
-                                        "$banner_texture": "textures/ui/sale_button_borderless_lighthoverflag"
-                                    }
+                              {
+                                "markdown_banner@common_store.markdown_background": {
+                                  "$markdown_label": "common_store.discount_label",
+                                  "size": [ "100%c", 12 ],
+                                  "offset": [ 0, 1.5 ],
+                                  "$banner_size": [ "100%c", "100%" ],
+                                  "$triangle_offset": [ 0, 0 ],
+                                  "layer": 9,
+                                  "$triangle_texture": "textures/ui/saleflagtrianglebeveldefault",
+                                  "$banner_texture": "textures/ui/sale_button_borderless_lighthoverflag"
                                 }
+                              }
                             ],
                             "bindings": [
                               {

@@ -501,10 +501,15 @@
             "          structure_reference \"structure_name\" // Reference to the structure to be placed.",
             "          int \"adjustment_radius\"<0-16> : opt // How far the structure is allowed to move when searching for a valid placement position. Search is radial, stopping when the nearest valid position is found. Defaults to 0 if omitted.",
             "          enumerated_value \"facing_direction\"<\"north\", \"south\", \"east\", \"west\", \"random\"> : opt // Direction the structure will face when placed in the world. Defaults to \"random\" if omitted.",
-            "          bool \"rotate_around_center\" : opt // If true, tries to rotate the structure around its center when placed in the world. Defaults to \"false\" if omitted.",
+            "          bool \"rotate_around_center\" : opt // If true, centers and rotates the structure around the placement position, overriding any specified horizontal \"offset\". Defaults to \"false\" if omitted.",
+            "          int \"ground_level\"<0-*> : opt // Specifies which Y coordinate of the structure is considered its ground level. This value determines which layer of the structure is checked by the \"grounded\" and \"leveled\" constraints and is used as a downward vertical offset during placement. If the value exceeds the structure's height, it is clamped to the maximum valid value and a content warning is emitted. Defaults to 0.",
             "          object \"constraints\" // Specific constraints that must be satisfied when placing this structure.",
             "          {",
-            "              object \"grounded\" : opt // When specified, ensures the structure is on the ground.",
+            "              object \"grounded\" : opt // When specified, ensures the structure's ground level touches the ground.",
+            "              object \"leveled\" : opt // When specified, ensures the structure's ground level is placed on mostly flat terrain.",
+            "              {",
+            "                  int \"max_steepness\"<0-8> : opt // Maximum allowed height difference between the placement position and terrain samples taken halfway along each side of the structure. A valid terrain sample consists of a solid block with a non‑solid block above it. Defaults to 2.",
+            "              }",
             "              object \"unburied\" : opt // When specified, ensures the structure has air above it.",
             "              object \"block_intersection\" : opt // When specified, ensures the structure only intersects with allowlisted blocks.",
             "              {",
@@ -512,6 +517,7 @@
             "                  {",
             "                       \"<any array element>\" : opt // List of blocks the owning structure is allowed to intersect with.",
             "                  }",
+            "                  bool \"only_check_intersection_for_motion_blocking_blocks\" // If true, only motion-blocking blocks within the structure are checked for intersections with blocks in \"block_allowlist|block_whitelist\". If false, all blocks in the structure except empty ones are checked for intersections, including air.",
             "              }",
             "          }",
             "      }",
@@ -1374,6 +1380,19 @@
             "              }",
             "          }",
             "      }",
+            "      object \"minecraft:height_difference_filter_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          feature_reference \"places_feature\" // Named reference of feature to be placed",
+            "          int \"min_required_upward_height_diff\"<0-*> : opt // Specifies the minimum height difference required upwards.",
+            "          int \"min_required_downward_height_diff\"<0-*> : opt // Specifies the minimum height difference required downwards.",
+            "          int \"max_allowed_upward_height_diff\"<0-*> : opt // Specifies the maximum height difference allowed upwards.",
+            "          int \"max_allowed_downward_height_diff\"<0-*> : opt // Specifies the maximum height difference allowed downwards.",
+            "          int \"search_radius\"<0-*> // 'search_radius' specifies the the length in each cardinal direction the filter will check for blocks against the given differences.",
+            "      }",
             "  }"
           ]
         }
@@ -2040,25 +2059,25 @@
               "name": "Example use: Place a hot air balloon structure that \"floats\" in the air.",
               "text": [
                 "{",
-                "  \"format_version\": \"1.13.0\",",
-                "  \"minecraft:structure_template_feature\": {",
-                "    \"description\": {",
-                "      \"identifier\": \"example:hot_air_balloon_feature\"",
-                "    },",
-                "    \"structure_name\": \"example:hot_air_balloon\",",
-                "    \"adjustment_radius\": 8,",
-                "    \"facing_direction\": \"random\",",
-                "\t\"rotate_around_center\": true,",
-                "    \"constraints\": {",
-                "      \"unburied\": {},",
-                "      \"block_intersection\": {",
-                "        \"block_allowlist\": [",
-                "          \"minecraft:air\"",
-                "        ]",
-                "      }",
-                "    }",
-                "  }",
-                "}"
+                "\t  \"format_version\": \"1.13.0\",",
+                "\t  \"minecraft:structure_template_feature\": {",
+                "\t\t\"description\": {",
+                "\t\t  \"identifier\": \"example:hot_air_balloon_feature\"",
+                "\t\t},",
+                "\t\t\"structure_name\": \"example:hot_air_balloon\",",
+                "\t\t\"adjustment_radius\": 8,",
+                "\t\t\"facing_direction\": \"random\",",
+                "\t\t\"rotate_around_center\": true,",
+                "\t\t\"constraints\": {",
+                "\t\t  \"unburied\": {},",
+                "\t\t  \"block_intersection\": {",
+                "\t\t\t\"block_allowlist\": [",
+                "\t\t\t  \"minecraft:air\"",
+                "\t\t\t]",
+                "\t\t  }",
+                "\t\t}",
+                "\t  }",
+                "\t}"
               ]
             }
           ],
@@ -2324,6 +2343,35 @@
           "examples_print_mode": "code",
           "header_level": 2,
           "name": "minecraft:weighted_random_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:height_difference_filter_feature' filters away positions based on the heightmap around the placement position.The filter will check for surface blocks in each cardinal direction within the `search_radius`. Each block will be checked against all given conditions."
+          ],
+          "examples": [
+            {
+              "name": "Example use:",
+              "text": [
+                "{",
+                "\t\t\t\t\"format_version\": \"1.21.30\",",
+                "\t\t\t\tminecraft:height_difference_filter_feature: {",
+                "\t\t\t\t\t\"description\": {",
+                "\t\t\t\t\t\t\"identifier\": \"example:dripstone_cluster_feature_close_to_ravine\"",
+                "\t\t\t\t\t},",
+                "\t\t\t\t\t\"places_feature\": \"minecraft:dripstone_cluster_feature\",",
+                "\t\t\t\t\t\"min_required_upward_height_diff\": 10,",
+                "\t\t\t\t\t\"max_allowed_downward_height_diff\": 2,",
+                "\t\t\t\t\t\"search_radius\": 5",
+                "\t\t\t\t}",
+                "\t\t\t}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "examples_title": "Dripstone cluster only close to wall on flat ground.",
+          "header_level": 2,
+          "name": "minecraft:height_difference_filter_feature",
           "show_in_index": true
         }
       ],

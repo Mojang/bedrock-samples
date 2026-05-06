@@ -15,6 +15,7 @@
             "none",
             "bouncy",
             "regular",
+            "slow_bouncy",
             "slow_flat",
             "fast_flat",
             "light",
@@ -22,7 +23,8 @@
             "slow_sliding",
             "sticky",
             "high_resistance",
-            "explosive"
+            "explosive",
+            "hot"
           ]
         }
       }
@@ -143,6 +145,7 @@
           "items": [
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_bouncy')" },
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_regular')" },
+            { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_slow_bouncy')" },
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_slow_flat')" },
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_fast_flat')" },
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_light')" },
@@ -150,7 +153,8 @@
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_slow_sliding')" },
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_sticky')" },
             { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_high_resistance')" },
-            { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_explosive')" }
+            { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_explosive')" },
+            { "tags": "q.all_tags('minecraft:sulfur_cube_archetype_hot')" }
           ],
           "within_radius": 16,
           "on_tempt_start": { "event": "minecraft:on_gain_target" },
@@ -178,6 +182,12 @@
                       "subject": "other",
                       "domain": "main_hand",
                       "value": "minecraft:sulfur_cube_archetype_regular"
+                    },
+                    {
+                      "test": "has_equipment_tag",
+                      "subject": "other",
+                      "domain": "main_hand",
+                      "value": "minecraft:sulfur_cube_archetype_slow_bouncy"
                     },
                     {
                       "test": "has_equipment_tag",
@@ -226,6 +236,12 @@
                       "subject": "other",
                       "domain": "main_hand",
                       "value": "minecraft:sulfur_cube_archetype_explosive"
+                    },
+                    {
+                      "test": "has_equipment_tag",
+                      "subject": "other",
+                      "domain": "main_hand",
+                      "value": "minecraft:sulfur_cube_archetype_hot"
                     }
                   ]
                 },
@@ -243,6 +259,10 @@
             },
             {
               "item": "minecraft:sulfur_cube_archetype_regular",
+              "max_amount": 1
+            },
+            {
+              "item": "minecraft:sulfur_cube_archetype_slow_bouncy",
               "max_amount": 1
             },
             {
@@ -275,6 +295,10 @@
             },
             {
               "item": "minecraft:sulfur_cube_archetype_explosive",
+              "max_amount": 1
+            },
+            {
+              "item": "minecraft:sulfur_cube_archetype_hot",
               "max_amount": 1
             }
           ]
@@ -490,6 +514,12 @@
                           "test": "has_equipment_tag",
                           "subject": "other",
                           "domain": "main_hand",
+                          "value": "minecraft:sulfur_cube_archetype_slow_bouncy"
+                        },
+                        {
+                          "test": "has_equipment_tag",
+                          "subject": "other",
+                          "domain": "main_hand",
                           "value": "minecraft:sulfur_cube_archetype_slow_flat"
                         },
                         {
@@ -533,6 +563,12 @@
                           "subject": "other",
                           "domain": "main_hand",
                           "value": "minecraft:sulfur_cube_archetype_explosive"
+                        },
+                        {
+                          "test": "has_equipment_tag",
+                          "subject": "other",
+                          "domain": "main_hand",
+                          "value": "minecraft:sulfur_cube_archetype_hot"
                         }
                       ]
                     },
@@ -750,6 +786,41 @@
           ]
         }
       },
+      "minecraft:sulfur_cube_slow_bouncy": {
+        "minecraft:pushable_by_entity": {
+          "presets": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "push_mode": "ball",
+              "push_scale_self": 0.3,
+              "push_scale_other": 1.0,
+              "kick_distance_threshold": 1.3,
+              "kick_speed_scale": 0.3,
+              "min_kick_speed": 0.0,
+              "max_kick_speed": 0.5,
+              "vertical_kick_multiplier": 0.3,
+              "play_sound_impulse_threshold": 0.0,
+              "play_sound_cooldown_in_seconds": 0.7
+            }
+          ]
+        },
+        "minecraft:knockback_resistance": {
+          "value": 0.4
+        },
+        "minecraft:bounciness": {
+          "value": 0.6
+        },
+        "minecraft:friction_modifier": {
+          "value": 0.3
+        },
+        "minecraft:air_drag_modifier": {
+          "value": 0.05
+        }
+      },
       "minecraft:sulfur_cube_slow_flat": {
         "minecraft:pushable_by_entity": {
           "presets": [
@@ -773,13 +844,13 @@
           ]
         },
         "minecraft:knockback_resistance": {
-          "value": 0.7
+          "value": 0.5
         },
         "minecraft:bounciness": {
-          "value": 0.2
+          "value": 0.4
         },
         "minecraft:friction_modifier": {
-          "value": 0.3
+          "value": 0.4
         },
         "minecraft:air_drag_modifier": {
           "value": 0.1
@@ -808,16 +879,28 @@
           ]
         },
         "minecraft:knockback_resistance": {
-          "value": -2.0
+          "value": -1.0
         },
         "minecraft:bounciness": {
-          "value": 0.2
+          "value": 0.5
         },
         "minecraft:friction_modifier": {
-          "value": 0.1
+          "value": 0.2
         },
         "minecraft:air_drag_modifier": {
-          "value": 0.01
+          "value": 0.1
+        },
+        "minecraft:buoyant": {
+          "base_buoyancy": 1.0,
+          "apply_gravity": false,
+          "can_auto_step_from_liquid": true,
+          "movement_type": "bobbing",
+          "liquid_blocks": [
+            "minecraft:water",
+            "minecraft:flowing_water",
+            "minecraft:lava",
+            "minecraft:flowing_lava"
+          ]
         }
       },
       "minecraft:sulfur_cube_light": {
@@ -1053,12 +1136,79 @@
             "minecraft:flowing_lava"
           ]
         }
+      },
+      "minecraft:sulfur_cube_hot": {
+        "minecraft:pushable_by_entity": {
+          "presets": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "push_mode": "ball",
+              "push_scale_self": 2.0,
+              "push_scale_other": 1.0,
+              "kick_distance_threshold": 1.3,
+              "kick_speed_scale": 0.3,
+              "min_kick_speed": 0.0,
+              "max_kick_speed": 0.5,
+              "vertical_kick_multiplier": 0.3,
+              "play_sound_impulse_threshold": 0.0,
+              "play_sound_cooldown_in_seconds": 0.7
+            }
+          ]
+        },
+        "minecraft:knockback_resistance": {
+          "value": 0.4
+        },
+        "minecraft:bounciness": {
+          "value": 0.6
+        },
+        "minecraft:friction_modifier": {
+          "value": 0.3
+        },
+        "minecraft:air_drag_modifier": {
+          "value": 0.05
+        },
+        "minecraft:buoyant": {
+          "base_buoyancy": 1.0,
+          "apply_gravity": false,
+          "can_auto_step_from_liquid": true,
+          "movement_type": "bobbing",
+          "liquid_blocks": [
+            "minecraft:water",
+            "minecraft:flowing_water",
+            "minecraft:lava",
+            "minecraft:flowing_lava"
+          ]
+        },
+        "minecraft:area_attack": {
+          "cause": "entity_attack",
+          "damage_cooldown": 0.0,
+          "damage_per_tick": 1,
+          "damage_range": 0.2,
+          "use_self_as_damage_source": false,
+          "entity_filter": {
+            "subject": "other",
+            "test": "is_family",
+            "operator": "not",
+            "value": "sulfur_cube"
+          }
+        }
       }
     },
 
     "components": {
       "minecraft:is_hidden_when_invisible": {
       },
+      "minecraft:offspring": {
+        "blend_attributes": false,
+        "offspring_pairs": {
+          "minecraft:sulfur_cube": "minecraft:sulfur_cube"
+        }
+      },
+      "minecraft:spawn_egg_interaction": {},
       "minecraft:type_family": {
         "family": [ "sulfur_cube", "animal", "mob" ]
       },
@@ -1083,9 +1233,6 @@
       "minecraft:pushable_by_block": {
       },
       "minecraft:conditional_bandwidth_optimization": {
-      },
-      "minecraft:mob_effect_immunity": {
-        "mob_effects": [ "oozing" ]
       },
       "minecraft:equipment": {
         "slot_drop_chance": [
@@ -1244,6 +1391,14 @@
             "filters": {
               "test": "has_equipment_tag",
               "domain": "main_hand",
+              "value": "minecraft:sulfur_cube_archetype_slow_bouncy"
+            },
+            "trigger": "minecraft:become_slow_bouncy"
+          },
+          {
+            "filters": {
+              "test": "has_equipment_tag",
+              "domain": "main_hand",
               "value": "minecraft:sulfur_cube_archetype_slow_flat"
             },
             "trigger": "minecraft:become_slow_flat"
@@ -1303,6 +1458,14 @@
               "value": "minecraft:sulfur_cube_archetype_explosive"
             },
             "trigger": "minecraft:become_explosive"
+          },
+          {
+            "filters": {
+              "test": "has_equipment_tag",
+              "domain": "main_hand",
+              "value": "minecraft:sulfur_cube_archetype_hot"
+            },
+            "trigger": "minecraft:become_hot"
           }
         ]
       },
@@ -1313,13 +1476,16 @@
             "minecraft:sulfur_cube_medium_with_block_interactable",
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
-            "minecraft:sulfur_cube_high_resistance"
+            "minecraft:sulfur_cube_high_resistance",
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1404,6 +1570,7 @@
         "remove": {
           "component_groups": [
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
@@ -1411,7 +1578,8 @@
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1425,6 +1593,7 @@
         "remove": {
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
@@ -1432,7 +1601,8 @@
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1442,18 +1612,43 @@
           "minecraft:sulfur_cube_archetype": "regular"
         }
       },
-      "minecraft:become_slow_flat": {
+      "minecraft:become_slow_bouncy": {
         "remove": {
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
+          ]
+        },
+        "add": {
+          "component_groups": ["minecraft:sulfur_cube_slow_bouncy"]
+        },
+        "set_property": {
+          "minecraft:sulfur_cube_archetype": "slow_bouncy"
+        }
+      },
+      "minecraft:become_slow_flat": {
+        "remove": {
+          "component_groups": [
+            "minecraft:sulfur_cube_bouncy",
+            "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
+            "minecraft:sulfur_cube_fast_flat",
+            "minecraft:sulfur_cube_light",
+            "minecraft:sulfur_cube_fast_sliding",
+            "minecraft:sulfur_cube_slow_sliding",
+            "minecraft:sulfur_cube_sticky",
+            "minecraft:sulfur_cube_high_resistance",
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1468,13 +1663,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1489,13 +1686,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1510,13 +1709,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1531,13 +1732,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_sticky",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1552,13 +1755,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_high_resistance",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1573,13 +1778,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
-            "minecraft:sulfur_cube_explosive"
+            "minecraft:sulfur_cube_explosive",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1594,13 +1801,15 @@
           "component_groups": [
             "minecraft:sulfur_cube_bouncy",
             "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
             "minecraft:sulfur_cube_slow_flat",
             "minecraft:sulfur_cube_fast_flat",
             "minecraft:sulfur_cube_light",
             "minecraft:sulfur_cube_fast_sliding",
             "minecraft:sulfur_cube_slow_sliding",
             "minecraft:sulfur_cube_sticky",
-            "minecraft:sulfur_cube_high_resistance"
+            "minecraft:sulfur_cube_high_resistance",
+            "minecraft:sulfur_cube_hot"
           ]
         },
         "add": {
@@ -1608,6 +1817,29 @@
         },
         "set_property": {
           "minecraft:sulfur_cube_archetype": "explosive"
+        }
+      },
+      "minecraft:become_hot": {
+        "remove": {
+          "component_groups": [
+            "minecraft:sulfur_cube_bouncy",
+            "minecraft:sulfur_cube_regular",
+            "minecraft:sulfur_cube_slow_bouncy",
+            "minecraft:sulfur_cube_slow_flat",
+            "minecraft:sulfur_cube_fast_flat",
+            "minecraft:sulfur_cube_light",
+            "minecraft:sulfur_cube_fast_sliding",
+            "minecraft:sulfur_cube_slow_sliding",
+            "minecraft:sulfur_cube_sticky",
+            "minecraft:sulfur_cube_high_resistance",
+            "minecraft:sulfur_cube_explosive"
+          ]
+        },
+        "add": {
+          "component_groups": [ "minecraft:sulfur_cube_hot" ]
+        },
+        "set_property": {
+          "minecraft:sulfur_cube_archetype": "hot"
         }
       }
     }

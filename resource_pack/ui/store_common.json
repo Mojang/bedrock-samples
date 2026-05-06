@@ -8171,6 +8171,8 @@
     "type": "image",
     "size": [ "default", "default" ],
     "max_size": [ 11, 11 ],
+    "$info_offset|default": [ 0, 0 ],
+    "offset": "$info_offset",
     "default_size_scales_to_ratio": true,
     "anchor_from": "top_left",
     "anchor_to": "top_left",
@@ -8220,7 +8222,8 @@
   },
 
   "offer_info_icon_coin@common_store.offer_info_icon_base": {
-    "$offer_info_icon_visibility_binding": "#offer_coin_visible"
+    "$offer_info_icon_visibility_binding": "#offer_coin_visible",
+    "$info_offset": [ 0, -1 ]
   },
 
   "offer_info_icon_realms@common_store.offer_info_icon_base": {
@@ -8294,6 +8297,11 @@
       {
         "binding_name": "#offer_info_text_font_scale",
         "binding_name_override": "#font_scale_factor",
+        "binding_condition": "once"
+      },
+      {
+        "binding_name": "#offer_info_text_offset",
+        "binding_name_override": "#offset",
         "binding_condition": "once"
       }
     ]
@@ -8540,10 +8548,111 @@
       {
         "rows@common_store.offer_info_row_factory": {
           "size": [ "100%-2px", "100%" ],
-          "offset": [ 2, 1 ]
+          "offset": [ 2, 2 ]
         }
       }
     ]
+  },
+
+  "content_card_offer_item@common_store.store_description_background": {
+    "$key_art_size|default": [ "100%", "56.25%x" ],
+    "$description_size|default": [ "100%", 34 ],
+
+    // offer binding vars
+    "$offer_collection_details|default": "none",
+    "$offer_binding_type|default": "global",
+    "$offer_collection_name|default": "",
+    "$offer_collection_prefix|default": "",
+
+    // offer factory binding vars (for offers that are created within a factory)
+    "$section_name|default": "",
+    "$store_factory_collection_details|default": "none",
+    "$store_factory_collection_prefix|default": "",
+    "$store_factory_collection_name|default": "",
+
+    "$store_offer_grid_item_bindings|default": [
+      {
+        "binding_type": "$store_factory_collection_details",
+        "binding_collection_name": "$store_factory_collection_name",
+        "binding_collection_prefix": "$store_factory_collection_prefix"
+      },
+      {
+        "binding_type": "$offer_binding_type",
+        "binding_collection_name": "$offer_collection_name",
+        "binding_name": "#valid_offer_index",
+        "binding_name_override": "#visible"
+      }
+    ],
+    "bindings": "$store_offer_grid_item_bindings",
+
+    "controls": [
+      {
+        "content_card_offer_item_inset": {
+          "type": "panel",
+          "size": [ "100% - 2px", "100% - 2px" ],
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "controls": [
+            {
+              "key_art@common_store.store_offer_key_art": {
+                "size": "$key_art_size",
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "controls": [
+                  {
+                    "badge_overlay_panel@common_store.badge_overlay_panel": {
+                      "layer": 1
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "progress_loading@common_store.progress_loading": {
+                "size": "$key_art_size",
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "$source_control_name": "key_art",
+                "$source_property_name": "(#texture = '')",
+                "$hide_failure_text": true,
+                "$hide_progress_loading_outline": true
+              }
+            },
+            {
+              "progress@common_store.offer_download_progress": {
+                "size": "$description_size",
+                "anchor_from": "bottom_right",
+                "anchor_to": "bottom_right"
+              }
+            },
+            {
+              "offer_info@common_store.content_card_offer_info": {
+                "size": "$description_size"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "frame@common.square_image_border_white": {
+          "size": [ "100%", "100%" ],
+          "color": [ 0, 0, 0 ]
+        }
+      },
+      // This is the border hover/press states and click region, since the controls are complex it is better to draw a simple white border
+      // around the content rather than create 3 sets of each control when only the border changes
+      {
+        "offer_button@common_store.store_offer_grid_button": {
+          "$size_to_cover": [ "100%", "100%" ]
+        }
+      }
+    ]
+  },
+
+  "content_card_offer_item_standard@common_store.content_card_offer_item": {
+    "property_bag_for_children": {
+      "#offer_info_style_name": "standard"
+    }
   },
 
   "store_offer_grid_item": {
@@ -8622,9 +8731,6 @@
                   },
                   {
                     "csb_plus_expiration_banner@common_store.csb_expiration": {}
-                  },
-                  {
-                    "badge_overlay_panel@common_store.badge_overlay_panel": {}
                   }
                 ]
               }
@@ -9130,6 +9236,14 @@
 
   "generic_store_row_offer_panel": {
     "type": "panel",
+    "size": [ "fill", "56.25%x + 34px" ],
+    "controls": [
+      { "generic_store_offer@common_store.content_card_offer_item_standard": { "size": [ "100%", "100%" ] } }
+    ]
+  },
+
+  "generic_store_row_offer_panel_OLD": {
+    "type": "panel",
     "size": [ "fill", "56.249%x + 34px" ],
     "controls": [
       { "generic_store_offer@common_store.store_offer_grid_item": { "size": [ "100%", "100%" ] } }
@@ -9138,7 +9252,7 @@
 
   "store_row_show_more_button_panel": {
     "type": "panel",
-    "size": [ "fill", "56.249%x + 34px" ],
+    "size": [ "fill", "100%sm" ],
     "controls": [
       { "show_more_button@common_store.store_offer_grid_show_more": { "size": [ "100%", "100%" ] } }
     ]
@@ -9234,6 +9348,7 @@
       "name": "store_section_factory",
       "control_ids": {
         "Generic": "common_store.generic_store_row_offer_panel",
+        "GenericOLD": "common_store.generic_store_row_offer_panel_OLD",
         "Persona": "common_store.persona_store_row_offer",
         "ThumbnailOnly": "common_store.thumnail_only_row_offer",
         "ShowMoreButton": "common_store.store_row_show_more_button_panel",

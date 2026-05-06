@@ -31,6 +31,7 @@ This is documentation for a preview release of Minecraft. New features, componen
 <tr> <td> <a href="#minecraft:tree_feature"> minecraft:tree_feature</a> </tr> </td>
 <tr> <td> <a href="#minecraft:vegetation_patch_feature"> minecraft:vegetation_patch_feature</a> </tr> </td>
 <tr> <td> <a href="#minecraft:weighted_random_feature"> minecraft:weighted_random_feature</a> </tr> </td>
+<tr> <td> <a href="#minecraft:height_difference_filter_feature"> minecraft:height_difference_filter_feature</a> </tr> </td>
 <tr> <th><a href="#Attaching features">Attaching features</a></th> </tr>
 <tr> <th><a href="#Feature rules">Feature rules</a></th> </tr>
 <tr> <th><a href="#Feature rule schema">Feature rule schema</a></th> </tr>
@@ -533,25 +534,25 @@ Example use: Define a feature that snaps the 'cave_vine_feature' to the ceiling.
 'minecraft:structure_template_feature' places a structure in the world. The structure must be stored as a .mcstructure file in the "structures" subdirectory of a behavior pack. It is possible to reference structures that are part of other behavior packs, they do not need to come from the same behavior pack as this feature. Constraints can be defined to specify where the structure is allowed to be placed. During placement, the feature will search for a position within the 'adjustment_radius' that satisfies all constraints. If none are found, the structure will not be placed.</br>Succeeds if: The structure is placed in the world.</br>Fails if: The structure fails to be placed within the world.</br><h2></h2>
 Example use: Place a hot air balloon structure that "floats" in the air.<br / ><textarea readonly="true" cols="54" rows="21">
 {
-  "format_version": "1.13.0",
-  "minecraft:structure_template_feature": {
+    "format_version": "1.13.0",
+    "minecraft:structure_template_feature": {
     "description": {
       "identifier": "example:hot_air_balloon_feature"
     },
     "structure_name": "example:hot_air_balloon",
     "adjustment_radius": 8,
     "facing_direction": "random",
-  "rotate_around_center": true,
+    "rotate_around_center": true,
     "constraints": {
       "unburied": {},
       "block_intersection": {
-        "block_allowlist": [
-          "minecraft:air"
-        ]
+      "block_allowlist": [
+        "minecraft:air"
+      ]
       }
     }
+    }
   }
-}
 </textarea> </br>
 <a href="#Index">Back to top</a><br><br>
 
@@ -758,6 +759,25 @@ Example use: Selecting and placing a variant of a flower.<br / ><textarea readon
     ]
   }
 }
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:height_difference_filter_feature">minecraft:height_difference_filter_feature</p></h1>
+
+'minecraft:height_difference_filter_feature' filters away positions based on the heightmap around the placement position.The filter will check for surface blocks in each cardinal direction within the `search_radius`. Each block will be checked against all given conditions.</br><h2>Dripstone cluster only close to wall on flat ground.</h2>
+Example use:<br / ><textarea readonly="true" cols="78" rows="13">
+{
+        "format_version": "1.21.30",
+        minecraft:height_difference_filter_feature: {
+          "description": {
+            "identifier": "example:dripstone_cluster_feature_close_to_ravine"
+          },
+          "places_feature": "minecraft:dripstone_cluster_feature",
+          "min_required_upward_height_diff": 10,
+          "max_allowed_downward_height_diff": 2,
+          "search_radius": 5
+        }
+      }
 </textarea> </br>
 <a href="#Index">Back to top</a><br><br>
 
@@ -1210,10 +1230,15 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
           structure_reference "structure_name" // Reference to the structure to be placed.
           int "adjustment_radius"<0-16> : opt // How far the structure is allowed to move when searching for a valid placement position. Search is radial, stopping when the nearest valid position is found. Defaults to 0 if omitted.
           enumerated_value "facing_direction"<"north", "south", "east", "west", "random"> : opt // Direction the structure will face when placed in the world. Defaults to "random" if omitted.
-          bool "rotate_around_center" : opt // If true, tries to rotate the structure around its center when placed in the world. Defaults to "false" if omitted.
+          bool "rotate_around_center" : opt // If true, centers and rotates the structure around the placement position, overriding any specified horizontal "offset". Defaults to "false" if omitted.
+          int "ground_level"<0-*> : opt // Specifies which Y coordinate of the structure is considered its ground level. This value determines which layer of the structure is checked by the "grounded" and "leveled" constraints and is used as a downward vertical offset during placement. If the value exceeds the structure's height, it is clamped to the maximum valid value and a content warning is emitted. Defaults to 0.
           object "constraints" // Specific constraints that must be satisfied when placing this structure.
           {
-              object "grounded" : opt // When specified, ensures the structure is on the ground.
+              object "grounded" : opt // When specified, ensures the structure's ground level touches the ground.
+              object "leveled" : opt // When specified, ensures the structure's ground level is placed on mostly flat terrain.
+              {
+                  int "max_steepness"<0-8> : opt // Maximum allowed height difference between the placement position and terrain samples taken halfway along each side of the structure. A valid terrain sample consists of a solid block with a non‑solid block above it. Defaults to 2.
+              }
               object "unburied" : opt // When specified, ensures the structure has air above it.
               object "block_intersection" : opt // When specified, ensures the structure only intersects with allowlisted blocks.
               {
@@ -1221,6 +1246,7 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
                   {
                        "<any array element>" : opt // List of blocks the owning structure is allowed to intersect with.
                   }
+                  bool "only_check_intersection_for_motion_blocking_blocks" // If true, only motion-blocking blocks within the structure are checked for intersections with blocks in "block_allowlist|block_whitelist". If false, all blocks in the structure except empty ones are checked for intersections, including air.
               }
           }
       }
@@ -2082,6 +2108,19 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
                   float "[1..1]" // Weight used in random selection. Value is relative to other weights in the collection.
               }
           }
+      }
+      object "minecraft:height_difference_filter_feature" : opt
+      {
+          object "description"
+          {
+              string "identifier" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.
+          }
+          feature_reference "places_feature" // Named reference of feature to be placed
+          int "min_required_upward_height_diff"<0-*> : opt // Specifies the minimum height difference required upwards.
+          int "min_required_downward_height_diff"<0-*> : opt // Specifies the minimum height difference required downwards.
+          int "max_allowed_upward_height_diff"<0-*> : opt // Specifies the maximum height difference allowed upwards.
+          int "max_allowed_downward_height_diff"<0-*> : opt // Specifies the maximum height difference allowed downwards.
+          int "search_radius"<0-*> // 'search_radius' specifies the the length in each cardinal direction the filter will check for blocks against the given differences.
       }
   }
 

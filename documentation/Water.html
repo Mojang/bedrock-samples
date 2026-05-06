@@ -1,0 +1,284 @@
+<h1>WATER DOCUMENTATION </h1>
+This is documentation for a preview release of Minecraft. New features, components, and capabilities in this release are not final and might change without notice before the final release.<br/>Be sure to check the documentation once the release is out of preview if your add-on isn't working properly. Resource and Behavior Packs created for the preview are not guaranteed to work on the final release.<br/>
+<h2><p id="Index">Index</p></h2>
+<table border="1">
+<tr> <th><a href="#Overview">Overview</a></th> </tr>
+<tr> <th><a href="#JSON Format">JSON Format</a></th> </tr>
+<tr> <th><a href="#Adding Water Settings">Adding Water Settings</a></th> </tr>
+<tr> <th><a href="#Schema">Schema</a></th> </tr>
+<tr> <td> <a href="#CausticsParameters"> CausticsParameters</a> </tr> </td>
+<tr> <td> <a href="#PSY"> PSY</a> </tr> </td>
+<tr> <td> <a href="#Water Config JSON File v4"> Water Config JSON File v4</a> </tr> </td>
+<tr> <td> <a href="#WaterDescription"> WaterDescription</a> </tr> </td>
+<tr> <td> <a href="#WaterSettings"> WaterSettings</a> </tr> </td>
+<tr> <td> <a href="#WaterSurfaceParameters"> WaterSurfaceParameters</a> </tr> </td>
+</table>
+<a href="#Index">Back to top</a>
+<h1><p id="Overview">Overview</p></h1>
+
+There are many different Water controls in Minecraft. Things such as wave frequency, wave speed, and caustics scale are all water settings. </br>You can override all of these settings to change the caustic and wave visuals, and even biome water color contribution!</br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="JSON Format">JSON Format</p></h1>
+
+All water settings overrides should specify the version that they target via the "format_version" field. The remainder of the water data is divided up into independent JSON sub-objects for each water control. </br>These overrides define the water data of the overarching water settings collection. To be valid, a definition must include exactly one of these type objects. See the full water settings schema below for additional details and the full list of supported water overrides.</br><h2></h2>
+Here is a sample water settings file.<br / ><textarea readonly="true" cols="126" rows="32">
+{
+          "format_version": "1.21.120",
+          "minecraft:water_settings": {
+            "description": {
+              "identifier": "test:water" // The identifier for these water settings. The identifier must include a namespace.
+            },
+            "particle_concentrations": { // The concentration of different optical particles in water.
+              "chlorophyll": 1.306, // Chlorophyll concentration in mg/L
+              "cdom": 7.102, // Colored dissolved organic matter (CDOM) concentration in mg/L. Also called yellow matter.
+              "suspended_sediment": 0.452 // Suspended sediment concentration in mg/L
+            },
+            "caustics": {
+              "enabled": true,
+              "frame_length": 0.05,
+              "texture": "",
+              "scale": 5.0,
+              "power": 2
+            },
+            "waves": {
+              "enabled": true,
+              "frequency": 0.01,
+              "octaves": 16,
+              "depth": 2.0,
+              "speed": 5.0,
+              "shape": 7.0,
+              "pull": 0.25,
+              "mix": 1.0,
+              "frequency_scaling": 0.5,
+              "speed_scaling": 0.0
+            }
+          }
+        }
+    
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Adding Water Settings">Adding Water Settings</p></h1>
+
+Water Settings are read from JSON files in the "water" subfolder of resource packs. Loading enforces one water settings collection per file. The settings collection's identifier acts as its name and must be namespaced. If two resource packs define the same water settings name (including namespace), then the settings from the highest pack in the stack will be used. Adding a file with a new name to the water data location will make it available for the game to use, while existing water settings can be overridden using another settings collection with the same identifier. </br><a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Schema">Schema</p></h1>
+
+<h1><p id="CausticsParameters">CausticsParameters</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">enabled</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Whether or not caustics are on or off.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">frame_length</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.01 to 5.0 which controls how many seconds to spend on each frame of animation in the caustics texture.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">power</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 1 to 6 which controls how bright the caustics effect appears.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">scale</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.1 to 5.0 which controls how size of the repetition of the caustics texture.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">texture</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Resource location to a texture for controlling the shape of the caustics; if not used, a built-in Minecraft texture will be supplied automatically.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="PSY">PSY</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">cdom</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Concentration of chromophoric dissolved organic matter from 0.0 to 15.0 in mg/L; higher concentrations produce more yellow/yellow-brown colors.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">chlorophyll</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Concentration of chlorophyll from 0.0 to 10.0 in mg/L; higher concentrations produce more green colors.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">suspended_sediment</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Concentration of suspended sediment from 0.0 to 300.0 in mg/L; higher concentrations produce more red/red-brown colors.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="Water Config JSON File v4">Water Config JSON File v4</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">format_version</td>
+<td style="border-style:solid; border-width:3; padding:7px">String</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Specifies the version of the game these Water Settings were made in. If the version is lower than the current version, any changes made to the settings in the vanilla version will be applied to it.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">minecraft:water_settings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type WaterSettings</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">Water Settings definition which includes the 'particle_concentrations,' 'waves,' 'biome_water_color_contribution,' and 'caustics' sections.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="WaterDescription">WaterDescription</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type Identifier</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px">The name of this Water Description in the format 'namespace_name:description_name'.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="WaterSettings">WaterSettings</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">biome_water_color_contribution</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Controls how much the surface_color value defined in *.client_biome.json files will be mixed into the base color of the water in Vibrant Visuals.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">caustics</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type CausticsParameters</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Caustics make bodies of water more realistic by projecting light rays on underwater surfaces. These rays then scatter and dance as the surface of the water moves. This effect is enabled by default, but can be selectively disabled in given water configurations.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">description</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type WaterDescription</td>
+<td style="border-style:solid; border-width:3; padding:7px">Required</td>
+<td style="border-style:solid; border-width:3; padding:7px"></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">particle_concentrations</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type PSY</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">The composition of particles in a body of water determines its color and how light behaves as it travels through the water. We've boiled them down to three concentrations in mg/L. Use these values to simulate crystal clear lakes, deep oceans, or muddy rivers.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">waves</td>
+<td style="border-style:solid; border-width:3; padding:7px">Object of type WaterSurfaceParameters</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Waves are an optional effect that can be used to complement water surface animations to make your water appear more realistic. You can blend them with existing water texture animations, or replace them entirely. The waves in Vibrant Visuals are purely an image-based effect—waves don't actually move the vertices of the water surface, so the water surface geometry will remain unchanged.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="WaterSurfaceParameters">WaterSurfaceParameters</p></h1>
+
+<h2></h2>
+
+<table border="1" style="width:100%; border-style:solid; border-collapse:collapse; border-width:3;">
+<tr> <th style="border-style:solid; border-width:3;">Name</th> <th style="border-style:solid; border-width:3;">Type</th> <th style="border-style:solid; border-width:3;">Required?</th> <th style="border-style:solid; border-width:3;">Description</th> </tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">depth</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.0 to 3.0 which controls the amount of wave displacement.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">direction_increment</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.0 to 360.0 which controls how much the heading changes between each octave.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">enabled</td>
+<td style="border-style:solid; border-width:3; padding:7px">Boolean</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">Whether or not waves are on or off.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">frequency</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.01 to 3.0 which controls the size of individual waves; higher values create more tightly packed waves.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">frequency_scaling</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.0 to 2.0 which controls how much frequencies change in subsequent octaves.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">mix</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.0 to 1.0 which controls how much each octave will blend into the neighboring octave.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">octaves</td>
+<td style="border-style:solid; border-width:3; padding:7px"></td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 1 to 30 which determines how many layers of waves to simulate; high values result in more complex waves.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">pull</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from -1.0 to 1.0 which controls how much smaller waves are pulled into larger ones.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">shape</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 1.0 to 10.0 which adjusts the shape of the wave.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">speed</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.01 to 10.0 which controls the starting speed of the first waves.</br></td>
+</tr>
+<tr>
+<td style="border-style:solid; border-width:3; padding:7px">speed_scaling</td>
+<td style="border-style:solid; border-width:3; padding:7px">Float</td>
+<td style="border-style:solid; border-width:3; padding:7px">Optional</td>
+<td style="border-style:solid; border-width:3; padding:7px">A range from 0.0 to 2.0 which controls how much faster/slower subsequent octaves move.</br></td>
+</tr>
+</table>
+<a href="#Index">Back to top</a><br><br>
+
+<br><br>
+

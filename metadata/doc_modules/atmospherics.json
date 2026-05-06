@@ -1,0 +1,274 @@
+{
+  "name": "Atmospherics",
+  "nodes": [
+    {
+      "description": [
+        "There are many different Atmospherics controls in Minecraft. Things such as sky zenith color, moon mie stength, and sun glare shape are all atmospherics settings. ",
+        "You can override all of these settings to change the sky, sun, and moon visuals."
+      ],
+      "header_level": 1,
+      "name": "Overview",
+      "show_in_index": true
+    },
+    {
+      "description": [
+        "All atmospheric settings overrides should specify the version that they target via the \"format_version\" field. The remainder of the atmospheric data is divided up into independent JSON sub-objects and individual variables for each atmospheric control. ",
+        "These overrides define the data of the overarching atmospherics settings collection. To be valid, a definition must include exactly one of these type objects. See the full atmospherics settings schema below for additional details and the full list of supported atmospheric overrides. Any of these values can be individually key framed, as shown in the `sky_zenith_color` in the below example."
+      ],
+      "examples": [
+        {
+          "name": "Here is a sample atmospheric settings file.",
+          "text": [
+            "{",
+            "\t\t\t\t  string \"format_version\", // The 3-part schema version for parsing these atmosphere settings.",
+            "\t\t\t\t  object \"minecraft:atmosphere_settings\"",
+            "\t\t\t\t  {",
+            "\t\t\t\t\tobject \"description\"",
+            "\t\t\t\t\t{",
+            "\t\t\t\t\t  string \"identifier\" // The identifier for these atmosphere settings. The identifier must include a namespace.",
+            "\t\t\t\t\t},",
+            "\t\t\t\t\tobject \"horizon_blend_stops\" // How the atmosphere is divided up",
+            "\t\t\t\t\t{",
+            "\t\t\t\t\t  float \"min\" : optkeyframe, // The minimum horizon height",
+            "\t\t\t\t\t  float \"start\" : optkeyframe, // The height relative to the horizon where the zenith contribution will take over",
+            "\t\t\t\t\t  float \"mie_start\" : optkeyframe, // The height relative to the horizon where mie scattering begins",
+            "\t\t\t\t\t  float \"max\" : optkeyframe // The maximum horizon height",
+            "\t\t\t\t\t}",
+            "\t\t\t\t\tfloat \"rayleigh_strength\" : optkeyframe, // How strong the atmosphere's rayleigh scattering term is",
+            "\t\t\t\t\tfloat \"sun_mie_strength\" : optkeyframe, // How strong the sun's mie scattering term is",
+            "\t\t\t\t\tfloat \"moon_mie_strength\" : optkeyframe, // How strong the moon's mie scattering term is",
+            "\t\t\t\t\tfloat \"sun_glare_shape\" : optkeyframe, // How the lobe of the mie scattering is shaped",
+            "\t\t\t\t\t\"sky_zenith_color\": { ",
+            "\t\t\t\t\t\t\"0.0\": [0, 125, 164], ",
+            "\t\t\t\t\t\t\"0.25\": [11, 55, 97], ",
+            "\t\t\t\t\t\t\"0.5\": [7, 10, 36], ",
+            "\t\t\t\t\t\t\"0.75\": [50, 88, 170] ",
+            "\t\t\t\t\t},",
+            "\t\t\t\t\tcolor \"sky_horizon_color\" : optkeyframe // The RGB color of the horizon region of the atmosphere; supports RGB array or HEX string",
+            "\t\t\t\t  }",
+            "\t\t\t\t}",
+            "\t\t"
+          ]
+        }
+      ],
+      "examples_print_mode": "code",
+      "header_level": 1,
+      "name": "JSON Format",
+      "show_in_index": true
+    },
+    {
+      "description": [
+        "Atmospheric Settings are read from JSON files in the \"atmospherics\" subfolder of resource packs. Loading enforces one atmospherics settings collection per file. The settings collection's identifier acts as its name and must be namespaced. If two resource packs define the same atmospherics settings name (including namespace), then the settings from the highest pack in the stack will be used. Adding a file with a new name to the atmospherics data location will make it available for the game to use, while existing atmospherics settings can be overridden using another settings collection with the same identifier. "
+      ],
+      "header_level": 1,
+      "name": "Adding Atmospherics Settings",
+      "show_in_index": true
+    },
+    {
+      "header_level": 1,
+      "name": "Schema",
+      "nodes": [
+        {
+          "header_level": 2,
+          "name": "Atmospheric Scattering Configuration Settings",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "Specifies the version of the game these Atmospheric Settings were made in. If the version is lower than the current version, any changes made to the settings in the vanilla version will be applied to it."
+              ],
+              "header_level": 3,
+              "name": "format_version",
+              "show_in_index": true,
+              "type": "String"
+            },
+            {
+              "default": "Required",
+              "description": [
+                "Atmospheric Settings definition which includes the 'sky_horizon_color,' 'sky_zenith_color,' 'sun_glare_shape,' 'moon_mie_strength,' 'sun_mie_strength,' 'rayleigh_strength,' and 'horizon_blend_stops' sections."
+              ],
+              "header_level": 3,
+              "name": "minecraft:atmosphere_settings",
+              "show_in_index": true,
+              "type": "Object of type AtmosphericScatteringSettings"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "AtmosphericScatteringDescription",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "The name of this Asmotspheric Scattering Description in the format 'namespace_name:description_name'."
+              ],
+              "header_level": 3,
+              "name": "identifier",
+              "show_in_index": true,
+              "type": "Object of type Identifier"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "AtmosphericScatteringSettings",
+          "nodes": [
+            {
+              "default": "Required",
+              "description": [
+                "Identifier for the Atmospheric Settings."
+              ],
+              "header_level": 3,
+              "name": "description",
+              "show_in_index": true,
+              "type": "Object of type AtmosphericScatteringDescription"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "How the atmosphere is divided up."
+              ],
+              "header_level": 3,
+              "name": "horizon_blend_stops",
+              "show_in_index": true,
+              "type": "Object of type HorizonBlendKeyFrames"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "How strong the moon's mie scattering term is."
+              ],
+              "header_level": 3,
+              "name": "moon_mie_strength",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "How strong the atmosphere's rayleigh scattering term is."
+              ],
+              "header_level": 3,
+              "name": "rayleigh_strength",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The RGB color of the horizon region of the atmosphere; supports RGB array or HEX string."
+              ],
+              "header_level": 3,
+              "name": "sky_horizon_color",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The RGB color of the zenith region of the atmosphere; supports RGB array or HEX string."
+              ],
+              "header_level": 3,
+              "name": "sky_zenith_color",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "How the lobe of the mie scattering is shaped."
+              ],
+              "header_level": 3,
+              "name": "sun_glare_shape",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "How strong the sun's mie scattering term is."
+              ],
+              "header_level": 3,
+              "name": "sun_mie_strength",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        },
+        {
+          "header_level": 2,
+          "name": "HorizonBlendKeyFrames",
+          "nodes": [
+            {
+              "default": "Optional",
+              "description": [
+                "The maximum horizon height."
+              ],
+              "header_level": 3,
+              "name": "max",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The height relative to the horizon where mie scattering begins."
+              ],
+              "header_level": 3,
+              "name": "mie_start",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The minimum horizon height."
+              ],
+              "header_level": 3,
+              "name": "min",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            },
+            {
+              "default": "Optional",
+              "description": [
+                "The height relative to the horizon where the zenith contribution will take over."
+              ],
+              "header_level": 3,
+              "name": "start",
+              "show_in_index": true,
+              "type": "Object of type TimeKeyframes"
+            }
+          ],
+          "nodes_as_table": true,
+          "show_in_index": true,
+          "table_default_title": "Required?",
+          "table_description_title": "Description",
+          "table_name_title": "Name",
+          "table_type_title": "Type"
+        }
+      ],
+      "nodes_as_table": false,
+      "show_in_index": true
+    }
+  ]
+}
