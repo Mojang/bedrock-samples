@@ -263,7 +263,7 @@
         },
         {
           "$ref": "#/definitions/3078929707",
-          "x-runtime-constraint-description": "Cannot use bone visibility feature with Vanilla geometries"
+          "x-runtime-constraint-description": "Cannot use bone visibility feature with minecraft:geometry.cross or minecraft:geometry.full_block"
         }
       ],
       "title": "Geometry"
@@ -449,6 +449,18 @@
     "2394613889": {
       "title": "Block Unit Cube Component"
     },
+    "2527690833": {
+      "description": "Adds per-instance metadata for this block.",
+      "properties": {
+        "dynamic_properties": {
+          "default": false,
+          "description": "Sets dynamic-properties capabilities on the block-entity.",
+          "type": "boolean"
+        }
+      },
+      "title": "block_entity",
+      "type": "object"
+    },
     "2529973620": {
       "oneOf": [
         {
@@ -608,6 +620,10 @@
           "description": "The description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
           "maxLength": 256,
           "type": "string"
+        },
+        "n_way_visual_rotation": {
+          "$ref": "#/definitions/3924251301",
+          "description": "Optional object that maps x/y/z axes to block state names that drive visual-only geometry rotation."
         },
         "uv_lock": {
           "default": false,
@@ -906,6 +922,30 @@
     "391941723": {
       "title": "Player Placing Component"
     },
+    "3924251301": {
+      "properties": {
+        "x": {
+          "default": "",
+          "description": "Block state name that controls visual rotation around the x axis.",
+          "maxLength": 256,
+          "type": "string"
+        },
+        "y": {
+          "default": "",
+          "description": "Block state name that controls visual rotation around the y axis.",
+          "maxLength": 256,
+          "type": "string"
+        },
+        "z": {
+          "default": "",
+          "description": "Block state name that controls visual rotation around the z axis.",
+          "maxLength": 256,
+          "type": "string"
+        }
+      },
+      "title": "NWayVisualRotation",
+      "type": "object"
+    },
     "3987904724": {
       "properties": {
         "explosion_resistance": {
@@ -1036,6 +1076,16 @@
           "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a destroy_chance_modifier of 0, the block will never be destroyed by fire, and the fire will burn forever if the catch_chance_modifier is greater than 0. The default value of 20 is the same as that of Planks.",
           "minimum": 0,
           "type": "integer"
+        },
+        "lava_flammable": {
+          "default": "never",
+          "description": "Determines lava fire consideration. \"always\" includes this block when lava attempts to spread fire\"\n\t\t\t\t\t\" (triggered by adjacent block changes), but normal fire-placement rules still apply. \"never\" excludes\"\n\t\t\t\t\t\" this block from that check.",
+          "enum": [
+            "always",
+            "never"
+          ],
+          "title": "Lava Flammable",
+          "type": "string"
         }
       },
       "title": "Detailed Flammable",
@@ -1238,6 +1288,10 @@
     }
   },
   "properties": {
+    "minecraft:block_entity": {
+      "$ref": "#/definitions/2527690833",
+      "description": "Adds per-instance metadata for this block."
+    },
     "minecraft:breathability": {
       "$ref": "#/definitions/2192817374",
       "deprecated": true

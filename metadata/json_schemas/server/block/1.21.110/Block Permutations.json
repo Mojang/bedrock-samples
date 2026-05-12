@@ -263,7 +263,7 @@
         },
         {
           "$ref": "#/definitions/3078929707",
-          "x-runtime-constraint-description": "Cannot use bone visibility feature with Vanilla geometries"
+          "x-runtime-constraint-description": "Cannot use bone visibility feature with minecraft:geometry.cross or minecraft:geometry.full_block"
         }
       ],
       "title": "Geometry"
@@ -449,6 +449,18 @@
     "2394613889": {
       "title": "Block Unit Cube Component"
     },
+    "2527690833": {
+      "description": "Adds per-instance metadata for this block.",
+      "properties": {
+        "dynamic_properties": {
+          "default": false,
+          "description": "Sets dynamic-properties capabilities on the block-entity.",
+          "type": "boolean"
+        }
+      },
+      "title": "block_entity",
+      "type": "object"
+    },
     "2529973620": {
       "oneOf": [
         {
@@ -474,6 +486,10 @@
     },
     "2556852513": {
       "properties": {
+        "minecraft:block_entity": {
+          "$ref": "#/definitions/2527690833",
+          "description": "Adds per-instance metadata for this block."
+        },
         "minecraft:breathability": {
           "$ref": "#/definitions/2192817374",
           "deprecated": true
@@ -796,6 +812,10 @@
           "maxLength": 256,
           "type": "string"
         },
+        "n_way_visual_rotation": {
+          "$ref": "#/definitions/3924251301",
+          "description": "Optional object that maps x/y/z axes to block state names that drive visual-only geometry rotation."
+        },
         "uv_lock": {
           "default": false,
           "description": "A field that is either a Boolean or an array of strings, max size 64 strings. This field locks UV orientation for all/some bones in the geometry, regardless of how the block is rotated using \"minecraft:transformation\" component. For performance reasons it's recommended to use the Boolean.",
@@ -1093,6 +1113,30 @@
     "391941723": {
       "title": "Player Placing Component"
     },
+    "3924251301": {
+      "properties": {
+        "x": {
+          "default": "",
+          "description": "Block state name that controls visual rotation around the x axis.",
+          "maxLength": 256,
+          "type": "string"
+        },
+        "y": {
+          "default": "",
+          "description": "Block state name that controls visual rotation around the y axis.",
+          "maxLength": 256,
+          "type": "string"
+        },
+        "z": {
+          "default": "",
+          "description": "Block state name that controls visual rotation around the z axis.",
+          "maxLength": 256,
+          "type": "string"
+        }
+      },
+      "title": "NWayVisualRotation",
+      "type": "object"
+    },
     "3987904724": {
       "properties": {
         "explosion_resistance": {
@@ -1223,6 +1267,16 @@
           "description": "A modifier affecting the chance that this block will be destroyed by flames when on fire. Values are greater than or equal to 0, with a higher number meaning more likely to be destroyed by fire. For a destroy_chance_modifier of 0, the block will never be destroyed by fire, and the fire will burn forever if the catch_chance_modifier is greater than 0. The default value of 20 is the same as that of Planks.",
           "minimum": 0,
           "type": "integer"
+        },
+        "lava_flammable": {
+          "default": "never",
+          "description": "Determines lava fire consideration. \"always\" includes this block when lava attempts to spread fire\"\n\t\t\t\t\t\" (triggered by adjacent block changes), but normal fire-placement rules still apply. \"never\" excludes\"\n\t\t\t\t\t\" this block from that check.",
+          "enum": [
+            "always",
+            "never"
+          ],
+          "title": "Lava Flammable",
+          "type": "string"
         }
       },
       "title": "Detailed Flammable",
@@ -1428,7 +1482,7 @@
     "components": {
       "$ref": "#/definitions/2556852513",
       "propertyNames": {
-        "pattern": "^(?!(minecraft:flower_pottable|minecraft:on_fall_on|minecraft:redstone_consumer|minecraft:embedded_visual|minecraft:on_placed|minecraft:support|minecraft:item_visual|minecraft:on_interact|minecraft:breathability|minecraft:on_player_destroyed|minecraft:on_player_placing|minecraft:on_step_off|minecraft:on_step_on|minecraft:queued_ticking|minecraft:random_ticking|minecraft:unit_cube)$)",
+        "pattern": "^(?!(minecraft:redstone_consumer|minecraft:block_entity|minecraft:on_placed|minecraft:support|minecraft:embedded_visual|minecraft:flower_pottable|minecraft:on_fall_on|minecraft:item_visual|minecraft:breathability|minecraft:on_interact|minecraft:on_player_destroyed|minecraft:on_player_placing|minecraft:queued_ticking|minecraft:random_ticking|minecraft:on_step_off|minecraft:on_step_on|minecraft:unit_cube)$)",
         "type": "string"
       },
       "x-runtime-constraint-description": "Blocks with precipitation interactions \"snowlogging\" must have collision box disabled"
