@@ -4407,6 +4407,7 @@
     "$main_content_focus_container_left|default": "none",
     "$main_content_focus_container_left_custom|default": {},
     "$allows_sdl_section_focus_container|default": true,
+    "$ignore_info_text_box_description|default": false,
 
     "$section_name|default": "rows",
     "property_bag_for_children": {
@@ -4425,6 +4426,7 @@
         "ExpandedAppearance": "@persona_sdl.expanded_appearance_panel"
       },
       "factory_variables": [
+        "$ignore_info_text_box_description",
         "$ignore_search_offer_content",
         "$store_factory_clipping_event",
         "$store_factory_collection_details",
@@ -5534,7 +5536,15 @@
     ]
   },
 
-  "blade_offer_description_details": {
+  "blade_offer_description_details@common_store.content_card_offer_info": {
+    "size": [ "100% - 2px", "100%" ],
+    "offset": [ -1, 0 ],
+    "property_bag_for_children": {
+      "#offer_info_style_name": "screenshotsHeroBladeRow"
+    }
+  },
+
+  "blade_offer_description_details_OLD": {
     "type": "stack_panel",
     "orientation": "vertical",
     "size": [ "100% - 2px", "100%" ],
@@ -5765,6 +5775,16 @@
           "anchor_to": "bottom_right",
           "$description_background_alpha": 0.9,
           "size": [ "100% - 1px", "100% - 56.25%x + 1.4375px" ],
+          "variables": [
+            {
+              "requires": "$content_cards_enabled",
+              "$blade_description": "common_store.blade_offer_description_details"
+            },
+            {
+              "requires": "(not $content_cards_enabled)",
+              "$blade_description": "common_store.blade_offer_description_details_OLD"
+            }
+          ],
           "controls": [
             {
               "blade_offer_description_border": {
@@ -5778,7 +5798,7 @@
               }
             },
             {
-              "hero_blade_offer_description_details@common_store.blade_offer_description_details": {}
+              "hero_blade_offer_description_details@$blade_description": {}
             }
           ],
           "bindings": [
@@ -5851,46 +5871,11 @@
     "$blade_offer_collection_name|default": "blade_row_collection",
     "controls": [
       {
-        "blade_row_transparent_button@common_store.transparent_content_button": {
-          "size": [ "100%", "100%" ],
-          "layer": -1,
-          "$pressed_button_name": "button.select_blade_offer",
-          "$button_content": "common_store.blade_row_featured_panel",
-          "button_mappings": [
-            {
-              "from_button_id": "button.menu_select",
-              "to_button_id": "$pressed_button_name",
-              "mapping_type": "pressed"
-            },
-            {
-              "from_button_id": "button.menu_ok",
-              "to_button_id": "$pressed_button_name",
-              "mapping_type": "pressed"
-            },
-            {
-              "from_button_id": "button.menu_tab_right",
-              "to_button_id": "button.navigate_carousel_right",
-              "mapping_type": "focused"
-            },
-            {
-              "from_button_id": "button.menu_tab_left",
-              "to_button_id": "button.navigate_carousel_left",
-              "mapping_type": "focused"
-            }
-          ],
-          "bindings": [
-            {
-              "binding_type": "$store_factory_collection_details",
-              "binding_collection_name": "$store_factory_collection_name",
-              "binding_collection_prefix": "$store_factory_collection_prefix"
-            },
-            {
-              "binding_type": "collection",
-              "binding_collection_name": "carousel_row_collection_name",
-              "binding_name": "#offer_button_focus_id",
-              "binding_name_override": "#focus_identifier"
-            }
-          ]
+        "blade_row_featured_panel@common_store.blade_row_featured_panel": {}
+      },
+      {
+        "offer_button@common_store.store_offer_grid_button": {
+          "$size_to_cover": [ "100%", "100%" ]
         }
       }
     ]
@@ -7034,7 +7019,8 @@
       "name": "vertical_row_factory",
       "control_ids": {
         "vertical_coin_offer_content": "@common_store.vertical_coin_offer_content",
-        "vertical_offer_content": "@common_store.vertical_offer_content"
+        "vertical_offer_content": "@common_store.vertical_offer_content",
+        "vertical_offer_content_OLD": "@common_store.vertical_offer_content_OLD"
       },
       "factory_variables": [
         "$store_factory_collection_details",
@@ -7075,6 +7061,23 @@
   },
 
   "vertical_offer_content": {
+    "type": "panel",
+    "size": [ "100%", "37px" ],
+    "controls": [
+      {
+        "offer_item@common_store.content_card_offer_item_narrow": {
+          "anchor_from": "bottom_left",
+          "anchor_to": "bottom_left",
+          "$offer_collection_details": "collection_details",
+          "$offer_binding_type": "collection",
+          "$offer_collection_prefix": "offer",
+          "$offer_collection_name": "vertical_offer_collection"
+        }
+      }
+    ]
+  },
+
+  "vertical_offer_content_OLD": {
     "type": "panel",
     "size": [ "100%", "36px" ],
     "controls": [
@@ -8735,6 +8738,17 @@
     "$description_size": [ "100%", 23 ],
     "property_bag_for_children": {
       "#offer_info_style_name": "small"
+    }
+  },
+
+  "content_card_offer_item_narrow@common_store.content_card_offer_item": {
+    "size": [ "100%", 35 ],
+    // 16/9 resolution = 177.777~%y
+    "$key_art_size": [ "177.778%y", "100%" ],
+    // 100% - 16/9 resolution with 32px height (56.888) and 2px padding
+    "$description_size": [ "100% - 58.888px", 34 ],
+    "property_bag_for_children": {
+      "#offer_info_style_name": "narrow"
     }
   },
 

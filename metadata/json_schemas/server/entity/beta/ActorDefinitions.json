@@ -250,6 +250,16 @@
           "description": "Whether or not the target should be fully immersed in water for the knockback rules to apply.",
           "type": "boolean"
         },
+        "extra_knockback_approach": {
+          "default": "reapply_default",
+          "description": "Defines the approach for combining extra knockback from enchantments or sprinting:\n- \"reapply_default\": Reapplies knockback again with default knockback parameters, i.e. values not defined by this component.\n- \"multiply_reduced\": Multiplies the extra knockback with the first knockback and a reduction factor, and adds it to the first knockback.",
+          "enum": [
+            "reapply_default",
+            "multiply_reduced"
+          ],
+          "title": "ExtraKnockbackApproach",
+          "type": "string"
+        },
         "filter": {
           "$ref": "#/definitions/2789112004",
           "default": {
@@ -933,6 +943,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -4833,6 +4845,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -5726,6 +5740,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -6078,14 +6094,15 @@
           },
           "description": "Conditions that must be met for this preset to be applied."
         },
-        "kick_distance_threshold": {
-          "default": 1.2999999523162842,
-          "description": "Maximum horizontal distance at which another entity can kick this entity. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
         "kick_speed_scale": {
           "default": 2,
           "description": "Multiplier applied to the pushing entity's movement speed to determine kick force. Only used when push_mode is \"ball\".",
+          "type": "number"
+        },
+        "max_distance": {
+          "default": 3.4028234663852886e+38,
+          "description": "Maximum horizontal distance between the center of the pushed entity and the collision of the pushing entity for push forces to be applied. Entities further apart than this will not push each other.",
+          "minimum": 0,
           "type": "number"
         },
         "max_kick_speed": {
@@ -6095,13 +6112,19 @@
         },
         "min_distance": {
           "default": 0.009999999776482582,
-          "description": "Minimum distance between two entities for push forces to be applied. Entities closer than this will not push each other.",
+          "description": "Minimum horizontal distance between the centers of the two entities for push forces to be applied. Entities closer than this will not push each other.",
+          "minimum": 0,
           "type": "number"
         },
         "min_kick_speed": {
           "default": 0,
           "description": "Minimum speed the ball will be kicked at, regardless of how slowly the pushing entity is moving. Only used when push_mode is \"ball\".",
           "type": "number"
+        },
+        "play_sound": {
+          "default": false,
+          "description": "If the \"pushed_by_player\" sound should be played when the entity is pushed by any other entity (despite the sound name).",
+          "type": "boolean"
         },
         "play_sound_cooldown_in_seconds": {
           "default": 0.20000000298023224,
@@ -6117,8 +6140,9 @@
         },
         "push_mode": {
           "default": "default",
-          "description": "Defines the type of push vector calculation applied to the entity:\n- \"default\": Standard push calculation used by most entities.\n- \"legacy_boat\": Legacy push calculation historically used by boats. Includes dampened forces and sneak-based cancellation.\n- \"legacy_minecart\": Legacy push calculation historically used by minecarts. Includes alignment-based collision handling and velocity averaging.- \"ball\": Push calculation for ball-like entities. The ball is kicked in the direction of the pushing entity's movement, with force based on their movement speed.",
+          "description": "Defines the type of push vector calculation applied to the entity:\n- \"none\": The entity cannot be pushed.\n- \"default\": Standard push calculation used by most entities.\n- \"legacy_boat\": Legacy push calculation historically used by boats. Includes dampened forces and sneak-based cancellation.\n- \"legacy_minecart\": Legacy push calculation historically used by minecarts. Includes alignment-based collision handling and velocity averaging.- \"ball\": Push calculation for ball-like entities. The ball is kicked in the direction of the pushing entity's movement, with force based on their movement speed.",
           "enum": [
+            "none",
             "default",
             "legacy_boat",
             "legacy_minecart",
@@ -6506,6 +6530,132 @@
         }
       },
       "title": "minecraft:on_equipment_changed",
+      "type": "object"
+    },
+    "2865467525": {
+      "description": "Allows the mob to pick up items on the ground.",
+      "properties": {
+        "can_pickup_any_item": {
+          "default": false,
+          "description": "If true, the mob can pick up any item",
+          "type": "boolean"
+        },
+        "can_pickup_to_hand_or_equipment": {
+          "default": true,
+          "description": "If true, the mob can pick up items to its hand or armor slots",
+          "type": "boolean"
+        },
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cooldown_after_being_attacked": {
+          "default": 0,
+          "description": "Time in seconds the mob cannot pickup items after being attacked",
+          "type": "integer"
+        },
+        "excluded_items": {
+          "default": [
+          ],
+          "description": "List of items this mob will not pick up",
+          "items": {
+            "$ref": "#/definitions/1429287564"
+          },
+          "type": "array"
+        },
+        "goal_radius": {
+          "default": 0.5,
+          "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot",
+          "type": "number"
+        },
+        "max_dist": {
+          "default": 1,
+          "description": "Maximum distance this mob will look for items to pick up",
+          "type": "integer"
+        },
+        "on_pickup_item_end": {
+          "$ref": "#/definitions/3379368818",
+          "default": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          },
+          "description": "Event to run when this mob either finishes or loses interest in picking up an item"
+        },
+        "on_pickup_item_start": {
+          "$ref": "#/definitions/3379368818",
+          "default": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          },
+          "description": "Event to run when this mob moves to pick up an item"
+        },
+        "pickup_based_on_chance": {
+          "default": false,
+          "description": "If true, depending on the difficulty, there is a random chance that the mob may not be able to pickup items",
+          "type": "boolean"
+        },
+        "pickup_same_items_as_in_hand": {
+          "default": false,
+          "description": "If true, the mob will only pick up items that match what's in their hand",
+          "type": "boolean"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "search_height": {
+          "default": 1,
+          "description": "Height in blocks the mob will search for items",
+          "type": "integer"
+        },
+        "speed_multiplier": {
+          "default": 1,
+          "description": "Movement speed multiplier of the mob when using this AI Goal",
+          "type": "number"
+        },
+        "stop_if_holding_item": {
+          "default": false,
+          "description": "If true, the mob will not pick up another item if the item's preferred slot matches",
+          "type": "boolean"
+        },
+        "track_target": {
+          "default": false,
+          "description": "If true, this mob will chase after the target as long as it's a valid target",
+          "type": "boolean"
+        }
+      },
+      "title": "minecraft:behavior.pickup_items",
       "type": "object"
     },
     "287214775": {
@@ -8115,6 +8265,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -11188,6 +11340,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -12209,6 +12363,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -13299,6 +13455,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -13882,6 +14040,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -14500,6 +14660,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -14775,127 +14937,6 @@
         }
       ],
       "title": "vec3"
-    },
-    "737223098": {
-      "description": "Allows the mob to pick up items on the ground.",
-      "properties": {
-        "can_pickup_any_item": {
-          "default": false,
-          "description": "If true, the mob can pick up any item",
-          "type": "boolean"
-        },
-        "can_pickup_to_hand_or_equipment": {
-          "default": true,
-          "description": "If true, the mob can pick up items to its hand or armor slots",
-          "type": "boolean"
-        },
-        "control_flags": {
-          "default": [
-          ],
-          "items": {
-            "enum": [
-              "move",
-              "look",
-              "jump"
-            ],
-            "title": "Goal's control flags",
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "cooldown_after_being_attacked": {
-          "default": 0,
-          "description": "Time in seconds the mob cannot pickup items after being attacked",
-          "type": "integer"
-        },
-        "excluded_items": {
-          "default": [
-          ],
-          "description": "List of items this mob will not pick up",
-          "items": {
-            "$ref": "#/definitions/1429287564"
-          },
-          "type": "array"
-        },
-        "goal_radius": {
-          "default": 0.5,
-          "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot",
-          "type": "number"
-        },
-        "max_dist": {
-          "default": 1,
-          "description": "Maximum distance this mob will look for items to pick up",
-          "type": "integer"
-        },
-        "on_pickup_item_end": {
-          "$ref": "#/definitions/3379368818",
-          "default": {
-            "event": "",
-            "filters": {
-              "AND": null,
-              "NOT": null,
-              "OR": null,
-              "all": null,
-              "all_of": null,
-              "any": null,
-              "any_of": null,
-              "none_of": null
-            },
-            "target": "self"
-          },
-          "description": "Event to run when this mob either finishes or loses interest in picking up an item"
-        },
-        "on_pickup_item_start": {
-          "$ref": "#/definitions/3379368818",
-          "default": {
-            "event": "",
-            "filters": {
-              "AND": null,
-              "NOT": null,
-              "OR": null,
-              "all": null,
-              "all_of": null,
-              "any": null,
-              "any_of": null,
-              "none_of": null
-            },
-            "target": "self"
-          },
-          "description": "Event to run when this mob moves to pick up an item"
-        },
-        "pickup_based_on_chance": {
-          "default": false,
-          "description": "If true, depending on the difficulty, there is a random chance that the mob may not be able to pickup items",
-          "type": "boolean"
-        },
-        "pickup_same_items_as_in_hand": {
-          "default": false,
-          "description": "If true, the mob will only pick up items that match what's in their hand",
-          "type": "boolean"
-        },
-        "priority": {
-          "default": 0,
-          "minimum": 0,
-          "type": "integer"
-        },
-        "search_height": {
-          "default": 1,
-          "description": "Height in blocks the mob will search for items",
-          "type": "integer"
-        },
-        "speed_multiplier": {
-          "default": 1,
-          "description": "Movement speed multiplier of the mob when using this AI Goal",
-          "type": "number"
-        },
-        "track_target": {
-          "default": false,
-          "description": "If true, this mob will chase after the target as long as it's a valid target",
-          "type": "boolean"
-        }
-      },
-      "title": "minecraft:behavior.pickup_items",
-      "type": "object"
     },
     "742152213": {
       "oneOf": [
@@ -15523,6 +15564,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -16218,6 +16261,8 @@
             "record.bounce",
             "bucket.fill.land_animal",
             "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
             "undefined"
           ],
           "title": "LevelSoundEvent",
@@ -16666,6 +16711,12 @@
       },
       "title": "minecraft:behavior.sneeze",
       "type": "object"
+    }
+  },
+  "patternProperties": {
+    "^minecraft:memory_behavior.move_to_position\\.[A-Za-z0-9_]{1,32}$": {
+      "$ref": "#/definitions/408549500",
+      "description": "Allows the mob to move to a target position. Using memories, the mob will try to stick to the original target position it chose until that position is removed. Requires a FindBlockSensor."
     }
   },
   "properties": {
@@ -17132,7 +17183,7 @@
       "description": "Allows the pet mob to move onto a bed with its owner while sleeping."
     },
     "minecraft:behavior.pickup_items": {
-      "$ref": "#/definitions/737223098",
+      "$ref": "#/definitions/2865467525",
       "description": "Allows the mob to pick up items on the ground."
     },
     "minecraft:behavior.place_block": {
@@ -17721,13 +17772,6 @@
       "description": "Dynamic value"
     },
     "minecraft:memory_behavior.follow_target": {
-      "description": "Dynamic value"
-    },
-    "minecraft:memory_behavior.move_to_position": {
-      "$ref": "#/definitions/408549500",
-      "description": "Allows the mob to move to a target position. Using memories, the mob will try to stick to the original target position it chose until that position is removed. Requires a FindBlockSensor."
-    },
-    "minecraft:memory_sensor.find_nearest_block": {
       "description": "Dynamic value"
     },
     "minecraft:memory_sensor.find_nearest_entity": {
