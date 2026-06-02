@@ -48,22 +48,6 @@
     "1018143578": {
       "title": "IsShakingDefinition"
     },
-    "1021664143": {
-      "description": "Allows an entity to be pushed by other entities.",
-      "properties": {
-        "presets": {
-          "default": [
-          ],
-          "description": "Defines how this entity behaves when pushed by another entity. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.",
-          "items": {
-            "$ref": "#/definitions/2778658844"
-          },
-          "type": "array"
-        }
-      },
-      "title": "minecraft:pushable_by_entity",
-      "type": "object"
-    },
     "1076312822": {
       "description": "Allows the mob to give items it has to others.",
       "properties": {
@@ -109,6 +93,32 @@
         }
       },
       "title": "minecraft:behavior.share_items",
+      "type": "object"
+    },
+    "1108356402": {
+      "description": "Allows the squid to swim away. Can only be used by the Squid.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.squid_flee",
       "type": "object"
     },
     "1120554472": {
@@ -1046,6 +1056,47 @@
       "title": "minecraft:behavior.sonic_boom",
       "type": "object"
     },
+    "1206914730": {
+      "description": "Allows monsters to jump at and attack their target. Can only be used by hostile mobs.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "must_be_on_ground": {
+          "default": true,
+          "description": "If true, the mob will only jump at its target if its on the ground. Setting it to false will allow it to jump even if its already in the air",
+          "type": "boolean"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "set_persistent": {
+          "default": false,
+          "description": "Allows the actor to be set to persist upon targeting a player",
+          "type": "boolean"
+        },
+        "yd": {
+          "default": 0,
+          "description": "The height in blocks the mob jumps when leaping at its target",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.leap_at_target",
+      "type": "object"
+    },
     "122002744": {
       "title": "CanPowerJumpDefinition"
     },
@@ -1270,6 +1321,69 @@
         }
       },
       "title": "minecraft:behavior.wither_target_highest_damage",
+      "type": "object"
+    },
+    "136374403": {
+      "description": "Allows the entity to consume a block, replace the eaten block with another block, and trigger an event as a result.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "eat_and_replace_block_pairs": {
+          "default": [
+          ],
+          "description": "A collection of pairs of blocks; the first (\"eat_block\") is the block the entity should eat, the second (\"replace_block\") is the block that should replace the eaten block.",
+          "items": {
+            "$ref": "#/definitions/2030678645"
+          },
+          "type": "array"
+        },
+        "on_eat": {
+          "$ref": "#/definitions/3379368818",
+          "default": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          },
+          "description": "The event to trigger when the block eating animation has completed."
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "success_chance": {
+          "$ref": "#/definitions/2014847524",
+          "default": 0.019999999552965164,
+          "description": "A molang expression defining the success chance the entity has to consume a block."
+        },
+        "time_until_eat": {
+          "default": 1.7999999523162842,
+          "description": "The amount of time (in seconds) it takes for the block to be eaten upon a successful eat attempt.",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.eat_block",
       "type": "object"
     },
     "1376673838": {
@@ -1634,6 +1748,126 @@
     },
     "1533618432": {
       "title": "IsTamedDefinition"
+    },
+    "1612485739": {
+      "description": "Allows the mob to float around like the Ghast.",
+      "properties": {
+        "additional_collision_buffer": {
+          "default": false,
+          "description": "If true, the mob will have an additional buffer zone around it to avoid collisions with blocks when picking a position to wander to.",
+          "type": "boolean"
+        },
+        "allow_navigating_through_liquids": {
+          "default": false,
+          "description": "If true allows the mob to navigate through liquids on its way to the target position.",
+          "type": "boolean"
+        },
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "float_duration": {
+          "$ref": "#/definitions/2566306602",
+          "default": {
+            "max": 0,
+            "min": 0
+          },
+          "description": "Range of time in seconds the mob will float around before landing and choosing to do something else"
+        },
+        "float_wander_has_move_control": {
+          "default": true,
+          "description": "If true, the MoveControl flag will be added to the behavior which means that it can no longer be active at the same time as other behaviors with MoveControl.",
+          "type": "boolean"
+        },
+        "must_reach": {
+          "default": false,
+          "description": "If true, the point has to be reachable to be a valid target",
+          "type": "boolean"
+        },
+        "navigate_around_surface": {
+          "default": false,
+          "description": "If true, will prioritize finding random positions in the vicinity of surfaces, i.e. blocks that are not Air or Liquid.",
+          "type": "boolean"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "random_reselect": {
+          "default": false,
+          "description": "If true, the mob will randomly pick a new point while moving to the previously selected one",
+          "type": "boolean"
+        },
+        "surface_xz_dist": {
+          "default": 8,
+          "description": "The horizontal distance in blocks that the goal will check for a surface from a candidate position. Only valid when `navigate_around_surface` is true.",
+          "type": "integer"
+        },
+        "surface_y_dist": {
+          "default": 8,
+          "description": "The vertical distance in blocks that the goal will check for a surface from a candidate position. Only valid when `navigate_around_surface` is true.",
+          "type": "integer"
+        },
+        "use_home_position_restriction": {
+          "default": true,
+          "description": "If true, the mob will respect home position restrictions when choosing new target positions. If false, it will choose target position without considering home restrictions",
+          "type": "boolean"
+        },
+        "xz_dist": {
+          "default": 10,
+          "description": "Distance in blocks on ground that the mob will look for a new spot to move to. Must be at least 1",
+          "type": "integer"
+        },
+        "y_dist": {
+          "default": 7,
+          "description": "Distance in blocks that the mob will look up or down for a new spot to move to. Must be at least 1",
+          "type": "integer"
+        },
+        "y_offset": {
+          "default": 0,
+          "description": "Height in blocks to add to the selected target position",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.float_wander",
+      "type": "object"
+    },
+    "1635065898": {
+      "description": "Allows the squid to stick to the ground when outside water. Can only be used by the Squid.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.squid_out_of_water",
+      "type": "object"
     },
     "1651525447": {
       "description": "Allows this entity to use a flame-breath attack. Can only be used by the Ender Dragon.",
@@ -2048,6 +2282,118 @@
       "title": "minecraft:behavior.look_at_entity",
       "type": "object"
     },
+    "1830422071": {
+      "description": "Allows the mob to perform a damaging knockback that affects all nearby entities.",
+      "properties": {
+        "attack_time": {
+          "default": 0.5,
+          "description": "The delay after which the knockback occurs (in seconds).",
+          "type": "number"
+        },
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cooldown_time": {
+          "default": 0.10000000149011612,
+          "description": "Time (in seconds) the mob has to wait before using the goal again.",
+          "type": "number"
+        },
+        "damage_filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "The list of conditions another entity must meet to be a valid target to apply damage to."
+        },
+        "duration": {
+          "default": 1,
+          "description": "The max duration of the roar (in seconds).",
+          "type": "number"
+        },
+        "knockback_damage": {
+          "default": 6,
+          "description": "The damage dealt by the knockback roar.",
+          "type": "integer"
+        },
+        "knockback_filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "The list of conditions another entity must meet to be a valid target to apply knockback to."
+        },
+        "knockback_height_cap": {
+          "default": 0.4000000059604645,
+          "description": "The maximum height for vertical knockback.",
+          "type": "number"
+        },
+        "knockback_horizontal_strength": {
+          "default": 4,
+          "description": "The strength of the horizontal knockback.",
+          "type": "integer"
+        },
+        "knockback_range": {
+          "default": 4,
+          "description": "The radius (in blocks) of the knockback effect.",
+          "type": "integer"
+        },
+        "knockback_vertical_strength": {
+          "default": 4,
+          "description": "The strength of the vertical knockback.",
+          "type": "integer"
+        },
+        "on_roar_end": {
+          "$ref": "#/definitions/3379368818",
+          "default": {
+            "event": "",
+            "filters": {
+              "AND": null,
+              "NOT": null,
+              "OR": null,
+              "all": null,
+              "all_of": null,
+              "any": null,
+              "any_of": null,
+              "none_of": null
+            },
+            "target": "self"
+          },
+          "description": "Event that is triggered when the roar ends."
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.knockback_roar",
+      "type": "object"
+    },
     "1836039900": {
       "description": "[INTERNAL] Allows this entity to listen to vibration events.",
       "title": "minecraft:vibration_listener"
@@ -2218,6 +2564,36 @@
       "title": "minecraft:behavior.swim_idle",
       "type": "object"
     },
+    "188684914": {
+      "properties": {
+        "chance": {
+          "default": 1,
+          "description": "The percent chance (from 0.0 to 1.0) of this potion being selected when searching for a potion to use.",
+          "type": "number"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "The filters to use when determining if this potion can be selected."
+        },
+        "id": {
+          "default": -1,
+          "description": "The registry ID of the potion to use",
+          "type": "integer"
+        }
+      },
+      "title": "DrinkPotionGoalDefinition::PotionData",
+      "type": "object"
+    },
     "1889197999": {
       "description": "Allows the mob to randomly sit for a duration.",
       "properties": {
@@ -2332,6 +2708,26 @@
       "title": "minecraft:behavior.lay_down",
       "type": "object"
     },
+    "1909529170": {
+      "$metaProperties": {
+        "CEREAL_EDITOR_SCHEMA_TAG": "type:color"
+      },
+      "oneOf": [
+        {
+          "pattern": "^#[a-fA-F0-9]{8}$",
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "type": "array"
+        }
+      ],
+      "title": "Color255RGBA"
+    },
     "1950611815": {
       "description": "Allows the mob to stay at a certain level when in liquid.",
       "properties": {
@@ -2428,6 +2824,116 @@
       "title": "minecraft:behavior.stroll_towards_village",
       "type": "object"
     },
+    "1978051027": {
+      "description": "Allows an entity to attack by using ranged shots. \"charge_shoot_trigger\" must be greater than 0 to enable charged up burst-shot attacks. Requires minecraft:shooter to define projectile behaviour.",
+      "properties": {
+        "attack_interval": {
+          "$ref": "#/definitions/2566306602",
+          "default": {
+            "max": -1,
+            "min": -1
+          },
+          "description": "Reload-time range (in seconds), when not using a charged shot. Reload-time range scales with target-distance.",
+          "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+        },
+        "attack_radius": {
+          "default": 0,
+          "description": "Minimum distance to target before this entity will attempt to shoot.",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "attack_radius_min": {
+          "default": 0,
+          "description": "Minimum distance the target can be for this mob to fire. If the target is closer, this mob will move first before firing",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "burst_interval": {
+          "default": 0,
+          "description": "Time (in seconds) between each individual shot when firing a burst of shots from a charged up attack.",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "burst_shots": {
+          "default": 1,
+          "description": "Number of shots fired every time the attacking entity uses a charged up attack.",
+          "type": "integer"
+        },
+        "charge_charged_trigger": {
+          "default": 0,
+          "description": "Time (in seconds, then add \"charge_shoot_trigger\"), before a charged up attack is done charging. Charge-time decays while target is not in sight.",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "charge_shoot_trigger": {
+          "default": 0,
+          "description": "Amount of time (in seconds, then doubled) a charged shot must be charging before reloading burst shots. Charge-time decays while target is not in sight.",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ranged_fov": {
+          "default": 90,
+          "description": "Field of view (in degrees) when using sensing to detect a target for attack.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "set_persistent": {
+          "default": false,
+          "description": "Allows the actor to be set to persist upon targeting a player",
+          "type": "boolean"
+        },
+        "speed_multiplier": {
+          "default": 1,
+          "description": "During attack behavior, this multiplier modifies the entity's speed when moving toward the target.",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "swing": {
+          "default": false,
+          "description": "If a swing animation (using variable.attack_time) exists, this causes the actor to swing their arm(s) upon firing the ranged attack.",
+          "type": "boolean"
+        },
+        "target_in_sight_time": {
+          "default": 1,
+          "description": "Minimum amount of time (in seconds) the attacking entity needs to see the target before moving toward it.",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "x_max_rotation": {
+          "default": 30,
+          "description": "Maximum rotation (in degrees), on the X-axis, this entity can rotate while trying to look at the target.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "y_max_head_rotation": {
+          "default": 30,
+          "description": "Maximum rotation (in degrees), on the Y-axis, this entity can rotate its head while trying to look at the target.",
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.ranged_attack",
+      "type": "object"
+    },
     "1991896377": {
       "description": "Causes the entity to grow tired every once in a while, while attacking.",
       "properties": {
@@ -2488,6 +2994,22 @@
         }
       ],
       "title": "Molang expression"
+    },
+    "2030678645": {
+      "properties": {
+        "eat_block": {
+          "default": "",
+          "description": "The block the entity should eat.",
+          "type": "string"
+        },
+        "replace_block": {
+          "default": "",
+          "description": "The block that should replace the eaten block.",
+          "type": "string"
+        }
+      },
+      "title": "EatAndReplaceBlockPair",
+      "type": "object"
     },
     "2053093711": {
       "title": "ProjectileAnchorProxy",
@@ -3094,6 +3616,32 @@
       "title": "minecraft:behavior.skeleton_horse_trap",
       "type": "object"
     },
+    "2237411492": {
+      "description": "Allows the squid to dive down in water. Can only be used by the Squid.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.squid_dive",
+      "type": "object"
+    },
     "2249020736": {
       "description": "The mob freezes and looks at the mob they are targeting.",
       "properties": {
@@ -3151,6 +3699,46 @@
         }
       },
       "title": "minecraft:behavior.hold_ground",
+      "type": "object"
+    },
+    "2258648173": {
+      "description": "Allows the mob to drink potions based on specified environment conditions.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "potions": {
+          "default": [
+          ],
+          "description": "A list of potions that this entity can drink. Each potion entry has the following parameters:",
+          "items": {
+            "$ref": "#/definitions/188684914"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "speed_modifier": {
+          "default": 0,
+          "description": "The movement speed modifier to apply to the entity while it is drinking a potion. A value of 0 represents no change in speed.",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.drink_potion",
       "type": "object"
     },
     "2296286966": {
@@ -3318,6 +3906,22 @@
         }
       },
       "title": "minecraft:behavior.door_interact",
+      "type": "object"
+    },
+    "2327947882": {
+      "description": "Allows an entity to be pushed by other entities.",
+      "properties": {
+        "presets": {
+          "default": [
+          ],
+          "description": "Defines how this entity behaves when pushed by another entity. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.",
+          "items": {
+            "$ref": "#/definitions/3918266391"
+          },
+          "type": "array"
+        }
+      },
+      "title": "minecraft:pushable_by_entity",
       "type": "object"
     },
     "2339940135": {
@@ -4197,6 +4801,32 @@
       "description": "Prevents the entity from changing dimension through portals.",
       "title": "minecraft:dimension_bound"
     },
+    "2575956242": {
+      "description": "Allows the squid to move away from ground blocks and back to water. Can only be used by the Squid.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.squid_move_away_from_ground",
+      "type": "object"
+    },
     "2577760700": {
       "description": "Allows the mob to move around on its own while mounted seeking a target to attack.",
       "properties": {
@@ -4920,6 +5550,127 @@
     "2618324724": {
       "description": "Determines that this entity is an item hopper.",
       "title": "minecraft:item_hopper"
+    },
+    "2630419329": {
+      "description": "Allows mob to move towards a block.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "goal_radius": {
+          "default": 0.5,
+          "description": "Distance in blocks within the mob considers it has reached the goal. This is the \"wiggle room\" to stop the AI from bouncing back and forth trying to reach a specific spot.",
+          "type": "number"
+        },
+        "on_reach": {
+          "default": [
+          ],
+          "description": "Event to run on block reached.",
+          "items": {
+            "$ref": "#/definitions/3379368818"
+          },
+          "type": "array"
+        },
+        "on_stay_completed": {
+          "default": [
+          ],
+          "description": "Event to run on completing a stay of stay_duration at the block.",
+          "items": {
+            "$ref": "#/definitions/3379368818"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "search_height": {
+          "default": 1,
+          "description": "The height in blocks that the mob will look for the block.",
+          "type": "integer"
+        },
+        "search_range": {
+          "default": 0,
+          "description": "The distance in blocks that the mob will look for the block.",
+          "type": "integer"
+        },
+        "speed_multiplier": {
+          "default": 1,
+          "description": "Movement speed multiplier of the mob when using this AI Goal.",
+          "type": "number"
+        },
+        "start_chance": {
+          "default": 1,
+          "description": "Chance to start the behavior (applied after each random tick_interval).",
+          "type": "number"
+        },
+        "stay_duration": {
+          "default": 0,
+          "description": "Number of ticks needed to complete a stay at the block.",
+          "type": "number"
+        },
+        "target_block_filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Conditions that need to be met for a block to be a valid target."
+        },
+        "target_blocks": {
+          "default": [
+          ],
+          "description": "Block types to move to.",
+          "items": {
+            "$ref": "#/definitions/1429287564"
+          },
+          "type": "array"
+        },
+        "target_offset": {
+          "$ref": "#/definitions/725374594",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "description": "Offset to add to the selected target position."
+        },
+        "target_selection_method": {
+          "default": "nearest",
+          "description": "Kind of block to find fitting the specification. Valid values are \"random\" and \"nearest\".",
+          "enum": [
+            "nearest",
+            "random"
+          ],
+          "title": "Target Selection Method",
+          "type": "string"
+        },
+        "tick_interval": {
+          "default": 20,
+          "description": "Average interval in ticks to try to run this behavior.",
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.move_to_block",
+      "type": "object"
     },
     "2649875718": {
       "description": "Allows the dragon to go out with glory. This controls the Ender Dragon's death animation and can't be used by other mobs.",
@@ -6078,103 +6829,6 @@
       "title": "minecraft:behavior.celebrate_survive",
       "type": "object"
     },
-    "2778658844": {
-      "properties": {
-        "filters": {
-          "$ref": "#/definitions/2789112004",
-          "default": {
-            "AND": null,
-            "NOT": null,
-            "OR": null,
-            "all": null,
-            "all_of": null,
-            "any": null,
-            "any_of": null,
-            "none_of": null
-          },
-          "description": "Conditions that must be met for this preset to be applied."
-        },
-        "kick_speed_scale": {
-          "default": 2,
-          "description": "Multiplier applied to the pushing entity's movement speed to determine kick force. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "max_distance": {
-          "default": 3.4028234663852886e+38,
-          "description": "Maximum horizontal distance between the center of the pushed entity and the collision of the pushing entity for push forces to be applied. Entities further apart than this will not push each other.",
-          "minimum": 0,
-          "type": "number"
-        },
-        "max_kick_speed": {
-          "default": 0.5,
-          "description": "Maximum speed the ball can be kicked at, regardless of how fast the pushing entity is moving. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "min_distance": {
-          "default": 0.009999999776482582,
-          "description": "Minimum horizontal distance between the centers of the two entities for push forces to be applied. Entities closer than this will not push each other.",
-          "minimum": 0,
-          "type": "number"
-        },
-        "min_kick_speed": {
-          "default": 0,
-          "description": "Minimum speed the ball will be kicked at, regardless of how slowly the pushing entity is moving. Only used when push_mode is \"ball\".",
-          "type": "number"
-        },
-        "play_sound": {
-          "default": false,
-          "description": "If the \"pushed_by_player\" sound should be played when the entity is pushed by any other entity (despite the sound name).",
-          "type": "boolean"
-        },
-        "play_sound_cooldown_in_seconds": {
-          "default": 0.20000000298023224,
-          "description": "Cooldown in seconds between sounds. A lower number results in more sounds.",
-          "minimum": 0,
-          "type": "number"
-        },
-        "play_sound_impulse_threshold": {
-          "default": 0.20000000298023224,
-          "description": "Minimum change of velocity needed to trigger the push sound. A lower value means higher sensitivity.",
-          "minimum": 0,
-          "type": "number"
-        },
-        "push_mode": {
-          "default": "default",
-          "description": "Defines the type of push vector calculation applied to the entity:\n- \"none\": The entity cannot be pushed.\n- \"default\": Standard push calculation used by most entities.\n- \"legacy_boat\": Legacy push calculation historically used by boats. Includes dampened forces and sneak-based cancellation.\n- \"legacy_minecart\": Legacy push calculation historically used by minecarts. Includes alignment-based collision handling and velocity averaging.- \"ball\": Push calculation for ball-like entities. The ball is kicked in the direction of the pushing entity's movement, with force based on their movement speed.",
-          "enum": [
-            "none",
-            "default",
-            "legacy_boat",
-            "legacy_minecart",
-            "ball"
-          ],
-          "title": "PushMode",
-          "type": "string"
-        },
-        "push_scale_other": {
-          "default": 1,
-          "description": "Scales how much push force this entity applies to the other entity when colliding. A value of 1.0 applies full force, 0.5 applies half.",
-          "type": "number"
-        },
-        "push_scale_self": {
-          "default": 1,
-          "description": "Scales how much this entity pushes itself away when colliding with another entity. A value of 1.0 applies full force, 0.5 applies half.",
-          "type": "number"
-        },
-        "strength_multiplier": {
-          "default": 0.05000000074505806,
-          "description": "Multiplier applied to the push strength. Higher values result in stronger pushes.",
-          "type": "number"
-        },
-        "vertical_kick_multiplier": {
-          "default": 0.30000001192092896,
-          "description": "Multiplier for the upward force applied when the ball is kicked while on the ground. A value of 0 keeps the ball flat. Only used when push_mode is \"ball\".",
-          "type": "number"
-        }
-      },
-      "title": "PushableByEntityPreset",
-      "type": "object"
-    },
     "2789112004": {
       "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
       "oneOf": [
@@ -7266,6 +7920,32 @@
       "title": "minecraft:behavior.inspect_bookshelf",
       "type": "object"
     },
+    "3082237211": {
+      "description": "Allows the mob to alert mobs in nearby blocks to come out. Currently it can only be used by Silverfish.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.silverfish_wake_up_friends",
+      "type": "object"
+    },
     "3082692911": {
       "description": "Allows the mob to try to move to air once it is close to running out of its total breathable supply. Requires \"minecraft:breathable\".",
       "properties": {
@@ -8299,6 +8979,32 @@
       "title": "minecraft:behavior.delayed_attack",
       "type": "object"
     },
+    "3205982106": {
+      "description": "Allows the mob to go into stone blocks like Silverfish do. Currently it can only be used by Silverfish.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.silverfish_merge_with_stone",
+      "type": "object"
+    },
     "3213599829": {
       "description": "Allows an entity to randomly move through water",
       "properties": {
@@ -8414,6 +9120,91 @@
     },
     "3244708751": {
       "title": "IsBabyDefinition"
+    },
+    "326033130": {
+      "description": "Allows a mob to stalk a target, then once within range pounce onto a target, on success the target will be attacked dealing damage defined by the attack component. On failure, the mob will risk getting stuck",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "interest_time": {
+          "default": 2,
+          "description": "The amount of time the mob will be interested before pouncing. This happens when the mob is within range of pouncing",
+          "type": "number"
+        },
+        "leap_dist": {
+          "default": 0.800000011920929,
+          "description": "The distance in blocks the mob jumps in the direction of its target",
+          "type": "number"
+        },
+        "leap_height": {
+          "default": 0.8999999761581421,
+          "description": "The height in blocks the mob jumps when leaping at its target",
+          "type": "number"
+        },
+        "max_stalk_dist": {
+          "default": 10,
+          "description": "The maximum distance away a target can be before the mob gives up on stalking",
+          "type": "number"
+        },
+        "pounce_max_dist": {
+          "default": 5,
+          "description": "The maximum distance away from the target in blocks to begin pouncing at the target",
+          "type": "number"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "set_persistent": {
+          "default": false,
+          "description": "Allows the actor to be set to persist upon targeting a player",
+          "type": "boolean"
+        },
+        "stalk_speed": {
+          "default": 1.2000000476837158,
+          "description": "The movement speed in which you stalk your target",
+          "type": "number"
+        },
+        "strike_dist": {
+          "default": 2,
+          "description": "The max distance away from the target when landing from the pounce that will still result in damaging the target",
+          "type": "number"
+        },
+        "stuck_blocks": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Blocks that the mob can get stuck in after a pounce."
+        },
+        "stuck_time": {
+          "default": 2,
+          "description": "The amount of time the mob will be stuck if they fail and land on a block they can be stuck on",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.stalk_and_pounce_on_target",
+      "type": "object"
     },
     "3275591320": {
       "description": "Allows an entity to go to the village bell and mingle with other entities",
@@ -8618,6 +9409,651 @@
       "title": "minecraft:behavior.drop_item_for",
       "type": "object"
     },
+    "33596444": {
+      "properties": {
+        "base_delay": {
+          "default": 0,
+          "description": "Amount of time in seconds to wait before this step starts",
+          "type": "number"
+        },
+        "delay_per_summon": {
+          "default": 0,
+          "description": "Amount of time in seconds before each entity is summoned in this step",
+          "type": "number"
+        },
+        "entity_lifespan": {
+          "default": -1,
+          "description": "Amount of time in seconds that the spawned entity will be alive for. A value of -1.0 means it will remain alive for as long as it can",
+          "type": "number"
+        },
+        "entity_type": {
+          "default": "",
+          "description": "The entity type of the entities we will spawn in this step",
+          "type": "string"
+        },
+        "num_entities_spawned": {
+          "default": 1,
+          "description": "Number of entities that will be spawned in this step",
+          "type": "integer"
+        },
+        "shape": {
+          "default": "line",
+          "description": "The base shape of this step. Valid values are circle and line",
+          "enum": [
+            "circle",
+            "line"
+          ],
+          "title": "SummonShape",
+          "type": "string"
+        },
+        "size": {
+          "default": 1,
+          "description": "The base size of the entity",
+          "type": "number"
+        },
+        "sound_event": {
+          "default": "undefined",
+          "description": "The sound event to play for this step",
+          "enum": [
+            "item.use.on",
+            "hit",
+            "step",
+            "step.baby",
+            "fly",
+            "jump",
+            "jump.prevent",
+            "break",
+            "place",
+            "heavy.step",
+            "gallop",
+            "fall",
+            "hurt",
+            "hurt.baby",
+            "hurt.in.water",
+            "death",
+            "death.baby",
+            "death.in.water",
+            "death.to.zombie",
+            "ambient",
+            "ambient.baby",
+            "ambient.in.water",
+            "ambient.in.air",
+            "ambient.tame",
+            "ambient.pollinate",
+            "breathe",
+            "mad",
+            "boost",
+            "bow",
+            "squish.big",
+            "squish.small",
+            "fall.big",
+            "fall.small",
+            "splash",
+            "fizz",
+            "flap",
+            "swim",
+            "drink",
+            "drink.honey",
+            "drink.milk",
+            "eat",
+            "takeoff",
+            "shake",
+            "plop",
+            "land",
+            "saddle",
+            "armor",
+            "mob.armor_stand.place",
+            "add.chest",
+            "throw",
+            "attack",
+            "attack.nodamage",
+            "attack.strong",
+            "warn",
+            "shear",
+            "milk",
+            "thunder",
+            "explode",
+            "fire",
+            "ignite",
+            "fuse",
+            "stare",
+            "spawn",
+            "born",
+            "shoot",
+            "break.block",
+            "launch",
+            "blast",
+            "large.blast",
+            "twinkle",
+            "remedy",
+            "unfect",
+            "convert_to_drowned",
+            "levelup",
+            "bow.hit",
+            "bullet.hit",
+            "extinguish.fire",
+            "item.fizz",
+            "chest.open",
+            "chest.closed",
+            "shulkerbox.open",
+            "shulkerbox.closed",
+            "enderchest.open",
+            "enderchest.closed",
+            "power.on",
+            "power.off",
+            "attach",
+            "detach",
+            "deny",
+            "tripod",
+            "pop",
+            "drop.slot",
+            "note",
+            "thorns",
+            "piston.in",
+            "piston.out",
+            "portal",
+            "water",
+            "lava.pop",
+            "lava",
+            "beacon.activate",
+            "beacon.ambient",
+            "beacon.deactivate",
+            "beacon.power",
+            "conduit.activate",
+            "conduit.ambient",
+            "conduit.attack",
+            "conduit.deactivate",
+            "conduit.short",
+            "bubble.pop",
+            "bubble.up",
+            "bubble.upinside",
+            "bubble.down",
+            "bubble.downinside",
+            "burp",
+            "bucket.fill.water",
+            "bucket.empty.water",
+            "bucket.fill.lava",
+            "bucket.empty.lava",
+            "bucket.fill.fish",
+            "bucket.empty.fish",
+            "armor.equip_chain",
+            "armor.equip_diamond",
+            "armor.equip_elytra",
+            "armor.equip_generic",
+            "armor.equip_gold",
+            "armor.equip_iron",
+            "armor.equip_leather",
+            "armor.equip_netherite",
+            "record.13",
+            "record.cat",
+            "record.blocks",
+            "record.chirp",
+            "record.creator",
+            "record.creator_music_box",
+            "record.far",
+            "record.mall",
+            "record.mellohi",
+            "record.stal",
+            "record.strad",
+            "record.ward",
+            "record.11",
+            "record.wait",
+            "record.null",
+            "record.pigstep",
+            "record.precipice",
+            "record.relic",
+            "record.otherside",
+            "record.5",
+            "record.tears",
+            "record.lava_chicken",
+            "flop",
+            "elderguardian.curse",
+            "teleport",
+            "shulker.open",
+            "shulker.close",
+            "mob.warning",
+            "mob.warning.baby",
+            "haggle",
+            "haggle.yes",
+            "haggle.no",
+            "haggle.idle",
+            "disappeared",
+            "reappeared",
+            "chorusgrow",
+            "chorusdeath",
+            "glass",
+            "potion.brewed",
+            "cast.spell",
+            "prepare.attack",
+            "prepare.summon",
+            "prepare.wololo",
+            "fang",
+            "charge",
+            "camera.take_picture",
+            "leashknot.break",
+            "leashknot.place",
+            "growl",
+            "whine",
+            "pant",
+            "purr",
+            "purreow",
+            "death.min.volume",
+            "death.mid.volume",
+            "imitate.blaze",
+            "imitate.cave_spider",
+            "imitate.creeper",
+            "imitate.elder_guardian",
+            "imitate.ender_dragon",
+            "imitate.enderman",
+            "imitate.endermite",
+            "imitate.evocation_illager",
+            "imitate.ghast",
+            "imitate.husk",
+            "imitate.magma_cube",
+            "imitate.polar_bear",
+            "imitate.shulker",
+            "imitate.silverfish",
+            "imitate.skeleton",
+            "imitate.slime",
+            "imitate.spider",
+            "imitate.stray",
+            "imitate.vex",
+            "imitate.vindication_illager",
+            "imitate.witch",
+            "imitate.wither",
+            "imitate.wither_skeleton",
+            "imitate.wolf",
+            "imitate.zombie",
+            "imitate.zombie_pigman",
+            "imitate.zombie_villager",
+            "block.end_portal_frame.fill",
+            "block.end_portal.spawn",
+            "random.anvil_use",
+            "bottle.dragonbreath",
+            "balloonpop",
+            "sparkler.active",
+            "item.trident.hit",
+            "item.trident.hit_ground",
+            "item.trident.return",
+            "item.trident.riptide_1",
+            "item.trident.riptide_2",
+            "item.trident.riptide_3",
+            "item.trident.throw",
+            "item.trident.thunder",
+            "block.fletching_table.use",
+            "elemconstruct.open",
+            "icebomb.hit",
+            "lt.reaction.icebomb",
+            "lt.reaction.bleach",
+            "lt.reaction.epaste",
+            "lt.reaction.epaste2",
+            "lt.reaction.fertilizer",
+            "lt.reaction.fireball",
+            "lt.reaction.mgsalt",
+            "lt.reaction.miscfire",
+            "lt.reaction.fire",
+            "lt.reaction.miscexplosion",
+            "lt.reaction.miscmystical",
+            "lt.reaction.miscmystical2",
+            "lt.reaction.product",
+            "sparkler.use",
+            "glowstick.use",
+            "block.turtle_egg.break",
+            "block.turtle_egg.crack",
+            "block.turtle_egg.hatch",
+            "block.turtle_egg.attack",
+            "block.sniffer_egg.crack",
+            "block.sniffer_egg.hatch",
+            "block.frog_spawn.hatch",
+            "block.frog_spawn.break",
+            "swoop",
+            "presneeze",
+            "sneeze",
+            "scared",
+            "ambient.aggressive",
+            "ambient.worried",
+            "cant_breed",
+            "block.scaffolding.climb",
+            "block.bamboo_sapling.place",
+            "crossbow.loading.start",
+            "crossbow.loading.middle",
+            "crossbow.loading.end",
+            "crossbow.shoot",
+            "crossbow.quick_charge.start",
+            "crossbow.quick_charge.middle",
+            "crossbow.quick_charge.end",
+            "item.shield.block",
+            "portal.travel",
+            "item.book.put",
+            "block.grindstone.use",
+            "block.bell.hit",
+            "block.campfire.crackle",
+            "block.sweet_berry_bush.hurt",
+            "block.sweet_berry_bush.pick",
+            "block.stonecutter.use",
+            "block.cartography_table.use",
+            "block.composter.empty",
+            "block.composter.fill",
+            "block.composter.fill_success",
+            "block.composter.ready",
+            "roar",
+            "stun",
+            "block.barrel.open",
+            "block.barrel.close",
+            "raid.horn",
+            "ui.stonecutter.take_result",
+            "ui.cartography_table.take_result",
+            "ui.loom.take_result",
+            "block.smoker.smoke",
+            "block.blastfurnace.fire_crackle",
+            "block.smithing_table.use",
+            "block.loom.use",
+            "ambient.in.raid",
+            "screech",
+            "sleep",
+            "block.furnace.lit",
+            "convert_mooshroom",
+            "milk_suspiciously",
+            "celebrate",
+            "block.beehive.enter",
+            "block.beehive.exit",
+            "block.beehive.shear",
+            "block.beehive.work",
+            "block.beehive.drip",
+            "ambient.cave",
+            "angry",
+            "retreat",
+            "converted_to_zombified",
+            "step_lava",
+            "tempt",
+            "panic",
+            "admire",
+            "particle.soul_escape.quiet",
+            "particle.soul_escape.loud",
+            "respawn_anchor.charge",
+            "respawn_anchor.deplete",
+            "respawn_anchor.set_spawn",
+            "respawn_anchor.ambient",
+            "ambient.crimson_forest.mood",
+            "ambient.warped_forest.mood",
+            "ambient.soulsand_valley.mood",
+            "ambient.nether_wastes.mood",
+            "ambient.crimson_forest.additions",
+            "ambient.warped_forest.additions",
+            "ambient.soulsand_valley.additions",
+            "ambient.nether_wastes.additions",
+            "ambient.basalt_deltas.additions",
+            "ambient.crimson_forest.loop",
+            "ambient.warped_forest.loop",
+            "ambient.soulsand_valley.loop",
+            "ambient.nether_wastes.loop",
+            "ambient.basalt_deltas.loop",
+            "lodestone_compass.link_compass_to_lodestone",
+            "ambient.basalt_deltas.mood",
+            "power.on.sculk_sensor",
+            "power.off.sculk_sensor",
+            "smithing_table.use",
+            "default",
+            "lay_egg",
+            "lay_spawn",
+            "bucket.fill.powder_snow",
+            "bucket.empty.powder_snow",
+            "cauldron_drip.water.pointed_dripstone",
+            "cauldron_drip.lava.pointed_dripstone",
+            "tilt_down.big_dripleaf",
+            "tilt_up.big_dripleaf",
+            "drip.water.pointed_dripstone",
+            "pick_berries.cave_vines",
+            "drip.lava.pointed_dripstone",
+            "copper.wax.on",
+            "copper.wax.off",
+            "scrape",
+            "item.spyglass.use",
+            "item.spyglass.stop_using",
+            "chime.amethyst_block",
+            "mob.player.hurt_drown",
+            "mob.player.hurt_on_fire",
+            "mob.player.hurt_freeze",
+            "ambient.screamer",
+            "hurt.screamer",
+            "death.screamer",
+            "milk.screamer",
+            "jump_to_block",
+            "pre_ram",
+            "pre_ram.screamer",
+            "ram_impact",
+            "ram_impact.screamer",
+            "squid.ink_squirt",
+            "glow_squid.ink_squirt",
+            "convert_to_stray",
+            "cake.add_candle",
+            "extinguish.candle",
+            "ambient.candle",
+            "block.click",
+            "block.click.fail",
+            "block.sculk_catalyst.bloom",
+            "block.sculk_shrieker.shriek",
+            "nearby_close",
+            "nearby_closer",
+            "nearby_closest",
+            "agitated",
+            "listening",
+            "heartbeat",
+            "tongue",
+            "item_given",
+            "item_taken",
+            "item_thrown",
+            "irongolem.crack",
+            "irongolem.repair",
+            "horn_break",
+            "horn_call0",
+            "horn_call1",
+            "horn_call2",
+            "horn_call3",
+            "horn_call4",
+            "horn_call5",
+            "horn_call6",
+            "horn_call7",
+            "imitate.warden",
+            "listening_angry",
+            "sonic_boom",
+            "sonic_charge",
+            "convert_to_frog",
+            "block.sculk.spread",
+            "charge.sculk",
+            "block.sculk_sensor.place",
+            "block.sculk_shrieker.place",
+            "block.enchanting_table.use",
+            "bundle.drop_contents",
+            "bundle.insert",
+            "bundle.insert_fail",
+            "bundle.remove_one",
+            "step_sand",
+            "dash_ready",
+            "pressure_plate.click_off",
+            "pressure_plate.click_on",
+            "button.click_off",
+            "button.click_on",
+            "door.open",
+            "door.close",
+            "trapdoor.open",
+            "trapdoor.close",
+            "fence_gate.open",
+            "fence_gate.close",
+            "insert",
+            "pickup",
+            "insert_enchanted",
+            "pickup_enchanted",
+            "shatter_pot",
+            "break_pot",
+            "brush",
+            "brush_completed",
+            "block.sign.waxed_interact_fail",
+            "note.bass",
+            "pumpkin.carve",
+            "mob.husk.convert_to_zombie",
+            "mob.pig.death",
+            "mob.hoglin.converted_to_zombified",
+            "ambient.underwater.enter",
+            "ambient.underwater.exit",
+            "bottle.fill",
+            "bottle.empty",
+            "block.decorated_pot.insert",
+            "block.decorated_pot.insert_fail",
+            "crafter.craft",
+            "crafter.fail",
+            "crafter.disable_slot",
+            "block.copper_bulb.turn_on",
+            "block.copper_bulb.turn_off",
+            "breeze_wind_charge.burst",
+            "imitate.breeze",
+            "trial_spawner.open_shutter",
+            "trial_spawner.detect_player",
+            "trial_spawner.close_shutter",
+            "trial_spawner.spawn_mob",
+            "trial_spawner.eject_item",
+            "trial_spawner.ambient",
+            "mob.armadillo.brush",
+            "mob.armadillo.scute_drop",
+            "armor.equip_wolf",
+            "armor.unequip_wolf",
+            "reflect",
+            "vault.open_shutter",
+            "vault.close_shutter",
+            "vault.eject_item",
+            "vault.insert_item",
+            "vault.insert_item_fail",
+            "vault.ambient",
+            "vault.activate",
+            "vault.deactivate",
+            "hurt.reduced",
+            "wind_charge.burst",
+            "armor.break_wolf",
+            "armor.crack_wolf",
+            "armor.repair_wolf",
+            "mace.smash_air",
+            "mace.smash_ground",
+            "mace.heavy_smash_ground",
+            "trial_spawner.charge_activate",
+            "trial_spawner.ambient_ominous",
+            "apply_effect.bad_omen",
+            "apply_effect.raid_omen",
+            "apply_effect.trial_omen",
+            "ominous_item_spawner.spawn_item",
+            "ominous_bottle.end_use",
+            "ominous_item_spawner.spawn_item_begin",
+            "ominous_item_spawner.about_to_spawn_item",
+            "imitate.bogged",
+            "vault.reject_rewarded_player",
+            "imitate.drowned",
+            "sponge.absorb",
+            "imitate.creaking",
+            "block.creaking_heart.trail",
+            "creaking_heart_spawn",
+            "activate",
+            "deactivate",
+            "freeze",
+            "unfreeze",
+            "open",
+            "open_long",
+            "close",
+            "close_long",
+            "imitate.phantom",
+            "imitate.zoglin",
+            "imitate.guardian",
+            "imitate.ravager",
+            "imitate.pillager",
+            "place_in_water",
+            "state_change",
+            "imitate.happy_ghast",
+            "armor.unequip_generic",
+            "ambient.weather.the_end_light_flash",
+            "lead.leash",
+            "lead.unleash",
+            "lead.break",
+            "unsaddle",
+            "armor.equip_copper",
+            "place_item",
+            "single_swap",
+            "multi_swap",
+            "item.enchant.lunge1",
+            "item.enchant.lunge2",
+            "item.enchant.lunge3",
+            "attack.critical",
+            "item.spear.attack_hit",
+            "item.spear.attack_miss",
+            "item.wooden_spear.attack_hit",
+            "item.wooden_spear.attack_miss",
+            "imitate.parched",
+            "imitate.camel_husk",
+            "item.spear.use",
+            "item.wooden_spear.use",
+            "saddle_in_water",
+            "item.stone_spear.attack_hit",
+            "item.iron_spear.attack_hit",
+            "item.copper_spear.attack_hit",
+            "item.golden_spear.attack_hit",
+            "item.diamond_spear.attack_hit",
+            "item.netherite_spear.attack_hit",
+            "item.stone_spear.attack_miss",
+            "item.iron_spear.attack_miss",
+            "item.copper_spear.attack_miss",
+            "item.golden_spear.attack_miss",
+            "item.diamond_spear.attack_miss",
+            "item.netherite_spear.attack_miss",
+            "item.stone_spear.use",
+            "item.iron_spear.use",
+            "item.copper_spear.use",
+            "item.golden_spear.use",
+            "item.diamond_spear.use",
+            "item.netherite_spear.use",
+            "pause_growth",
+            "reset_growth",
+            "pushed_by_player",
+            "bounce",
+            "slime_landing",
+            "absorb_block",
+            "eject_block",
+            "geyser_eruption_start",
+            "geyser_eruption_active",
+            "record.bounce",
+            "bucket.fill.land_animal",
+            "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
+            "undefined"
+          ],
+          "title": "LevelSoundEvent",
+          "type": "string"
+        },
+        "summon_cap": {
+          "default": 0,
+          "description": "Maximum number of summoned entities at any given time",
+          "type": "integer"
+        },
+        "summon_cap_radius": {
+          "default": 0,
+          "type": "number"
+        },
+        "summon_event": {
+          "default": "",
+          "description": "Event to invoke on each summoned entity on spawn",
+          "type": "string"
+        },
+        "target": {
+          "default": "self",
+          "description": "The target of the spell. This is where the spell will start (line will start here, circle will be centered here)",
+          "enum": [
+            "self",
+            "target"
+          ],
+          "title": "SummonTarget",
+          "type": "string"
+        }
+      },
+      "title": "SummonActorGoalDefinition::SpellStage",
+      "type": "object"
+    },
     "3379368818": {
       "properties": {
         "event": {
@@ -8657,6 +10093,80 @@
         }
       },
       "title": "ActorDefinitionTrigger",
+      "type": "object"
+    },
+    "3387593127": {
+      "description": "Allows mobs to occassionally stop and take a nap under certain conditions.",
+      "properties": {
+        "can_nap_filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Conditions that need to be met for the entity to nap"
+        },
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cooldown_max": {
+          "default": 0,
+          "description": "Maximum time in seconds the mob has to wait before using the goal again",
+          "type": "number"
+        },
+        "cooldown_min": {
+          "default": 0,
+          "description": "Minimum time in seconds the mob has to wait before using the goal again",
+          "type": "number"
+        },
+        "mob_detect_dist": {
+          "default": 6,
+          "description": "The block distance in x and z that will be checked for mobs that this mob detects",
+          "type": "number"
+        },
+        "mob_detect_height": {
+          "default": 6,
+          "description": "The block distance in y that will be checked for mobs that this mob detects",
+          "type": "number"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "wake_mob_exceptions": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters for mobs that will not wake this entity from napping"
+        }
+      },
+      "title": "minecraft:behavior.nap",
       "type": "object"
     },
     "3397928451": {
@@ -8947,6 +10457,54 @@
         }
       },
       "title": "minecraft:behavior.move_around_target",
+      "type": "object"
+    },
+    "3496979030": {
+      "description": "Allows this mob to look at and follow the player that holds food they like.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "items": {
+          "default": [
+          ],
+          "description": "List of items that this mob likes",
+          "items": {
+            "$ref": "#/definitions/1429287564"
+          },
+          "type": "array"
+        },
+        "look_distance": {
+          "default": 8,
+          "description": "Distance in blocks the mob will beg from",
+          "type": "number"
+        },
+        "look_time": {
+          "$ref": "#/definitions/3861103875",
+          "default": {
+            "max": 4,
+            "min": 2
+          },
+          "description": "The range of time in seconds this mob will stare at the player holding a food they like, begging for it"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.beg",
       "type": "object"
     },
     "352673228": {
@@ -9333,6 +10891,737 @@
     "3616113920": {
       "title": "IsStunnedDefinition"
     },
+    "3630589404": {
+      "description": "Allows the mob to attack the player by summoning other entities.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "summon_choices": {
+          "default": [
+          ],
+          "description": "List of spells for the mob to use to summon entities. Each spell has the following parameters:",
+          "items": {
+            "$ref": "#/definitions/3654850498"
+          },
+          "type": "array"
+        }
+      },
+      "title": "minecraft:behavior.summon_entity",
+      "type": "object"
+    },
+    "3631870998": {
+      "description": "Allows the mob to take a load off and snack on food that it found nearby.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "items": {
+          "default": [
+          ],
+          "description": "Items that we are interested in snacking on",
+          "items": {
+            "$ref": "#/definitions/1429287564"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "snacking_cooldown": {
+          "default": 7.5,
+          "description": "The cooldown time in seconds before the mob is able to snack again",
+          "type": "number"
+        },
+        "snacking_cooldown_min": {
+          "default": 0.5,
+          "description": "The minimum time in seconds before the mob is able to snack again",
+          "type": "number"
+        },
+        "snacking_stop_chance": {
+          "default": 0.0016666667070239782,
+          "description": "This is the chance that the mob will stop snacking, from 0 to 1",
+          "type": "number"
+        }
+      },
+      "title": "minecraft:behavior.snacking",
+      "type": "object"
+    },
+    "3654850498": {
+      "properties": {
+        "cast_duration": {
+          "default": -1,
+          "description": "Time in seconds the spell casting will take",
+          "type": "number"
+        },
+        "cooldown_time": {
+          "default": 0,
+          "description": "Time in seconds the mob has to wait before using the spell again",
+          "type": "number"
+        },
+        "do_casting": {
+          "default": true,
+          "description": "If true, the mob will do the casting animations and render spell particles",
+          "type": "boolean"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "max_activation_range": {
+          "default": 32,
+          "description": "Upper bound of the activation distance in blocks for this spell, must not be negative.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "min_activation_range": {
+          "default": 1,
+          "description": "Lower bound of the activation distance in blocks for this spell, must not be negative.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "particle_color": {
+          "$ref": "#/definitions/1909529170",
+          "default": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "description": "The color of the particles for this spell"
+        },
+        "sequence": {
+          "default": [
+          ],
+          "description": "List of steps for the spell. Each step has the following parameters:",
+          "items": {
+            "$ref": "#/definitions/33596444"
+          },
+          "type": "array"
+        },
+        "start_sound_event": {
+          "default": "undefined",
+          "description": "The sound event to play when using this spell",
+          "enum": [
+            "item.use.on",
+            "hit",
+            "step",
+            "step.baby",
+            "fly",
+            "jump",
+            "jump.prevent",
+            "break",
+            "place",
+            "heavy.step",
+            "gallop",
+            "fall",
+            "hurt",
+            "hurt.baby",
+            "hurt.in.water",
+            "death",
+            "death.baby",
+            "death.in.water",
+            "death.to.zombie",
+            "ambient",
+            "ambient.baby",
+            "ambient.in.water",
+            "ambient.in.air",
+            "ambient.tame",
+            "ambient.pollinate",
+            "breathe",
+            "mad",
+            "boost",
+            "bow",
+            "squish.big",
+            "squish.small",
+            "fall.big",
+            "fall.small",
+            "splash",
+            "fizz",
+            "flap",
+            "swim",
+            "drink",
+            "drink.honey",
+            "drink.milk",
+            "eat",
+            "takeoff",
+            "shake",
+            "plop",
+            "land",
+            "saddle",
+            "armor",
+            "mob.armor_stand.place",
+            "add.chest",
+            "throw",
+            "attack",
+            "attack.nodamage",
+            "attack.strong",
+            "warn",
+            "shear",
+            "milk",
+            "thunder",
+            "explode",
+            "fire",
+            "ignite",
+            "fuse",
+            "stare",
+            "spawn",
+            "born",
+            "shoot",
+            "break.block",
+            "launch",
+            "blast",
+            "large.blast",
+            "twinkle",
+            "remedy",
+            "unfect",
+            "convert_to_drowned",
+            "levelup",
+            "bow.hit",
+            "bullet.hit",
+            "extinguish.fire",
+            "item.fizz",
+            "chest.open",
+            "chest.closed",
+            "shulkerbox.open",
+            "shulkerbox.closed",
+            "enderchest.open",
+            "enderchest.closed",
+            "power.on",
+            "power.off",
+            "attach",
+            "detach",
+            "deny",
+            "tripod",
+            "pop",
+            "drop.slot",
+            "note",
+            "thorns",
+            "piston.in",
+            "piston.out",
+            "portal",
+            "water",
+            "lava.pop",
+            "lava",
+            "beacon.activate",
+            "beacon.ambient",
+            "beacon.deactivate",
+            "beacon.power",
+            "conduit.activate",
+            "conduit.ambient",
+            "conduit.attack",
+            "conduit.deactivate",
+            "conduit.short",
+            "bubble.pop",
+            "bubble.up",
+            "bubble.upinside",
+            "bubble.down",
+            "bubble.downinside",
+            "burp",
+            "bucket.fill.water",
+            "bucket.empty.water",
+            "bucket.fill.lava",
+            "bucket.empty.lava",
+            "bucket.fill.fish",
+            "bucket.empty.fish",
+            "armor.equip_chain",
+            "armor.equip_diamond",
+            "armor.equip_elytra",
+            "armor.equip_generic",
+            "armor.equip_gold",
+            "armor.equip_iron",
+            "armor.equip_leather",
+            "armor.equip_netherite",
+            "record.13",
+            "record.cat",
+            "record.blocks",
+            "record.chirp",
+            "record.creator",
+            "record.creator_music_box",
+            "record.far",
+            "record.mall",
+            "record.mellohi",
+            "record.stal",
+            "record.strad",
+            "record.ward",
+            "record.11",
+            "record.wait",
+            "record.null",
+            "record.pigstep",
+            "record.precipice",
+            "record.relic",
+            "record.otherside",
+            "record.5",
+            "record.tears",
+            "record.lava_chicken",
+            "flop",
+            "elderguardian.curse",
+            "teleport",
+            "shulker.open",
+            "shulker.close",
+            "mob.warning",
+            "mob.warning.baby",
+            "haggle",
+            "haggle.yes",
+            "haggle.no",
+            "haggle.idle",
+            "disappeared",
+            "reappeared",
+            "chorusgrow",
+            "chorusdeath",
+            "glass",
+            "potion.brewed",
+            "cast.spell",
+            "prepare.attack",
+            "prepare.summon",
+            "prepare.wololo",
+            "fang",
+            "charge",
+            "camera.take_picture",
+            "leashknot.break",
+            "leashknot.place",
+            "growl",
+            "whine",
+            "pant",
+            "purr",
+            "purreow",
+            "death.min.volume",
+            "death.mid.volume",
+            "imitate.blaze",
+            "imitate.cave_spider",
+            "imitate.creeper",
+            "imitate.elder_guardian",
+            "imitate.ender_dragon",
+            "imitate.enderman",
+            "imitate.endermite",
+            "imitate.evocation_illager",
+            "imitate.ghast",
+            "imitate.husk",
+            "imitate.magma_cube",
+            "imitate.polar_bear",
+            "imitate.shulker",
+            "imitate.silverfish",
+            "imitate.skeleton",
+            "imitate.slime",
+            "imitate.spider",
+            "imitate.stray",
+            "imitate.vex",
+            "imitate.vindication_illager",
+            "imitate.witch",
+            "imitate.wither",
+            "imitate.wither_skeleton",
+            "imitate.wolf",
+            "imitate.zombie",
+            "imitate.zombie_pigman",
+            "imitate.zombie_villager",
+            "block.end_portal_frame.fill",
+            "block.end_portal.spawn",
+            "random.anvil_use",
+            "bottle.dragonbreath",
+            "balloonpop",
+            "sparkler.active",
+            "item.trident.hit",
+            "item.trident.hit_ground",
+            "item.trident.return",
+            "item.trident.riptide_1",
+            "item.trident.riptide_2",
+            "item.trident.riptide_3",
+            "item.trident.throw",
+            "item.trident.thunder",
+            "block.fletching_table.use",
+            "elemconstruct.open",
+            "icebomb.hit",
+            "lt.reaction.icebomb",
+            "lt.reaction.bleach",
+            "lt.reaction.epaste",
+            "lt.reaction.epaste2",
+            "lt.reaction.fertilizer",
+            "lt.reaction.fireball",
+            "lt.reaction.mgsalt",
+            "lt.reaction.miscfire",
+            "lt.reaction.fire",
+            "lt.reaction.miscexplosion",
+            "lt.reaction.miscmystical",
+            "lt.reaction.miscmystical2",
+            "lt.reaction.product",
+            "sparkler.use",
+            "glowstick.use",
+            "block.turtle_egg.break",
+            "block.turtle_egg.crack",
+            "block.turtle_egg.hatch",
+            "block.turtle_egg.attack",
+            "block.sniffer_egg.crack",
+            "block.sniffer_egg.hatch",
+            "block.frog_spawn.hatch",
+            "block.frog_spawn.break",
+            "swoop",
+            "presneeze",
+            "sneeze",
+            "scared",
+            "ambient.aggressive",
+            "ambient.worried",
+            "cant_breed",
+            "block.scaffolding.climb",
+            "block.bamboo_sapling.place",
+            "crossbow.loading.start",
+            "crossbow.loading.middle",
+            "crossbow.loading.end",
+            "crossbow.shoot",
+            "crossbow.quick_charge.start",
+            "crossbow.quick_charge.middle",
+            "crossbow.quick_charge.end",
+            "item.shield.block",
+            "portal.travel",
+            "item.book.put",
+            "block.grindstone.use",
+            "block.bell.hit",
+            "block.campfire.crackle",
+            "block.sweet_berry_bush.hurt",
+            "block.sweet_berry_bush.pick",
+            "block.stonecutter.use",
+            "block.cartography_table.use",
+            "block.composter.empty",
+            "block.composter.fill",
+            "block.composter.fill_success",
+            "block.composter.ready",
+            "roar",
+            "stun",
+            "block.barrel.open",
+            "block.barrel.close",
+            "raid.horn",
+            "ui.stonecutter.take_result",
+            "ui.cartography_table.take_result",
+            "ui.loom.take_result",
+            "block.smoker.smoke",
+            "block.blastfurnace.fire_crackle",
+            "block.smithing_table.use",
+            "block.loom.use",
+            "ambient.in.raid",
+            "screech",
+            "sleep",
+            "block.furnace.lit",
+            "convert_mooshroom",
+            "milk_suspiciously",
+            "celebrate",
+            "block.beehive.enter",
+            "block.beehive.exit",
+            "block.beehive.shear",
+            "block.beehive.work",
+            "block.beehive.drip",
+            "ambient.cave",
+            "angry",
+            "retreat",
+            "converted_to_zombified",
+            "step_lava",
+            "tempt",
+            "panic",
+            "admire",
+            "particle.soul_escape.quiet",
+            "particle.soul_escape.loud",
+            "respawn_anchor.charge",
+            "respawn_anchor.deplete",
+            "respawn_anchor.set_spawn",
+            "respawn_anchor.ambient",
+            "ambient.crimson_forest.mood",
+            "ambient.warped_forest.mood",
+            "ambient.soulsand_valley.mood",
+            "ambient.nether_wastes.mood",
+            "ambient.crimson_forest.additions",
+            "ambient.warped_forest.additions",
+            "ambient.soulsand_valley.additions",
+            "ambient.nether_wastes.additions",
+            "ambient.basalt_deltas.additions",
+            "ambient.crimson_forest.loop",
+            "ambient.warped_forest.loop",
+            "ambient.soulsand_valley.loop",
+            "ambient.nether_wastes.loop",
+            "ambient.basalt_deltas.loop",
+            "lodestone_compass.link_compass_to_lodestone",
+            "ambient.basalt_deltas.mood",
+            "power.on.sculk_sensor",
+            "power.off.sculk_sensor",
+            "smithing_table.use",
+            "default",
+            "lay_egg",
+            "lay_spawn",
+            "bucket.fill.powder_snow",
+            "bucket.empty.powder_snow",
+            "cauldron_drip.water.pointed_dripstone",
+            "cauldron_drip.lava.pointed_dripstone",
+            "tilt_down.big_dripleaf",
+            "tilt_up.big_dripleaf",
+            "drip.water.pointed_dripstone",
+            "pick_berries.cave_vines",
+            "drip.lava.pointed_dripstone",
+            "copper.wax.on",
+            "copper.wax.off",
+            "scrape",
+            "item.spyglass.use",
+            "item.spyglass.stop_using",
+            "chime.amethyst_block",
+            "mob.player.hurt_drown",
+            "mob.player.hurt_on_fire",
+            "mob.player.hurt_freeze",
+            "ambient.screamer",
+            "hurt.screamer",
+            "death.screamer",
+            "milk.screamer",
+            "jump_to_block",
+            "pre_ram",
+            "pre_ram.screamer",
+            "ram_impact",
+            "ram_impact.screamer",
+            "squid.ink_squirt",
+            "glow_squid.ink_squirt",
+            "convert_to_stray",
+            "cake.add_candle",
+            "extinguish.candle",
+            "ambient.candle",
+            "block.click",
+            "block.click.fail",
+            "block.sculk_catalyst.bloom",
+            "block.sculk_shrieker.shriek",
+            "nearby_close",
+            "nearby_closer",
+            "nearby_closest",
+            "agitated",
+            "listening",
+            "heartbeat",
+            "tongue",
+            "item_given",
+            "item_taken",
+            "item_thrown",
+            "irongolem.crack",
+            "irongolem.repair",
+            "horn_break",
+            "horn_call0",
+            "horn_call1",
+            "horn_call2",
+            "horn_call3",
+            "horn_call4",
+            "horn_call5",
+            "horn_call6",
+            "horn_call7",
+            "imitate.warden",
+            "listening_angry",
+            "sonic_boom",
+            "sonic_charge",
+            "convert_to_frog",
+            "block.sculk.spread",
+            "charge.sculk",
+            "block.sculk_sensor.place",
+            "block.sculk_shrieker.place",
+            "block.enchanting_table.use",
+            "bundle.drop_contents",
+            "bundle.insert",
+            "bundle.insert_fail",
+            "bundle.remove_one",
+            "step_sand",
+            "dash_ready",
+            "pressure_plate.click_off",
+            "pressure_plate.click_on",
+            "button.click_off",
+            "button.click_on",
+            "door.open",
+            "door.close",
+            "trapdoor.open",
+            "trapdoor.close",
+            "fence_gate.open",
+            "fence_gate.close",
+            "insert",
+            "pickup",
+            "insert_enchanted",
+            "pickup_enchanted",
+            "shatter_pot",
+            "break_pot",
+            "brush",
+            "brush_completed",
+            "block.sign.waxed_interact_fail",
+            "note.bass",
+            "pumpkin.carve",
+            "mob.husk.convert_to_zombie",
+            "mob.pig.death",
+            "mob.hoglin.converted_to_zombified",
+            "ambient.underwater.enter",
+            "ambient.underwater.exit",
+            "bottle.fill",
+            "bottle.empty",
+            "block.decorated_pot.insert",
+            "block.decorated_pot.insert_fail",
+            "crafter.craft",
+            "crafter.fail",
+            "crafter.disable_slot",
+            "block.copper_bulb.turn_on",
+            "block.copper_bulb.turn_off",
+            "breeze_wind_charge.burst",
+            "imitate.breeze",
+            "trial_spawner.open_shutter",
+            "trial_spawner.detect_player",
+            "trial_spawner.close_shutter",
+            "trial_spawner.spawn_mob",
+            "trial_spawner.eject_item",
+            "trial_spawner.ambient",
+            "mob.armadillo.brush",
+            "mob.armadillo.scute_drop",
+            "armor.equip_wolf",
+            "armor.unequip_wolf",
+            "reflect",
+            "vault.open_shutter",
+            "vault.close_shutter",
+            "vault.eject_item",
+            "vault.insert_item",
+            "vault.insert_item_fail",
+            "vault.ambient",
+            "vault.activate",
+            "vault.deactivate",
+            "hurt.reduced",
+            "wind_charge.burst",
+            "armor.break_wolf",
+            "armor.crack_wolf",
+            "armor.repair_wolf",
+            "mace.smash_air",
+            "mace.smash_ground",
+            "mace.heavy_smash_ground",
+            "trial_spawner.charge_activate",
+            "trial_spawner.ambient_ominous",
+            "apply_effect.bad_omen",
+            "apply_effect.raid_omen",
+            "apply_effect.trial_omen",
+            "ominous_item_spawner.spawn_item",
+            "ominous_bottle.end_use",
+            "ominous_item_spawner.spawn_item_begin",
+            "ominous_item_spawner.about_to_spawn_item",
+            "imitate.bogged",
+            "vault.reject_rewarded_player",
+            "imitate.drowned",
+            "sponge.absorb",
+            "imitate.creaking",
+            "block.creaking_heart.trail",
+            "creaking_heart_spawn",
+            "activate",
+            "deactivate",
+            "freeze",
+            "unfreeze",
+            "open",
+            "open_long",
+            "close",
+            "close_long",
+            "imitate.phantom",
+            "imitate.zoglin",
+            "imitate.guardian",
+            "imitate.ravager",
+            "imitate.pillager",
+            "place_in_water",
+            "state_change",
+            "imitate.happy_ghast",
+            "armor.unequip_generic",
+            "ambient.weather.the_end_light_flash",
+            "lead.leash",
+            "lead.unleash",
+            "lead.break",
+            "unsaddle",
+            "armor.equip_copper",
+            "place_item",
+            "single_swap",
+            "multi_swap",
+            "item.enchant.lunge1",
+            "item.enchant.lunge2",
+            "item.enchant.lunge3",
+            "attack.critical",
+            "item.spear.attack_hit",
+            "item.spear.attack_miss",
+            "item.wooden_spear.attack_hit",
+            "item.wooden_spear.attack_miss",
+            "imitate.parched",
+            "imitate.camel_husk",
+            "item.spear.use",
+            "item.wooden_spear.use",
+            "saddle_in_water",
+            "item.stone_spear.attack_hit",
+            "item.iron_spear.attack_hit",
+            "item.copper_spear.attack_hit",
+            "item.golden_spear.attack_hit",
+            "item.diamond_spear.attack_hit",
+            "item.netherite_spear.attack_hit",
+            "item.stone_spear.attack_miss",
+            "item.iron_spear.attack_miss",
+            "item.copper_spear.attack_miss",
+            "item.golden_spear.attack_miss",
+            "item.diamond_spear.attack_miss",
+            "item.netherite_spear.attack_miss",
+            "item.stone_spear.use",
+            "item.iron_spear.use",
+            "item.copper_spear.use",
+            "item.golden_spear.use",
+            "item.diamond_spear.use",
+            "item.netherite_spear.use",
+            "pause_growth",
+            "reset_growth",
+            "pushed_by_player",
+            "bounce",
+            "slime_landing",
+            "absorb_block",
+            "eject_block",
+            "geyser_eruption_start",
+            "geyser_eruption_active",
+            "record.bounce",
+            "bucket.fill.land_animal",
+            "bucket.empty.land_animal",
+            "geyser_continuous_eruption_start",
+            "geyser_continuous_eruption_active",
+            "undefined"
+          ],
+          "title": "LevelSoundEvent",
+          "type": "string"
+        },
+        "weight": {
+          "default": 0,
+          "description": "The weight of this spell. Controls how likely the mob is to choose this spell when casting one",
+          "type": "number"
+        }
+      },
+      "title": "SummonActorGoalDefinition::SpellData",
+      "type": "object"
+    },
     "3670977870": {
       "description": "Allows the mob to move into a random location within a village.",
       "properties": {
@@ -9620,6 +11909,32 @@
       "title": "minecraft:behavior.move_towards_home_restriction",
       "type": "object"
     },
+    "3836969756": {
+      "description": "Allows the squid to swim in place idly. Can only be used by the Squid.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "title": "minecraft:behavior.squid_idle",
+      "type": "object"
+    },
     "3861103875": {
       "properties": {
         "max": {
@@ -9756,6 +12071,108 @@
         }
       },
       "title": "minecraft:behavior.slime_keep_on_jumping",
+      "type": "object"
+    },
+    "3918266391": {
+      "properties": {
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Conditions that must be met for this preset to be applied."
+        },
+        "kick_speed_scale": {
+          "default": 2,
+          "description": "Multiplier applied to the pushing entity's movement speed to determine kick force. Only used when push_mode is \"ball\".",
+          "type": "number"
+        },
+        "max_distance": {
+          "default": 3.4028234663852886e+38,
+          "description": "Maximum horizontal distance between the center of the pushed entity and the collision of the pushing entity for push forces to be applied. Entities further apart than this will not push each other.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "max_kick_speed": {
+          "default": 0.5,
+          "description": "Maximum speed the entity can be pushed back at, regardless of how fast the pushing entity is moving. Only used when push_mode is \"ball\".",
+          "type": "number"
+        },
+        "min_distance": {
+          "default": 0.009999999776482582,
+          "description": "Minimum horizontal distance between the centers of the two entities for push forces to be applied. Entities closer than this will not push each other.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "min_kick_speed": {
+          "default": 0,
+          "description": "Minimum speed the the entity will be pushed back at, regardless of how slowly the pushing entity is moving. Only used when push_mode is \"ball\".",
+          "type": "number"
+        },
+        "play_sound": {
+          "default": false,
+          "description": "If the \"pushed_by_player\" sound should be played when the entity is pushed by any other entity (despite the sound name).",
+          "type": "boolean"
+        },
+        "play_sound_cooldown_in_seconds": {
+          "default": 0.20000000298023224,
+          "description": "Cooldown in seconds between sounds. A lower number results in more sounds.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "play_sound_impulse_threshold": {
+          "default": 0.20000000298023224,
+          "description": "Minimum change of velocity needed to trigger the push sound. A lower value means higher sensitivity.",
+          "minimum": 0,
+          "type": "number"
+        },
+        "push_mode": {
+          "default": "default",
+          "description": "Defines the type of push vector calculation applied to the entity:\n- \"none\": The entity cannot be pushed.\n- \"default\": Standard push calculations used by most entities.\n- \"legacy_boat\": Legacy push calculations historically used by boats. Includes dampened forces and sneak-based cancellation.\n- \"legacy_minecart\": Legacy push calculations historically used by minecarts. Includes alignment-based collision handling and velocity averaging.- \"ball\": Push calculation resulting in a behavior similar to kicking a ball. The entity is propelled in the direction of the pusher’s movement, with force scaled by their speed.",
+          "enum": [
+            "none",
+            "default",
+            "legacy_boat",
+            "legacy_minecart",
+            "ball"
+          ],
+          "title": "PushMode",
+          "type": "string"
+        },
+        "push_scale_other": {
+          "default": 1,
+          "description": "Scales how much push force this entity applies to the other entity when colliding. A value of 1.0 applies full force, 0.5 applies half.",
+          "type": "number"
+        },
+        "push_scale_self": {
+          "default": 1,
+          "description": "Scales how much this entity pushes itself away when colliding with another entity. A value of 1.0 applies full force, 0.5 applies half.",
+          "type": "number"
+        },
+        "require_collision_overlap": {
+          "default": true,
+          "description": "When true, entities will not push each other unless their collision boxes overlap.",
+          "type": "boolean"
+        },
+        "strength_multiplier": {
+          "default": 0.05000000074505806,
+          "description": "Multiplier applied to the push strength. Higher values result in stronger pushes.",
+          "type": "number"
+        },
+        "vertical_kick_multiplier": {
+          "default": 0.30000001192092896,
+          "description": "Multiplier for the upward force applied when the entity is pushed while on the ground. A value of 0 keeps the entity flat. Only used when push_mode is \"ball\".",
+          "type": "number"
+        }
+      },
+      "title": "PushableByEntityPreset",
       "type": "object"
     },
     "3924190650": {
@@ -16487,6 +18904,43 @@
       "title": "minecraft:behavior.make_love",
       "type": "object"
     },
+    "892105032": {
+      "description": "Allows an entity to charge and use their held item.",
+      "properties": {
+        "control_flags": {
+          "default": [
+          ],
+          "items": {
+            "enum": [
+              "move",
+              "look",
+              "jump"
+            ],
+            "title": "Goal's control flags",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "items": {
+          "description": "The list of items that can be used to charge the held item. This list is required and must have at least one item in it.",
+          "items": {
+            "$ref": "#/definitions/1429287564"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "priority": {
+          "default": 0,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "title": "minecraft:behavior.charge_held_item",
+      "type": "object"
+    },
     "894717301": {
       "description": "Defines how an entity applies knockback.",
       "properties": {
@@ -16797,7 +19251,8 @@
       "description": "Enables the mob to barter for items that have been configured as barter currency. Must be used in combination with the barter component"
     },
     "minecraft:behavior.beg": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3496979030",
+      "description": "Allows this mob to look at and follow the player that holds food they like."
     },
     "minecraft:behavior.break_door": {
       "$ref": "#/definitions/2122299450",
@@ -16820,7 +19275,8 @@
       "description": "Allows this entity to damage a target by using a running attack."
     },
     "minecraft:behavior.charge_held_item": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/892105032",
+      "description": "Allows an entity to charge and use their held item."
     },
     "minecraft:behavior.circle_around_anchor": {
       "$ref": "#/definitions/544590182",
@@ -16891,14 +19347,16 @@
       "description": "Allows the mob to drink milk based on specified environment conditions."
     },
     "minecraft:behavior.drink_potion": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/2258648173",
+      "description": "Allows the mob to drink potions based on specified environment conditions."
     },
     "minecraft:behavior.drop_item_for": {
       "$ref": "#/definitions/3286881474",
       "description": "Allows the entity to move toward a target, and drop an item near the target. This goal requires a \"minecraft:navigation\" to execute."
     },
     "minecraft:behavior.eat_block": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/136374403",
+      "description": "Allows the entity to consume a block, replace the eaten block with another block, and trigger an event as a result."
     },
     "minecraft:behavior.eat_carried_item": {
       "$ref": "#/definitions/2384559461",
@@ -16958,7 +19416,8 @@
       "description": "Dynamic value"
     },
     "minecraft:behavior.float_wander": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/1612485739",
+      "description": "Allows the mob to float around like the Ghast."
     },
     "minecraft:behavior.follow_caravan": {
       "$ref": "#/definitions/4204758628",
@@ -17032,7 +19491,8 @@
       "description": "Allows an entity to jump to another random block."
     },
     "minecraft:behavior.knockback_roar": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/1830422071",
+      "description": "Allows the mob to perform a damaging knockback that affects all nearby entities."
     },
     "minecraft:behavior.lay_down": {
       "$ref": "#/definitions/190589668",
@@ -17043,7 +19503,8 @@
       "description": "Allows the mob to lay an egg block on certain types of blocks if the mob is pregnant."
     },
     "minecraft:behavior.leap_at_target": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/1206914730",
+      "description": "Allows monsters to jump at and attack their target. Can only be used by hostile mobs."
     },
     "minecraft:behavior.look_at_entity": {
       "$ref": "#/definitions/1792970841",
@@ -17098,7 +19559,8 @@
       "description": "Can only be used by Villagers. Allows the villagers to create paths around the village."
     },
     "minecraft:behavior.move_to_block": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/2630419329",
+      "description": "Allows mob to move towards a block."
     },
     "minecraft:behavior.move_to_land": {
       "$ref": "#/definitions/4136150952",
@@ -17141,7 +19603,8 @@
       "description": "Allows mob to move towards its current target."
     },
     "minecraft:behavior.nap": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3387593127",
+      "description": "Allows mobs to occassionally stop and take a nap under certain conditions."
     },
     "minecraft:behavior.nearest_attackable_target": {
       "$ref": "#/definitions/94602699",
@@ -17247,7 +19710,8 @@
       "description": "Allows an entity to randomly move through water"
     },
     "minecraft:behavior.ranged_attack": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/1978051027",
+      "description": "Allows an entity to attack by using ranged shots. \"charge_shoot_trigger\" must be greater than 0 to enable charged up burst-shot attacks. Requires minecraft:shooter to define projectile behaviour."
     },
     "minecraft:behavior.receive_love": {
       "$ref": "#/definitions/751630788",
@@ -17289,10 +19753,12 @@
       "description": "Allows the mob to give items it has to others."
     },
     "minecraft:behavior.silverfish_merge_with_stone": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3205982106",
+      "description": "Allows the mob to go into stone blocks like Silverfish do. Currently it can only be used by Silverfish."
     },
     "minecraft:behavior.silverfish_wake_up_friends": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3082237211",
+      "description": "Allows the mob to alert mobs in nearby blocks to come out. Currently it can only be used by Silverfish."
     },
     "minecraft:behavior.skeleton_horse_trap": {
       "$ref": "#/definitions/2236655342",
@@ -17319,7 +19785,8 @@
       "description": "Allows the entity to move in random directions like a slime."
     },
     "minecraft:behavior.snacking": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3631870998",
+      "description": "Allows the mob to take a load off and snack on food that it found nearby."
     },
     "minecraft:behavior.sneeze": {
       "$ref": "#/definitions/996067317",
@@ -17334,22 +19801,28 @@
       "description": "Allows this entity to perform a 'sonic boom' ranged attack"
     },
     "minecraft:behavior.squid_dive": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/2237411492",
+      "description": "Allows the squid to dive down in water. Can only be used by the Squid."
     },
     "minecraft:behavior.squid_flee": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/1108356402",
+      "description": "Allows the squid to swim away. Can only be used by the Squid."
     },
     "minecraft:behavior.squid_idle": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3836969756",
+      "description": "Allows the squid to swim in place idly. Can only be used by the Squid."
     },
     "minecraft:behavior.squid_move_away_from_ground": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/2575956242",
+      "description": "Allows the squid to move away from ground blocks and back to water. Can only be used by the Squid."
     },
     "minecraft:behavior.squid_out_of_water": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/1635065898",
+      "description": "Allows the squid to stick to the ground when outside water. Can only be used by the Squid."
     },
     "minecraft:behavior.stalk_and_pounce_on_target": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/326033130",
+      "description": "Allows a mob to stalk a target, then once within range pounce onto a target, on success the target will be attacked dealing damage defined by the attack component. On failure, the mob will risk getting stuck"
     },
     "minecraft:behavior.stay_near_noteblock": {
       "$ref": "#/definitions/4036507873",
@@ -17372,7 +19845,8 @@
       "description": "Allows the mob to move into a random location within a village within the search range."
     },
     "minecraft:behavior.summon_entity": {
-      "description": "Dynamic value"
+      "$ref": "#/definitions/3630589404",
+      "description": "Allows the mob to attack the player by summoning other entities."
     },
     "minecraft:behavior.swell": {
       "$ref": "#/definitions/1778047224",
@@ -17774,12 +20248,6 @@
     "minecraft:memory_behavior.follow_target": {
       "description": "Dynamic value"
     },
-    "minecraft:memory_sensor.find_nearest_entity": {
-      "description": "Dynamic value"
-    },
-    "minecraft:memory_sensor.find_nearest_entity_from": {
-      "description": "Dynamic value"
-    },
     "minecraft:memory_sensor.find_nearest_poi": {
       "description": "Dynamic value"
     },
@@ -17936,7 +20404,7 @@
       "description": "Dynamic value"
     },
     "minecraft:pushable_by_entity": {
-      "$ref": "#/definitions/1021664143",
+      "$ref": "#/definitions/2327947882",
       "description": "Allows an entity to be pushed by other entities."
     },
     "minecraft:raid_trigger": {
