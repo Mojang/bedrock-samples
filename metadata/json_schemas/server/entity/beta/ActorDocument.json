@@ -262,7 +262,7 @@
         },
         "extra_knockback_approach": {
           "default": "reapply_default",
-          "description": "Defines the approach for combining extra knockback from enchantments or sprinting:\n- \"reapply_default\": Reapplies knockback again with default knockback parameters, i.e. values not defined by this component.\n- \"multiply_reduced\": Multiplies the extra knockback with the first knockback and a reduction factor, and adds it to the first knockback.",
+          "description": "Defines the approach for combining extra knockback from enchantments or sprinting:\n- \"reapply_default\": Reapplies knockback again with default knockback parameters, i.e. values not defined by this component.\n- \"multiply_reduced\": Multiplies the extra knockback with the base knockback and a reduction factor, and adds it to the base knockback.",
           "enum": [
             "reapply_default",
             "multiply_reduced"
@@ -284,38 +284,29 @@
           },
           "description": "Filter for the entity type that will be affected by these knockback rules."
         },
-        "horizontal_hit_angle_scale": {
-          "default": 0,
-          "description": "Scaling factor to angle the knockback horizontally based on the attacker's aim direction.",
-          "type": "number"
-        },
         "horizontal_power": {
           "default": 1,
           "description": "Power with which a target should be knocked backwards.",
           "type": "number"
         },
-        "scale_previous_velocity": {
-          "default": 0.5,
-          "description": "Scaling factor to apply to the target's velocity before applying knockback.",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
+        "knockback_mode": {
+          "default": "relative_horizontal",
+          "description": "Defines how knockback is applied to the target:\n- \"relative_horizontal\": Applies knockback along the horizontal direction from the attacker to the target.\n- \"hit_direction\": Applies knockback based on the hit direction and the point of impact (e.g. hits to the bottom of the entity or from below push it upward, hits on the left side of the entity push it to the right).",
+          "enum": [
+            "relative_horizontal",
+            "hit_direction"
+          ],
+          "title": "KnockbackMode",
+          "type": "string"
         },
         "scale_with_damage": {
           "default": false,
           "description": "Scaling factor to the magnitude of knockback based on the inverse square of the damage.",
           "type": "boolean"
         },
-        "vertical_hit_angle_scale": {
-          "default": 0,
-          "description": "Scaling factor to angle the knockback vertically based on the attacker's aim direction.",
-          "maximum": 1,
-          "minimum": 0,
-          "type": "number"
-        },
-        "vertical_position_angle_scale": {
-          "default": 0,
-          "description": "Scaling factor to angle the knockback vertically based on the difference in the attacker's feet position to the target's feet position.",
+        "slowdown_scale": {
+          "default": 0.5,
+          "description": "Scaling factor to apply to the target's velocity before applying knockback.",
           "maximum": 1,
           "minimum": 0,
           "type": "number"
@@ -1749,6 +1740,48 @@
     "1533618432": {
       "title": "IsTamedDefinition"
     },
+    "1580143979": {
+      "description": "Adds a trigger to call when this entity is attacked by the player.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_hurt_by_player",
+      "type": "object"
+    },
     "1612485739": {
       "description": "Allows the mob to float around like the Ghast.",
       "properties": {
@@ -2280,6 +2313,48 @@
         }
       },
       "title": "minecraft:behavior.look_at_entity",
+      "type": "object"
+    },
+    "1813075194": {
+      "description": "Adds a trigger that will run when a nearby entity of the same type as this entity becomes Angry.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_friendly_anger",
       "type": "object"
     },
     "1830422071": {
@@ -3728,38 +3803,48 @@
           "description": "Dynamic value"
         },
         "minecraft:on_death": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/3109863522",
+          "description": "Adds a trigger to call on this entity's death."
         },
         "minecraft:on_equipment_changed": {
           "$ref": "#/definitions/2856578408",
           "description": "Allows to specify events to execute when equipment is set in the entity's default equipment slots. Doesn't apply to \"minecraft:inventory\", use \"minecraft:equippable\" instead."
         },
         "minecraft:on_friendly_anger": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/1813075194",
+          "description": "Adds a trigger that will run when a nearby entity of the same type as this entity becomes Angry."
         },
         "minecraft:on_hurt": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/3112563747",
+          "description": "Adds a trigger to call when this entity takes damage."
         },
         "minecraft:on_hurt_by_player": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/1580143979",
+          "description": "Adds a trigger to call when this entity is attacked by the player."
         },
         "minecraft:on_ignite": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/2462202360",
+          "description": "Adds a trigger to call when this entity is set on fire."
         },
         "minecraft:on_start_landing": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/2666641361",
+          "description": "Only usable by the Ender Dragon. Adds a trigger to call when this entity lands."
         },
         "minecraft:on_start_takeoff": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/2071068474",
+          "description": "Only usable by the Ender Dragon. Adds a trigger to call when this entity starts flying."
         },
         "minecraft:on_target_acquired": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/2781338975",
+          "description": "Adds a trigger to call when this entity finds a target."
         },
         "minecraft:on_target_escape": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/577169684",
+          "description": "Adds a trigger to call when this entity loses the target it currently has."
         },
         "minecraft:on_wake_with_owner": {
-          "description": "Dynamic value"
+          "$ref": "#/definitions/2863616463",
+          "description": "Adds a trigger to call when this pet's owner awakes after sleeping with the pet."
         },
         "minecraft:out_of_control": {
           "$ref": "#/definitions/1746067700",
@@ -4461,6 +4546,48 @@
         }
       },
       "title": "minecraft:behavior.trade_with_player",
+      "type": "object"
+    },
+    "2071068474": {
+      "description": "Only usable by the Ender Dragon. Adds a trigger to call when this entity starts flying.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_start_takeoff",
       "type": "object"
     },
     "2080382200": {
@@ -5996,6 +6123,48 @@
       "title": "minecraft:behavior.dragonstrafeplayer",
       "type": "object"
     },
+    "2462202360": {
+      "description": "Adds a trigger to call when this entity is set on fire.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_ignite",
+      "type": "object"
+    },
     "2492648039": {
       "description": "Allows the mob to move back to the position they were spawned.",
       "properties": {
@@ -7098,6 +7267,48 @@
         }
       },
       "title": "minecraft:behavior.dragondeath",
+      "type": "object"
+    },
+    "2666641361": {
+      "description": "Only usable by the Ender Dragon. Adds a trigger to call when this entity lands.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_start_landing",
       "type": "object"
     },
     "268388205": {
@@ -8231,6 +8442,48 @@
       "title": "minecraft:behavior.celebrate_survive",
       "type": "object"
     },
+    "2781338975": {
+      "description": "Adds a trigger to call when this entity finds a target.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_target_acquired",
+      "type": "object"
+    },
     "2789112004": {
       "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects.",
       "oneOf": [
@@ -8586,6 +8839,48 @@
         }
       },
       "title": "minecraft:on_equipment_changed",
+      "type": "object"
+    },
+    "2863616463": {
+      "description": "Adds a trigger to call when this pet's owner awakes after sleeping with the pet.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_wake_with_owner",
       "type": "object"
     },
     "2865467525": {
@@ -9410,6 +9705,90 @@
         }
       ],
       "title": "Block Descriptor"
+    },
+    "3109863522": {
+      "description": "Adds a trigger to call on this entity's death.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_death",
+      "type": "object"
+    },
+    "3112563747": {
+      "description": "Adds a trigger to call when this entity takes damage.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_hurt",
+      "type": "object"
     },
     "3125128504": {
       "title": "CanFlyDefinition"
@@ -18524,6 +18903,48 @@
         }
       },
       "title": "minecraft:behavior.stay_while_sitting",
+      "type": "object"
+    },
+    "577169684": {
+      "description": "Adds a trigger to call when this entity loses the target it currently has.",
+      "properties": {
+        "event": {
+          "default": "",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/2789112004",
+          "default": {
+            "AND": null,
+            "NOT": null,
+            "OR": null,
+            "all": null,
+            "all_of": null,
+            "any": null,
+            "any_of": null,
+            "none_of": null
+          },
+          "description": "Filters allow data objects to specify test criteria which allows their use. Filters can be defined by a single object of type (Filter Test), an array of tests, collection groups, or a combination of these objects."
+        },
+        "target": {
+          "default": "self",
+          "enum": [
+            "self",
+            "other",
+            "player",
+            "target",
+            "parent",
+            "baby",
+            "block",
+            "damager",
+            "holder",
+            "item"
+          ],
+          "title": "FilterSubject",
+          "type": "string"
+        }
+      },
+      "title": "minecraft:on_target_escape",
       "type": "object"
     },
     "650245378": {
