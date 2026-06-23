@@ -32,6 +32,7 @@ This is documentation for a preview release of Minecraft. New features, componen
 <tr> <td> <a href="#minecraft:vegetation_patch_feature"> minecraft:vegetation_patch_feature</a> </tr> </td>
 <tr> <td> <a href="#minecraft:weighted_random_feature"> minecraft:weighted_random_feature</a> </tr> </td>
 <tr> <td> <a href="#minecraft:height_difference_filter_feature"> minecraft:height_difference_filter_feature</a> </tr> </td>
+<tr> <td> <a href="#minecraft:horizontal_tree_decoration_feature"> minecraft:horizontal_tree_decoration_feature</a> </tr> </td>
 <tr> <th><a href="#Attaching features">Attaching features</a></th> </tr>
 <tr> <th><a href="#Feature rules">Feature rules</a></th> </tr>
 <tr> <th><a href="#Feature rule schema">Feature rule schema</a></th> </tr>
@@ -778,6 +779,24 @@ Example use:<br / ><textarea readonly="true" cols="78" rows="13">
           "search_radius": 5
         }
       }
+</textarea> </br>
+<a href="#Index">Back to top</a><br><br>
+
+<h1><p id="minecraft:horizontal_tree_decoration_feature">minecraft:horizontal_tree_decoration_feature</p></h1>
+
+'minecraft:horizontal_tree_decoration_feature' places a block in a random horizontal facing direction</br><h2>Place block in a random horizontal direction, disallowing adjacent neighbors and only placing the block on the bark side of a log</h2>
+Example use:<br / ><textarea readonly="true" cols="94" rows="12">
+{
+            "format_version": "1.26.40",
+            "minecraft:horizontal_tree_decoration_feature": {
+              "description": {
+                "identifier": "example:shelf_mushroom_no_adjacent_mushrooms_only_on_log_side"
+              },
+              "places_block": "minecraft:shelf_mushroom",
+              "allow_adjacent": false,
+              "bark_side_only": true
+            }
+          }
 </textarea> </br>
 <a href="#Index">Back to top</a><br><br>
 
@@ -1899,6 +1918,29 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
                   enumerated_value "step_direction"<"down", "up", "out", "away"> : opt // Directions to spread decoration blocks.
               }
           }
+          object "poplar_trunk" : opt
+          {
+              int_range "trunk_height" // Defines the base height of the trunk.
+              int_range "remaining_trunk_height_above_branches" : opt // Defines the range of height that should remain of the trunk above where the support branches get placed.
+              int_range "amount_of_foliage_support_branches" : opt // Defines the amount of foliage support branches that should be added to the trunk.
+               "trunk_block" // The block that forms the tree trunk.
+              object "trunk_decoration" : opt // Configuration object for the trunk decoration.
+              {
+                  chance_information "decoration_chance" // Probability of decorating the trunk.
+                  array "decoration_blocks_sequence" : opt
+                  {
+                      object "<any array element>" : opt // List of blocks to place in sequence
+                      {
+                           "block" // Block to be placed.
+                          int_range "count" : opt // Range that specifies how many blocks to place. The number of blocks (n) placed are 'range_min' <= n <= 'range_max'.
+                      }
+                  }
+                   "decoration_block" : opt // The block used for decorating the canopy. Will not be used if "decoration_blocks_sequence" given
+                  int "num_steps" : opt // Number of decoration blocks to place. (Will not be used if "decoration_blocks_sequence" given)
+                  enumerated_value "step_direction"<"down", "up", "out", "away"> : opt // Directions to spread decoration blocks.
+              }
+              feature_reference "log_decoration_feature" : opt // Feature that can be used to decorate the Poplar Tree Trunk.
+          }
           object "acacia_canopy" : opt
           {
               int "canopy_size"<1-*> // The size of the canopy.
@@ -2009,6 +2051,22 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
               int_range "canopy_height" // Number of layers for the canopy.
               int "base_radius"<1-*> // Radius of the canopy.
                "leaf_block" // The block that forms the canopy of the tree.
+          }
+          object "poplar_canopy" : opt
+          {
+               "leaf_block" // The block that forms the canopy of the tree.
+               "branch_block" // The block that the canopy will use for its branches
+              array "radius"[1,*] // Randomly selects a radius from this list based on their weighted value.
+              {
+                  object "<any array element>" : opt // Defines a radius as a value with an associated weight.
+                  {
+                      int "value" : opt // Radius of canopy.
+                      int "weight" : opt // Weight for this entry.
+                  }
+              }
+              int_range "height" // Number of layers for the canopy.
+              float "side_hole_chance"<0.000000-1.000000> : opt // The chance to generate a side hole in the canopy.
+              int "trunk_width"<1-*> : opt // The width of the tree trunk.
           }
           object "roofed_canopy" : opt
           {
@@ -2121,6 +2179,16 @@ Here is the complete feature schema<br / ><textarea readonly="true" cols="192" r
           int "max_allowed_upward_height_diff"<0-*> : opt // Specifies the maximum height difference allowed upwards.
           int "max_allowed_downward_height_diff"<0-*> : opt // Specifies the maximum height difference allowed downwards.
           int "search_radius"<0-*> // 'search_radius' specifies the the length in each cardinal direction the filter will check for blocks against the given differences.
+      }
+      object "minecraft:horizontal_tree_decoration_feature" : opt
+      {
+          object "description"
+          {
+              string "identifier" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.
+          }
+           "places_block" // Block to place.
+          bool "allow_adjacent" : opt // Whether neighbors of the same block type are allowed. Will result in blocks being placed with at least one block gap when set to false
+          bool "bark_side_only" : opt // If true, will never place the block on the 'open' side of a block (imagine the block is a fallen tree trunk).
       }
   }
 
