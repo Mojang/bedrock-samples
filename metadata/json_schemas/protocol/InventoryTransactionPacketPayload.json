@@ -1,0 +1,50 @@
+{
+    "title": "InventoryTransactionPacketPayload",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/InventoryTransactionPacketPayload.json",
+    "x-format-version": "MISSING VERSION",
+    "x-minecraft-version": "1.26.40-beta.0",
+    "x-protocol-version": 2168,
+    "type": "object",
+    "properties": {
+        "Legacy Request ID": {
+            "description": "Used when ItemStackNetManager is enabled. Identifies a legacy client item request. Negative, even values are valid. Zero indicates no legacy request.",
+            "$ref": "./ItemStackLegacyRequestId.json",
+            "x-ordinal-index": 0
+        },
+        "Legacy Set Item Slots": {
+            "description": "Only present when Legacy Request ID is valid. Lists the open containers and their slot indices the client is requesting changes for.",
+            "type": "array",
+            "items": {
+                "$ref": "./LegacySetSlot.json"
+            },
+            "x-ordinal-index": 1
+        },
+        "Transaction": {
+            "description": "The inventory transaction. The variant index encodes ComplexInventoryTransaction::Type (0=Normal, 1=Mismatch, 2=ItemUse, 3=ItemUseOnActor, 4=ItemRelease), matching the legacy wire format discriminator.",
+            "oneOf": [
+                {
+                    "$ref": "./NormalTransactionData.json"
+                },
+                {
+                    "$ref": "./InventoryMismatchData.json"
+                },
+                {
+                    "$ref": "./ItemUseInventoryTransaction.json"
+                },
+                {
+                    "$ref": "./ItemUseOnActorInventoryTransaction.json"
+                },
+                {
+                    "$ref": "./ItemReleaseInventoryTransaction.json"
+                }
+            ],
+            "x-control-value-type": "uint32",
+            "x-ordinal-index": 2
+        }
+    },
+    "required": [
+        "Legacy Request ID",
+        "Transaction"
+    ]
+}
