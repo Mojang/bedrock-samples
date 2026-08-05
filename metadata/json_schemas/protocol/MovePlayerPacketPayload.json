@@ -1,0 +1,78 @@
+{
+    "title": "MovePlayerPacketPayload",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/MovePlayerPacketPayload.json",
+    "x-format-version": "MISSING VERSION",
+    "x-minecraft-version": "1.26.40-beta.0",
+    "x-protocol-version": 2168,
+    "type": "object",
+    "properties": {
+        "On Ground": {
+            "description": "For client bound packets this should have little meaning as it will be reset by the client every frame. For server bound it is true if the player is currently touching the ground. The server authoritative near-equivalent of this is PlayerAuthInputPacket::InputData::VerticalCollision",
+            "type": "boolean",
+            "x-underlying-type": "boolean",
+            "x-ordinal-index": 5
+        },
+        "Player Runtime ID": {
+            "description": "If server-bound, this is always the id of the sending player. If client-bound, the target player.",
+            "$ref": "./ActorRuntimeID.json",
+            "x-ordinal-index": 0
+        },
+        "Position": {
+            "description": "The predicted world space position of the player after movement simulation this tick. The server authoritative equivalent of this is PlayerAuthInputPacket::mPos",
+            "$ref": "./Vec3.json",
+            "x-ordinal-index": 1
+        },
+        "Position Mode": {
+            "description": "Determines how the client will behave when receiving this, see the enum for details. When sent to the server this is always 'Normal' except when in a vehicle then it's 'OnlyHeadRot'.",
+            "type": "string",
+            "enum": [
+                "Normal",
+                "Respawn",
+                "Teleport",
+                "OnlyHeadRot"
+            ],
+            "x-underlying-type": "uint8",
+            "x-serialization-options": [
+                "Enum-as-Value"
+            ],
+            "x-ordinal-index": 4
+        },
+        "Riding Runtime ID": {
+            "description": "If client bound this has no meaning. If server bound it is the vehicle the client is riding as specified by the last SetActorLinkPacket from the server. The server authoritative near-equivalent is PlayerAuthInputPacket::mClientPredictedVehicle",
+            "$ref": "./ActorRuntimeID.json",
+            "x-ordinal-index": 6
+        },
+        "Rotation": {
+            "description": "Rotation in degrees of the direction they should look, separate from their body orientation. The server authoritative equivalent of this is PlayerAuthInputPacket::mRot",
+            "$ref": "./Vec2.json",
+            "x-ordinal-index": 2
+        },
+        "Teleport Data": {
+            "description": "Teleportation details. Present only when Position Mode is Teleport.",
+            "$ref": "./MovePlayerTeleportData.json",
+            "x-ordinal-index": 7
+        },
+        "Tick": {
+            "description": "The client tick this movement corresponds to.",
+            "$ref": "./PlayerInputTick.json",
+            "x-ordinal-index": 8
+        },
+        "Y-Head Rotation": {
+            "description": "Rotation in degrees of the head. Almost always matches Y rotation. The server authoritative equivalent of this is PlayerAuthInputPacket::mYHeadRot",
+            "type": "number",
+            "x-underlying-type": "float",
+            "x-ordinal-index": 3
+        }
+    },
+    "required": [
+        "On Ground",
+        "Player Runtime ID",
+        "Position",
+        "Position Mode",
+        "Riding Runtime ID",
+        "Rotation",
+        "Tick",
+        "Y-Head Rotation"
+    ]
+}

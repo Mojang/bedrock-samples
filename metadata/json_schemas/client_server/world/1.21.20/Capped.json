@@ -1,0 +1,60 @@
+{
+  "$id": "/client_server/world/1.21.20/Capped.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Processor that wraps a processor and caps the number of times the delegated processor can be applied.",
+  "properties": {
+    "delegate": {
+      "description": "The processor that will be executed.",
+      "oneOf": [
+        {
+          "$ref": "./BlockRules.json",
+          "description": "Replaces and modifies blocks based on a series of rules"
+        },
+        {
+          "$ref": "./BlockIgnore.json",
+          "description": "Specifies block types in the template that should be ignored by other processors."
+        },
+        {
+          "$ref": "./Protected%20Block.json",
+          "description": "Protect blocks from this structure's placement in the world. Ensuring that it does not replace matching blocks in the world"
+        }
+      ],
+      "x-control-value-type": "uint32",
+      "x-ordinal-index": 1
+    },
+    "limit": {
+      "description": "The maximum number of times that this delegate can be applied.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "x-ordinal-index": 0,
+          "x-underlying-type": "int32"
+        },
+        {
+          "$ref": "./ConstantIntProvider.json",
+          "description": "Specifies a constant integer"
+        },
+        {
+          "$ref": "./UniformIntProvider.json",
+          "description": "Specifies a uniformly distributed integer"
+        }
+      ],
+      "x-control-value-type": "uint32",
+      "x-ordinal-index": 2
+    },
+    "processor_type": {
+      "$ref": "./Jigsaw%20Processro%20Type.json",
+      "const": "minecraft:capped",
+      "x-ordinal-index": 0,
+      "x-underlying-type": "int32"
+    }
+  },
+  "required": [
+    "delegate",
+    "limit",
+    "processor_type"
+  ],
+  "title": "Capped",
+  "type": "object",
+  "x-format-version": "1.21.20"
+}

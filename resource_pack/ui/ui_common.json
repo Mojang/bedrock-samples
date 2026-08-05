@@ -1368,9 +1368,10 @@
     "$alpha|default": 1.0
   },
 
-
   "text_edit_box_label": {
     "type": "label",
+
+    "$text_edit_box_label_hide_hyphen|default": false,
 
     "localize": false,
     "enable_profanity_filter": "$enable_profanity_filter",
@@ -1381,6 +1382,7 @@
     "locked_alpha": "$locked_text_alpha",
     "font_size": "$font_size",
     "text_alignment": "$text_alignment",
+    "hide_hyphen": "$text_edit_box_label_hide_hyphen",
 
     "$shadow|default": false,
     "$enable_profanity_filter|default": false,
@@ -1461,8 +1463,10 @@
     "$text_box_name|default": "#text_box_name",
 
     "$place_holder_text|default": "",
+    "$place_holder_tts|default": "$place_holder_text",
 
     "text": "$place_holder_text",
+    "tts_override_control_value": "$place_holder_tts",
     "$text_edit_box_placeholder_binding_type": "global",
     "$text_edit_box_placeholder_binding_collection_name": "",
 
@@ -1541,6 +1545,8 @@
     "$text_edit_box_label_anchor_point|default": "right_middle",
     "$text_edit_box_label_min_size|default": [ "100%", 0 ],
     "$text_edit_box_label_offset|default": [ 0, 0 ],
+    "$text_edit_box_label_anims|default": [],
+    "$text_edit_box_label_animation_reset_name|default": "",
 
     "text_box_name": "$text_box_name",
     "text_edit_box_grid_collection_name": "$text_edit_box_grid_collection_name",
@@ -1731,6 +1737,8 @@
                       "anchor_from": "$text_edit_box_label_anchor_point",
                       "anchor_to": "$text_edit_box_label_anchor_point",
                       "font_size": "$font_size",
+                      "anims": "$text_edit_box_label_anims",
+                      "animation_reset_name": "$text_edit_box_label_animation_reset_name",
                       "$text_alpha|default": "$alpha",
                       "$locked_text_alpha|default": "$disabled_alpha",
                       "$locked_color|default": "$disabled_color"
@@ -2200,6 +2208,37 @@
         "mapping_type": "focused"
       }
     ]
+  },
+
+  "text_edit_control@common.text_edit_box": {
+    "size": [ "fill", "100%" ],
+    "layer": 1,
+
+    "property_bag": {
+      "#property_field": "#item_name"
+    },
+
+    "max_length": 30,
+    "$text_edit_binding_name": "#text_box_item_name",
+    "$text_edit_box_label_size": [ "default", 10 ],
+    "$text_edit_box_label_offset": [ 10, 0 ],
+    "$text_edit_box_hovered_button_id": "button.search_bar_hovered",
+    "$text_edit_box_clear_to_button_id": "button.search_bar_clear",
+    "$text_edit_box_selected_to_button_id": "button.search_bar_selected",
+    "$text_edit_box_deselected_to_button_id": "button.search_bar_deselected",
+
+    "$text_clear_button_enabled": true,
+    "$text_clear_button_size": [ 15, 15 ],
+    "$text_clear_button_offset": [ 2, 0 ],
+    "$magnifying_glass_enabled": true,
+    "$magnifying_glass_size": [ 8, 8 ],
+    "$magnifying_glass_offset": [ 0, -0.5 ],
+
+    "focus_wrap_enabled": false,
+
+    "$focus_id": "recipe_search_bar",
+    "$text_edit_type_name": "accessibility.tts.searchbar",
+    "$tts_skip_enumeration": true
   },
 
   "dirt_background": {
@@ -4172,7 +4211,8 @@
     "$toggle_name": "layout_toggle",
 
     "$template_toggle": "common.layout_template_toggle",
-    "$allow_controller_back_button_mapping": "$is_ps4"
+    "$allow_controller_back_button_mapping": "$is_ps4",
+    "$toggle_tts_name": "accessibility.toggle.view.tts.title"
   },
 
   "recipe_book_layout_toggle@common.layout_toggle": {
@@ -4181,9 +4221,7 @@
 
     "$focus_id": "recipe_book_layout_toggle",
     "$toggle_binding_type": "global",
-    "$toggle_state_binding_name": "#is_recipe_book_layout",
-    "$toggle_tts_header_binding_type": "global",
-    "$toggle_tts_header": "#recipe_book_layout_toggle_tts"
+    "$toggle_state_binding_name": "#is_recipe_book_layout"
   },
 
   "survival_layout_toggle@common.layout_toggle": {
@@ -4191,29 +4229,7 @@
     "$toggle_group_forced_index": "$survival_layout_index",
 
     "$toggle_binding_type": "global",
-    "$toggle_state_binding_name": "#is_survival_layout",
-    "$toggle_tts_header_binding_type": "global",
-    "$toggle_tts_header": "#survival_layout_toggle_tts"
-  },
-
-  "furnace_recipe_book_layout_toggle@common.layout_toggle": {
-    "$icon_control": "common.recipe_book_icon",
-    "$toggle_group_forced_index": "$furnace_recipe_book_layout_index",
-
-    "$toggle_binding_type": "global",
-    "$toggle_state_binding_name": "#is_recipe_book_layout",
-
-    "$focus_id": "furnace_recipe_book_layout_toggle",
-    "$toggle_tts_header": "accessibility.button.recipebook.layout"
-  },
-
-  "furnace_survival_layout_toggle@common.layout_toggle": {
-    "$icon_control": "common.inventory_icon",
-    "$toggle_group_forced_index": "$furnace_survival_layout_index",
-
-    "$toggle_binding_type": "global",
-    "$toggle_state_binding_name": "#is_survival_layout",
-    "$toggle_tts_header": "accessibility.button.survival.layout"
+    "$toggle_state_binding_name": "#is_survival_layout"
   },
 
   "crafting_root_input_panel@common.root_panel": {
@@ -5106,7 +5122,21 @@
     "focus_enabled": true,
     "focus_wrap_enabled": false,
     "focus_magnet_enabled": true,
+
+    "$tts_name|default": "",
+    "$tts_control_header|default": "",
+    "$tts_header_binding_type|default": "none",
+    "tts_name": "$tts_name",
+    "tts_control_header": "$tts_control_header",
     "tts_ignore_count": true,
+
+    "bindings": [
+      {
+        "binding_type": "$tts_header_binding_type",
+        "binding_condition": "always",
+        "binding_name": "$tts_control_header"
+      }
+    ],
 
     "controls": [
       {

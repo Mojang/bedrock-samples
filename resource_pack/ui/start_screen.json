@@ -35,6 +35,49 @@
     "size": [ 16, 16 ]
   },
 
+  "inbox_icon_mail": {
+    "type": "image",
+    "texture": "textures/ui/icon_mail",
+    "layer": 3,
+    "size": [ 16, 16 ]
+  },
+
+  "inbox_icon_container": {
+    "type": "panel",
+    "controls": [
+      {
+        "inbox_bell_animated_icon@start.inbox_bell_animated_icon": {
+          "bindings": [
+            {
+              "binding_name": "(#inbox_icon_state = 0)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "inbox_icon@start.inbox_icon": {
+          "bindings": [
+            {
+              "binding_name": "(#inbox_icon_state = 1)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "inbox_icon_mail@start.inbox_icon_mail": {
+          "bindings": [
+            {
+              "binding_name": "(#inbox_icon_state = 2)",
+              "binding_name_override": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   "unread_notification_animation_show": {
     "anim_type": "flip_book",
     "frame_count": 4,
@@ -412,8 +455,9 @@
   //---------------------------------------------------------------------------
 
   "skin_or_profile_panel": {
-    "type": "panel",
-    "size": [ 55, 25 ],
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", 25 ],
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
     "variables": [
@@ -429,26 +473,6 @@
     "alpha": "$anim_type",
     "controls": [
       {
-        "change_skin@start.change_skin_button": {
-          "bindings": [
-            {
-              "binding_name": "#edu_signed_in_only_ui_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-      {
-        "change_skin_button_demo@start.change_skin_button_demo": {
-          "bindings": [
-            {
-              "binding_name": "#edu_demo_only_ui_visible",
-              "binding_name_override": "#visible"
-            }
-          ]
-        }
-      },
-      {
         "dressing_room_button@start.dressing_room_button": {
           "bindings": [
             {
@@ -459,7 +483,12 @@
         }
       },
       {
-        "switch_accounts@start.switch_accounts_button": {
+        "switch_accounts_panel": {
+          "type": "panel",
+          "size": [ "100%c + 2px", "100%c" ],
+          "controls": [
+            { "switch_accounts@start.switch_accounts_button": {} }
+          ],
           "bindings": [
             {
               "binding_name": "#edu_signed_in_only_ui_visible",
@@ -469,8 +498,13 @@
         }
       },
       {
-        "profile_button@start.profile_button": {
+        "profile_button_panel": {
+          "type": "panel",
+          "size": [ "100%c + 2px", "100%c" ],
           "$focus_id": "profile_button",
+          "controls": [
+            { "profile_button@start.profile_button": {} }
+          ],
           "bindings": [
             {
               "binding_name": "#profile_button_b_visible",
@@ -488,32 +522,6 @@
     ]
   },
 
-  "change_skin_button@common_buttons.light_glyph_button": {
-    "ignored": "(not $education_edition)",
-    "$pressed_button_name": "button.menu_skins",
-    "size": [ 25, 25 ],
-    "anchor_from": "bottom_left",
-    "anchor_to": "bottom_left",
-    "$button_content_offset": [ 1, 2 ],
-    "$button_content": "start.change_skin_icon",
-    "$pressed_alpha": 0.65,
-    "$focus_id": "menu_skins_button",
-    "$button_tts_header": "accessibility.start.skinPicker"
-  },
-
-  "change_skin_button_demo@common_buttons.light_glyph_button": {
-    "ignored": "(not $education_edition)",
-    "$pressed_button_name": "button.menu_skins",
-    "size": [ 25, 25 ],
-    "anchor_from": "bottom_middle",
-    "anchor_to": "bottom_middle",
-    "$button_content_offset": [ 1, 2 ],
-    "$button_content": "start.change_skin_icon",
-    "$pressed_alpha": 0.65,
-    "$focus_id": "menu_skins_button",
-    "$button_tts_header": "accessibility.start.skinPicker"
-  },
-
   "switch_accounts_button@common_buttons.light_content_button": {
     "ignored": "(not $education_edition)",
     "$pressed_button_name": "button.manage_account",
@@ -528,9 +536,8 @@
   },
 
   "dressing_room_button@common_buttons.light_text_form_fitting_button": {
-    "ignored": "($education_edition)",
     "$pressed_button_name": "button.to_profile_screen",
-    "size": [ "100%c", 25 ],
+    "size": [ "100%c + 2px", 25 ],
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
     "$button_state_panel": "common_buttons.new_ui_width_fitting_button_panel",
@@ -692,7 +699,7 @@
                     "target_property_name": "#gesture_mouse_delta_x"
                   },
                   {
-                    "binding_name": "#is_appearance_visible",
+                    "binding_name": "#is_paper_doll_visible",
                     "binding_name_override": "#visible",
                     "binding_condition": "always"
                   }
@@ -911,7 +918,19 @@
     "type": "stack_panel",
     "orientation": "vertical",
     "size": [ "100%", "100%c" ],
-    "ignored": "($education_edition or $showing_new_player_flow_buttons)",
+    "ignored": "($education_edition)",
+    "variables": [
+      {
+        "requires": "($showing_new_player_flow_buttons)",
+        "$anim_type": "@start.anim_main_buttons_panel_alpha"
+      },
+      {
+        "requires": "(not $showing_new_player_flow_buttons)",
+        "$anim_type": 1.0
+      }
+    ],
+    "alpha": "$anim_type",
+    "propagate_alpha": true,
     "controls": [
       {
         "horizontal_panel": {
@@ -1019,7 +1038,7 @@
 
   "inbox_button@common_buttons.light_content_button": {
     "size": [ 24, 24 ],
-    "$button_content": "start.inbox_bell_animated_icon",
+    "$button_content": "start.inbox_icon_container",
     "$pressed_button_name": "button.menu_inbox",
     "$button_tts_header": "menu.inbox",
     "button_mappings": [
@@ -1622,7 +1641,7 @@
     "$button_text": "menu.getStarted"
   },
 
-  "main_menu_button@edu_common.underline_button": {
+  "main_menu_button@common_buttons.underline_button": {
     "$pressed_button_name": "button.open_main_menu",
     "$single_label_size": [ "default", "default" ],
     "$single_line_font_scale_factor": 1,
@@ -1632,7 +1651,64 @@
         "binding_name": "$single_line_label_text"
       }
     ],
-    "$font_type": "smooth"
+    "$font_type": "smooth",
+    "$focus_label_color": [ 0.215, 0.839, 0.118 ],
+    // "hover" is also the focus state; underline shows on hover/focus/pressed, not in "default".
+    "controls": [
+      {
+        "default": {
+          "type": "panel",
+          "size": [ "100%c", 10 ],
+          "controls": [
+            {
+              "label_default@common.single_line_label": {
+                "$single_line_label_color": "$dark_button_default_text_color"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "hover": {
+          "type": "panel",
+          "size": [ "100%c", 10 ],
+          "controls": [
+            {
+              "label_hover@common.single_line_label": {
+                "$single_line_label_color": "$focus_label_color",
+                "$underline_control": [
+                  {
+                    "underline_hover@common.underline": {
+                      "$texture": "textures/ui/underline_focus"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "pressed": {
+          "type": "panel",
+          "size": [ "100%c", 10 ],
+          "controls": [
+            {
+              "label_pressed@common.single_line_label": {
+                "$single_line_label_color": "$focus_label_color",
+                "$underline_control": [
+                  {
+                    "underline_pressed@common.underline": {
+                      "$texture": "textures/ui/underline_focus"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
   },
 
   "featured_world_button@start.main_button": {
