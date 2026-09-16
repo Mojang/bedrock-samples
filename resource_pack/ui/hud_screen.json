@@ -58,6 +58,32 @@
     ]
   },
 
+  "hotbar_slots_renderer": {
+    "type": "custom",
+    "renderer": "hotbar_slots_renderer",
+    // Width 0: this control paints the slots itself at absolute offsets and must not
+    // contribute to the "100%c" (sum of children) width of the frames that contain it.
+    "size": [ 0, 22 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "layer": 1,
+    "bindings": [
+      {
+        "binding_name": "#hotbar_visible",
+        "binding_name_override": "#visible"
+      }
+    ]
+  },
+
+  "hotbar_grid_frame": {
+    "type": "panel",
+    "size": [ "100%c", 22 ],
+    "controls": [
+      { "hotbar_slots@hud.hotbar_slots_renderer": {} },
+      { "hotbar_grid@hud.hotbar_grid": {} }
+    ]
+  },
+
   "cooldown_renderer": {
     "type": "custom",
     "renderer": "hotbar_cooldown_renderer",
@@ -1220,7 +1246,6 @@
     "$storage_bar_required|default": true,
     "controls": [
       { "hotbar_slot_selected_image@hotbar_slot_selected_image": {} },
-      { "hotbar_renderer@hotbar_renderer": {} },
       {
         "hotbar_parent": {
           "type": "panel",
@@ -1753,7 +1778,7 @@
     "controls": [
       { "hotbar_start_cap@hud.hotbar_start_cap": {} },
       { "hotbar_elipses_panel_left@hud.hotbar_elipses_panel_left_content": {} },
-      { "hotbar_grid@hud.hotbar_grid": {} },
+      { "hotbar_grid_frame@hud.hotbar_grid_frame": {} },
       { "hotbar_elipses_panel_right@hud.hotbar_elipses_panel_right_content": {} },
       { "hotbar_end_cap@hud.hotbar_end_cap": {} }
     ]
@@ -1890,14 +1915,23 @@
   },
 
   "edu_hotbar_grid": {
-    "type": "grid",
-    "grid_item_template": "hud.gui_hotbar_grid_item",
-    "grid_dimension_binding": "#hotbar_grid_dimensions",
-    "collection_name": "$hotbar_collection_name",
-    "bindings": [
+    "type": "panel",
+    "size": [ "100%c", 22 ],
+    "controls": [
+      { "hotbar_slots@hud.hotbar_slots_renderer": {} },
       {
-        "binding_name": "#hotbar_grid_dimensions",
-        "binding_type": "global"
+        "hotbar_grid": {
+          "type": "grid",
+          "grid_item_template": "hud.gui_hotbar_grid_item",
+          "grid_dimension_binding": "#hotbar_grid_dimensions",
+          "collection_name": "$hotbar_collection_name",
+          "bindings": [
+            {
+              "binding_name": "#hotbar_grid_dimensions",
+              "binding_type": "global"
+            }
+          ]
+        }
       }
     ]
   },
@@ -3469,8 +3503,16 @@
                 "size": [ "100%", 50 ],
                 "bindings": [
                   {
-                    "binding_name": "#paper_doll_visible",
-                    "binding_name_override": "#visible"
+                    "binding_name": "#paper_doll_visible"
+                  },
+                  {
+                    "binding_name": "#editor_chat_layout_active",
+                    "binding_condition": "always"
+                  },
+                  {
+                    "binding_type": "view",
+                    "source_property_name": "(#paper_doll_visible and not #editor_chat_layout_active)",
+                    "target_property_name": "#visible"
                   }
                 ]
               }
@@ -3482,8 +3524,16 @@
                 "bindings": [
                   {
                     "binding_name": "#hud_visible_not_centered",
-                    "binding_name_override": "#visible",
                     "binding_type": "global"
+                  },
+                  {
+                    "binding_name": "#editor_chat_layout_active",
+                    "binding_condition": "always"
+                  },
+                  {
+                    "binding_type": "view",
+                    "source_property_name": "(#hud_visible_not_centered and not #editor_chat_layout_active)",
+                    "target_property_name": "#visible"
                   }
                 ]
               }
@@ -3495,7 +3545,24 @@
                 "size": [ "100%", "100%c" ]
               }
             },
-            { "chat_panel@hud.chat_panel": {} }
+            {
+              "chat_panel@hud.chat_panel": {
+                "bindings": [
+                  {
+                    "binding_name": "#editor_chat_visible",
+                    "binding_name_override": "#visible",
+                    "binding_condition": "always"
+                  }
+                ]
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_name": "#editor_chat_offset",
+              "binding_name_override": "#offset",
+              "binding_condition": "always"
+            }
           ]
         }
       },

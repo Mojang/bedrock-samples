@@ -943,6 +943,7 @@
         "gift_button@common_buttons.light_content_button": {
           "type": "button",
           "size": [ "fill", "100%" ],
+          "visible": false,
           "$button_offset": [ 0, 0 ],
           "$button_focus_precedence": 8,
           "$button_pressed_offset": [ 0, 1 ],
@@ -6005,14 +6006,14 @@
                   },
                   {
                     "button_panel@pdp.description_toggle_show_button_panel": {
-                      "size": [ "100%cm + 2px", "100%sm" ],
+                      "size": [ "100%cm + 2px", "100%sm - 1px" ],
                       "min_size": [ "100%cm + 2px", 20 ],
                       "$button_text": "store.offerDescription.showLess",
-                      "$border_offset": [ 3.5, 3 ],
-                      "$show_button_offset": [ 3.5, 2.5 ],
+                      "$border_offset": [ 3.5, 0 ],
+                      "$show_button_offset": [ 3.5, 0 ],
                       "bindings": [
                         {
-                          "binding_name": "(not #has_tags)",
+                          "binding_name": "(not #has_attributedata)",
                           "binding_name_override": "#visible"
                         },
                         {
@@ -6045,8 +6046,8 @@
                 "controls": [
                   {
                     "description_text_collapsed@pdp.description_label": {
-                      "size": [ "fill", 17 ], //Setting the height to be always 17px, as ShowMore button panel goes beyond the default size of label, when PDP description is short & contains metadata
-                      "$contents_max_size": [ "fill", 17 ],
+                      "size": [ "fill", 18 ],
+                      "$contents_max_size": [ "fill", 18 ],
                       "notify_ellipses_sibling": true,
                       "notify_on_ellipses": [
                         "collapsed_show_more_panel"
@@ -6058,10 +6059,10 @@
                   },
                   {
                     "collapsed_show_more_panel@pdp.description_toggle_show_button_panel": {
-                      "size": [ "100%cm + 2px", "100%sm" ],
+                      "size": [ "100%cm + 2px", "100%sm - 1px" ],
                       "$button_text": "store.offerDescription.showMore",
-                      "$border_offset": [ 3.5, 3 ],
-                      "$show_button_offset": [ 3.5, 2.5 ],
+                      "$border_offset": [ 3.5, 0 ],
+                      "$show_button_offset": [ 3.5, 0 ],
                       "property_bag": {
                         "#using_ellipses": false,
                         "#collapsed_show_more_visible_binding": false
@@ -6100,9 +6101,10 @@
               }
             },
             {
-              "pad_1": {
-                "type": "panel",
-                "size": [ "100%", 4 ],
+              "attributes_panel": {
+                "type": "stack_panel",
+                "orientation": "vertical",
+                "size": [ "100%", "100%c" ],
                 "bindings": [
                   {
                     "binding_name": "#description_expanded_visible",
@@ -6113,388 +6115,272 @@
                     "binding_collection_name": "$store_factory_collection_name",
                     "binding_collection_prefix": "$store_factory_collection_prefix"
                   }
-                ]
-              }
-            },
-            {
-              "divider_panel": {
-                "type": "panel",
-                "size": [ "100% - 8px", "100%c" ],
+                ],
                 "controls": [
                   {
-                    "divider@common.horizontal_divider": {
-                      "$image_size": [ "100%", 1 ],
-                      "offset": [ 1, 0 ],
-                      "bindings": [
+                    "pad_1": {
+                      "type": "panel",
+                      "size": [ "100%", 4 ]
+                    }
+                  },
+                  {
+                    "divider_panel": {
+                      "type": "panel",
+                      "size": [ "100% - 8px", "100%c" ],
+                      "controls": [
                         {
-                          "binding_name": "#description_expanded_visible",
-                          "binding_name_override": "#visible"
-                        },
-                        {
-                          "binding_type": "$store_factory_collection_details",
-                          "binding_collection_name": "$store_factory_collection_name",
-                          "binding_collection_prefix": "$store_factory_collection_prefix"
+                          "divider@common.horizontal_divider": {
+                            "$image_size": [ "100%", 1 ],
+                            "offset": [ 1, 0 ]
+                          }
                         }
                       ]
                     }
-                  }
-                ]
-              }
-            },
-            {
-              "pad_2": {
-                "type": "panel",
-                "size": [ "100%", 4 ],
-                "bindings": [
-                  {
-                    "binding_name": "#description_expanded_visible",
-                    "binding_name_override": "#description_expanded_visible"
                   },
                   {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  }
-                ]
-              }
-            },
-            {
-              "tags_panel": {
-                "type": "stack_panel",
-                "orientation": "horizontal",
-                "size": [ "100% - 5px", "100%cm" ],
-                "controls": [
-                  {
-                    "label_text_panel": {
+                    "pad_2": {
                       "type": "panel",
-                      "size": [ "100%c", "100%c" ],
+                      "size": [ "100%", 4 ]
+                    }
+                  },
+                  {
+                    "tags_panel": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100% - 5px", "100%cm" ],
+                      "controls": [
+                        {
+                          "label_text_panel": {
+                            "type": "panel",
+                            "size": [ "100%c", "100%c" ],
+                            "controls": [
+                              {
+                                "label_text@common.minecraftTenLabel": {
+                                  "type": "label",
+                                  "size": [ "default", "default" ],
+                                  "text": "store.offerDescription.tags",
+                                  "color": "$body_text_color"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "pad": {
+                            "type": "panel",
+                            "size": [ 2, "100%sm" ]
+                          }
+                        },
+                        {
+                          "tag_factory_panel": {
+                            "type": "panel",
+                            "size": [ "fill", "100%c" ],
+                            "controls": [
+                              {
+                                "tags_factory_with_rows": {
+                                  "type": "stack_panel",
+                                  "orientation": "vertical",
+                                  "collection_name": "tag_row_collection",
+                                  "size": [ "100%", "100%c" ],
+                                  "$tag_factory_collection_name": "tag_column_collection",
+                                  "$tag_factory_size": [ "100%", "100%cm" ],
+                                  "$tag_factory_bindings": [
+                                    {
+                                      "binding_type": "collection_details",
+                                      "binding_collection_name": "tag_row_collection",
+                                      "binding_collection_prefix": "row"
+                                    },
+                                    {
+                                      "binding_type": "$store_factory_collection_details",
+                                      "binding_collection_name": "$store_factory_collection_name",
+                                      "binding_collection_prefix": "$store_factory_collection_prefix"
+                                    },
+                                    {
+                                      "binding_name": "#tag_columns_collection_length",
+                                      "binding_type": "collection",
+                                      "binding_name_override": "#collection_length",
+                                      "binding_collection_name": "tag_row_collection"
+                                    }
+                                  ],
+                                  "$tag_label_bindings": [
+                                    {
+                                      "binding_type": "collection_details",
+                                      "binding_collection_name": "tag_row_collection",
+                                      "binding_collection_prefix": "row"
+                                    },
+                                    {
+                                      "binding_type": "$store_factory_collection_details",
+                                      "binding_collection_name": "$store_factory_collection_name",
+                                      "binding_collection_prefix": "$store_factory_collection_prefix"
+                                    },
+                                    {
+                                      "binding_name": "#tag_label",
+                                      "binding_type": "collection",
+                                      "binding_collection_name": "tag_column_collection"
+                                    },
+                                    {
+                                      "binding_type": "collection_details",
+                                      "binding_collection_name": "$tag_factory_collection_name"
+                                    }
+                                  ],
+
+                                  "factory": {
+                                    "name": "tag_row_factory",
+                                    "control_ids": {
+                                      "tag_row": "@pdp.tag_row_factory"
+                                    },
+                                    "factory_variables": [
+                                      "$tag_factory_collection_name",
+                                      "$tag_factory_size",
+                                      "$tag_factory_bindings",
+                                      "$tag_label_bindings",
+                                      "$store_factory_collection_details",
+                                      "$store_factory_collection_name",
+                                      "$store_factory_collection_prefix",
+                                      "$section_name"
+                                    ]
+                                  },
+                                  "bindings": [
+                                    {
+                                      "binding_name": "#description_expanded_visible",
+                                      "binding_name_override": "#visible"
+                                    },
+                                    {
+                                      "binding_name": "#tag_rows_collection_length",
+                                      "binding_name_override": "#collection_length"
+                                    },
+                                    {
+                                      "binding_type": "$store_factory_collection_details",
+                                      "binding_collection_name": "$store_factory_collection_name",
+                                      "binding_collection_prefix": "$store_factory_collection_prefix"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "tags_factory@pdp.tag_row_factory": {
+                                  "$tag_factory_collection_name": "tag_collapsed_collection",
+                                  "$tag_factory_size": [ "100%", "100%cm" ],
+                                  "$tag_factory_bindings": [
+                                    {
+                                      "binding_name": "#description_collapsed_visible",
+                                      "binding_name_override": "#visible"
+                                    },
+                                    {
+                                      "binding_name": "#tag_collapsed_collection_length",
+                                      "binding_name_override": "#collection_length"
+                                    },
+                                    {
+                                      "binding_type": "$store_factory_collection_details",
+                                      "binding_collection_name": "$store_factory_collection_name",
+                                      "binding_collection_prefix": "$store_factory_collection_prefix"
+                                    }
+                                  ],
+                                  "$tag_label_bindings": [
+                                    {
+                                      "binding_type": "collection_details",
+                                      "binding_collection_name": "tag_collapsed_collection",
+                                      "binding_collection_prefix": "collapsed"
+                                    },
+                                    {
+                                      "binding_name": "#tag_label",
+                                      "binding_type": "collection",
+                                      "binding_collection_name": "tag_collapsed_collection"
+                                    },
+                                    {
+                                      "binding_type": "$store_factory_collection_details",
+                                      "binding_collection_name": "$store_factory_collection_name",
+                                      "binding_collection_prefix": "$store_factory_collection_prefix"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "genre_panel": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100% - 5px", "100%cm + 2px" ],
                       "controls": [
                         {
                           "label_text@common.minecraftTenLabel": {
                             "type": "label",
                             "size": [ "default", "default" ],
-                            "text": "store.offerDescription.tags",
+                            "text": "store.offerDescription.genre",
                             "color": "$body_text_color"
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "pad": {
-                      "type": "panel",
-                      "size": [ 2, "100%sm" ]
-                    }
-                  },
-                  {
-                    "tag_factory_panel": {
-                      "type": "panel",
-                      "size": [ "fill", "100%c" ],
-                      "controls": [
-                        {
-                          "tags_factory_with_rows": {
-                            "type": "stack_panel",
-                            "orientation": "vertical",
-                            "collection_name": "tag_row_collection",
-                            "size": [ "100%", "100%c" ],
-                            "$tag_factory_collection_name": "tag_column_collection",
-                            "$tag_factory_size": [ "100%", "100%cm" ],
-                            "$tag_factory_bindings": [
-                              {
-                                "binding_type": "collection_details",
-                                "binding_collection_name": "tag_row_collection",
-                                "binding_collection_prefix": "row"
-                              },
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              },
-                              {
-                                "binding_name": "#tag_columns_collection_length",
-                                "binding_type": "collection",
-                                "binding_name_override": "#collection_length",
-                                "binding_collection_name": "tag_row_collection"
-                              }
-                            ],
-                            "$tag_label_bindings": [
-                              {
-                                "binding_type": "collection_details",
-                                "binding_collection_name": "tag_row_collection",
-                                "binding_collection_prefix": "row"
-                              },
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              },
-                              {
-                                "binding_name": "#tag_label",
-                                "binding_type": "collection",
-                                "binding_collection_name": "tag_column_collection"
-                              },
-                              {
-                                "binding_type": "collection_details",
-                                "binding_collection_name": "$tag_factory_collection_name"
-                              }
-                            ],
-
-                            "factory": {
-                              "name": "tag_row_factory",
-                              "control_ids": {
-                                "tag_row": "@pdp.tag_row_factory"
-                              },
-                              "factory_variables": [
-                                "$tag_factory_collection_name",
-                                "$tag_factory_size",
-                                "$tag_factory_bindings",
-                                "$tag_label_bindings",
-                                "$store_factory_collection_details",
-                                "$store_factory_collection_name",
-                                "$store_factory_collection_prefix",
-                                "$section_name"
-                              ]
-                            },
-                            "bindings": [
-                              {
-                                "binding_name": "#description_expanded_visible",
-                                "binding_name_override": "#visible"
-                              },
-                              {
-                                "binding_name": "#tag_rows_collection_length",
-                                "binding_name_override": "#collection_length"
-                              },
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              }
-                            ]
                           }
                         },
                         {
-                          "tags_factory@pdp.tag_row_factory": {
-                            "$tag_factory_collection_name": "tag_collapsed_collection",
-                            "$tag_factory_size": [ "100%", "100%cm" ],
-                            "$tag_factory_bindings": [
-                              {
-                                "binding_name": "#description_collapsed_visible",
-                                "binding_name_override": "#visible"
-                              },
-                              {
-                                "binding_name": "#tag_collapsed_collection_length",
-                                "binding_name_override": "#collection_length"
-                              },
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              }
-                            ],
-                            "$tag_label_bindings": [
-                              {
-                                "binding_type": "collection_details",
-                                "binding_collection_name": "tag_collapsed_collection",
-                                "binding_collection_prefix": "collapsed"
-                              },
-                              {
-                                "binding_name": "#tag_label",
-                                "binding_type": "collection",
-                                "binding_collection_name": "tag_collapsed_collection"
-                              },
-                              {
-                                "binding_type": "$store_factory_collection_details",
-                                "binding_collection_name": "$store_factory_collection_name",
-                                "binding_collection_prefix": "$store_factory_collection_prefix"
-                              }
-                            ]
+                          "pad": {
+                            "type": "panel",
+                            "size": [ 2, "100%sm" ]
                           }
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "bindings": [
-                  {
-                    "binding_name": "#description_expanded_visible",
-                    "binding_name_override": "#visible"
-                  },
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  }
-                ]
-              }
-            },
-            {
-              "genre_panel": {
-                "type": "stack_panel",
-                "orientation": "horizontal",
-                "size": [ "100% - 5px", "100%cm + 2px" ],
-                "controls": [
-                  {
-                    "label_text@common.minecraftTenLabel": {
-                      "type": "label",
-                      "size": [ "default", "default" ],
-                      "text": "store.offerDescription.genre",
-                      "color": "$body_text_color"
-                    }
-                  },
-                  {
-                    "pad": {
-                      "type": "panel",
-                      "size": [ 2, "100%sm" ]
-                    }
-                  },
-                  {
-                    "text_panel": {
-                      "type": "panel",
-                      "size": [ "100%", "100%cm" ],
-                      "controls": [
+                        },
                         {
-                          "text_stack_panel": {
-                            "type": "stack_panel",
-                            "orientation": "horizontal",
+                          "text_panel": {
+                            "type": "panel",
                             "size": [ "100%", "100%cm" ],
-                            "offset": [ 0, 2 ],
                             "controls": [
                               {
-                                "genre_button@common_buttons.underline_button": {
-                                  "size": [ "100%cm", "100%cm" ],
-                                  "$single_line_label_text": "#genre_label",
-                                  "$pressed_button_name": "button.genre",
-                                  "bindings": "$description_button_bindings",
-                                  "$label_text_bindings": [
-                                    {
-                                      "binding_name": "#genre_label"
-                                    },
-                                    {
-                                      "binding_type": "$store_factory_collection_details",
-                                      "binding_collection_name": "$store_factory_collection_name",
-                                      "binding_collection_prefix": "$store_factory_collection_prefix"
-                                    }
-                                  ]
-                                }
-                              },
-                              {
-                                "pad_0": {
-                                  "type": "panel",
-                                  "size": [ 4, "100%sm" ]
-                                }
-                              },
-                              {
-                                "slash_divider": {
-                                  "type": "label",
-                                  "size": [ "default", "default" ],
-                                  "text": "/",
-                                  "font_type": "smooth",
-                                  "color": "$body_text_color"
-                                }
-                              },
-                              {
-                                "subgenre_button@common_buttons.underline_button": {
-                                  "size": [ "100%cm", "100%cm" ],
-                                  "$single_line_label_text": "#subgenre_label",
-                                  "$pressed_button_name": "button.subgenre",
-                                  "bindings": "$description_button_bindings",
-                                  "$label_text_bindings": [
-                                    {
-                                      "binding_name": "#subgenre_label"
-                                    },
-                                    {
-                                      "binding_type": "$store_factory_collection_details",
-                                      "binding_collection_name": "$store_factory_collection_name",
-                                      "binding_collection_prefix": "$store_factory_collection_prefix"
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "bindings": [
-                  {
-                    "binding_name": "#description_expanded_visible",
-                    "binding_name_override": "#visible"
-                  },
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  }
-                ]
-              }
-            },
-            {
-              "players_panel": {
-                "type": "stack_panel",
-                "orientation": "horizontal",
-                "size": [ "100% - 5px", "100%cm + 2px" ],
-                "controls": [
-                  {
-                    "label_text@common.minecraftTenLabel": {
-                      "type": "label",
-                      "size": [ "default", "default" ],
-                      "text": "store.offerDescription.players",
-                      "color": "$body_text_color"
-                    }
-                  },
-                  {
-                    "pad": {
-                      "type": "panel",
-                      "size": [ 2, "100%sm" ]
-                    }
-                  },
-                  {
-                    "text_panel": {
-                      "type": "panel",
-                      "size": [ "fill", "100%cm" ],
-                      "controls": [
-                        {
-                          "text_stack_panel": {
-                            "type": "stack_panel",
-                            "orientation": "vertical",
-                            "size": [ "100%", "100%c" ],
-                            "offset": [ 0, 2 ],
-                            "controls": [
-                              {
-                                "player_count_button_panel": {
+                                "text_stack_panel": {
                                   "type": "stack_panel",
-                                  "size": [ "100%c", 10 ],
                                   "orientation": "horizontal",
-                                  "use_priority": true,
+                                  "size": [ "100%", "100%cm" ],
+                                  "offset": [ 0, 2 ],
                                   "controls": [
                                     {
-                                      "player_count_button_factory@pdp.player_count_factory": {}
-                                    },
-                                    {
-                                      "pad": {
-                                        "type": "panel",
-                                        "size": [ 2, "100%" ]
+                                      "genre_button@common_buttons.underline_button": {
+                                        "size": [ "100%cm", "100%cm" ],
+                                        "$single_line_label_text": "#genre_label",
+                                        "$pressed_button_name": "button.genre",
+                                        "bindings": "$description_button_bindings",
+                                        "$label_text_bindings": [
+                                          {
+                                            "binding_name": "#genre_label"
+                                          },
+                                          {
+                                            "binding_type": "$store_factory_collection_details",
+                                            "binding_collection_name": "$store_factory_collection_name",
+                                            "binding_collection_prefix": "$store_factory_collection_prefix"
+                                          }
+                                        ]
                                       }
                                     },
                                     {
-                                      "player_count_range_panel": {
+                                      "pad_0": {
                                         "type": "panel",
-                                        "size": [ "100%c", "100%" ],
+                                        "size": [ 4, "100%sm" ]
+                                      }
+                                    },
+                                    {
+                                      "subgenre_panel": {
+                                        "type": "stack_panel",
+                                        "orientation": "horizontal",
+                                        "size": [ "100%c", "100%sm" ],
                                         "controls": [
                                           {
-                                            "player_count_range_text": {
+                                            "slash_divider": {
                                               "type": "label",
-                                              "size": [ "default", "100%" ],
-                                              "offset": [ -1, 0 ],
+                                              "size": [ "default", "default" ],
+                                              "text": "/",
                                               "font_type": "smooth",
-                                              "font_scale_factor": 0.8,
-                                              "text": "#player_count_range_label",
-                                              "color": "$body_text_color",
-                                              "bindings": [
+                                              "color": "$body_text_color"
+                                            }
+                                          },
+                                          {
+                                            "subgenre_button@common_buttons.underline_button": {
+                                              "size": [ "100%cm", "100%cm" ],
+                                              "$single_line_label_text": "#subgenre_label",
+                                              "$pressed_button_name": "button.subgenre",
+                                              "bindings": "$description_button_bindings",
+                                              "$label_text_bindings": [
                                                 {
-                                                  "binding_name": "#player_count_range_label"
+                                                  "binding_name": "#subgenre_label"
                                                 },
                                                 {
                                                   "binding_type": "$store_factory_collection_details",
@@ -6504,124 +6390,30 @@
                                               ]
                                             }
                                           }
+                                        ],
+                                        "bindings": [
+                                          {
+                                            "binding_name": "#has_subgenre",
+                                            "binding_name_override": "#visible"
+                                          },
+                                          {
+                                            "binding_type": "$store_factory_collection_details",
+                                            "binding_collection_name": "$store_factory_collection_name",
+                                            "binding_collection_prefix": "$store_factory_collection_prefix"
+                                          }
                                         ]
                                       }
                                     }
                                   ]
                                 }
-                              },
-                              {
-                                "note_text": {
-                                  "type": "label",
-                                  "size": [ "100%", "default" ],
-                                  "text": "store.offerDescription.playerCountNote",
-                                  "font_scale_factor": 0.8,
-                                  "font_type": "smooth",
-                                  "color": "$body_text_color"
-                                }
                               }
                             ]
                           }
                         }
-                      ]
-                    }
-                  }
-                ],
-                "bindings": [
-                  {
-                    "binding_name": "#description_expanded_visible",
-                    "binding_name_override": "#visible"
-                  },
-                  {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  }
-                ]
-              }
-            },
-            {
-              "languages_panel": {
-                "visible": false, //TODO [ADO:661384]: remove this when languages are implemented in service
-                "type": "stack_panel",
-                "orientation": "horizontal",
-                "size": [ "100% - 5px", "100%cm - 7px" ],
-                "controls": [
-                  {
-                    "label_text_panel": {
-                      "type": "panel",
-                      "size": [ "100%c", "100%c" ],
-                      "controls": [
-                        {
-                          "label_text@common.minecraftTenLabel": {
-                            "type": "label",
-                            "size": [ "default", "default" ],
-                            "text": "store.offerDescription.languages",
-                            "color": "$body_text_color"
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "pad": {
-                      "type": "panel",
-                      "size": [ "fill", "100%sm" ] //TODO [ADO:661384]: change fill to 2px when languages are implemented in service
-                    }
-                  },
-                  {
-                    "languages_factory": {
-                      "type": "stack_panel",
-                      "orientation": "horizontal",
-                      "collection_name": "language_row_collection",
-                      "size": [ "fill", 10 ],
-                      "$language_factory_collection_name": "language_column_collection",
-                      "$language_factory_size": [ "100%", "100%cm" ],
-                      "$language_factory_bindings": [
-                        {
-                          "binding_type": "collection_details",
-                          "binding_collection_name": "language_row_collection",
-                          "binding_collection_prefix": "language_row"
-                        },
-                        {
-                          "binding_name": "#language_columns_collection_length",
-                          "binding_type": "collection",
-                          "binding_name_override": "#collection_length",
-                          "binding_collection_name": "language_row_collection"
-                        },
-                        {
-                          "binding_type": "$store_factory_collection_details",
-                          "binding_collection_name": "$store_factory_collection_name",
-                          "binding_collection_prefix": "$store_factory_collection_prefix"
-                        }
                       ],
-                      "$label_text_bindings": [
+                      "bindings": [
                         {
-                          "binding_type": "collection_details",
-                          "binding_collection_name": "language_row_collection",
-                          "binding_collection_prefix": "row"
-                        },
-                        {
-                          "binding_type": "collection",
-                          "binding_collection_name": "language_column_collection",
-                          "binding_name": "#language_label"
-                        },
-                        {
-                          "binding_type": "$store_factory_collection_details",
-                          "binding_collection_name": "$store_factory_collection_name",
-                          "binding_collection_prefix": "$store_factory_collection_prefix"
-                        }
-                      ],
-                      "$comma_text_bindings": [
-                        {
-                          "binding_type": "collection_details",
-                          "binding_collection_name": "language_row_collection",
-                          "binding_collection_prefix": "row"
-                        },
-                        {
-                          "binding_type": "collection",
-                          "binding_collection_name": "language_column_collection",
-                          "binding_name": "#comma_visible",
+                          "binding_name": "#has_genre",
                           "binding_name_override": "#visible"
                         },
                         {
@@ -6629,29 +6421,110 @@
                           "binding_collection_name": "$store_factory_collection_name",
                           "binding_collection_prefix": "$store_factory_collection_prefix"
                         }
-                      ],
-
-                      "factory": {
-                        "name": "language_row_factory",
-                        "control_ids": {
-                          "language_row": "@pdp.language_row_factory"
+                      ]
+                    }
+                  },
+                  {
+                    "players_panel": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100% - 5px", "100%cm + 2px" ],
+                      "controls": [
+                        {
+                          "label_text@common.minecraftTenLabel": {
+                            "type": "label",
+                            "size": [ "default", "default" ],
+                            "text": "store.offerDescription.players",
+                            "color": "$body_text_color"
+                          }
                         },
-                        "factory_variables": [
-                          "$language_factory_collection_name",
-                          "$language_factory_size",
-                          "$language_factory_bindings",
-                          "$label_text_bindings",
-                          "$comma_text_bindings",
-                          "$store_factory_collection_details",
-                          "$store_factory_collection_name",
-                          "$store_factory_collection_prefix",
-                          "$section_name"
-                        ]
-                      },
+                        {
+                          "pad": {
+                            "type": "panel",
+                            "size": [ 2, "100%sm" ]
+                          }
+                        },
+                        {
+                          "text_panel": {
+                            "type": "panel",
+                            "size": [ "fill", "100%cm" ],
+                            "controls": [
+                              {
+                                "text_stack_panel": {
+                                  "type": "stack_panel",
+                                  "orientation": "vertical",
+                                  "size": [ "100%", "100%c" ],
+                                  "offset": [ 0, 2 ],
+                                  "controls": [
+                                    {
+                                      "player_count_button_panel": {
+                                        "type": "stack_panel",
+                                        "size": [ "100%c", 10 ],
+                                        "orientation": "horizontal",
+                                        "use_priority": true,
+                                        "controls": [
+                                          {
+                                            "player_count_button_factory@pdp.player_count_factory": {}
+                                          },
+                                          {
+                                            "pad": {
+                                              "type": "panel",
+                                              "size": [ 2, "100%" ]
+                                            }
+                                          },
+                                          {
+                                            "player_count_range_panel": {
+                                              "type": "panel",
+                                              "size": [ "100%c", "100%" ],
+                                              "controls": [
+                                                {
+                                                  "player_count_range_text": {
+                                                    "type": "label",
+                                                    "size": [ "default", "100%" ],
+                                                    "offset": [ -1, 0 ],
+                                                    "font_type": "smooth",
+                                                    "font_scale_factor": 0.8,
+                                                    "text": "#player_count_range_label",
+                                                    "color": "$body_text_color",
+                                                    "bindings": [
+                                                      {
+                                                        "binding_name": "#player_count_range_label"
+                                                      },
+                                                      {
+                                                        "binding_type": "$store_factory_collection_details",
+                                                        "binding_collection_name": "$store_factory_collection_name",
+                                                        "binding_collection_prefix": "$store_factory_collection_prefix"
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "note_text": {
+                                        "type": "label",
+                                        "size": [ "100%", "default" ],
+                                        "text": "store.offerDescription.playerCountNote",
+                                        "font_scale_factor": 0.8,
+                                        "font_type": "smooth",
+                                        "color": "$body_text_color"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
                       "bindings": [
                         {
-                          "binding_name": "#language_rows_collection_length",
-                          "binding_name_override": "#collection_length"
+                          "binding_name": "#has_playercount",
+                          "binding_name_override": "#visible"
                         },
                         {
                           "binding_type": "$store_factory_collection_details",
@@ -6660,42 +6533,144 @@
                         }
                       ]
                     }
-                  }
-                ]
-              }
-            },
-            {
-              "pad_3": {
-                "type": "panel",
-                "size": [ "100%", 3 ],
-                "bindings": [
-                  {
-                    "binding_name": "#description_expanded_visible",
-                    "binding_name_override": "#visible"
                   },
                   {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
-                  }
-                ]
-              }
-            },
-            {
-              "show_less_button_panel@pdp.description_toggle_show_button_panel": {
-                "size": [ "100%", "100%cm" ],
-                "$button_text": "store.offerDescription.showLess",
-                "$border_offset": [ -1.5, -0.75 ],
-                "$show_button_offset": [ -1.5, -0.75 ],
-                "bindings": [
-                  {
-                    "binding_name": "#description_expanded_visible",
-                    "binding_name_override": "#visible"
+                    "languages_panel": {
+                      "visible": false, //TODO [ADO:661384]: remove this when languages are implemented in service
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "size": [ "100% - 5px", "100%cm - 7px" ],
+                      "controls": [
+                        {
+                          "label_text_panel": {
+                            "type": "panel",
+                            "size": [ "100%c", "100%c" ],
+                            "controls": [
+                              {
+                                "label_text@common.minecraftTenLabel": {
+                                  "type": "label",
+                                  "size": [ "default", "default" ],
+                                  "text": "store.offerDescription.languages",
+                                  "color": "$body_text_color"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "pad": {
+                            "type": "panel",
+                            "size": [ "fill", "100%sm" ] //TODO [ADO:661384]: change fill to 2px when languages are implemented in service
+                          }
+                        },
+                        {
+                          "languages_factory": {
+                            "type": "stack_panel",
+                            "orientation": "horizontal",
+                            "collection_name": "language_row_collection",
+                            "size": [ "fill", 10 ],
+                            "$language_factory_collection_name": "language_column_collection",
+                            "$language_factory_size": [ "100%", "100%cm" ],
+                            "$language_factory_bindings": [
+                              {
+                                "binding_type": "collection_details",
+                                "binding_collection_name": "language_row_collection",
+                                "binding_collection_prefix": "language_row"
+                              },
+                              {
+                                "binding_name": "#language_columns_collection_length",
+                                "binding_type": "collection",
+                                "binding_name_override": "#collection_length",
+                                "binding_collection_name": "language_row_collection"
+                              },
+                              {
+                                "binding_type": "$store_factory_collection_details",
+                                "binding_collection_name": "$store_factory_collection_name",
+                                "binding_collection_prefix": "$store_factory_collection_prefix"
+                              }
+                            ],
+                            "$label_text_bindings": [
+                              {
+                                "binding_type": "collection_details",
+                                "binding_collection_name": "language_row_collection",
+                                "binding_collection_prefix": "row"
+                              },
+                              {
+                                "binding_type": "collection",
+                                "binding_collection_name": "language_column_collection",
+                                "binding_name": "#language_label"
+                              },
+                              {
+                                "binding_type": "$store_factory_collection_details",
+                                "binding_collection_name": "$store_factory_collection_name",
+                                "binding_collection_prefix": "$store_factory_collection_prefix"
+                              }
+                            ],
+                            "$comma_text_bindings": [
+                              {
+                                "binding_type": "collection_details",
+                                "binding_collection_name": "language_row_collection",
+                                "binding_collection_prefix": "row"
+                              },
+                              {
+                                "binding_type": "collection",
+                                "binding_collection_name": "language_column_collection",
+                                "binding_name": "#comma_visible",
+                                "binding_name_override": "#visible"
+                              },
+                              {
+                                "binding_type": "$store_factory_collection_details",
+                                "binding_collection_name": "$store_factory_collection_name",
+                                "binding_collection_prefix": "$store_factory_collection_prefix"
+                              }
+                            ],
+
+                            "factory": {
+                              "name": "language_row_factory",
+                              "control_ids": {
+                                "language_row": "@pdp.language_row_factory"
+                              },
+                              "factory_variables": [
+                                "$language_factory_collection_name",
+                                "$language_factory_size",
+                                "$language_factory_bindings",
+                                "$label_text_bindings",
+                                "$comma_text_bindings",
+                                "$store_factory_collection_details",
+                                "$store_factory_collection_name",
+                                "$store_factory_collection_prefix",
+                                "$section_name"
+                              ]
+                            },
+                            "bindings": [
+                              {
+                                "binding_name": "#language_rows_collection_length",
+                                "binding_name_override": "#collection_length"
+                              },
+                              {
+                                "binding_type": "$store_factory_collection_details",
+                                "binding_collection_name": "$store_factory_collection_name",
+                                "binding_collection_prefix": "$store_factory_collection_prefix"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
                   },
                   {
-                    "binding_type": "$store_factory_collection_details",
-                    "binding_collection_name": "$store_factory_collection_name",
-                    "binding_collection_prefix": "$store_factory_collection_prefix"
+                    "pad_3": {
+                      "type": "panel",
+                      "size": [ "100%", 3 ]
+                    }
+                  },
+                  {
+                    "show_less_button_panel@pdp.description_toggle_show_button_panel": {
+                      "size": [ "100%", "100%cm" ],
+                      "$button_text": "store.offerDescription.showLess",
+                      "$border_offset": [ -1.5, -0.75 ],
+                      "$show_button_offset": [ -1.5, -0.75 ]
+                    }
                   }
                 ]
               }
