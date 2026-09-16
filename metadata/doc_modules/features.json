@@ -56,29 +56,6 @@
           "text": [
             "  {",
             "      version \"format_version\"",
-            "      object \"minecraft:aggregate_feature\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          array \"features\"[1,*] // Collection of features to be placed one by one. No guarantee of order. All features use the same input position.",
-            "          {",
-            "              feature_reference \"<any array element>\" : opt",
-            "          }",
-            "          enumerated_value \"early_out\"<\"none\", \"first_failure\", \"first_success\"> : opt // LIKELY TO BE CHANGED: Do not continue placing features once either the first success or first failure has occurred.",
-            "      }",
-            "      object \"minecraft:sequence_feature\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          array \"features\"[1,*] // List of features to be placed in sequence. The output position of the previous feature is used as the input position to the next.",
-            "          {",
-            "              feature_reference \"<any array element>\" : opt",
-            "          }",
-            "      }",
             "      object \"minecraft:beards_and_shavers\" : opt",
             "      {",
             "          object \"description\"",
@@ -104,6 +81,65 @@
             "          float \"beard_raggedness_min\" : opt // Y Delta for BAS",
             "          float \"beard_raggedness_max\" : opt // Y Delta for BAS",
             "      }",
+            "      object \"minecraft:rect_layout\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          float \"ratio_of_empty_space\" : opt // Ratio of a Chunk to be filled with empty space rather than features.",
+            "          array \"feature_areas\"[1,18446744073709551615]",
+            "          {",
+            "              object \"<any array element>\" : opt",
+            "              {",
+            "                  feature_reference \"feature\" // Feature to be placed.",
+            "                  array \"area_dimensions\" // Dimensions (size) of the associated Feature.",
+            "                  {",
+            "                      int \"[0..0]\"",
+            "                      int \"[1..1]\"",
+            "                  }",
+            "              }",
+            "          }",
+            "      }",
+            "      object \"minecraft:scan_surface\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          feature_reference \"scan_surface_feature\" // Named reference of feature to be placed",
+            "      }",
+            "      object \"minecraft:sculk_patch_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          array \"can_place_sculk_patch_on\"",
+            "          {",
+            "               \"<any array element>\" : opt",
+            "          }",
+            "           \"central_block\" : opt",
+            "          float \"central_block_placement_chance\"<0.000000-1.000000> : opt",
+            "          int \"cursor_count\"<0-32>",
+            "          int \"charge_amount\"<1-1000>",
+            "          int \"spread_attempts\"<1-64>",
+            "          int \"growth_rounds\"<0-8>",
+            "          int \"spread_rounds\"<0-8>",
+            "          int_range \"extra_growth_chance\" : opt",
+            "      }",
+            "      object \"minecraft:aggregate_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          array \"features\"[1,*] // Collection of features to be placed one by one. No guarantee of order. All features use the same input position.",
+            "          {",
+            "              feature_reference \"<any array element>\" : opt",
+            "          }",
+            "          enumerated_value \"early_out\"<\"none\", \"first_failure\", \"first_success\"> : opt // LIKELY TO BE CHANGED: Do not continue placing features once either the first success or first failure has occurred.",
+            "      }",
             "      object \"minecraft:cave_carver_feature\" : opt",
             "      {",
             "          object \"description\"",
@@ -125,15 +161,15 @@
             "          {",
             "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
             "          }",
-            "          array \"conditional_features\" // Array of Features, and their associated Conditions, for attempted placement. These features will be evaluated as ordered.",
+            "          array \"conditional_features\" // Array of features, and their associated conditions, for attempted placement. These features will be evaluated as ordered.",
             "          {",
             "              object \"<any array element>\" : opt",
             "              {",
             "                  feature_reference \"places_feature\" // Feature to be placed.",
-            "                  molang \"condition\" // Condition for placing associated Feature",
+            "                  molang \"condition\" : opt // Condition for placing associated Feature. If omitted, always places.",
             "              }",
             "          }",
-            "          enumerated_value \"early_out_scheme\"<\"condition_success\", \"placement_success\"> : opt // Denote whether placement should end on first successful placement or first passed condition.",
+            "          enumerated_value \"early_out_scheme\"<\"condition_success\", \"placement_success\", \"none\"> : opt // Denote whether placement should end on first successful placement ('placement_success'), first passed condition ('condition_success'), or evaluate all features ('none'). Defaults to 'none'.",
             "      }",
             "      object \"minecraft:fossil_feature\" : opt",
             "      {",
@@ -209,20 +245,28 @@
             "          }",
             "          bool \"allow_water\" : opt // Plant blocks can be placed in water.",
             "      }",
-            "      object \"minecraft:nether_cave_carver_feature\" : opt",
+            "      object \"minecraft:height_difference_filter_feature\" : opt",
             "      {",
             "          object \"description\"",
             "          {",
             "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
             "          }",
-            "          block_reference \"fill_with\" : opt // Reference to the block to fill the cave with.",
-            "          molang \"width_modifier\" : opt // How many blocks to increase the cave radius by, from the center point of the cave.",
-            "          int \"skip_carve_chance\"<1-*> : opt // The chance to skip doing the carve (1 / value).",
-            "          int \"height_limit\" : opt // The height limit where we attempt to carve.",
-            "          float_range \"y_scale\" : opt // The scaling in y.",
-            "          float_range \"horizontal_radius_multiplier\" : opt // Horizontal radius multiplier.",
-            "          float_range \"vertical_radius_multiplier\" : opt // Vertical radius multiplier.",
-            "          float_range \"floor_level\" : opt // Floor Level.",
+            "          feature_reference \"places_feature\" // Named reference of feature to be placed",
+            "          int \"min_required_upward_height_diff\"<0-*> : opt // Specifies the minimum height difference required upwards.",
+            "          int \"min_required_downward_height_diff\"<0-*> : opt // Specifies the minimum height difference required downwards.",
+            "          int \"max_allowed_upward_height_diff\"<0-*> : opt // Specifies the maximum height difference allowed upwards.",
+            "          int \"max_allowed_downward_height_diff\"<0-*> : opt // Specifies the maximum height difference allowed downwards.",
+            "          int \"search_radius\"<0-*> // 'search_radius' specifies the the length in each cardinal direction the filter will check for blocks against the given differences.",
+            "      }",
+            "      object \"minecraft:horizontal_tree_decoration_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "           \"places_block\" // Block to place.",
+            "          bool \"allow_adjacent\" : opt // Whether neighbors of the same block type are allowed. Will result in blocks being placed with at least one block gap when set to false",
+            "          bool \"bark_side_only\" : opt // If true, will never place the block on the 'open' side of a block (imagine the block is a fallen tree trunk).",
             "      }",
             "      object \"minecraft:multiface_feature\" : opt",
             "      {",
@@ -240,6 +284,21 @@
             "          {",
             "               \"<any array element>\" : opt // A list of blocks that the block in this feature can be placed on. Omit this field to allow any block to be placed on.",
             "          }",
+            "      }",
+            "      object \"minecraft:nether_cave_carver_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          block_reference \"fill_with\" : opt // Reference to the block to fill the cave with.",
+            "          molang \"width_modifier\" : opt // How many blocks to increase the cave radius by, from the center point of the cave.",
+            "          int \"skip_carve_chance\"<1-*> : opt // The chance to skip doing the carve (1 / value).",
+            "          int \"height_limit\" : opt // The height limit where we attempt to carve.",
+            "          float_range \"y_scale\" : opt // The scaling in y.",
+            "          float_range \"horizontal_radius_multiplier\" : opt // Horizontal radius multiplier.",
+            "          float_range \"vertical_radius_multiplier\" : opt // Vertical radius multiplier.",
+            "          float_range \"floor_level\" : opt // Floor Level.",
             "      }",
             "      object \"minecraft:ore_feature\" : opt",
             "      {",
@@ -272,34 +331,6 @@
             "          string \"exposed_face\" : opt // Defines a block face that is allowed to be exposed to air and/or water. Other faces need to be embedded for blocks to be placed by this feature. Defaults to upwards face.",
             "           \"places_block\" // Reference to the block to be placed.",
             "      }",
-            "      object \"minecraft:rect_layout\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          float \"ratio_of_empty_space\" : opt // Ratio of a Chunk to be filled with empty space rather than features.",
-            "          array \"feature_areas\"[1,18446744073709551615]",
-            "          {",
-            "              object \"<any array element>\" : opt",
-            "              {",
-            "                  feature_reference \"feature\" // Feature to be placed.",
-            "                  array \"area_dimensions\" // Dimensions (size) of the associated Feature.",
-            "                  {",
-            "                      int \"[0..0]\"",
-            "                      int \"[1..1]\"",
-            "                  }",
-            "              }",
-            "          }",
-            "      }",
-            "      object \"minecraft:scan_surface\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          feature_reference \"scan_surface_feature\" // Named reference of feature to be placed",
-            "      }",
             "      object \"minecraft:scatter_feature\" : opt",
             "      {",
             "          object \"description\"",
@@ -309,25 +340,6 @@
             "          feature_reference \"places_feature\" // Named reference of feature to be placed",
             "          bool \"project_input_to_floor\" : opt // If true, snaps the y-value of the scattered position to the terrain heightmap. If false or unset, y-value is unmodified.",
             "          object \"distribution\" // Parameters controlling the scatter of the feature. Object of type ScatterParams",
-            "      }",
-            "      object \"minecraft:sculk_patch_feature\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          array \"can_place_sculk_patch_on\"",
-            "          {",
-            "               \"<any array element>\" : opt",
-            "          }",
-            "           \"central_block\" : opt",
-            "          float \"central_block_placement_chance\"<0.000000-1.000000> : opt",
-            "          int \"cursor_count\"<0-32>",
-            "          int \"charge_amount\"<1-1000>",
-            "          int \"spread_attempts\"<1-64>",
-            "          int \"growth_rounds\"<0-8>",
-            "          int \"spread_rounds\"<0-8>",
-            "          int_range \"extra_growth_chance\" : opt",
             "      }",
             "      object \"minecraft:search_feature\" : opt",
             "      {",
@@ -353,6 +365,17 @@
             "          }",
             "          enumerated_value \"search_axis\"<\"-x\", \"+x\", \"-y\", \"+y\", \"-z\", \"+z\"> // Axis that the search will sweep along through the 'search_volume'",
             "          int \"required_successes\"<1-*> : opt // Number of valid positions the search must find in order to place the referenced feature",
+            "      }",
+            "      object \"minecraft:sequence_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          array \"features\"[1,*] // List of features to be placed in sequence. The output position of the previous feature is used as the input position to the next.",
+            "          {",
+            "              feature_reference \"<any array element>\" : opt",
+            "          }",
             "      }",
             "      object \"minecraft:single_block_feature\" : opt",
             "      {",
@@ -482,9 +505,10 @@
             "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
             "          }",
             "          feature_reference \"feature_to_snap\" // Named reference of feature to be snapped",
-            "          int \"vertical_search_range\" // Range to search for a floor or ceiling for snaping the feature.",
-            "          string \"surface\" : opt // Defines the surface that the y-value of the placement position will be snapped to. Valid values: 'ceiling', 'floor' and 'random_horizontal'",
+            "          int \"search_range\" // Range to search for a valid snapping position for the feature.",
+            "          string \"surface\" : opt // Defines the surface that the y-value of the placement position will be snapped to. Valid values: 'ceiling', 'floor', 'random_horizontal' and `wall`",
             "          bool \"allow_air_placement\" : opt // Determines whether the feature can snap through air blocks. Defaults to true.",
+            "          bool \"allow_non_air_placement\" : opt // Determines whether the feature can snap through non air blocks. Defaults to false, is only used if the snap is started in a block that is not water or air.",
             "          bool \"allow_underwater_placement\" : opt // Determines whether the feature can snap through water blocks. Defaults to false.",
             "          array \"allowed_surface_blocks\" : opt // A list of blocks that the feature is permitted to snap to. Leaving this empty results in the feature snapping to blocks that can provide support for the given face (up/down/horizontal)",
             "          {",
@@ -529,22 +553,6 @@
             "          }",
             "          feature_reference \"feature_to_place\" // Named reference of feature to be placed",
             "          int \"minimum_distance_below_surface\" : opt // The minimum number of blocks required to be between the estimated surface level and a valid place for this feature. Defaults to zero.",
-            "      }",
-            "      object \"minecraft:underwater_cave_carver_feature\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          block_reference \"fill_with\" : opt // Reference to the block to fill the cave with.",
-            "          molang \"width_modifier\" : opt // How many blocks to increase the cave radius by, from the center point of the cave.",
-            "          int \"skip_carve_chance\"<1-*> : opt // The chance to skip doing the carve (1 / value).",
-            "          int \"height_limit\" : opt // The height limit where we attempt to carve.",
-            "          float_range \"y_scale\" : opt // The scaling in y.",
-            "          float_range \"horizontal_radius_multiplier\" : opt // Horizontal radius multiplier.",
-            "          float_range \"vertical_radius_multiplier\" : opt // Vertical radius multiplier.",
-            "          float_range \"floor_level\" : opt // Floor Level.",
-            "          block_reference \"replace_air_with\" : opt // Reference to the block to replace air blocks with.",
             "      }",
             "      object \"minecraft:tree_feature\" : opt",
             "      {",
@@ -1383,6 +1391,22 @@
             "              }",
             "          }",
             "      }",
+            "      object \"minecraft:underwater_cave_carver_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "          block_reference \"fill_with\" : opt // Reference to the block to fill the cave with.",
+            "          molang \"width_modifier\" : opt // How many blocks to increase the cave radius by, from the center point of the cave.",
+            "          int \"skip_carve_chance\"<1-*> : opt // The chance to skip doing the carve (1 / value).",
+            "          int \"height_limit\" : opt // The height limit where we attempt to carve.",
+            "          float_range \"y_scale\" : opt // The scaling in y.",
+            "          float_range \"horizontal_radius_multiplier\" : opt // Horizontal radius multiplier.",
+            "          float_range \"vertical_radius_multiplier\" : opt // Vertical radius multiplier.",
+            "          float_range \"floor_level\" : opt // Floor Level.",
+            "          block_reference \"replace_air_with\" : opt // Reference to the block to replace air blocks with.",
+            "      }",
             "      object \"minecraft:vegetation_patch_feature\" : opt",
             "      {",
             "          object \"description\"",
@@ -1419,29 +1443,6 @@
             "              }",
             "          }",
             "      }",
-            "      object \"minecraft:height_difference_filter_feature\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "          feature_reference \"places_feature\" // Named reference of feature to be placed",
-            "          int \"min_required_upward_height_diff\"<0-*> : opt // Specifies the minimum height difference required upwards.",
-            "          int \"min_required_downward_height_diff\"<0-*> : opt // Specifies the minimum height difference required downwards.",
-            "          int \"max_allowed_upward_height_diff\"<0-*> : opt // Specifies the maximum height difference allowed upwards.",
-            "          int \"max_allowed_downward_height_diff\"<0-*> : opt // Specifies the maximum height difference allowed downwards.",
-            "          int \"search_radius\"<0-*> // 'search_radius' specifies the the length in each cardinal direction the filter will check for blocks against the given differences.",
-            "      }",
-            "      object \"minecraft:horizontal_tree_decoration_feature\" : opt",
-            "      {",
-            "          object \"description\"",
-            "          {",
-            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
-            "          }",
-            "           \"places_block\" // Block to place.",
-            "          bool \"allow_adjacent\" : opt // Whether neighbors of the same block type are allowed. Will result in blocks being placed with at least one block gap when set to false",
-            "          bool \"bark_side_only\" : opt // If true, will never place the block on the 'open' side of a block (imagine the block is a fallen tree trunk).",
-            "      }",
             "      object \"minecraft:multi_block_feature\" : opt",
             "      {",
             "          object \"description\"",
@@ -1456,6 +1457,31 @@
             "               \"<any array element>\" : opt // A list of blocks that may be replaced during placement. Omit this field to allow any block to be replaced, except other multi-blocks.",
             "          }",
             "      }",
+            "      object \"minecraft:multipart_block_column_feature\" : opt",
+            "      {",
+            "          object \"description\"",
+            "          {",
+            "              string \"identifier\" // The name of this feature in the form 'namespace_name:feature_name'. 'feature_name' must match the filename.",
+            "          }",
+            "           \"tip_block\" // The topmost block of the column.",
+            "           \"frustum_block\" // The second topmost block below the tip if the column is at least two blocks",
+            "           \"middle_block\" // The block that is placed between the base and frustum blocks when the column is at least four blocks",
+            "           \"base_block\" // The bottom-most block when the column is at least three blocks",
+            "          int_range \"height_range\" : opt // The range of blocks the column can be high",
+            "          array \"weighted_heights\" : opt",
+            "          {",
+            "              weighted_choice \"<any array element>\" : opt // Weighted list of heights",
+            "          }",
+            "          string \"direction\" : opt // The direction of the column. If omitted then it will default to 'UP'",
+            "          array \"may_place_on\" : opt",
+            "          {",
+            "               \"<any array element>\"",
+            "          }",
+            "          array \"may_replace\" : opt",
+            "          {",
+            "               \"<any array element>\" // A list of blocks that may be replaced during placement. Omit this field to allow any block to be replaced.",
+            "          }",
+            "      }",
             "  }"
           ]
         }
@@ -1465,67 +1491,6 @@
       "header_level": 1,
       "name": "Supported features",
       "nodes": [
-        {
-          "description": [
-            "'minecraft:aggregate_feature' places a collection of features in an arbitary order. All features in the collection use the same input position. Features should not depend on each other, as there is no guarantee on the order the features will be placed.",
-            "Succeeds if: At lease one feature is placed successfully.",
-            "Fails if: All features fail to be placed."
-          ],
-          "examples": [
-            {
-              "name": "Example use: scattering multiple different plants around a monument.",
-              "text": [
-                "{",
-                "  \"format_version\": \"1.13.0\",",
-                "  \"minecraft:aggregate_feature\": {",
-                "    \"description\": {",
-                "      \"identifier\": \"example:monument_with_flowers_feature\"",
-                "    },",
-                "    \"features\": [",
-                "      \"example:monument_feature\",",
-                "      \"example:scatter_white_flowers_feature\",",
-                "      \"example:scatter_yellow_flower_feature\"",
-                "    ]",
-                "  }",
-                "}"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "header_level": 2,
-          "name": "minecraft:aggregate_feature",
-          "show_in_index": true
-        },
-        {
-          "description": [
-            "'minecraft:sequence_feature' places a collection of features sequentially, in the order they appear in data. The output position of the previous feature is used as the input position for the next. For example, a tree feature is placed at (0, 0, 0) and places blocks up to (0, 10, 0). The next feature in the sequence begins at (0, 10, 0).",
-            "Succeeds if: All features in the sequence are successfully placed.",
-            "Fails if: Any feature in the sequence fails to be placed. Features that have not yet been placed at the time of failure are skipped."
-          ],
-          "examples": [
-            {
-              "name": "Example use: Scattering fruit throughout the canopy of a tree.",
-              "text": [
-                "{",
-                "  \"format_version\": \"1.13.0\",",
-                "  \"minecraft:sequence_feature\": {",
-                "    \"description\": {",
-                "      \"identifier\": \"example:oak_tree_then_apples_feature\"",
-                "    },",
-                "    \"features\": [",
-                "      \"example:oak_tree_feature\",",
-                "      \"example:scatter_apples_feature\"",
-                "    ]",
-                "  }",
-                "}"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "header_level": 2,
-          "name": "minecraft:sequence_feature",
-          "show_in_index": true
-        },
         {
           "description": [
             "'minecraft:beards_and_shavers' will build a 'beard' or 'shave' out space so as to provide a clear space for a feature to place.",
@@ -1559,6 +1524,96 @@
         },
         {
           "description": [
+            "'minecraft:rect_layout' scans the surface of a Chunk, calling place() on the surface of each block column.",
+            "Succeeds if: A Feature is successfully placed within a Chunk.",
+            "Fails if: No Feature could be placed within a Chunk."
+          ],
+          "examples": [
+            {
+              "name": "Example use: Scans the surface of a chunk and places a feature if able",
+              "text": [
+                "\t\t\t{",
+                "\t\t\t\t\"ratio_of_empty_space\": 0.5,",
+                "\t\t\t\t\"feature_areas\":[",
+                "\t\t\t\t\t{",
+                "\t\t\t\t\t\t\"feature\": \"minecraft:tree\",",
+                "\t\t\t\t\t\t\"area_dimensions\": [Width,Height]",
+                "\t\t\t\t\t},",
+                "\t\t\t\t\t{",
+                "\t\t\t\t\t\t\"feature\": \"minecraft:tree2\",",
+                "\t\t\t\t\t\t\"area_dimensions\": [Width,Height]",
+                "\t\t\t\t\t}",
+                "\t\t\t\t]",
+                "\t\t\t}",
+                "\t\t"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:rect_layout",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:scan_surface' scans the surface of a Chunk, calling place() on the surface of each block column.",
+            "Succeeds if: A Feature was successfully placed during the scan.",
+            "Fails if: No Feature was placed during the course of the scan."
+          ],
+          "examples": [
+            {
+              "name": "Example use: Scans the surface of a chunk and places a feature if able",
+              "text": [
+                "{\"scan_surface_feature\": \"example:apple_feature\"}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:scan_surface",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "Feature type 'minecraft:sculk_patch_feature' has not yet been documented."
+          ],
+          "header_level": 2,
+          "name": "minecraft:sculk_patch_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:aggregate_feature' places a collection of features in an arbitary order. All features in the collection use the same input position. Features should not depend on each other, as there is no guarantee on the order the features will be placed.",
+            "Succeeds if: At lease one feature is placed successfully.",
+            "Fails if: All features fail to be placed."
+          ],
+          "examples": [
+            {
+              "name": "Example use: scattering multiple different plants around a monument.",
+              "text": [
+                "{",
+                "  \"format_version\": \"1.13.0\",",
+                "  \"minecraft:aggregate_feature\": {",
+                "    \"description\": {",
+                "      \"identifier\": \"example:monument_with_flowers_feature\"",
+                "    },",
+                "    \"features\": [",
+                "      \"example:monument_feature\",",
+                "      \"example:scatter_white_flowers_feature\",",
+                "      \"example:scatter_yellow_flower_feature\"",
+                "    ]",
+                "  }",
+                "}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:aggregate_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
             "'minecraft:cave_carver_feature' carves a cave through the world in the current chunk, and in every chunk around the current chunk in an 8 radial pattern.This feature will also only work when placed specifically in the pass \"pregeneration_pass\"."
           ],
           "examples": [
@@ -1586,23 +1641,37 @@
         },
         {
           "description": [
-            "'minecraft:conditional_list' Places the first suitable feature within a collection.",
+            "'minecraft:conditional_list' places the first suitable feature within a collection.",
             "These conditional features will be evaluated in order.",
             "Succeeds if: A condition is successfully resolved.",
             "Fails if: No condition is successfully resolved."
           ],
           "examples": [
             {
-              "name": "Example use: assigning a feature to an expression",
+              "name": "Example use: selecting a feature based on biome.",
               "text": [
-                "\"conditional_features\" : [",
-                "\t\t\t\t\t\t{ ",
-                "\t\t\t\t\t\t\t\"places_feature\" : \"minecraft:some_feature_or_other\",",
-                "\t\t\t\t\t\t\t\"condition\" : \"query.check_some_block_property(),",
-                "\t\t\t\t\t\t},",
-                "\t\t\t\t\t],",
-                "\t\t\t\t\t\"early_out_scheme\": \"placement_success\"",
-                "\t\t\t\t"
+                "{",
+                "  \"format_version\": \"1.26.50\",",
+                "  \"minecraft:conditional_list\": {",
+                "    \"description\": {",
+                "      \"identifier\": \"minecraft:conditional_feature\"",
+                "    },",
+                "    \"conditional_features\": [",
+                "      {",
+                "        \"places_feature\": \"minecraft:biome_a_feature\",",
+                "        \"condition\": \"query.has_biome_tag('biome_a', variable.worldx, variable.worldy, variable.worldz)\"",
+                "      },",
+                "      {",
+                "        \"places_feature\": \"minecraft:biome_b_feature\",",
+                "        \"condition\": \"query.has_biome_tag('biome_b', variable.worldx, variable.worldy, variable.worldz)\"",
+                "      },",
+                "      {",
+                "        \"places_feature\": \"minecraft:fallback_feature\"",
+                "      }",
+                "    ],",
+                "    \"early_out_scheme\": \"condition_success\"",
+                "  }",
+                "}"
               ]
             }
           ],
@@ -1735,28 +1804,59 @@
         },
         {
           "description": [
-            "'minecraft:nether_cave_carver_feature' carves a cave through the Nether in the current chunk, and in every chunk around the current chunk in an 8 radial pattern.This feature will also only work when placed specifically in the pass \"pregeneration_pass\"."
+            "'minecraft:height_difference_filter_feature' filters away positions based on the heightmap around the placement position.The filter will check for surface blocks in each cardinal direction within the `search_radius`. Each block will be checked against all given conditions."
           ],
           "examples": [
             {
-              "name": "Example use: Carve nether caves normally.",
+              "name": "Example use:",
               "text": [
                 "{",
-                "\t\t\t\t\"format_version\": \"1.13.0\",",
-                "\t\t\t\t\"minecraft:nether_cave_carver_feature\": {",
+                "\t\t\t\t\"format_version\": \"1.21.30\",",
+                "\t\t\t\t\"minecraft:height_difference_filter_feature\": {",
                 "\t\t\t\t\t\"description\": {",
-                "\t\t\t\t\t\t\"identifier\": \"example:nether_cave_carver_feature\"",
+                "\t\t\t\t\t\t\"identifier\": \"example:dripstone_cluster_feature_close_to_wall_on_flat_ground\"",
                 "\t\t\t\t\t},",
-                "\t\t\t\t\t\"fill_with\": \"minecraft:air\"",
-                "\t\t\t\t\t\"width_modifier\": 0.0",
+                "\t\t\t\t\t\"places_feature\": \"minecraft:dripstone_cluster_feature\",",
+                "\t\t\t\t\t\"min_required_upward_height_diff\": 10,",
+                "\t\t\t\t\t\"max_allowed_downward_height_diff\": 2,",
+                "\t\t\t\t\t\"search_radius\": 5",
                 "\t\t\t\t}",
                 "\t\t\t}"
               ]
             }
           ],
           "examples_print_mode": "code",
+          "examples_title": "Dripstone cluster only close to wall on flat ground.",
           "header_level": 2,
-          "name": "minecraft:nether_cave_carver_feature",
+          "name": "minecraft:height_difference_filter_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:horizontal_tree_decoration_feature' places a block in a random horizontal facing direction"
+          ],
+          "examples": [
+            {
+              "name": "Example use:",
+              "text": [
+                "{",
+                "\t\t\t\t\t\t\"format_version\": \"1.26.40\",",
+                "\t\t\t\t\t\t\"minecraft:horizontal_tree_decoration_feature\": {",
+                "\t\t\t\t\t\t\t\"description\": {",
+                "\t\t\t\t\t\t\t\t\"identifier\": \"example:shelf_mushroom_no_adjacent_mushrooms_only_on_log_side\"",
+                "\t\t\t\t\t\t\t},",
+                "\t\t\t\t\t\t\t\"places_block\": \"minecraft:shelf_mushroom\",",
+                "\t\t\t\t\t\t\t\"allow_adjacent\": false,",
+                "\t\t\t\t\t\t\t\"bark_side_only\": true",
+                "\t\t\t\t\t\t}",
+                "\t\t\t\t\t}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "examples_title": "Place block in a random horizontal direction, disallowing adjacent neighbors and only placing the block on the bark side of a log",
+          "header_level": 2,
+          "name": "minecraft:horizontal_tree_decoration_feature",
           "show_in_index": true
         },
         {
@@ -1793,6 +1893,32 @@
           "examples_print_mode": "code",
           "header_level": 2,
           "name": "minecraft:multiface_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:nether_cave_carver_feature' carves a cave through the Nether in the current chunk, and in every chunk around the current chunk in an 8 radial pattern.This feature will also only work when placed specifically in the pass \"pregeneration_pass\"."
+          ],
+          "examples": [
+            {
+              "name": "Example use: Carve nether caves normally.",
+              "text": [
+                "{",
+                "\t\t\t\t\"format_version\": \"1.13.0\",",
+                "\t\t\t\t\"minecraft:nether_cave_carver_feature\": {",
+                "\t\t\t\t\t\"description\": {",
+                "\t\t\t\t\t\t\"identifier\": \"example:nether_cave_carver_feature\"",
+                "\t\t\t\t\t},",
+                "\t\t\t\t\t\"fill_with\": \"minecraft:air\"",
+                "\t\t\t\t\t\"width_modifier\": 0.0",
+                "\t\t\t\t}",
+                "\t\t\t}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:nether_cave_carver_feature",
           "show_in_index": true
         },
         {
@@ -1894,57 +2020,6 @@
         },
         {
           "description": [
-            "'minecraft:rect_layout' scans the surface of a Chunk, calling place() on the surface of each block column.",
-            "Succeeds if: A Feature is successfully placed within a Chunk.",
-            "Fails if: No Feature could be placed within a Chunk."
-          ],
-          "examples": [
-            {
-              "name": "Example use: Scans the surface of a chunk and places a feature if able",
-              "text": [
-                "\t\t\t{",
-                "\t\t\t\t\"ratio_of_empty_space\": 0.5,",
-                "\t\t\t\t\"feature_areas\":[",
-                "\t\t\t\t\t{",
-                "\t\t\t\t\t\t\"feature\": \"minecraft:tree\",",
-                "\t\t\t\t\t\t\"area_dimensions\": [Width,Height]",
-                "\t\t\t\t\t},",
-                "\t\t\t\t\t{",
-                "\t\t\t\t\t\t\"feature\": \"minecraft:tree2\",",
-                "\t\t\t\t\t\t\"area_dimensions\": [Width,Height]",
-                "\t\t\t\t\t}",
-                "\t\t\t\t]",
-                "\t\t\t}",
-                "\t\t"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "header_level": 2,
-          "name": "minecraft:rect_layout",
-          "show_in_index": true
-        },
-        {
-          "description": [
-            "'minecraft:scan_surface' scans the surface of a Chunk, calling place() on the surface of each block column.",
-            "Succeeds if: A Feature was successfully placed during the scan.",
-            "Fails if: No Feature was placed during the course of the scan."
-          ],
-          "examples": [
-            {
-              "name": "Example use: Scans the surface of a chunk and places a feature if able",
-              "text": [
-                "{\"scan_surface_feature\": \"example:apple_feature\"}"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "header_level": 2,
-          "name": "minecraft:scan_surface",
-          "show_in_index": true
-        },
-        {
-          "description": [
             "'minecraft:scatter_feature' scatters a feature throughout a chunk. The 'x', 'y', and 'z' fields are per-coordinate parameters. Note that coordinates represent an offset from the input position, not an absolute position. Coordinates may be a single value, a random distribution, or Molang expression that resolves to a numeric value. The 'coordinate_eval_order' field is provided for finer control of coordinate resolution (particularly when using the 'grid' distribution). 'iterations' controls how many individual placements should occur if the 'scatter_chance' check succeeds. The 'scatter_chance' check happens once, so either all placements will run or none will.",
             "Succeeds if: At least one feature placement succeeds.",
             "Fails if: All feature placements fail."
@@ -1985,14 +2060,6 @@
         },
         {
           "description": [
-            "Feature type 'minecraft:sculk_patch_feature' has not yet been documented."
-          ],
-          "header_level": 2,
-          "name": "minecraft:sculk_patch_feature",
-          "show_in_index": true
-        },
-        {
-          "description": [
             "'minecraft:search_feature' sweeps a volume searching for a valid placement location for its referenced feature. The 'search_volume' field specifies the axis-aligned bounding box that defines the boundaries of the search. The search sweeps along the axis defined by the 'search_axis' field, layer by layer. For example, if 'search_axis' = '-x', blocks with greater x values will be checked before blocks with lower x values. Each layer is searched from the bottom-left to the top-right before moving to the next layer along the axis. By default, only one valid position must be found, but this can be altered by specifying the 'required_successes' field. If fewer than the required successes are found, no placement will occur.",
             "Succeeds if: The number of valid positions is equal to the value specified by 'required_successes'.",
             "Fails if: The number of valid positions is less than the value specified by 'required_successes'."
@@ -2022,6 +2089,36 @@
           "examples_print_mode": "code",
           "header_level": 2,
           "name": "minecraft:search_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:sequence_feature' places a collection of features sequentially, in the order they appear in data. The output position of the previous feature is used as the input position for the next. For example, a tree feature is placed at (0, 0, 0) and places blocks up to (0, 10, 0). The next feature in the sequence begins at (0, 10, 0).",
+            "Succeeds if: All features in the sequence are successfully placed.",
+            "Fails if: Any feature in the sequence fails to be placed. Features that have not yet been placed at the time of failure are skipped."
+          ],
+          "examples": [
+            {
+              "name": "Example use: Scattering fruit throughout the canopy of a tree.",
+              "text": [
+                "{",
+                "  \"format_version\": \"1.13.0\",",
+                "  \"minecraft:sequence_feature\": {",
+                "    \"description\": {",
+                "      \"identifier\": \"example:oak_tree_then_apples_feature\"",
+                "    },",
+                "    \"features\": [",
+                "      \"example:oak_tree_feature\",",
+                "      \"example:scatter_apples_feature\"",
+                "    ]",
+                "  }",
+                "}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:sequence_feature",
           "show_in_index": true
         },
         {
@@ -2081,20 +2178,20 @@
         },
         {
           "description": [
-            "'minecraft:snap_to_surface_feature' snaps the y-value of a feature placement pos to the floor or the ceiling within the provided 'vertical_search_range'. The placement biome is preserved. If the snap position goes outside of the placement biome, placement will fail."
+            "'minecraft:snap_to_surface_feature' snaps the position of a feature placement to the floor, ceiling or wall within the provided 'search_range'.The placement biome is preserved. If the snap position goes outside of the placement biome, placement will fail."
           ],
           "examples": [
             {
               "name": "Example use: Define a feature that snaps the 'cave_vine_feature' to the ceiling.",
               "text": [
                 "{",
-                "\t\t\t  \"format_version\": \"1.13.0\",",
+                "\t\t\t  \"format_version\": \"1.26.50\",",
                 "\t\t\t  \"minecraft:snap_to_surface_feature\": {",
                 "\t\t\t\t\"description\": {",
                 "\t\t\t\t  \"identifier\": \"example:cave_vine_snapped_to_ceiling_feature\"",
                 "\t\t\t\t},",
                 "\t\t\t\t\"feature_to_snap\":  \"example:cave_vine_feature\",",
-                "\t\t\t\t\"vertical_search_range\":  12,",
+                "\t\t\t\t\"search_range\":  12,",
                 "\t\t\t\t\"surface\": \"ceiling\",",
                 "\t\t\t\t\"allowed_surface_blocks\": {",
                 "\t\t\t\t  {",
@@ -2173,34 +2270,6 @@
           "examples_print_mode": "code",
           "header_level": 2,
           "name": "minecraft:surface_relative_threshold_feature",
-          "show_in_index": true
-        },
-        {
-          "description": [
-            "'minecraft:underwater_cave_carver_feature' carves a cave through the world in the current chunk, and in every chunk around the current chunk in an 8 radial pattern.This feature will specifically target creating caves only below sea level.",
-            "This feature will also only work when placed specifically in the pass \"pregeneration_pass\"."
-          ],
-          "examples": [
-            {
-              "name": "Example use: Carve caves normally.",
-              "text": [
-                "{",
-                "\t\t\t\t\"format_version\": \"1.13.0\",",
-                "\t\t\t\t\"minecraft:underwater_cave_carver_feature\": {",
-                "\t\t\t\t\t\"description\": {",
-                "\t\t\t\t\t\t\"identifier\": \"example:underground_cave_carver_feature\"",
-                "\t\t\t\t\t},",
-                "\t\t\t\t\t\"fill_with\": \"minecraft:water\"",
-                "\t\t\t\t\t\"width_modifier\": 0.0,",
-                "\t\t\t\t\t\"replace_air_with\": \"minecraft:flowing_water\"",
-                "\t\t\t\t}",
-                "\t\t\t}"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "header_level": 2,
-          "name": "minecraft:underwater_cave_carver_feature",
           "show_in_index": true
         },
         {
@@ -2323,6 +2392,34 @@
         },
         {
           "description": [
+            "'minecraft:underwater_cave_carver_feature' carves a cave through the world in the current chunk, and in every chunk around the current chunk in an 8 radial pattern.This feature will specifically target creating caves only below sea level.",
+            "This feature will also only work when placed specifically in the pass \"pregeneration_pass\"."
+          ],
+          "examples": [
+            {
+              "name": "Example use: Carve caves normally.",
+              "text": [
+                "{",
+                "\t\t\t\t\"format_version\": \"1.13.0\",",
+                "\t\t\t\t\"minecraft:underwater_cave_carver_feature\": {",
+                "\t\t\t\t\t\"description\": {",
+                "\t\t\t\t\t\t\"identifier\": \"example:underground_cave_carver_feature\"",
+                "\t\t\t\t\t},",
+                "\t\t\t\t\t\"fill_with\": \"minecraft:water\"",
+                "\t\t\t\t\t\"width_modifier\": 0.0,",
+                "\t\t\t\t\t\"replace_air_with\": \"minecraft:flowing_water\"",
+                "\t\t\t\t}",
+                "\t\t\t}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:underwater_cave_carver_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
             "'minecraft:vegetation_patch_feature' scatters a vegetation feature in an area. The vegetation feature’s appearance can be modified by adjusting the radius and depth that it will generate.",
             "Succeeds if: At least one ground base block was placed.",
             "Fails if: No ground base blocks were placed."
@@ -2410,63 +2507,6 @@
         },
         {
           "description": [
-            "'minecraft:height_difference_filter_feature' filters away positions based on the heightmap around the placement position.The filter will check for surface blocks in each cardinal direction within the `search_radius`. Each block will be checked against all given conditions."
-          ],
-          "examples": [
-            {
-              "name": "Example use:",
-              "text": [
-                "{",
-                "\t\t\t\t\"format_version\": \"1.21.30\",",
-                "\t\t\t\t\"minecraft:height_difference_filter_feature\": {",
-                "\t\t\t\t\t\"description\": {",
-                "\t\t\t\t\t\t\"identifier\": \"example:dripstone_cluster_feature_close_to_wall_on_flat_ground\"",
-                "\t\t\t\t\t},",
-                "\t\t\t\t\t\"places_feature\": \"minecraft:dripstone_cluster_feature\",",
-                "\t\t\t\t\t\"min_required_upward_height_diff\": 10,",
-                "\t\t\t\t\t\"max_allowed_downward_height_diff\": 2,",
-                "\t\t\t\t\t\"search_radius\": 5",
-                "\t\t\t\t}",
-                "\t\t\t}"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "examples_title": "Dripstone cluster only close to wall on flat ground.",
-          "header_level": 2,
-          "name": "minecraft:height_difference_filter_feature",
-          "show_in_index": true
-        },
-        {
-          "description": [
-            "'minecraft:horizontal_tree_decoration_feature' places a block in a random horizontal facing direction"
-          ],
-          "examples": [
-            {
-              "name": "Example use:",
-              "text": [
-                "{",
-                "\t\t\t\t\t\t\"format_version\": \"1.26.40\",",
-                "\t\t\t\t\t\t\"minecraft:horizontal_tree_decoration_feature\": {",
-                "\t\t\t\t\t\t\t\"description\": {",
-                "\t\t\t\t\t\t\t\t\"identifier\": \"example:shelf_mushroom_no_adjacent_mushrooms_only_on_log_side\"",
-                "\t\t\t\t\t\t\t},",
-                "\t\t\t\t\t\t\t\"places_block\": \"minecraft:shelf_mushroom\",",
-                "\t\t\t\t\t\t\t\"allow_adjacent\": false,",
-                "\t\t\t\t\t\t\t\"bark_side_only\": true",
-                "\t\t\t\t\t\t}",
-                "\t\t\t\t\t}"
-              ]
-            }
-          ],
-          "examples_print_mode": "code",
-          "examples_title": "Place block in a random horizontal direction, disallowing adjacent neighbors and only placing the block on the bark side of a log",
-          "header_level": 2,
-          "name": "minecraft:horizontal_tree_decoration_feature",
-          "show_in_index": true
-        },
-        {
-          "description": [
             "'minecraft:multi_block_feature' places a multi-block in the world as a biome decoration feature. A multi-block must be defined with the 'minecraft:multi_block' trait. The required 'places_block' field supports a single block, it must be a multi-block and it must be be the first part of a multi-block i.e. the 'minecraft:multi_block_part' state must have a value of 0. The optional 'may_replace' field is an allowlists which specifies what blocks each part of the multi-block can replace. If this field is omitted, the multi-block parts can be placed anywhere. However, they may not replace other multi-block parts. The optional 'randomize_rotation' field will randomize the multi-blocks cardinal orientation. If this field is enabled then the multi-block must have the cardinal direction state. The optional 'enforce_placement_rules' field will check if each part of the multi-block may be placed on top of existing blocks. If the multi-block defines a 'minecraft:placement_filter' component then each part is also checked against the blocks defined in that component.",
             "Succeeds if: all parts of the multi-block are successfully placed in the world.",
             "Fails if: The any block part fails to be placed or fails one of the optional checks above."
@@ -2497,6 +2537,40 @@
           "examples_print_mode": "code",
           "header_level": 2,
           "name": "minecraft:multi_block_feature",
+          "show_in_index": true
+        },
+        {
+          "description": [
+            "'minecraft:multipart_block_column_feature' places blocks in an ordered column consisting of 1-4 parts. When the column consists of one block, only the 'tip_block' is placed. When the column consists of two blocks, a 'frustum_block' is placed with a 'tip_block' above it. For a three block column, a 'base_block' is placed at the bottom, and followed by a 'frustum_block' and a 'tip_block'. For columns larger than three blocks, the 'middle_block' is used as padding between the 'base_block' and the 'frustum_block'. 'height_range' specifies the range of blocks the column can be in any direction. 'weighted_heights' specifies a list of possible weighted lengths the column can be in any direction. Exactly one of 'height_range' or 'weighted_heights' has to be specified. 'direction' specifies the direction of the column. This can be any direction. 'may_place_on' can be used to limit what blocks a column can be placed upon. If omitted a column can be placed anywhere"
+          ],
+          "examples": [
+            {
+              "name": "Example use:",
+              "text": [
+                "{",
+                "\t\"format_version\": \"1.13.0\",",
+                "\tminecraft:multipart_block_column_feature: {",
+                "\t\t\"description\": {",
+                "\t\t\t\"identifier\": \"example:ice_cream_lolly\"",
+                "\t\t},",
+                "\t\t\"tip_block\": \"minecraft:red_wool\",",
+                "\t\t\"frustum_block\": \"minecraft:yellow_wool\",",
+                "\t\t\"middle_block\": \"minecraft:green_wool\",",
+                "\t\t\"base_block\": \"minecraft:oak_planks\",",
+                "\t\t\"height_range\": { \"range_min\": 4, \"range_max\": 9 },",
+                "\t\t\"direction\": \"UP\",",
+                "\t\t\"may_place_on\": [",
+                "\t\t\t\"minecraft:ice\",",
+                "\t\t\t\"minecraft:snow\"",
+                "\t\t]",
+                "\t}",
+                "}"
+              ]
+            }
+          ],
+          "examples_print_mode": "code",
+          "header_level": 2,
+          "name": "minecraft:multipart_block_column_feature",
           "show_in_index": true
         }
       ],

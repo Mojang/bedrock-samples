@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.30",
+  "format_version": "1.26.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:nautilus",
@@ -7,8 +7,18 @@
       "is_spawnable": true,
       "is_summonable": true
     },
-
     "components": {
+      "minecraft:ambient_sound_interval": {
+        "event_name": "ambient",
+        "event_names": [
+          {
+            "condition": "query.head_is_in_water",
+            "event_name": "ambient.in.water"
+          }
+        ],
+        "range": 16.0,
+        "value": 8.0
+      },
       "minecraft:offspring": {
         "offspring_pairs": {
           "minecraft:nautilus": "minecraft:nautilus"
@@ -46,8 +56,7 @@
       "minecraft:is_hidden_when_invisible": {},
       "minecraft:nameable": {},
       "minecraft:home": {}, // This component needs to exist to allow 'set_home_position' in events
-      "minecraft:physics": {
-      },
+      "minecraft:physics": {},
       "minecraft:pushable_by_entity": {
         "presets": [
           {
@@ -72,12 +81,12 @@
                 }
               ]
             },
-            "push_mode": "none"
+            "push_mode": "none",
+            "require_collision_overlap": false
           }
         ]
       },
-      "minecraft:pushable_by_block": {
-      },
+      "minecraft:pushable_by_block": {},
       "minecraft:type_family": {
         "family": [ "aquatic", "nautilus", "mob" ]
       },
@@ -93,7 +102,8 @@
         "can_swim": true,
         "can_walk": false,
         "can_breach": false,
-        "can_sink": false
+        "can_sink": false,
+        "using_door_annotation": true
       },
       "minecraft:movement.sway": {
         "sway_amplitude": 0.0
@@ -130,7 +140,6 @@
         "success_rate": 0.1
       }
     },
-
     "component_groups": {
       "minecraft:nautilus_baby": {
         "minecraft:collision_box": {
@@ -236,8 +245,7 @@
           },
           "require_tame": true
         },
-        "minecraft:leashable_to": {
-        },
+        "minecraft:leashable_to": {},
         "minecraft:behavior.breed": {
           "priority": 3,
           "speed_multiplier": 1.0
@@ -259,7 +267,11 @@
             {
               "filters": {
                 "any_of": [
-                  { "test": "is_family", "subject": "other", "value": "pufferfish" }
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "pufferfish"
+                  }
                 ]
               },
               "max_dist": 35
@@ -316,8 +328,7 @@
             "event": "minecraft:on_stop_tempting"
           }
         },
-        "minecraft:is_tamed": {
-        },
+        "minecraft:is_tamed": {},
         "minecraft:healable": {
           "items": [
             {
@@ -424,9 +435,24 @@
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "operator": "not", "value": "saddle" },
-                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "saddle" },
-                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "operator": "not",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
                   ]
                 },
                 "target": "self"
@@ -438,9 +464,24 @@
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test": "has_equipment_tag", "subject": "self", "domain": "inventory", "operator": "not", "value": "minecraft:nautilus_armor" },
-                    { "test": "has_equipment_tag", "subject": "player", "domain": "hand", "value": "minecraft:nautilus_armor" },
-                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                    {
+                      "test": "has_equipment_tag",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "operator": "not",
+                      "value": "minecraft:nautilus_armor"
+                    },
+                    {
+                      "test": "has_equipment_tag",
+                      "subject": "player",
+                      "domain": "hand",
+                      "value": "minecraft:nautilus_armor"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
                   ]
                 },
                 "target": "self"
@@ -452,10 +493,29 @@
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
-                    { "test": "has_equipment_tag", "subject": "self", "domain": "inventory", "value": "minecraft:nautilus_armor" },
-                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
-                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment_tag",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "minecraft:nautilus_armor"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
                   ]
                 }
               },
@@ -463,17 +523,36 @@
               "drop_item_slot": "1",
               "drop_item_y_offset": 1.1,
               "interact_text": "action.interact.removenautilusarmor",
-              "play_sounds": "armor.unequip_generic",
+              "play_sounds": [ "armor.unequip_generic" ],
               "vibration": "shear"
             },
             {
               "on_interact": {
                 "filters": {
                   "all_of": [
-                    { "test": "rider_count", "subject": "self", "operator": "equals", "value": 0 },
-                    { "test": "has_equipment", "subject": "self", "domain": "inventory", "value": "saddle" },
-                    { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "shears" },
-                    { "test": "is_sneak_held", "subject": "other", "value": false }
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
                   ]
                 },
                 "target": "self"
@@ -481,7 +560,7 @@
               "hurt_item": 1,
               "drop_item_slot": "0",
               "interact_text": "action.interact.removesaddle",
-              "play_sounds": "unsaddle",
+              "play_sounds": [ "unsaddle" ],
               "vibration": "shear"
             }
           ]
@@ -509,8 +588,15 @@
           "effect_time": 2,
           "entity_filter": {
             "all_of": [
-              { "test": "is_family", "subject": "other", "value": "player" },
-              { "test": "is_riding_self", "subject": "other" }
+              {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              {
+                "test": "is_riding_self",
+                "subject": "other"
+              }
             ]
           }
         },
@@ -525,8 +611,7 @@
           "can_dash_underwater": true,
           "direction": "passenger"
         },
-        "minecraft:underwater_mount_breathing": {
-        },
+        "minecraft:underwater_mount_breathing": {},
         "minecraft:environment_sensor": {
           "triggers": [
             {
@@ -540,8 +625,7 @@
         }
       },
       "minecraft:nautilus_tame_saddled_on_ground": {
-        "minecraft:input_ground_controlled": {
-        },
+        "minecraft:input_ground_controlled": {},
         "minecraft:dash_action": {
           "cooldown_time": 2,
           "horizontal_momentum": 42.0,
@@ -561,8 +645,7 @@
         }
       },
       "minecraft:nautilus_tame_saddled": {
-        "minecraft:is_saddled": {
-        },
+        "minecraft:is_saddled": {},
         "minecraft:home": {
           "restriction_radius": 16,
           "restriction_type": "random_movement"
@@ -594,7 +677,7 @@
         }
       },
       "minecraft:nautilus_wild_adult_angry": {
-        "minecraft:angry": {  
+        "minecraft:angry": {
           "duration": 20,
           "broadcast_anger": false,
           "broadcast_range": 16,
@@ -618,7 +701,6 @@
         }
       }
     },
-
     "events": {
       "minecraft:entity_spawned": {
         "randomize": [
@@ -719,7 +801,10 @@
         "sequence": [
           {
             "filters": { // Make sure Nautilus switches to player-controlled if saddle is added while player is riding
-              "test": "rider_count", "subject": "self", "operator": ">", "value": 0
+              "test": "rider_count",
+              "subject": "self",
+              "operator": ">",
+              "value": 0
             },
             "trigger": "minecraft:switch_to_player_controlled"
           },
@@ -784,7 +869,10 @@
         "sequence": [
           {
             "filters": { // Make sure dismount event is played if saddle is removed while player is riding
-              "test": "rider_count", "subject": "self", "operator": ">", "value": 0
+              "test": "rider_count",
+              "subject": "self",
+              "operator": ">",
+              "value": 0
             },
             "trigger": "minecraft:on_dismount"
           },

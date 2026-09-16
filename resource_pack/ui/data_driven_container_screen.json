@@ -1,0 +1,169 @@
+/********************************************************
++*   (c) Mojang. All rights reserved                       *
++*   (c) Microsoft. All rights reserved.                   *
++*********************************************************/
+
+{
+  "namespace": "data_driven_container",
+
+  ////---------------------------------------------------------------------------
+  //// #region slot grid
+  ////---------------------------------------------------------------------------
+
+  // `container_items` is the collection name for ContainerEnumName::LevelEntityContainer, which is what
+  // ChestContainerManagerModel registers for a data driven block container. `$container_size` is supplied by
+  // ChestScreenController::addStaticScreenVars from the live container, so the grid holds exactly slot_count
+  // cells and the last row is left ragged rather than padded out with unusable ones.
+  //
+  // The width is pinned to nine 18px slots so `grid_rescaling_type` always wraps at nine columns, and the
+  // height is "default" so the grid is exactly as tall as the rows it needs.
+  "item_grid": {
+    "type": "grid",
+    "grid_rescaling_type": "horizontal",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "size": [ 162, "default" ],
+    "maximum_grid_items": "$container_size",
+    "collection_name": "container_items",
+    "grid_item_template": "chest.chest_grid_item",
+    "$item_collection_name": "container_items"
+  },
+
+  //// #endregion
+
+  ////---------------------------------------------------------------------------
+  //// #region desktop panel
+  ////---------------------------------------------------------------------------
+
+  "container_label@chest.chest_label": {},
+
+  "panel_top_half": {
+    "type": "panel",
+    "size": "$container_top_half_size",
+    "offset": [ 0, 11 ],
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "controls": [
+      { "container_label@data_driven_container.container_label": {} },
+      {
+        "item_grid@data_driven_container.item_grid": {
+          "offset": [ 7, 10 ]
+        }
+      }
+    ]
+  },
+
+  "selected_item_details@common.selected_item_details": {
+    "offset": [ 0, 0 ]
+  },
+
+  // The panel is exactly tall enough for the rows the container needs, so there is no empty area below the
+  // slots and no scrolling. `ChestScreenController::addStaticScreenVars` sets exactly one of the
+  // `$container_rows_*` flags; the sizes here follow the vanilla chest panels, where a three row chest is
+  // 176x166 and a six row chest is 176x220, so each extra row adds 18 pixels.
+  "desktop_panel": {
+    "type": "panel",
+    "variables": [
+      {
+        "requires": "$container_rows_1",
+        "$container_root_size": [ 176, 130 ],
+        "$container_top_half_size": [ "100%", 42 ]
+      },
+      {
+        "requires": "$container_rows_2",
+        "$container_root_size": [ 176, 148 ],
+        "$container_top_half_size": [ "100%", 60 ]
+      },
+      {
+        "requires": "$container_rows_3",
+        "$container_root_size": [ 176, 166 ],
+        "$container_top_half_size": [ "100%", 78 ]
+      },
+      {
+        "requires": "$container_rows_4",
+        "$container_root_size": [ 176, 184 ],
+        "$container_top_half_size": [ "100%", 96 ]
+      },
+      {
+        "requires": "$container_rows_5",
+        "$container_root_size": [ 176, 202 ],
+        "$container_top_half_size": [ "100%", 114 ]
+      },
+      {
+        "requires": "$container_rows_6",
+        "$container_root_size": [ 176, 220 ],
+        "$container_top_half_size": [ "100%", 132 ]
+      }
+    ],
+    "controls": [
+      { "container_gamepad_helpers@common.container_gamepad_helpers": {} },
+      {
+        "selected_item_details_factory@common.selected_item_details_factory": {
+          "control_name": "@data_driven_container.selected_item_details"
+        }
+      },
+      {
+        "item_lock_notification_factory@common.item_lock_notification_factory": {
+          "control_name": "@common.item_lock_notification"
+        }
+      },
+      {
+        "root_panel@common.root_panel": {
+          "size": "$container_root_size",
+          "layer": 1,
+          "controls": [
+            { "common_panel@common.common_panel": {} },
+            {
+              "container_panel": {
+                "type": "panel",
+                "layer": 5,
+                "controls": [
+                  { "panel_top_half@data_driven_container.panel_top_half": {} },
+                  { "inventory_panel_bottom_half_with_label@common.inventory_panel_bottom_half_with_label": {} },
+                  { "hotbar_grid@common.hotbar_grid_template": {} },
+                  { "inventory_take_progress_icon_button@common.inventory_take_progress_icon_button": {} },
+                  { "flying_item_renderer@common.flying_item_renderer": { "layer": 15 } }
+                ]
+              }
+            },
+            { "inventory_selected_icon_button@common.inventory_selected_icon_button": {} },
+            { "gamepad_cursor@common.gamepad_cursor_button": {} }
+          ]
+        }
+      }
+    ]
+  },
+
+  //// #endregion
+
+  ////---------------------------------------------------------------------------
+  //// #region screen
+  ////---------------------------------------------------------------------------
+
+  "screen@common.inventory_screen_common": {
+    "$close_on_player_hurt|default": true,
+    "$use_custom_pocket_toast|default": false,
+    "close_on_player_hurt": "$close_on_player_hurt",
+    "use_custom_pocket_toast": "$use_custom_pocket_toast",
+    "variables": [
+      {
+        "requires": "$desktop_screen",
+        "$screen_content": "data_driven_container.desktop_panel",
+        "$screen_bg_content": "common.screen_background",
+        "$screen_background_alpha": 0.4
+      },
+      {
+        // Defined over in pocket_containers.json rather than here, matching how the vanilla chest screens
+        // reference their pocket panels. That panel's children reference `header_area`, `background_panel`
+        // and `half_screen` without a namespace, so they only resolve when the panel is declared alongside
+        // them. The pocket grid reads `$container_size` from scope, which the controller publishes globally,
+        // so it already sizes itself to the container.
+        "requires": "$pocket_screen",
+        "$use_custom_pocket_toast": true,
+        "$screen_content": "pocket_containers.data_driven_container_panel"
+      }
+    ]
+  }
+
+  //// #endregion
+}

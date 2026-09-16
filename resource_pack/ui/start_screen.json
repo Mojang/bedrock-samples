@@ -21,7 +21,7 @@
 
   "inbox_bell_animated_icon": {
     "type": "image",
-    "layer": 2,
+    "layer": 3,
     "texture": "textures/ui/bell_ringing",
     "uv_size": [ 16, 16 ],
     "size": [ 16, 16 ],
@@ -460,6 +460,7 @@
     "size": [ "100%c", 25 ],
     "anchor_from": "bottom_middle",
     "anchor_to": "bottom_middle",
+    "$dressing_room_button_control|default": "start.dressing_room_button",
     "variables": [
       {
         "requires": "($showing_new_player_flow_buttons)",
@@ -468,12 +469,16 @@
       {
         "requires": "(not $showing_new_player_flow_buttons)",
         "$anim_type": 1.0
+      },
+      {
+        "requires": "$education_edition",
+        "$dressing_room_button_control": "start.edu_dressing_room_button"
       }
     ],
     "alpha": "$anim_type",
     "controls": [
       {
-        "dressing_room_button@start.dressing_room_button": {
+        "dressing_room_button@$dressing_room_button_control": {
           "bindings": [
             {
               "binding_name": "#dressing_room_button_visible",
@@ -499,6 +504,7 @@
       },
       {
         "profile_button_panel": {
+          "ignored": "$education_edition",
           "type": "panel",
           "size": [ "100%c + 2px", "100%c" ],
           "$focus_id": "profile_button",
@@ -533,6 +539,18 @@
     "$pressed_alpha": 0.65,
     "$focus_id": "menu_account_button",
     "$button_tts_header": "accounts.manage"
+  },
+
+  "edu_dressing_room_button@common_buttons.light_glyph_button": {
+    "$pressed_button_name": "button.to_profile_screen",
+    "size": [ 25, 25 ],
+    "anchor_from": "bottom_left",
+    "anchor_to": "bottom_left",
+    "$button_content_offset": [ 1, 2 ],
+    "$button_content": "start.change_skin_icon",
+    "$pressed_alpha": 0.65,
+    "$focus_id": "profile_button",
+    "$button_tts_header": "accessibility.start.skinPicker"
   },
 
   "dressing_room_button@common_buttons.light_text_form_fitting_button": {
@@ -736,14 +754,23 @@
   },
 
   "skin_panel": {
-    "type": "panel",
-    "anchor_to": "bottom_right",
-    "anchor_from": "bottom_right",
+    "type": "stack_panel",
+    "orientation": "vertical",
     "size": [ "50% - 75px", 124 ],
     "offset": [ 0, "-10% - 4px" ],
+    "anchor_to": "bottom_right",
+    "anchor_from": "bottom_right",
     "controls": [
-      { "change_profile_or_skin@start.skin_or_profile_panel": {} },
-      { "viewer_panel@start.skin_viewer_panel": {} }
+      { "viewer_panel@start.skin_viewer_panel": { "size": [ "100%", "fill" ] } },
+      { 
+        "centering_panel": {
+          "type": "panel",
+          "size": [ "100%", 24 ],
+          "controls": [
+            { "change_profile_or_skin@start.skin_or_profile_panel": {} }
+          ]
+        }
+      }
     ]
   },
 
@@ -983,6 +1010,134 @@
         "binding_name_override": "#visible"
       }
     ]
+  },
+
+  //---------------------------------------------------------------------------
+  // EDU External Links Popup
+  //---------------------------------------------------------------------------
+
+  "edu_external_link_popup_factory": {
+    "type": "factory",
+    "control_ids": {
+      "external_browser_popup": "@start.external_browser_popup"
+    }
+  },
+
+  "external_browser_popup_header@common.button_text": {
+    "size": [ "100%", "default" ],
+    "text": "$popup_label_text",
+    "font_type": "smooth"
+  },
+
+  "external_browser_popup_contents": {
+    "type": "panel",
+    "size": [ 214, "100%c" ],
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "controls": [
+      {
+        "shrink_wrap": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100% - 8px", "100%c" ],
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+
+          "controls": [
+            {
+              "header_pad@common.empty_panel": {
+                "size": [ "100%", 4 ]
+              }
+            },
+            {
+              "header@common.tts_label_focus_wrapper": {
+                "$focus_id": "header",
+                "$tts_label_panel": "start.external_browser_popup_header"
+              }
+            },
+            {
+              "body_pad@common.empty_panel": {
+                "size": [ "100%", 14 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "external_browser_button_content": {
+    "type": "stack_panel",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "orientation": "horizontal",
+    "size": [ "100%c", "100%cm" ],
+    "controls": [
+      {
+        "button_text": {
+          "type": "label",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "color": "$text_color",
+          "text": "$top_button_text",
+          "size": [ "default", "default" ]
+        }
+      },
+      {
+        "spacing_gap_1": {
+          "type": "panel",
+          "size": [ 4, 0 ]
+        }
+      },
+      {
+        "external_link_icon": {
+          "type": "image",
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "texture": "textures/ui/icon_external_link",
+          "color": "$glyph_color",
+          "size": [ 8, 8 ]
+        }
+      }
+    ]
+  },
+
+  "external_link_popup_buttons": {
+    "type": "stack_panel",
+    "size": [ "100%", "100%" ],
+    "orientation": "vertical",
+    "controls": [
+      {
+        "external_browser_button@common_buttons.light_content_button": {
+          "$pressed_button_name": "button.external_browser_button",
+          "size": [ "100%", "50% - 1px" ],
+          "$button_content": "start.external_browser_button_content",
+          "focus_identifier": "$pressed_button_name"
+        }
+      },
+      { "button_padding@common.empty_panel": { "size": [ "100%", 2 ] } },
+      {
+        "back_button_enabled@common_buttons.light_text_button": {
+          "size": [ "100%", "50% - 1px" ],
+          "$pressed_button_name": "button.external_browser_popup_close",
+          "$button_text": "$bottom_button_text",
+          "focus_identifier": "$pressed_button_name"
+        }
+      }
+    ]
+  },
+
+  "external_browser_popup@popup_dialog.form_fit_modal_dialog_popup": {
+    "$popup_title_text|default": "",
+    "$popup_label_text|default": "",
+    "$top_button_text|default": "",
+    "$bottom_button_text|default": "",
+
+    "$popup_type|default": "popup_dialog.form_fit_screen_with_title_and_close_and_two_bottom_buttons",
+    "$modal_title": "$popup_title_text",
+    "$popup_dialog_escape_button_name": "button.external_browser_popup_close",
+    "$modal_contents": "start.external_browser_popup_contents",
+    "$lower_button_control": "start.external_link_popup_buttons"
   },
 
   //---------------------------------------------------------------------------
@@ -2669,7 +2824,8 @@
             }
           ]
         }
-      }
+      },
+      { "edu_external_link_popup_factory@start.edu_external_link_popup_factory": {} }
     ]
   }
 }

@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.20",
+  "format_version": "1.26.50",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:drowned",
@@ -8,6 +8,17 @@
       "spawn_category": "monster"
     },
     "components": {
+      "minecraft:ambient_sound_interval": {
+        "event_name": "ambient",
+        "event_names": [
+          {
+            "condition": "query.head_is_in_water",
+            "event_name": "ambient.in.water"
+          }
+        ],
+        "range": 16.0,
+        "value": 8.0
+      },
       "minecraft:behavior.equip_item": {
         "priority": 3
       },
@@ -132,7 +143,9 @@
       "minecraft:behavior.pickup_items": {
         "can_pickup_any_item": true,
         "excluded_items": [
-          "minecraft:glow_ink_sac",
+          {
+            "name": "minecraft:glow_ink_sac"
+          },
           {
             "tags": "q.all_tags('minecraft:is_spear')"
           }
@@ -199,6 +212,7 @@
           }
         ]
       },
+      "minecraft:is_hidden_when_invisible": {},
       "minecraft:jump.static": {},
       "minecraft:loot": {
         "table": "loot_tables/entities/drowned.json"
@@ -214,7 +228,8 @@
         "is_amphibious": true,
         "can_path_over_water": false,
         "can_swim": false,
-        "can_walk": true
+        "can_walk": true,
+        "using_door_annotation": true
       },
       "minecraft:offspring": {
         "offspring_pairs": {
@@ -639,9 +654,14 @@
       },
       "minecraft:ranged_mode": {
         "minecraft:behavior.ranged_attack": {
-          "attack_interval_max": 3.0,
-          "attack_interval_min": 1.0,
-          "attack_radius": 10.0,
+          "attack_interval": {
+            "min": 1,
+            "max": 3
+          },
+          "attack_range": {
+            "min": 0.0,
+            "max": 10.0
+          },
           "priority": 3,
           "swing": true
         },
