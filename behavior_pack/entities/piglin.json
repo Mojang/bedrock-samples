@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.20",
+  "format_version": "1.26.70",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:piglin",
@@ -11,28 +11,35 @@
     "component_groups": {
       "zombification_sensor": {
         "minecraft:environment_sensor": {
-          "triggers": {
-            "filters": {
-              "test": "in_nether",
-              "value": false
-            },
-            "event": "start_zombification_event"
-          }
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_nether",
+                "value": false
+              },
+              "event": "start_zombification_event"
+            }
+          ]
         }
       },
       "start_zombification": {
         "minecraft:is_shaking": {},
         "minecraft:environment_sensor": {
-          "triggers": {
-            "filters": {
-              "test": "in_nether"
-            },
-            "event": "stop_zombification_event"
-          }
+          "triggers": [
+            {
+              "filters": {
+                "test": "in_nether"
+              },
+              "event": "stop_zombification_event"
+            }
+          ]
         },
         "minecraft:timer": {
           "looping": false,
-          "time": 15,
+          "time": {
+            "min": 15,
+            "max": 15
+          },
           "time_down_event": {
             "event": "become_zombie_event"
           }
@@ -41,7 +48,9 @@
       "become_zombie": {
         "minecraft:transformation": {
           "into": "minecraft:zombie_pigman",
-          "transformation_sound": "converted_to_zombified",
+          "transformation_sound": [
+            "converted_to_zombified"
+          ],
           "keep_level": true,
           "drop_inventory": true,
           "preserve_equipment": true
@@ -50,10 +59,14 @@
       "ranged_unit": {
         "minecraft:behavior.ranged_attack": {
           "priority": 8,
-          "attack_interval_min": 1,
-          "attack_interval_max": 1,
-          "attack_radius": 8,
-          "attack_radius_min": 4,
+          "attack_interval": {
+            "min": 1,
+            "max": 1
+          },
+          "attack_range": {
+            "min": 4,
+            "max": 8
+          },
           "speed_multiplier": 1.0,
           "target_in_sight_time": 0.1
         },
@@ -447,6 +460,12 @@
         "excluded_items": [
           {
             "item": "minecraft:banner:15"
+          },
+          {
+            "item": "minecraft:wolf_armor"
+          },
+          {
+            "tags": "q.any_tag('minecraft:horse_armor', 'minecraft:nautilus_armor')"
           }
         ]
       },

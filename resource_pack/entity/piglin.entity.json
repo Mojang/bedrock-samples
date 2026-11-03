@@ -18,20 +18,35 @@
         "texture": "spawn_egg_piglin"
       },
       "scripts": {
+        "scale": "query.is_baby ? 2.0 : 1.0",
+        "variables": {
+          "variable.item_use_normalized": "public",
+          "variable.tp_melee_spear_use_attachable_rotation_z": "public",
+          "variable.use_dedicated_baby_armor": "public"
+        },
+        "initialize": [
+          "v.tp_melee_spear_base_arm_rotation_x = -30.0;"
+        ],
         "pre_animation": [
+          // Baby Armor for all mobs with a separate baby geo
           "v.use_dedicated_baby_armor = true;",
+          // Body
           "v.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / v.gliding_speed_value) * 57.3;",
           "v.attack = Math.sin((1.0 - (1.0 - v.attack_time) * (1.0 - v.attack_time)) * 180.0) * 57.3;",
           "v.attack2 = Math.sin(v.attack_time * 180.0) * 57.3;",
           "v.z_bob = Math.cos(query.life_time * 103.13244) * 2.865 + 2.865;",
           "v.x_bob = Math.sin(query.life_time * 76.776372) * 2.865;",
+          // Riding
           "v.riding_y_offset_baby_scaling = query.is_baby ? -0.5 : 0.0;",
           "v.riding_y_offset_with_respect_to_player = 1.0;",
           "v.riding_y_offset_on_vehicle_where_other_entites_can_stand = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat') ? -3.0 : 0.0;",
           "v.unscaled_riding_y_offset = v.riding_y_offset_with_respect_to_player + v.riding_y_offset_on_vehicle_where_other_entites_can_stand;",
+          // This math is very magical, but it works! Set up the seat position based on the adult, baby, or player model, and it should align correctly for all cases.
           "v.riding_y_offset = v.riding_y_offset_baby_scaling * math.abs(v.unscaled_riding_y_offset) + v.unscaled_riding_y_offset + v.riding_y_offset_baby_scaling * 0.2f;",
+          // Items
           "v.item_use_duration = query.is_using_item ? ((v.item_use_duration ?? 0.0) + query.delta_time * 20.0) : 0.0;",
           "v.item_use_normalized = v.item_use_duration / query.main_hand_item_max_duration;",
+          // Melee spear
           "v.melee_spear_equipped = query.equipped_item_any_tag('slot.weapon.mainhand', 'minecraft:is_spear');",
           "(v.melee_spear_equipped) ? {",
           "  t.melee_spear_use_finish_raise_tick = query.kinetic_weapon_delay;",
@@ -62,60 +77,40 @@
         "animate": [
           "move",
           "bob",
-          {
-            "admire": "query.is_admiring"
-          },
-          {
-            "celebrate_hunt": "query.is_celebrating"
-          },
-          {
-            "celebrate_hunt_special": "query.is_celebrating_special"
-          },
+          { "admire": "query.is_admiring" },
+          { "celebrate_hunt": "query.is_celebrating" },
+          { "celebrate_hunt_special": "query.is_celebrating_special" },
           "look_at_target_controller",
           "piglin_attack_controller",
           "riding_controller",
-          {
-            "melee_spear_controller": "v.melee_spear_equipped && !query.is_admiring && !query.is_celebrating && !query.is_celebrating_special"
-          }
+          { "melee_spear_controller": "v.melee_spear_equipped && !query.is_admiring && !query.is_celebrating && !query.is_celebrating_special" }
         ],
-        "variables": {
-          "variable.item_use_normalized": "public",
-          "variable.tp_melee_spear_use_attachable_rotation_z": "public",
-          "variable.use_dedicated_baby_armor": "public"
-        },
-        "initialize": [
-          "v.tp_melee_spear_base_arm_rotation_x = -30.0;"
-        ],
-        "should_update_effects_offscreen": "1.0",
-        "scale": "query.is_baby ? 2.0 : 1.0"
+        "should_update_effects_offscreen": "1.0"
       },
       "animations": {
         "move": "animation.piglin.move",
         "bob": "animation.humanoid.bob",
-        "humanoid_big_head": "animation.humanoid.big_head",
         "admire": "animation.piglin.admire",
         "celebrate_hunt": "animation.piglin.celebrate_hunt",
         "celebrate_hunt_special": "animation.piglin.celebrate_hunt_special",
-        "look_at_target_controller": "controller.animation.humanoid.look_at_target",
         "look_at_target_default": "animation.humanoid.look_at_target.default",
         "look_at_target_gliding": "animation.humanoid.look_at_target.gliding",
         "look_at_target_swimming": "animation.humanoid.look_at_target.swimming",
-        "piglin_attack_controller": "controller.animation.piglin.attack",
+        "look_at_target_controller": "controller.animation.humanoid.look_at_target",
         "crossbow_hold": "animation.piglin.crossbow.hold",
         "crossbow_charge": "animation.piglin.crossbow.charge",
         "melee_attack": "animation.piglin.sword.attack",
         "hand_attack": "animation.piglin.hand.attack",
-        "riding_controller": "controller.animation.humanoid.riding",
+        "piglin_attack_controller": "controller.animation.piglin.attack",
+        "riding.body": "animation.humanoid.riding.body",
         "riding.arms": "animation.humanoid.riding.arms",
         "riding.legs": "animation.humanoid.riding.legs",
-        "riding.body": "animation.humanoid.riding.body",
+        "riding_controller": "controller.animation.humanoid.riding",
         "melee_spear_use": "animation.humanoid.melee_spear_use",
         "melee_spear_hold": "animation.humanoid.melee_spear_hold",
         "melee_spear_controller": "controller.animation.humanoid.melee_spear"
       },
-      "render_controllers": [
-        "controller.render.piglin.v2"
-      ],
+      "render_controllers": [ "controller.render.piglin.v2" ],
       "enable_attachables": true
     }
   }

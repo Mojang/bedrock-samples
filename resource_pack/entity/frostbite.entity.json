@@ -1,0 +1,131 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:frostbite",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/frostbite/frostbite",
+        "baby": "textures/entity/frostbite/baby_frostbite"
+      },
+      "geometry": {
+        "default": "geometry.frostbite",
+        "baby": "geometry.zombie.baby"
+      },
+      "scripts": {
+        "variables": {
+          "variable.item_use_normalized": "public",
+          "variable.tp_melee_spear_use_attachable_rotation_z": "public",
+          "variable.use_dedicated_baby_armor": "public"
+        },
+        "initialize": ["v.tp_melee_spear_base_arm_rotation_x = -30.0;"],
+        "pre_animation": [
+          // Baby Armor for all mobs with a separate baby geo
+          "v.use_dedicated_baby_armor = true;",
+          // Body
+          "v.tcos0 = Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / v.gliding_speed_value * 57.3;",
+          // Riding
+          "v.riding_y_offset_baby_scaling = query.is_baby ? -0.5 : 0.0;",
+          "v.riding_y_offset_with_respect_to_player = 1.0;",
+          "v.riding_y_offset_on_vehicle_where_other_entites_can_stand = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat') ? -3.0 : 0.0;",
+          "v.unscaled_riding_y_offset = v.riding_y_offset_with_respect_to_player + v.riding_y_offset_on_vehicle_where_other_entites_can_stand;",
+          // This math is very magical, but it works! Set up the seat position based on the adult, baby, or player model, and it should align correctly for all cases.
+          "v.riding_y_offset = v.riding_y_offset_baby_scaling * math.abs(v.unscaled_riding_y_offset) + v.unscaled_riding_y_offset + v.riding_y_offset_baby_scaling * 0.2f;",
+          // Items
+          "v.item_use_duration = query.is_using_item ? ((v.item_use_duration ?? 0.0) + query.delta_time * 20.0) : 0.0;",
+          "v.item_use_normalized = v.item_use_duration / query.main_hand_item_max_duration;",
+          // Melee spear
+          "v.melee_spear_equipped = query.equipped_item_any_tag('slot.weapon.mainhand', 'minecraft:is_spear');",
+          "(v.melee_spear_equipped) ? {",
+          "  t.melee_spear_use_finish_raise_tick = query.kinetic_weapon_delay;",
+          "  t.melee_spear_use_finish_sway_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_dismount_duration;",
+          "  t.melee_spear_use_start_sway_tick = t.melee_spear_use_finish_sway_tick - 20.0;",
+          "  t.melee_spear_use_finish_lower_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_knockback_duration;",
+          "  t.melee_spear_use_start_lower_tick = t.melee_spear_use_finish_lower_tick - 40.0;",
+          "  t.melee_spear_use_finish_raise_back_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_damage_duration;",
+          "  t.melee_spear_use_start_raise_back_tick = t.melee_spear_use_finish_raise_back_tick - 5.0;",
+          "  t.melee_spear_use_raise_progress = math.clamp(math.inverse_lerp(0.0, t.melee_spear_use_finish_raise_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_start = math.clamp(math.inverse_lerp(0.0, 0.5, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_middle = math.clamp(math.inverse_lerp(0.5, 0.8, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_end = math.clamp(math.inverse_lerp(0.8, 1.0, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_sway_progress = math.clamp(math.inverse_lerp(t.melee_spear_use_start_sway_tick, t.melee_spear_use_finish_sway_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_lower_progress = math.ease_in_out_elastic(0.0, 1.0, math.clamp(math.inverse_lerp(t.melee_spear_use_start_lower_tick, t.melee_spear_use_finish_lower_tick, v.item_use_duration - 20.0), 0.0, 1.0));",
+          "  t.melee_spear_use_raise_back_progress = math.clamp(math.inverse_lerp(t.melee_spear_use_start_raise_back_tick, t.melee_spear_use_finish_raise_back_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_sway_intensity = math.ease_out_circ(0.0, 2.0, t.melee_spear_use_sway_progress) + math.ease_in_circ(0.0, -2.0, t.melee_spear_use_raise_back_progress);",
+          "  t.melee_spear_use_sway_scale_slow = math.sin(v.item_use_duration * 19.0) * t.melee_spear_use_sway_intensity;",
+          "  t.melee_spear_use_sway_scale_fast = math.sin(v.item_use_duration * 30.0) * t.melee_spear_use_sway_intensity;",
+          "  v.tp_melee_spear_use_arm_rotation_x = t.melee_spear_use_raise_progress_start * -40.0 + t.melee_spear_use_raise_progress_middle * 30.0 + t.melee_spear_use_raise_progress_end * -20.0 + t.melee_spear_use_lower_progress * 20.0 + t.melee_spear_use_raise_back_progress * 10.0;",
+          "  v.tp_melee_spear_use_arm_rotation_x = v.tp_melee_spear_use_arm_rotation_x + t.melee_spear_use_sway_scale_slow * 0.6;",
+          "  v.tp_melee_spear_use_arm_rotation_y = t.melee_spear_use_sway_scale_fast * 1.0;",
+          "  v.tp_melee_spear_use_arm_rotation_z = t.melee_spear_use_sway_scale_slow * 0.5;",
+          "  v.tp_melee_spear_use_item_rotation_x = t.melee_spear_use_raise_progress * 60.0 + t.melee_spear_use_raise_back_progress * -60.0;",
+          "  v.tp_melee_spear_use_attachable_rotation_z = t.melee_spear_use_raise_progress * 90.0 + t.melee_spear_use_sway_progress * -90.0;",
+          "};"
+        ],
+        "animate": [
+          "look_at_target_controller",
+          "move_controller",
+          "riding_controller",
+          "holding_controller",
+          "brandish_spear_controller",
+          "charging_controller",
+          { "attack_controller": "query.property('minecraft:is_ranged_mode') == false" },
+          "sneaking_controller",
+          "bob_controller",
+          "damage_nearby_mobs_controller",
+          "use_item_progress_controller",
+          { "frostbite_attack_controller": "!v.melee_spear_equipped" },
+          "swimming_controller",
+          { "melee_spear_controller": "v.melee_spear_equipped" }
+        ],
+        "should_update_effects_offscreen": "1.0"
+      },
+      "animations": {
+        "look_at_target_default": "animation.humanoid.look_at_target.default",
+        "look_at_target_gliding": "animation.humanoid.look_at_target.gliding",
+        "look_at_target_swimming": "animation.humanoid.look_at_target.swimming",
+        "look_at_target_controller": "controller.animation.humanoid.look_at_target",
+        "move": "animation.humanoid.move",
+        "move_controller": "controller.animation.humanoid.move",
+        "riding.body": "animation.humanoid.riding.body",
+        "riding.arms": "animation.humanoid.riding.arms",
+        "riding.legs": "animation.humanoid.riding.legs",
+        "riding_controller": "controller.animation.humanoid.riding",
+        "holding": "animation.humanoid.holding",
+        "holding_controller": "controller.animation.humanoid.holding",
+        "brandish_spear": "animation.humanoid.brandish_spear",
+        "brandish_spear_controller": "controller.animation.humanoid.brandish_spear",
+        "charging": "animation.humanoid.charging",
+        "charging_controller": "controller.animation.humanoid.charging",
+        "attack.rotations": "animation.humanoid.attack.rotations",
+        "attack_controller": "controller.animation.humanoid.attack",
+        "frostbite_attack_controller": "controller.animation.frostbite.attack",
+        "ranged_attack_rotations": "animation.drowned.attack.rotations",
+        "sneaking": "animation.humanoid.sneaking",
+        "sneaking_controller": "controller.animation.humanoid.sneaking",
+        "bob": "animation.humanoid.bob",
+        "bob_controller": "controller.animation.humanoid.bob",
+        "damage_nearby_mobs": "animation.humanoid.damage_nearby_mobs",
+        "damage_nearby_mobs_controller": "controller.animation.humanoid.damage_nearby_mobs",
+        "use_item_progress": "animation.humanoid.use_item_progress",
+        "use_item_progress_controller": "controller.animation.humanoid.use_item_progress",
+        "arms_idle": "animation.frostbite.arms_idle",
+        "baby_arms_idle": "animation.frostbite.baby_arms_idle",
+        "zombie_attack_bare_hand": "animation.zombie.attack_bare_hand",
+        "baby_zombie_attack_bare_hand": "animation.zombie.baby_attack_bare_hand",
+        "swimming": "animation.zombie.swimming",
+        "swimming_controller": "controller.animation.zombie.swimming",
+        "melee_spear_use": "animation.zombie.melee_spear_use",
+        "melee_spear_hold": "animation.zombie.melee_spear_hold",
+        "melee_spear_controller": "controller.animation.humanoid.melee_spear"
+      },
+      "render_controllers": [ "controller.render.zombie.v2" ],
+      "enable_attachables": true,
+      "spawn_egg": {
+        "texture": "spawn_egg_frostbite"
+      }
+    }
+  }
+}

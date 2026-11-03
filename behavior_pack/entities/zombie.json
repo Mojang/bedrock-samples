@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.50",
+  "format_version": "1.26.70",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:zombie",
@@ -158,6 +158,13 @@
               "test": "is_underwater"
             }
           },
+          {
+            "event": "minecraft:start_transforming_into_frostbite",
+            "filters": {
+              "test": "in_block",
+              "value": "minecraft:powder_snow"
+            }
+          },
           // Keep these the same for each "minecraft:environment_sensor".
           {
             "event": "minecraft:on_start_riding_zombie_horse",
@@ -197,6 +204,12 @@
         "excluded_items": [
           {
             "item": "minecraft:banner:15"
+          },
+          {
+            "item": "minecraft:wolf_armor"
+          },
+          {
+            "tags": "q.any_tag('minecraft:horse_armor', 'minecraft:nautilus_armor')"
           }
         ]
       },
@@ -554,14 +567,16 @@
             "baby_undead"
           ],
           "seat_count": 1,
-          "seats": {
-            "lock_rider_rotation": 0,
-            "position": [
-              0,
-              1.175,
-              -0.35
-            ]
-          }
+          "seats": [
+            {
+              "lock_rider_rotation": 0,
+              "position": [
+                0,
+                1.175,
+                -0.35
+              ]
+            }
+          ]
         },
         "minecraft:collision_box": {
           "height": 1.9,
@@ -676,6 +691,13 @@
                 "test": "is_underwater"
               }
             },
+            {
+              "event": "minecraft:start_transforming_into_frostbite",
+              "filters": {
+                "test": "in_block",
+                "value": "minecraft:powder_snow"
+              }
+            },
             // Keep these the same for each "minecraft:environment_sensor".
             {
               "event": "minecraft:on_start_riding_zombie_horse",
@@ -759,9 +781,69 @@
         },
         "minecraft:timer": {
           "looping": false,
-          "time": 30,
+          "time": {
+            "min": 30,
+            "max": 30
+          },
           "time_down_event": {
             "event": "minecraft:convert_to_drowned"
+          }
+        }
+      },
+      "minecraft:start_frostbite_transformation": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "event": "minecraft:stop_transforming",
+              "filters": {
+                "test": "in_block",
+                "operator": "not",
+                "value": "minecraft:powder_snow"
+              }
+            },
+            // Keep these the same for each "minecraft:environment_sensor".
+            {
+              "event": "minecraft:on_start_riding_camel_husk",
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_vehicle_family",
+                    "value": "camel_husk"
+                  },
+                  {
+                    "domain": "minecraft:is_riding_camel_husk",
+                    "test": "bool_property",
+                    "value": false
+                  }
+                ]
+              }
+            },
+            {
+              "event": "minecraft:on_stop_riding_camel_husk",
+              "filters": {
+                "all_of": [
+                  {
+                    "operator": "not",
+                    "test": "is_vehicle_family",
+                    "value": "camel_husk"
+                  },
+                  {
+                    "domain": "minecraft:is_riding_camel_husk",
+                    "test": "bool_property"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "minecraft:timer": {
+          "looping": false,
+          "time": {
+            "min": 7,
+            "max": 7
+          },
+          "time_down_event": {
+            "event": "minecraft:convert_to_frostbite"
           }
         }
       },
@@ -773,7 +855,9 @@
           },
           "preserve_equipment": true,
           "into": "minecraft:drowned<minecraft:as_adult>",
-          "transformation_sound": "convert_to_drowned"
+          "transformation_sound": [
+            "convert_to_drowned"
+          ]
         }
       },
       "minecraft:convert_to_baby_drowned": {
@@ -784,7 +868,35 @@
           },
           "preserve_equipment": true,
           "into": "minecraft:drowned<minecraft:as_baby>",
-          "transformation_sound": "convert_to_drowned"
+          "transformation_sound": [
+            "convert_to_drowned"
+          ]
+        }
+      },
+      "minecraft:convert_to_frostbite": {
+        "minecraft:is_shaking": {},
+        "minecraft:transformation": {
+          "delay": {
+            "value": 15
+          },
+          "preserve_equipment": true,
+          "into": "minecraft:frostbite<minecraft:as_adult>",
+          "transformation_sound": [
+            "convert_to_frostbite"
+          ]
+        }
+      },
+      "minecraft:convert_to_baby_frostbite": {
+        "minecraft:is_shaking": {},
+        "minecraft:transformation": {
+          "delay": {
+            "value": 15
+          },
+          "preserve_equipment": true,
+          "into": "minecraft:frostbite<minecraft:as_baby>",
+          "transformation_sound": [
+            "convert_to_frostbite"
+          ]
         }
       }
     },
@@ -918,6 +1030,18 @@
           ]
         }
       },
+      "minecraft:start_transforming_into_frostbite": {
+        "add": {
+          "component_groups": [
+            "minecraft:start_frostbite_transformation"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:look_to_start_transformations"
+          ]
+        }
+      },
       "minecraft:stop_transforming": {
         "add": {
           "component_groups": [
@@ -926,7 +1050,8 @@
         },
         "remove": {
           "component_groups": [
-            "minecraft:start_drowned_transformation"
+            "minecraft:start_drowned_transformation",
+            "minecraft:start_frostbite_transformation"
           ]
         }
       },
@@ -962,6 +1087,43 @@
             "remove": {
               "component_groups": [
                 "minecraft:start_drowned_transformation"
+              ]
+            }
+          }
+        ]
+      },
+      "minecraft:convert_to_frostbite": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "not",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:convert_to_frostbite"
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:start_frostbite_transformation"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "has_component",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:convert_to_baby_frostbite"
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:start_frostbite_transformation"
               ]
             }
           }

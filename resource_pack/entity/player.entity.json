@@ -19,28 +19,6 @@
       },
       "scripts": {
         "scale": "0.9375",
-        "initialize": [
-          "variable.is_holding_right = 0.0;",
-          "variable.is_blinking = 0.0;",
-          "variable.last_blink_time = 0.0;",
-          "variable.hand_bob = 0.0;"
-        ],
-        "pre_animation": [
-          "variable.helmet_layer_visible = !query.has_head_gear;",
-          "variable.leg_layer_visible = 1.0;",
-          "variable.boot_layer_visible = 1.0;",
-          "variable.chest_layer_visible = 1.0;",
-          "variable.attack_body_rot_y = Math.sin(360*Math.sqrt(variable.attack_time)) * 5.0;",
-          "variable.tcos0 = (math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;",
-          "variable.first_person_rotation_factor = math.sin((1 - variable.attack_time) * 180.0);",
-          "variable.hand_bob = query.life_time < 0.01 ? 0.0 : variable.hand_bob + ((query.is_on_ground && query.is_alive ? math.clamp(math.sqrt(math.pow(query.position_delta(0), 2.0) + math.pow(query.position_delta(2), 2.0)), 0.0, 0.1) : 0.0) - variable.hand_bob) * 0.02;",
-          "variable.map_angle = math.clamp(1 - variable.player_x_rotation / 45.1, 0.0, 1.0);",
-          "variable.item_use_normalized = query.main_hand_item_use_duration / query.main_hand_item_max_duration;",
-          "variable.riding_y_offset = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat', 'minecraft:strider') ? -3.0 : 0.0;"
-        ],
-        "animate": [
-          "root"
-        ],
         "variables": {
           "variable.fp_melee_spear_use_attachable_rotation_z": "public",
           "variable.tp_melee_spear_use_attachable_rotation_z": "public",
@@ -49,6 +27,93 @@
           "variable.attack_time": "public",
           "variable.item_use_normalized": "public"
         },
+        "initialize": [
+          "v.is_holding_right = 0.0;",
+          "v.is_blinking = 0.0;",
+          "v.last_blink_time = 0.0;",
+          "v.hand_bob = 0.0;",
+          "v.melee_spear_java_to_bedrock_scale = 40.0;"
+        ],
+        "pre_animation": [
+          // Layers
+          "v.helmet_layer_visible = !query.has_head_gear;",
+          "v.leg_layer_visible = 1.0;",
+          "v.boot_layer_visible = 1.0;",
+          "v.chest_layer_visible = 1.0;",
+          // Body
+          "v.attack_body_rot_y = Math.sin(360 * Math.sqrt(v.attack_time)) * 10.0;",
+          "v.tcos0 = math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / v.gliding_speed_value * 57.3;",
+          "v.first_person_item_rotation_factor = math.sin((1 - v.attack_time) * 180.0);",
+          "v.hand_bob = query.life_time < 0.01 ? 0.0 : v.hand_bob + ((query.is_on_ground && query.is_alive ? math.clamp(math.sqrt(math.pow(query.position_delta(0), 2.0) + math.pow(query.position_delta(2), 2.0)), 0.0, 0.1) : 0.0) - v.hand_bob) * 0.02;",
+          // Items
+          "v.map_angle = math.clamp(1 - v.player_x_rotation / 45.1, 0.0, 1.0);",
+          "v.item_use_duration = query.main_hand_item_use_duration > 0.0 ? (query.main_hand_item_max_duration - (query.main_hand_item_use_duration - query.frame_alpha + 1.0)) : 0.0;",
+          "v.item_use_normalized = query.main_hand_item_use_duration / query.main_hand_item_max_duration;",
+          // Riding
+          "v.riding_y_offset = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat', 'minecraft:strider') ? -3.0 : 0.0;",
+          // Melee spear
+          "v.melee_spear_equipped = query.equipped_item_any_tag('slot.weapon.mainhand', 'minecraft:is_spear');",
+          "v.tp_melee_spear_base_arm_rotation_x = (query.is_swimming || query.is_gliding) ? (-115.0 - query.target_x_rotation) : (query.is_crawling ? -115.0 : -30.0);",
+          "(v.melee_spear_equipped) ? {",
+          // Melee spear use
+          "  t.melee_spear_use_finish_raise_tick = query.kinetic_weapon_delay;",
+          "  t.melee_spear_use_finish_sway_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_dismount_duration;",
+          "  t.melee_spear_use_start_sway_tick = t.melee_spear_use_finish_sway_tick - 20.0;",
+          "  t.melee_spear_use_finish_lower_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_knockback_duration;",
+          "  t.melee_spear_use_start_lower_tick = t.melee_spear_use_finish_lower_tick - 40.0;",
+          "  t.melee_spear_use_finish_raise_back_tick = t.melee_spear_use_finish_raise_tick + query.kinetic_weapon_damage_duration;",
+          "  t.melee_spear_use_start_raise_back_tick = t.melee_spear_use_finish_raise_back_tick - 5.0;",
+          "  t.melee_spear_use_raise_progress = math.clamp(math.inverse_lerp(0.0, t.melee_spear_use_finish_raise_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_start = math.clamp(math.inverse_lerp(0.0, 0.5, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_middle = math.clamp(math.inverse_lerp(0.5, 0.8, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_raise_progress_end = math.clamp(math.inverse_lerp(0.8, 1.0, t.melee_spear_use_raise_progress), 0.0, 1.0);",
+          "  t.melee_spear_use_sway_progress = math.clamp(math.inverse_lerp(t.melee_spear_use_start_sway_tick, t.melee_spear_use_finish_sway_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_lower_progress = math.ease_in_out_elastic(0.0, 1.0, math.clamp(math.inverse_lerp(t.melee_spear_use_start_lower_tick, t.melee_spear_use_finish_lower_tick, v.item_use_duration - 20.0), 0.0, 1.0));",
+          "  t.melee_spear_use_raise_back_progress = math.clamp(math.inverse_lerp(t.melee_spear_use_start_raise_back_tick, t.melee_spear_use_finish_raise_back_tick, v.item_use_duration), 0.0, 1.0);",
+          "  t.melee_spear_use_sway_intensity = math.ease_out_circ(0.0, 2.0, t.melee_spear_use_sway_progress) + math.ease_in_circ(0.0, -2.0, t.melee_spear_use_raise_back_progress);",
+          "  t.melee_spear_use_sway_scale_slow = math.sin(v.item_use_duration * 19.0) * t.melee_spear_use_sway_intensity;",
+          "  t.melee_spear_use_sway_scale_fast = math.sin(v.item_use_duration * 30.0) * t.melee_spear_use_sway_intensity;",
+          // First person
+          "  v.fp_melee_spear_use_item_position_x = (t.melee_spear_use_raise_progress_start * 0.05 + t.melee_spear_use_raise_progress_end * -0.05 + t.melee_spear_use_sway_scale_slow * 0.005) * v.melee_spear_java_to_bedrock_scale;",
+          "  v.fp_melee_spear_use_item_position_y = (t.melee_spear_use_raise_progress_start * -0.075 + t.melee_spear_use_raise_progress_middle * 0.075 + t.melee_spear_use_sway_scale_fast * 0.01) * v.melee_spear_java_to_bedrock_scale;",
+          "  v.fp_melee_spear_use_item_position_z = (t.melee_spear_use_raise_progress_start * 0.05 + t.melee_spear_use_raise_progress_end * -0.05 + t.melee_spear_use_sway_scale_slow * 0.005) * v.melee_spear_java_to_bedrock_scale;",
+          "  v.fp_melee_spear_use_item_rotation_y = t.melee_spear_use_raise_progress * 20.0 + t.melee_spear_use_lower_progress * 20.0 + t.melee_spear_use_sway_scale_slow * 0.5 + t.melee_spear_use_raise_back_progress * -40.0;",
+          "  v.fp_melee_spear_use_item_rotation_z = math.ease_in_out_back(0.0, -60.0, t.melee_spear_use_raise_progress) + t.melee_spear_use_lower_progress * -25.0 + t.melee_spear_use_raise_back_progress * 85.0 + t.melee_spear_use_sway_scale_fast * 0.5;",
+          "  v.fp_melee_spear_use_attachable_rotation_z = math.clamp(math.inverse_lerp(0.5, 0.55, t.melee_spear_use_raise_progress), 0.0, 1.0) * -50.0 + t.melee_spear_use_sway_progress * 90.0 + t.melee_spear_use_raise_back_progress * -40.0;",
+          // Third person
+          "  v.tp_melee_spear_use_arm_rotation_x = t.melee_spear_use_raise_progress_start * -40.0 + t.melee_spear_use_raise_progress_middle * 30.0 + t.melee_spear_use_raise_progress_end * -20.0 + t.melee_spear_use_lower_progress * 20.0 + t.melee_spear_use_raise_back_progress * 10.0;",
+          "  v.tp_melee_spear_use_arm_rotation_x = v.tp_melee_spear_use_arm_rotation_x + t.melee_spear_use_sway_scale_slow * 0.6;",
+          "  v.tp_melee_spear_use_arm_rotation_y = t.melee_spear_use_sway_scale_fast * 1.0;",
+          "  v.tp_melee_spear_use_arm_rotation_z = t.melee_spear_use_sway_scale_slow * 0.5;",
+          "  v.tp_melee_spear_use_item_rotation_x = t.melee_spear_use_raise_progress * 60.0 + t.melee_spear_use_raise_back_progress * -60.0;",
+          "  v.tp_melee_spear_use_attachable_rotation_z = t.melee_spear_use_raise_progress * 90.0 + t.melee_spear_use_sway_progress * -90.0;",
+          // Melee spear attack
+          "  t.melee_spear_attack_duration_ratio = 1.0 / query.base_swing_duration;",
+          "  t.melee_spear_attack_raise_end = 0.05 * t.melee_spear_attack_duration_ratio;",
+          "  t.melee_spear_attack_thrust_end = 0.2 * t.melee_spear_attack_duration_ratio;",
+          "  t.melee_spear_attack_recover_start = 1.0 - (0.6 * t.melee_spear_attack_duration_ratio);",
+          "  t.melee_spear_attack_raise_progress = math.clamp(math.inverse_lerp(0.0, t.melee_spear_attack_raise_end, v.attack_time), 0.0, 1.0);",
+          "  t.melee_spear_attack_thrust_progress = math.clamp(math.inverse_lerp(t.melee_spear_attack_raise_end, t.melee_spear_attack_thrust_end, v.attack_time), 0.0, 1.0);",
+          "  t.melee_spear_attack_recover_progress = math.clamp(math.inverse_lerp(t.melee_spear_attack_recover_start, 1.0, v.attack_time), 0.0, 1.0);",
+          "  t.melee_spear_attack_raise_scale = math.ease_in_out_sine(0.0, 1.0, t.melee_spear_attack_raise_progress);",
+          "  t.melee_spear_attack_thrust_scale = math.ease_in_quad(0.0, 1.0, t.melee_spear_attack_thrust_progress);",
+          "  t.melee_spear_attack_recover_scale = math.ease_in_out_expo(0.0, 1.0, t.melee_spear_attack_recover_progress);",
+          // First person
+          "  v.fp_melee_spear_attack_item_position_x = (t.melee_spear_attack_raise_scale * 0.1 + t.melee_spear_attack_thrust_scale * -0.1) * v.melee_spear_java_to_bedrock_scale;",
+          "  v.fp_melee_spear_attack_item_position_y = (t.melee_spear_attack_raise_scale * -0.075 + t.melee_spear_attack_recover_scale * 0.075) * v.melee_spear_java_to_bedrock_scale;",
+          "  v.fp_melee_spear_attack_item_position_z = (t.melee_spear_attack_raise_scale * 0.65 + t.melee_spear_attack_thrust_scale * -0.65) * v.melee_spear_java_to_bedrock_scale;",
+          "  v.fp_melee_spear_attack_item_rotation_y = t.melee_spear_attack_raise_scale * 20.0 + t.melee_spear_attack_recover_scale * -20.0;",
+          "  v.fp_melee_spear_attack_item_rotation_z = t.melee_spear_attack_raise_scale * -60.0 + t.melee_spear_attack_recover_scale * 60.0;",
+          "  v.fp_melee_spear_attack_attachable_rotation_z = t.melee_spear_attack_raise_scale * 40.0 + t.melee_spear_attack_recover_scale * -40.0;",
+          // Third person
+          "  v.tp_melee_spear_attack_arm_rotation_x = t.melee_spear_attack_raise_scale * 90.0 + t.melee_spear_attack_thrust_scale * -120.0 + t.melee_spear_attack_recover_scale * 30.0;",
+          "  v.tp_melee_spear_attack_item_rotation_x = t.melee_spear_attack_thrust_scale * 60.0 + t.melee_spear_attack_recover_scale * -60.0;",
+          "  v.tp_melee_spear_attack_attachable_position_z = (t.melee_spear_attack_thrust_scale * -0.15 + t.melee_spear_attack_recover_scale * 0.15) * v.melee_spear_java_to_bedrock_scale;",
+          "};"
+        ],
+        "animate": [
+          "root"
+        ],
         "should_update_effects_offscreen": "1.0"
       },
       "animations": {
@@ -66,11 +131,18 @@
         "move.arms": "animation.player.move.arms",
         "move.legs": "animation.player.move.legs",
         "swimming": "animation.player.swim",
+        "swimming.no_right_arm": "animation.player.swim.no_right_arm",
         "swimming.legs": "animation.player.swim.legs",
+        "crawling": "animation.player.crawl",
+        "crawling.no_right_arm": "animation.player.crawl.no_right_arm",
+        "crawling.legs": "animation.player.crawl.legs",
+        "riding.root": "animation.player.riding.root",
         "riding.arms": "animation.player.riding.arms",
         "riding.legs": "animation.player.riding.legs",
         "holding": "animation.player.holding",
+        "holding_heavy_core": "animation.player.holding_heavy_core",
         "brandish_spear": "animation.humanoid.brandish_spear",
+        "holding_spyglass": "animation.humanoid.holding_spyglass",
         "charging": "animation.humanoid.charging",
         "attack.positions": "animation.player.attack.positions",
         "attack.rotations": "animation.player.attack.rotations",
@@ -84,9 +156,9 @@
         "first_person_base_pose": "animation.player.first_person.base_pose",
         "first_person_empty_hand": "animation.player.first_person.empty_hand",
         "first_person_swap_item": "animation.player.first_person.swap_item",
+        "first_person_shield_block": "animation.player.first_person.shield_block",
         "first_person_attack_controller": "controller.animation.player.first_person_attack",
         "first_person_attack_rotation": "animation.player.first_person.attack_rotation",
-        "first_person_attack_rotation_item": "animation.player.first_person.attack_rotation_item",
         "first_person_vr_attack_rotation": "animation.player.first_person.vr_attack_rotation",
         "first_person_walk": "animation.player.first_person.walk",
         "first_person_map_controller": "controller.animation.player.first_person_map",
@@ -95,27 +167,8 @@
         "first_person_map_hold_off_hand": "animation.player.first_person.map_hold_off_hand",
         "first_person_map_hold_main_hand": "animation.player.first_person.map_hold_main_hand",
         "first_person_crossbow_equipped": "animation.player.first_person.crossbow_equipped",
-        "first_person_crossbow_hold": "animation.player.first_person.crossbow_hold",
-        "first_person_breathing_bob": "animation.player.first_person.breathing_bob",
         "third_person_crossbow_equipped": "animation.player.crossbow_equipped",
         "third_person_bow_equipped": "animation.player.bow_equipped",
-        "crossbow_hold": "animation.player.crossbow_hold",
-        "crossbow_controller": "controller.animation.player.crossbow",
-        "shield_block_main_hand": "animation.player.shield_block_main_hand",
-        "shield_block_off_hand": "animation.player.shield_block_off_hand",
-        "blink": "controller.animation.persona.blink",
-        "fishing_rod": "animation.humanoid.fishing_rod",
-        "holding_spyglass": "animation.humanoid.holding_spyglass",
-        "first_person_shield_block": "animation.player.first_person.shield_block",
-        "tooting_goat_horn": "animation.humanoid.tooting_goat_horn",
-        "holding_brush": "animation.humanoid.holding_brush",
-        "brushing": "animation.humanoid.brushing",
-        "crawling": "animation.player.crawl",
-        "crawling.legs": "animation.player.crawl.legs",
-        "swimming.no_right_arm": "animation.player.swim.no_right_arm",
-        "crawling.no_right_arm": "animation.player.crawl.no_right_arm",
-        "riding.root": "animation.player.riding.root",
-        "holding_heavy_core": "animation.player.holding_heavy_core",
         "first_person_melee_spear_use": "animation.player.first_person.melee_spear_use",
         "first_person_melee_spear_hold": "animation.player.first_person.melee_spear_hold",
         "first_person_melee_spear_attack": "animation.player.first_person.melee_spear_attack",
@@ -123,24 +176,22 @@
         "third_person_melee_spear_use": "animation.humanoid.melee_spear_use",
         "third_person_melee_spear_hold": "animation.humanoid.melee_spear_hold",
         "third_person_melee_spear_attack": "animation.player.melee_spear_attack",
-        "third_person_melee_spear_controller": "controller.animation.player.melee_spear"
+        "third_person_melee_spear_controller": "controller.animation.player.melee_spear",
+        "crossbow_hold": "animation.player.crossbow_hold",
+        "crossbow_controller": "controller.animation.player.crossbow",
+        "shield_block_main_hand": "animation.player.shield_block_main_hand",
+        "shield_block_off_hand": "animation.player.shield_block_off_hand",
+        "blink": "controller.animation.persona.blink",
+        "tooting_goat_horn": "animation.humanoid.tooting_goat_horn",
+        "holding_brush": "animation.humanoid.holding_brush",
+        "brushing": "animation.humanoid.brushing"
       },
       "render_controllers": [
-        {
-          "controller.render.player.first_person_spectator": "variable.is_first_person && query.is_spectator"
-        },
-        {
-          "controller.render.player.third_person_spectator": "!variable.is_first_person && !variable.map_face_icon && query.is_spectator"
-        },
-        {
-          "controller.render.player.first_person": "variable.is_first_person && !query.is_spectator"
-        },
-        {
-          "controller.render.player.third_person": "!variable.is_first_person && !variable.map_face_icon && !query.is_spectator"
-        },
-        {
-          "controller.render.player.map": "variable.map_face_icon"
-        }
+        { "controller.render.player.first_person_spectator": "variable.is_first_person && query.is_spectator" },
+        { "controller.render.player.third_person_spectator": "!variable.is_first_person && !variable.map_face_icon && query.is_spectator" },
+        { "controller.render.player.first_person": "variable.is_first_person && !query.is_spectator" },
+        { "controller.render.player.third_person": "!variable.is_first_person && !variable.map_face_icon && !query.is_spectator" },
+        { "controller.render.player.map": "variable.map_face_icon" }
       ],
       "enable_attachables": true
     }

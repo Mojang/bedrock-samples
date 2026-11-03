@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.0",
+  "format_version": "1.26.70",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:vindicator",
@@ -80,7 +80,16 @@
       },
       "minecraft:conditional_bandwidth_optimization": {},
       // Components
-      "minecraft:equip_item": {},
+      "minecraft:equip_item": {
+        "excluded_items": [
+          {
+            "item": "minecraft:wolf_armor"
+          },
+          {
+            "tags": "q.any_tag('minecraft:horse_armor', 'minecraft:nautilus_armor')"
+          }
+        ]
+      },
       "minecraft:equipment": {
         "table": "loot_tables/entities/vindicator_gear.json"
       },
@@ -145,10 +154,8 @@
         "target": "self"
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
+      "minecraft:pushable_by_entity": {},
       "minecraft:shareables": {
         "items": [
           {
@@ -237,9 +244,15 @@
         }
       },
       "minecraft:patrol_follower": {
-        "minecraft:behavior.follow_target_captain": {
+        "minecraft:behavior.follow_target_leader": {
           "follow_distance": 5,
+          "leader_filters": {
+            "test": "has_component",
+            "subject": "other",
+            "value": "minecraft:is_illager_captain"
+          },
           "priority": 5,
+          "search_cooldown": 1,
           "speed_multiplier": 0.8,
           "within_radius": 64
         }
@@ -249,8 +262,8 @@
           "celebration_sound": "celebrate",
           "duration": 30,
           "jump_interval": {
-            "range_max": 3.5,
-            "range_min": 1
+            "max": 3.5,
+            "min": 1
           },
           "on_celebration_end_event": {
             "event": "minecraft:stop_celebrating",
@@ -258,8 +271,8 @@
           },
           "priority": 5,
           "sound_interval": {
-            "range_max": 7,
-            "range_min": 2
+            "max": 7,
+            "min": 2
           }
         }
       },

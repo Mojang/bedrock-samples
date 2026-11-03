@@ -1,5 +1,5 @@
 {
-  "format_version": "1.26.0",
+  "format_version": "1.26.70",
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:pillager",
@@ -138,7 +138,16 @@
       "minecraft:despawn": {
         "despawn_from_distance": {}
       },
-      "minecraft:equip_item": {},
+      "minecraft:equip_item": {
+        "excluded_items": [
+          {
+            "item": "minecraft:wolf_armor"
+          },
+          {
+            "tags": "q.any_tag('minecraft:horse_armor', 'minecraft:nautilus_armor')"
+          }
+        ]
+      },
       "minecraft:equipment": {
         "table": "loot_tables/entities/pillager_gear.json"
       },
@@ -181,10 +190,8 @@
         "using_door_annotation": true
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": true,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
+      "minecraft:pushable_by_entity": {},
       "minecraft:shareables": {
         "items": [
           {
@@ -213,8 +220,8 @@
           "celebration_sound": "celebrate",
           "duration": 30,
           "jump_interval": {
-            "range_max": 3.5,
-            "range_min": 1
+            "max": 3.5,
+            "min": 1
           },
           "on_celebration_end_event": {
             "event": "minecraft:stop_celebrating",
@@ -222,8 +229,8 @@
           },
           "priority": 5,
           "sound_interval": {
-            "range_max": 7,
-            "range_min": 2
+            "max": 7,
+            "min": 2
           }
         }
       },
@@ -236,21 +243,29 @@
           "priority": 4
         },
         "minecraft:environment_sensor": {
-          "triggers": {
-            "event": "minecraft:ranged_mode",
-            "filters": {
-              "operator": "==",
-              "test": "in_water",
-              "subject": "self",
-              "value": false
+          "triggers": [
+            {
+              "event": "minecraft:ranged_mode",
+              "filters": {
+                "operator": "==",
+                "test": "in_water",
+                "subject": "self",
+                "value": false
+              }
             }
-          }
+          ]
         }
       },
       "minecraft:patrol_follower": {
-        "minecraft:behavior.follow_target_captain": {
+        "minecraft:behavior.follow_target_leader": {
           "follow_distance": 5,
+          "leader_filters": {
+            "test": "has_component",
+            "subject": "other",
+            "value": "minecraft:is_illager_captain"
+          },
           "priority": 5,
+          "search_cooldown": 1,
           "speed_multiplier": 0.8,
           "within_radius": 64
         },
@@ -378,21 +393,28 @@
       },
       "minecraft:ranged_attack": {
         "minecraft:behavior.ranged_attack": {
-          "attack_interval_max": 1,
-          "attack_interval_min": 1,
-          "attack_radius": 8,
+          "attack_interval": {
+            "min": 1,
+            "max": 1
+          },
+          "attack_range": {
+            "min": 0.0,
+            "max": 8
+          },
           "priority": 4
         },
         "minecraft:environment_sensor": {
-          "triggers": {
-            "event": "minecraft:melee_mode",
-            "filters": {
-              "operator": "==",
-              "test": "is_underwater",
-              "subject": "self",
-              "value": true
+          "triggers": [
+            {
+              "event": "minecraft:melee_mode",
+              "filters": {
+                "operator": "==",
+                "test": "is_underwater",
+                "subject": "self",
+                "value": true
+              }
             }
-          }
+          ]
         },
         "minecraft:shooter": {
           "def": "minecraft:arrow"

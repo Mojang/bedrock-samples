@@ -16,59 +16,47 @@
         "baby": "geometry.zombie.baby"
       },
       "scripts": {
+        "scale": "query.is_baby ? 2.0 : 1.0",
+        "variables": {
+          "variable.use_dedicated_baby_armor": "public"
+        },
         "pre_animation": [
+          // Baby Armor for all mobs with a separate baby geo
           "v.use_dedicated_baby_armor = true;",
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;",
           "variable.riding_y_offset_baby_scaling = query.is_baby ? -0.5 : 0.0;",
           "variable.riding_y_offset_with_respect_to_player = 1.0;",
           "variable.riding_y_offset_on_vehicle_where_other_entites_can_stand = query.is_riding_any_entity_of_type('minecraft:minecart', 'minecraft:boat', 'minecraft:chest_boat') ? -3.0 : 0.0;",
           "variable.unscaled_riding_y_offset = variable.riding_y_offset_with_respect_to_player + variable.riding_y_offset_on_vehicle_where_other_entites_can_stand;",
+          // This math is very magical, but it works! Set up the seat position based on the adult, baby, or player model, and it should align correctly for all cases.
           "variable.riding_y_offset = variable.riding_y_offset_baby_scaling * math.abs(variable.unscaled_riding_y_offset) + variable.unscaled_riding_y_offset + variable.riding_y_offset_baby_scaling * 0.2f;"
         ],
         "animate": [
           "look_at_target",
           "move",
-          {
-            "riding.body": "query.is_riding"
-          },
-          {
-            "riding.arms": "query.is_riding"
-          },
-          {
-            "riding.legs": "query.is_riding"
-          },
+          { "riding.body": "query.is_riding" },
+          { "riding.arms": "query.is_riding" },
+          { "riding.legs": "query.is_riding" },
           "holding",
-          {
-            "charging": "query.is_charging"
-          },
+          { "charging": "query.is_charging" },
           "attack_controller",
-          {
-            "brandish_spear": "variable.is_brandishing_spear"
-          },
+          { "brandish_spear": "variable.is_brandishing_spear" },
           "bob",
-          {
-            "damage_nearby_mobs": "variable.damage_nearby_mobs"
-          },
+          { "damage_nearby_mobs": "variable.damage_nearby_mobs" },
           {
             "use_item_progress": "( variable.use_item_interval_progress > 0.0 ) || ( variable.use_item_startup_progress > 0.0 )"
           },
-          {
-            "swimming": "variable.swim_amount > 0.0"
-          }
+          { "swimming": "variable.swim_amount > 0.0" }
         ],
-        "should_update_effects_offscreen": "1.0",
-        "scale": "query.is_baby ? 2.0 : 1.0",
-        "variables": {
-          "variable.use_dedicated_baby_armor": "public"
-        }
+        "should_update_effects_offscreen": "1.0"
       },
       "animations": {
-        "humanoid_big_head": "animation.humanoid.big_head",
         "look_at_target": "controller.animation.humanoid.look_at_target",
         "look_at_target_default": "animation.humanoid.look_at_target.default",
         "look_at_target_gliding": "animation.humanoid.look_at_target.gliding",
         "look_at_target_swimming": "animation.humanoid.look_at_target.swimming",
         "move": "animation.humanoid.move",
+        "riding.body": "animation.humanoid.riding.body",
         "riding.arms": "animation.humanoid.riding.arms",
         "riding.legs": "animation.humanoid.riding.legs",
         "holding": "animation.humanoid.holding",
@@ -79,15 +67,12 @@
         "use_item_progress": "animation.humanoid.use_item_progress",
         "attack_controller": "controller.animation.drowned.attack.rotations",
         "zombie_attack_bare_hand": "animation.zombie.attack_bare_hand",
-        "attack_rotations": "animation.drowned.attack.rotations",
-        "swimming": "animation.zombie.swimming",
-        "riding.body": "animation.humanoid.riding.body",
         "baby_zombie_attack_bare_hand": "animation.zombie.baby_attack_bare_hand",
-        "baby_attack_rotations": "animation.drowned.attack.baby_rotations"
+        "attack_rotations": "animation.drowned.attack.rotations",
+        "baby_attack_rotations": "animation.drowned.attack.baby_rotations",
+        "swimming": "animation.zombie.swimming"
       },
-      "render_controllers": [
-        "controller.render.zombie.v2"
-      ],
+      "render_controllers": ["controller.render.zombie.v2"],
       "enable_attachables": true,
       "spawn_egg": {
         "texture": "spawn_egg_drowned"
