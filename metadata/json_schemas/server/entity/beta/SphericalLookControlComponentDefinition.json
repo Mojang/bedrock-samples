@@ -1,0 +1,36 @@
+{
+  "$id": "/server/entity/beta/SphericalLookControlComponentDefinition.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Turns the entity's head toward targets set by look behaviors along the shortest arc in 3D, combining upward or downward rotation (pitch) with side-to-side rotation (yaw) in a single turn. Turn speed is the average of the pitch and yaw speeds supplied by the look behavior, optionally scaled by `reference_distance`. When no behavior requests a look target, the head keeps its current direction unless its pitch is outside `pitch_limits`, in which case it returns toward the nearest limit at `pitch_recovery_speed`.",
+  "properties": {
+    "pitch_limits": {
+      "$ref": "../../../client_server/common/legacy/FloatRange.json",
+      "default": {
+        "max": 90,
+        "min": -90
+      },
+      "description": "Allowed pitch in degrees, from -90 (straight up) to 90 (straight down). Set both limits to the same value for fixed pitch.",
+      "x-ordinal-index": 2,
+      "x-runtime-constraint-description": "Check that the limits imposed on the range (minimum, maximum and maximum distance between values) are respected"
+    },
+    "pitch_recovery_speed": {
+      "default": 60,
+      "description": "Speed in degrees per second used to return the head's pitch to the nearest value within `pitch_limits` when no look request is present. Set to zero to disable idle pitch recovery. Does not limit turning toward requested targets.",
+      "maximum": 3600,
+      "minimum": 0,
+      "type": "number",
+      "x-ordinal-index": 0,
+      "x-underlying-type": "float"
+    },
+    "reference_distance": {
+      "description": "Distance in blocks at or below which the look behavior's average pitch and yaw speed applies unchanged. Beyond this distance, turn speed is multiplied by `reference_distance` divided by the target distance. Distance is measured from the entity's breathing point to the requested look position. Applies only to position targets. Omit to disable distance scaling.",
+      "exclusiveMinimum": 0,
+      "type": "number",
+      "x-ordinal-index": 1,
+      "x-underlying-type": "float"
+    }
+  },
+  "title": "minecraft:spherical_look_control",
+  "type": "object",
+  "x-format-version": "beta"
+}

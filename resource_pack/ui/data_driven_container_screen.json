@@ -6,9 +6,18 @@
 {
   "namespace": "data_driven_container",
 
+  // Every control specific to data driven block containers is defined in this file. The screen deliberately does
+  // not build on the chest screens (`chest_screen.json`) or the pocket container panels (`pocket_containers.json`),
+  // so changes to those files never change how data driven containers look. The only controls referenced from
+  // outside this file are the shared `common` building blocks that every inventory screen is made of.
+
   ////---------------------------------------------------------------------------
   //// #region slot grid
   ////---------------------------------------------------------------------------
+
+  "container_grid_item@common.container_item": {
+    "$item_collection_name": "container_items"
+  },
 
   // `container_items` is the collection name for ContainerEnumName::LevelEntityContainer, which is what
   // ChestContainerManagerModel registers for a data driven block container. `$container_size` is supplied by
@@ -25,7 +34,7 @@
     "size": [ 162, "default" ],
     "maximum_grid_items": "$container_size",
     "collection_name": "container_items",
-    "grid_item_template": "chest.chest_grid_item",
+    "grid_item_template": "data_driven_container.container_grid_item",
     "$item_collection_name": "container_items"
   },
 
@@ -35,10 +44,18 @@
   //// #region desktop panel
   ////---------------------------------------------------------------------------
 
-  "container_label@chest.chest_label": {
+  "container_label": {
+    "type": "label",
+    "layer": 2,
+    "offset": [ 7, -1 ],
+    "size": [ "90%", "default" ],
+    "max_size": [ "90%", 10 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
     "text": "$container_title",
+    "color": "$title_text_color",
     "localize": "$localize_title",
-    "max_size": [ "90%", 10 ]
+    "enable_profanity_filter": true
   },
 
   "panel_top_half": {
@@ -141,6 +158,166 @@
   //// #endregion
 
   ////---------------------------------------------------------------------------
+  //// #region pocket panel
+  ////---------------------------------------------------------------------------
+
+  "pocket_generic_label": {
+    "type": "label",
+    "layer": 2,
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "color": "$pocket_title_text_color"
+  },
+
+  "pocket_header_panel": {
+    "type": "panel",
+    "layer": 1,
+    "size": [ "50%", "27px" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "texture": "textures/ui/header_bar"
+        }
+      },
+      {
+        "title_label@data_driven_container.pocket_generic_label": {
+          "text": "$header_label",
+          "localize": "$localize_title",
+          "enable_profanity_filter": true
+        }
+      }
+    ]
+  },
+
+  // The container title is authored by the pack, so unlike the inventory heading it is capped to the header and
+  // truncated rather than allowed to overflow it.
+  "pocket_container_header@data_driven_container.pocket_header_panel": {
+    "controls": [
+      {
+        "header_background": {
+          "type": "image",
+          "texture": "textures/ui/header_bar"
+        }
+      },
+      {
+        "title_label@data_driven_container.pocket_generic_label": {
+          "text": "$header_label",
+          "localize": "$localize_title",
+          "max_size": [ "100% - 14px", 10 ],
+          "enable_profanity_filter": true
+        }
+      }
+    ]
+  },
+
+  "pocket_header_area": {
+    "type": "panel",
+    "controls": [
+      { "x@common.legacy_pocket_close_button": { "layer": 3 } },
+      {
+        "inventory_header@data_driven_container.pocket_header_panel": {
+          "$header_label": "chestScreen.header.player",
+          "$localize_title": true
+        }
+      },
+      {
+        "container_header@data_driven_container.pocket_container_header": {
+          "layer": 2,
+          "anchor_from": "top_middle",
+          "$header_label": "$container_title"
+        }
+      }
+    ]
+  },
+
+  "pocket_background_panel": {
+    "type": "image",
+    "size": [ "100%", "100%" ],
+    "texture": "textures/ui/background_panel",
+    "layer": 2
+  },
+
+  "pocket_inventory_grid": {
+    "type": "grid",
+    "grid_rescaling_type": "horizontal",
+    "anchor_to": "top_left",
+    "anchor_from": "top_left",
+    "size": [ "100%", "default" ],
+    "maximum_grid_items": "$container_size",
+    "collection_name": "$pane_collection",
+    "grid_item_template": "common.pocket_ui_container_item",
+    "$item_collection_name": "$pane_collection"
+  },
+
+  "pocket_inventory_panel": {
+    "type": "panel",
+    "size": [ "80%", "95%" ],
+    "anchor_to": "center",
+    "anchor_from": "center",
+    "controls": [
+      {
+        "scrolling_panel@common.scrolling_panel": {
+          "$allow_scrolling_even_when_content_fits": false,
+          "layer": 1,
+          "$scrolling_pane_size": [ "100%", "100%-2px" ],
+          "$scrolling_content": "data_driven_container.pocket_inventory_grid",
+          "$scroll_box_mouse_image_control": "common-classic.button_state_default",
+          "$scroll_size": [ "8px", "100%" ]
+        }
+      }
+    ]
+  },
+
+  "pocket_half_screen": {
+    "type": "panel",
+    "size": [ "50%", "100%-27px" ],
+    "offset": [ 0, 27 ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      { "inventory_panel@data_driven_container.pocket_inventory_panel": {} }
+    ]
+  },
+
+  // The container half deliberately does not set `$container_size`: it falls through to the global that
+  // ChestScreenController publishes from the live container, so its grid holds exactly slot_count cells.
+  "pocket_panel": {
+    "type": "panel",
+    "controls": [
+      { "container_gamepad_helpers@common.container_gamepad_helpers": { "layer": 3 } },
+      { "header@data_driven_container.pocket_header_area": { "layer": 2 } },
+      { "bg@data_driven_container.pocket_background_panel": { "layer": 0 } },
+      {
+        "inventory@data_driven_container.pocket_half_screen": {
+          "$container_size": 36,
+          "$pane_collection": "combined_hotbar_and_inventory_items"
+        }
+      },
+      {
+        "container@data_driven_container.pocket_half_screen": {
+          "anchor_from": "top_middle",
+          "$pane_collection": "container_items"
+        }
+      },
+      { "selected_item_details_factory@common.selected_item_details_factory": {} },
+      {
+        "item_lock_notification_factory@common.item_lock_notification_factory": {
+          "$offset": [ 0, "85%" ]
+        }
+      },
+      { "gamepad_cursor@common.gamepad_cursor_button": {} },
+      { "inventory_selected_icon_button@common.inventory_selected_icon_button": {} },
+      { "hold_icon@common.inventory_take_progress_icon_button": {} },
+      { "flying_item_renderer@common.flying_item_renderer": { "layer": 12 } }
+    ]
+  },
+
+  //// #endregion
+
+  ////---------------------------------------------------------------------------
   //// #region screen
   ////---------------------------------------------------------------------------
 
@@ -157,14 +334,9 @@
         "$screen_background_alpha": 0.4
       },
       {
-        // Defined over in pocket_containers.json rather than here, matching how the vanilla chest screens
-        // reference their pocket panels. That panel's children reference `header_area`, `background_panel`
-        // and `half_screen` without a namespace, so they only resolve when the panel is declared alongside
-        // them. The pocket grid reads `$container_size` from scope, which the controller publishes globally,
-        // so it already sizes itself to the container.
         "requires": "$pocket_screen",
         "$use_custom_pocket_toast": true,
-        "$screen_content": "pocket_containers.data_driven_container_panel"
+        "$screen_content": "data_driven_container.pocket_panel"
       }
     ]
   }
