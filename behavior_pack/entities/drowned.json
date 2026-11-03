@@ -200,6 +200,7 @@
           }
         ]
       },
+      "minecraft:freezing_immune": {},
       "minecraft:health": {
         "max": 20,
         "value": 20
@@ -685,6 +686,69 @@
           "can_swim": false,
           "can_walk": true
         }
+      },
+      "minecraft:look_to_start_transformations": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "event": "minecraft:start_transforming_into_zombie",
+              "filters": {
+                "test": "in_block",
+                "value": "minecraft:powder_snow"
+              }
+            }
+          ]
+        }
+      },
+      "minecraft:start_zombie_transformation": {
+        "minecraft:environment_sensor": {
+          "triggers": [
+            {
+              "event": "minecraft:stop_transforming",
+              "filters": {
+                "test": "in_block",
+                "operator": "not",
+                "value": "minecraft:powder_snow"
+              }
+            }
+          ]
+        },
+        "minecraft:timer": {
+          "looping": false,
+          "time": {
+            "min": 7,
+            "max": 7
+          },
+          "time_down_event": {
+            "event": "minecraft:convert_to_zombie"
+          }
+        }
+      },
+      "minecraft:convert_to_zombie": {
+        "minecraft:is_shaking": {},
+        "minecraft:transformation": {
+          "delay": {
+            "value": 15
+          },
+          "preserve_equipment": true,
+          "into": "minecraft:zombie<minecraft:as_adult>",
+          "transformation_sound": [
+            "convert_to_zombie"
+          ]
+        }
+      },
+      "minecraft:convert_to_baby_zombie": {
+        "minecraft:is_shaking": {},
+        "minecraft:transformation": {
+          "delay": {
+            "value": 15
+          },
+          "preserve_equipment": true,
+          "into": "minecraft:zombie<minecraft:as_baby>",
+          "transformation_sound": [
+            "convert_to_zombie"
+          ]
+        }
       }
     },
     "events": {
@@ -696,7 +760,8 @@
           "component_groups": [
             "minecraft:adult_drowned",
             "minecraft:ranged_mode",
-            "minecraft:drowned_rider"
+            "minecraft:drowned_rider",
+            "minecraft:look_to_start_transformations"
           ]
         },
         "remove": {
@@ -716,7 +781,8 @@
             "minecraft:melee_equipment",
             "minecraft:melee_mode",
             "minecraft:adult_drowned",
-            "minecraft:wander_mode"
+            "minecraft:wander_mode",
+            "minecraft:look_to_start_transformations"
           ]
         }
       },
@@ -727,7 +793,8 @@
             "minecraft:melee_mode",
             "minecraft:baby_drowned",
             "minecraft:drowned_jockey",
-            "minecraft:wander_mode"
+            "minecraft:wander_mode",
+            "minecraft:look_to_start_transformations"
           ]
         }
       },
@@ -737,7 +804,8 @@
             "minecraft:melee_equipment",
             "minecraft:melee_mode",
             "minecraft:baby_drowned",
-            "minecraft:wander_mode"
+            "minecraft:wander_mode",
+            "minecraft:look_to_start_transformations"
           ]
         }
       },
@@ -748,7 +816,8 @@
             "minecraft:ranged_equipment",
             "minecraft:ranged_mode",
             "minecraft:adult_drowned",
-            "minecraft:wander_mode"
+            "minecraft:wander_mode",
+            "minecraft:look_to_start_transformations"
           ]
         }
       },
@@ -760,7 +829,8 @@
             "minecraft:ranged_mode",
             "minecraft:baby_drowned",
             "minecraft:drowned_jockey",
-            "minecraft:wander_mode"
+            "minecraft:wander_mode",
+            "minecraft:look_to_start_transformations"
           ]
         }
       },
@@ -771,7 +841,8 @@
             "minecraft:ranged_equipment",
             "minecraft:ranged_mode",
             "minecraft:baby_drowned",
-            "minecraft:wander_mode"
+            "minecraft:wander_mode",
+            "minecraft:look_to_start_transformations"
           ]
         }
       },
@@ -892,6 +963,67 @@
             "minecraft:melee_mode"
           ]
         }
+      },
+      "minecraft:start_transforming_into_zombie": {
+        "add": {
+          "component_groups": [
+            "minecraft:start_zombie_transformation"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:look_to_start_transformations"
+          ]
+        }
+      },
+      "minecraft:stop_transforming": {
+        "add": {
+          "component_groups": [
+            "minecraft:look_to_start_transformations"
+          ]
+        },
+        "remove": {
+          "component_groups": [
+            "minecraft:start_zombie_transformation"
+          ]
+        }
+      },
+      "minecraft:convert_to_zombie": {
+        "sequence": [
+          {
+            "filters": {
+              "test": "has_component",
+              "operator": "not",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:convert_to_zombie"
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:start_zombie_transformation"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "has_component",
+              "value": "minecraft:is_baby"
+            },
+            "add": {
+              "component_groups": [
+                "minecraft:convert_to_baby_zombie"
+              ]
+            },
+            "remove": {
+              "component_groups": [
+                "minecraft:start_zombie_transformation"
+              ]
+            }
+          }
+        ]
       }
     }
   }

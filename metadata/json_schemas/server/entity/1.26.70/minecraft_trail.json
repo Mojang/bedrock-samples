@@ -1,0 +1,93 @@
+{
+  "$id": "/server/entity/1.26.70/minecraft_trail.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Causes an entity to leave a trail of blocks as it moves about the world. Obeys Mob Griefing rules.",
+  "properties": {
+    "block_type": {
+      "default": "air",
+      "description": "The type of block that is placed. Solid blocks cannot be placed at the entity's position when offset is [0, 0, 0].",
+      "type": "string",
+      "x-ordinal-index": 1
+    },
+    "extent": {
+      "default": 0,
+      "description": "Maximum horizontal distance from the center at which blocks can be placed.",
+      "maximum": 16,
+      "minimum": 0,
+      "type": "integer",
+      "x-ordinal-index": 5,
+      "x-underlying-type": "int32"
+    },
+    "offset": {
+      "$ref": "../../../client_server/common/1.21.100/vec3.json",
+      "default": [
+        0,
+        0,
+        0
+      ],
+      "description": "Offset from the entity's position used to determine where trail blocks are placed and placement checks are applied, capped at 16 blocks away. X and Z are relative to the entity's orientation and rotate to its nearest cardinal facing; Y is a vertical offset.",
+      "x-ordinal-index": 2
+    },
+    "place_only_on_block_position_change": {
+      "default": false,
+      "description": "When true, trail blocks are only placed on ticks where the bottom of the entity moves into a different block position, or where the entity lands (goes from airborne to grounded). Standing still or moving within the same block does not place blocks. Defaults to false.",
+      "type": "boolean",
+      "x-ordinal-index": 7,
+      "x-underlying-type": "boolean"
+    },
+    "placement_checks": {
+      "$ref": "./TrailPlacementChecks.json",
+      "default": "block",
+      "description": "Controls the checks applied at each trail block placement position before placing the trail block. 'none' applies no placement checks, 'block' applies block placement conditions, and 'standard' applies standard block placement rules, including clearance from entities that obstruct block placement.",
+      "x-ordinal-index": 6,
+      "x-underlying-type": "uint8"
+    },
+    "placement_conditions": {
+      "default": [
+        {
+          "block_types": [
+            {
+              "name": "minecraft:air",
+              "states": {
+              },
+              "tags": ""
+            }
+          ],
+          "y_offset": 0
+        }
+      ],
+      "description": "Conditions that must all be satisfied relative to the trail block placement position. Block types within one condition are alternatives. When omitted, defaults to [{ \"y_offset\": 0, \"block_types\": [\"minecraft:air\"] }].",
+      "items": {
+        "$ref": "./minecraft_trail%20placement_conditions%20entry.json"
+      },
+      "minItems": 1,
+      "type": "array",
+      "x-ordinal-index": 3
+    },
+    "placement_filter": {
+      "$ref": "../../../client_server/common/1.21.20/Filter%20Group.json",
+      "default": {
+        "AND": null,
+        "NOT": null,
+        "OR": null,
+        "all": null,
+        "all_of": null,
+        "any": null,
+        "any_of": null,
+        "none_of": null
+      },
+      "description": "One or more conditions that must be met in order to cause the chosen block type to be placed.",
+      "x-ordinal-index": 0
+    },
+    "shape": {
+      "$ref": "./TrailShape.json",
+      "default": "corners",
+      "description": "Controls the horizontal placement pattern. 'corners' places four corner blocks, 'square' fills a square, and 'circle' fills a circular disk. Defaults to 'corners'.",
+      "x-ordinal-index": 4,
+      "x-underlying-type": "uint8"
+    }
+  },
+  "title": "minecraft:trail",
+  "type": "object",
+  "x-format-version": "1.26.70"
+}
