@@ -100,41 +100,18 @@
             "initial_state": "default",
             "states": {
                 "default": {
-                    "transitions": [
-                        {
-                            "one_hand": "query.get_equipped_item_name('off_hand') == 'filled_map' || query.get_equipped_item_name('off_hand') == 'shield'"
-                        },
-                        {
-                            "two_hand": "query.get_equipped_item_name('off_hand') != 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield'"
-                        }
-                    ]
-                },
-                "one_hand": {
                     "animations": [
                         {
-                            "first_person_map_hold_main_hand": "query.get_equipped_item_name(0, 1) == 'filled_map'"
+                            "first_person_map_hold": "v.two_handed_map"
                         },
                         {
-                            "first_person_map_hold_off_hand": "query.get_equipped_item_name('off_hand') == 'filled_map' && (query.get_equipped_item_name == 'bow' ? !(variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0) : 1.0)"
-                        }
-                    ],
-                    "transitions": [
-                        {
-                            "default": "query.get_equipped_item_name(0, 1) != 'filled_map' && query.get_equipped_item_name('off_hand') != 'filled_map'"
+                            "first_person_map_hold_attack": "v.two_handed_map"
                         },
                         {
-                            "two_hand": "query.get_equipped_item_name('off_hand') != 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield'"
-                        }
-                    ]
-                },
-                "two_hand": {
-                    "animations": [ "first_person_map_hold", "first_person_map_hold_attack" ],
-                    "transitions": [
-                        {
-                            "default": "query.get_equipped_item_name(0, 1) != 'filled_map' && query.get_equipped_item_name('off_hand') != 'filled_map'"
+                            "first_person_map_hold_main_hand": "v.mainhand_map_or_photo && !v.two_handed_map"
                         },
                         {
-                            "one_hand": "query.get_equipped_item_name('off_hand') == 'filled_map' || query.get_equipped_item_name('off_hand') == 'shield'"
+                            "first_person_map_hold_off_hand": "v.offhand_map_or_photo && (query.get_equipped_item_name != 'bow' || !(variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))"
                         }
                     ]
                 }
@@ -193,17 +170,15 @@
                             "first_person_shield_block": "query.blocking"
                         },
                         {
-                            "first_person_attack_controller": "variable.attack_time > 0.0 && query.get_equipped_item_name != 'filled_map' && !variable.melee_spear_equipped"
+                            "first_person_attack_controller": "variable.attack_time > 0.0 && !v.mainhand_map_or_photo && !variable.melee_spear_equipped"
                         },
                         {
-                            "first_person_empty_hand": "query.get_equipped_item_name(0, 1) != 'filled_map'"
+                            "first_person_empty_hand": "!v.mainhand_map_or_photo"
                         },
                         {
                             "first_person_walk": "variable.bob_animation"
                         },
-                        {
-                            "first_person_map_controller": "query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name('off_hand') == 'filled_map'"
-                        },
+                        "first_person_map_controller",
                         {
                             "first_person_crossbow_equipped": "query.get_equipped_item_name == 'crossbow' && variable.item_use_normalized > 0.0 && variable.item_use_normalized < 1.0"
                         },

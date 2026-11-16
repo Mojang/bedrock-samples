@@ -2772,6 +2772,10 @@
     "ignored": "$education_edition",
     "type": "panel",
     "size": [ 20, "100%" ],
+    "visible": false,
+    "property_bag": {
+      "#visible": false
+    },
     "bindings": [
       {
         "binding_name": "#gift_button_visible",
@@ -2934,6 +2938,10 @@
         "padding_gift": {
           "type": "panel",
           "size": [ 1, "100%" ],
+          "visible": false,
+          "property_bag": {
+            "#visible": false
+          },
           "bindings": [
             {
               "binding_name": "#gift_button_visible",
@@ -2971,11 +2979,22 @@
     "variables": [      
       {
         "requires": "$education_edition",
-        "$interaction_buttons_panel": "persona_sdl.classic_skin_equip_button_panel"
+        "$interaction_buttons_panel": "persona_sdl.edu_equip_buttons"
       }
     ],
     "controls": [
       { "interaction_buttons_panel@$interaction_buttons_panel": {} }
+    ]
+  },
+
+  // Education has no purchase flow, so only the equip buttons are kept. Each panel hides itself via its own binding.
+  "edu_equip_buttons@common.horizontal_stack_panel": {
+    "size": [ "fill", "100%" ],
+    "controls": [
+      { "subcategory_equip@persona_sdl.subcategory_equip_button_panel": {} },
+      { "classic_skin_equip@persona_sdl.classic_skin_equip_button_panel": {} },
+      { "size_equip@persona_sdl.size_equip_button_panel": {} },
+      { "emote_play_again_button@persona_sdl.emote_play_again_button": {} }
     ]
   },
 
@@ -5232,6 +5251,52 @@
     ]
   },
 
+  // Single none/default button pinned above the scrolling content; targets the most recently selected piece type.
+  "page_default_piece_button_panel": {
+    "type": "panel",
+    "size": [ "100%", "100%c + 4px" ],
+    "property_bag": {
+      "#visible": false
+    },
+    "bindings": [
+      {
+        "binding_name": "#is_page_none_option_visible",
+        "binding_name_override": "#visible"
+      }
+    ],
+
+    "controls": [
+      {
+        "page_none_piece_option_button@common_buttons.light_text_button": {
+          "size": [ "100% - 10px", 20 ],
+          "$pressed_button_name": "button.page_none_piece_option",
+          "$button_text": "#page_none_option_text",
+          "$button_text_binding_type": "global",
+          "$button_text_size": [ "default", 10 ],
+          "$new_ui_label_offset": [ 0, 0 ],
+          "bindings": [
+            {
+              "binding_name": "#is_page_none_option_enabled",
+              "binding_name_override": "#enabled"
+            }
+          ],
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "$pressed_button_name",
+              "mapping_type": "pressed"
+            },
+            {
+              "from_button_id": "button.menu_ok",
+              "to_button_id": "$pressed_button_name",
+              "mapping_type": "focused"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
   /////////////////////////////////////////////////////////////
   /// right side stacks
   /////////////////////////////////////////////////////////////
@@ -5991,8 +6056,15 @@
   },
 
   "emotes_right_side_bottom_buttons@persona_sdl.right_side_bottom_buttons": {
+    "$interaction_buttons_panel|default": "persona_sdl.purchase_buttons",
+    "variables": [
+      {
+        "requires": "$education_edition",
+        "$interaction_buttons_panel": "persona_sdl.edu_equip_buttons"
+      }
+    ],
     "controls": [
-      { "purchase_buttons_panel@persona_sdl.purchase_buttons": {} }
+      { "purchase_buttons_panel@$interaction_buttons_panel": {} }
     ]
   },
 
@@ -6007,26 +6079,26 @@
     "$persona_dialog_content": "persona_sdl.offer_info_section_content"
   },
 
+  // Same as default_right_side_stack minus the realms banner. Piece/size/emote info panels are kept so the
+  // Character Creator can show offer info and equip buttons; the special banner is already ignored in Education.
   "edu_right_side_stack@persona_sdl.right_side_stack_base": {
     "size": [ "100%", "100%" ],
     "$section_name": "rows",
+
+    "$is_skin_selector|default": false,
+    "$layout_info_panel|default": "persona_sdl.piece_offer_info_panels",
+    "variables": [
+      {
+        "requires": "$is_skin_selector",
+        "$layout_info_panel": "persona_sdl.skin_offer_info_panels"
+      }
+    ],
+
     "controls": [
       { "debug_information@persona_sdl.right_side_stack_debug_control": {} },
       { "appearance_section@persona_sdl.appearance_section": {} },
       { "padding@persona_sdl.vertical_padding_2px": {} },
-      // below are the sub sections which dis/re-appear depending on context.
-      {
-        "offer_related_info_panels": {
-          "type": "panel",
-          "size": [ "100%", "30%" ],
-          "min_size": [ "100%", 65 ],
-          "max_size": [ "100%", 120 ],
-          "controls": [
-            { "getting_started@persona_sdl.persona_getting_started_panel": {} },
-            { "edu_right_side_skin_info@persona_sdl.right_side_offer_info_skins": { "$ignore_special_banner": true } }
-          ]
-        }
-      }
+      { "offer_related_info_panels@$layout_info_panel": {} }
     ]
   },
 
